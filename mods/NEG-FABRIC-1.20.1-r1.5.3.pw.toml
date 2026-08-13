@@ -1,0 +1,13 @@
+﻿name = "NEG-FABRIC"
+filename = "NEG-FABRIC-1.20.1-r1.5.3.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/yyfwBmX3/versions/Pr6nLwHz/NEG-FABRIC-1.20.1-r1.5.3.jar"
+hash-format = "sha512"
+hash = "269130208931ed08eb2998d374eb9b52341736109ce2f25f4ebae4dc37fd3e4d9e1eaa3d63a70c526cdaf000923582c53643a0ef2290f8965c98224c8a0e7b53"
+
+[update]
+[update.modrinth]
+mod-id = "yyfwBmX3"
+version = "Pr6nLwHz"

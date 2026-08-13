@@ -1,0 +1,13 @@
+﻿name = "simplequests-1.20.1-2.1.2-fabric.jar"
+filename = "simplequests-1.20.1-2.1.2-fabric.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/HriwQx5q/versions/zyk3Eqlm/simplequests-1.20.1-2.1.2-fabric.jar"
+hash-format = "sha512"
+hash = "fc8adfac2044dfd907027b137c688bbdb1953065f605ce1a012943f023ee36236e452759df89072d8944ad2d1043a077bc0e132bb1f669112264c8c1de06c487"
+
+[update]
+[update.modrinth]
+mod-id = "HriwQx5q"
+version = "zyk3Eqlm"

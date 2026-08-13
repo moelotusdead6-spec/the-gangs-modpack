@@ -1,0 +1,13 @@
+﻿name = "Repurposed Structures v7.1.24 (1.20.1 MC Fabric)"
+filename = "repurposed_structures-7.1.24+1.20.1-fabric.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/muf0XoRe/versions/Hvm2wv28/repurposed_structures-7.1.24%2B1.20.1-fabric.jar"
+hash-format = "sha512"
+hash = "84dd9038d92e36b00ee0893a4ff2153b55e86b9e7e236c157d17a5381fa94bbd86c8ebc35201e67103e8567f639720ecc8140a9a10e9a520c80b51d24dbd2d42"
+
+[update]
+[update.modrinth]
+mod-id = "muf0XoRe"
+version = "Hvm2wv28"

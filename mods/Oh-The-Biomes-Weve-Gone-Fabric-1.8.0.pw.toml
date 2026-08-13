@@ -1,0 +1,13 @@
+﻿name = "Oh-The-Biomes-Weve-Gone-Fabric-1.8.0"
+filename = "Oh-The-Biomes-Weve-Gone-Fabric-1.8.0.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/NTi7d3Xc/versions/9hf2l2Rq/Oh-The-Biomes-Weve-Gone-Fabric-1.8.0.jar"
+hash-format = "sha512"
+hash = "667f2606ee8df416dd87ec3e73690bf10e977b9b92f11b0bfd2d0c60d77feae9aca26a9aed70c388cdda30ce39e042235d85ebad916d0e9b79a10bb4ce152012"
+
+[update]
+[update.modrinth]
+mod-id = "NTi7d3Xc"
+version = "9hf2l2Rq"

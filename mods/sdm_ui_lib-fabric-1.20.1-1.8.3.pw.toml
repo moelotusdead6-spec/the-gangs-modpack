@@ -1,0 +1,13 @@
+﻿name = "SDM UI Lib 1.20.1-1.8.3"
+filename = "sdm_ui_lib-fabric-1.20.1-1.8.3.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/MdmRC4B5/versions/OOH9No5U/sdm_ui_lib-fabric-1.20.1-1.8.3.jar"
+hash-format = "sha512"
+hash = "2a5afc1379a5984e19a858f5a789023fe4111199261408d06ecabc885209feabae264e73b3a744153d41adac3bb30823bc6c83bd3a39798c0d166a4680ab660a"
+
+[update]
+[update.modrinth]
+mod-id = "MdmRC4B5"
+version = "OOH9No5U"

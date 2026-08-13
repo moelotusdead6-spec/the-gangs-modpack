@@ -1,0 +1,13 @@
+﻿name = "Oh The Trees You'll Grow-Fabric-1.20.1-1.7.0"
+filename = "Oh-The-Trees-Youll-Grow-fabric-1.20.1-1.7.0.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/g8NOG5OR/versions/KB6DtqWA/Oh-The-Trees-Youll-Grow-fabric-1.20.1-1.7.0.jar"
+hash-format = "sha512"
+hash = "2ca26f7faef6b66b8cd293a1c861c97d02413b2ec2b654d6108239683acabd329a77bf08c70212cf9abc2d1e1653dfbc2eb762fca9b72d4c21f532df5e11fb05"
+
+[update]
+[update.modrinth]
+mod-id = "g8NOG5OR"
+version = "KB6DtqWA"

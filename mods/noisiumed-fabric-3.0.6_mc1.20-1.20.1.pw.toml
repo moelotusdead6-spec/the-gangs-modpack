@@ -1,0 +1,13 @@
+﻿name = "v3.0.6"
+filename = "noisiumed-fabric-3.0.6+mc1.20-1.20.1.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/M8MasaZG/versions/vcRbbvYP/noisiumed-fabric-3.0.6%2Bmc1.20-1.20.1.jar"
+hash-format = "sha512"
+hash = "fc8c1516b8493bfbcac8e25f4604aa2f44bc020ed1af527634cd0315dd4c590963c289a9ec6032d85736fd7ea3a3e1c2adf6cc8f66397e19741b6bfb64ce3e05"
+
+[update]
+[update.modrinth]
+mod-id = "M8MasaZG"
+version = "vcRbbvYP"

@@ -1,0 +1,13 @@
+﻿name = "SaroÂ´s Player Plushie 1.0.0"
+filename = "sarosplayerplushiemod-fabric-1.20.1-1.1.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/VcoqMVMD/versions/p02rwAbd/sarosplayerplushiemod-fabric-1.20.1-1.1.jar"
+hash-format = "sha512"
+hash = "878695743e2c613cd6e877b1cb2869d23f2e699cef2783a004650bce8964816686ca49507e062be3c1281e406e89481d25a1cf0e64be023fc2daaefec52e9f43"
+
+[update]
+[update.modrinth]
+mod-id = "VcoqMVMD"
+version = "p02rwAbd"

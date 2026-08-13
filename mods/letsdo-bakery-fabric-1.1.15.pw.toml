@@ -1,0 +1,13 @@
+﻿name = "[Let's Do] Bakery 1.1.15"
+filename = "letsdo-bakery-fabric-1.1.15.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/WFwYiVoG/versions/Fywe1lBT/letsdo-bakery-fabric-1.1.15.jar"
+hash-format = "sha512"
+hash = "c66a30ca9c3d2ad3808bfb0b9e2258b2b7f417c9231fbaf95f8daa631331319dc5df2b47a14ebf0629b86599ffd2d9963a7436140d4336c0188ba9838199cdec"
+
+[update]
+[update.modrinth]
+mod-id = "WFwYiVoG"
+version = "Fywe1lBT"

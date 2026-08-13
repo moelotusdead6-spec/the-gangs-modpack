@@ -1,0 +1,13 @@
+﻿name = "2.3.15+1.20.1"
+filename = "porting_lib-2.3.15+1.20.1.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/tEJPA4Ty/versions/DruV5hjF/porting_lib-2.3.15%2B1.20.1.jar"
+hash-format = "sha512"
+hash = "8af551441b7b8e56bc2e2cee23928de1fecd2dbeb6e082809983fa47cb1a9f34dfa4b13f9105d1f65e2a0543f50b0f3e37085fd391de89db36699d590999d156"
+
+[update]
+[update.modrinth]
+mod-id = "tEJPA4Ty"
+version = "DruV5hjF"

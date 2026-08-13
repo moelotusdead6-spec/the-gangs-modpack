@@ -1,0 +1,7 @@
+This mod includes adapted texture content based on:
+"Boots Of Swiftness" by Crodattilo
+Source: https://sketchfab.com/3d-models/boots-of-swiftness-4c47b6fe16fb4f9186476ce891fc6ef7
+License: CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+
+Required credit text from author:
+This work is based on "Boots Of Swiftness" (https://sketchfab.com/3d-models/boots-of-swiftness-4c47b6fe16fb4f9186476ce891fc6ef7) by Crodattilo (https://sketchfab.com/Crodattilo) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

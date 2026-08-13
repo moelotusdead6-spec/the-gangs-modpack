@@ -1,0 +1,13 @@
+﻿name = "SDM Shop 1.20.1-6.11-pre"
+filename = "sdmshoprework-fabric-1.20.1-6.11-pre.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/dOrw4veV/versions/MILv8ppl/sdmshoprework-fabric-1.20.1-6.11-pre.jar"
+hash-format = "sha512"
+hash = "6982c9215fe475c2c972a124efbc37c9b4d9ad52345b1c2872d9a07a55bc7cc9a69a4d919dd4d99e3f2cb9d079e3f4537d1b76a2ca951f38a1fe175dd971b52f"
+
+[update]
+[update.modrinth]
+mod-id = "dOrw4veV"
+version = "MILv8ppl"
