@@ -1,0 +1,13 @@
+name = "Additional Fishing"
+filename = "additionalfishing-1.1.0.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/ZP86T5uQ/versions/Ml99upFP/additionalfishing-1.1.0.jar"
+hash-format = "sha512"
+hash = "6c5650b7a9d13a83d8a7f12d14567be818771db301d0024268eceff1fadf66fef8cdf17b28af9fb1e421de17d45304637e5b4837af9dba4dd51c5b15356c9221"
+
+[update]
+[update.modrinth]
+mod-id = "ZP86T5uQ"
+version = "Ml99upFP"

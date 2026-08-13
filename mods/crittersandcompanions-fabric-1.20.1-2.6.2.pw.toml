@@ -1,0 +1,13 @@
+﻿name = "[Fabric] Critters and Companions 2.6.2"
+filename = "crittersandcompanions-fabric-1.20.1-2.6.2.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/Yd4wb5wZ/versions/j0KtRCok/crittersandcompanions-fabric-1.20.1-2.6.2.jar"
+hash-format = "sha512"
+hash = "3048c52ebc3a2123b6fddef02533990eedb69be2b484658b290d0b65324f52c17fa51ab3aa12279238560602aa3b58350bf559df3923258003f4a71a34fc1125"
+
+[update]
+[update.modrinth]
+mod-id = "Yd4wb5wZ"
+version = "j0KtRCok"

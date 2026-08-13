@@ -1,0 +1,13 @@
+﻿name = "2.0.3+fabric-1.20.1"
+filename = "compass2map-2.0.3-fabric-1.20.1.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/Y6HhXts4/versions/lJkkcA4a/compass2map-2.0.3-fabric-1.20.1.jar"
+hash-format = "sha512"
+hash = "c717ea6113afb368185471a280ace1401f12890ef6ae3bab0dde5722db02f20d4272097cf2cebe74c4b3c70ccf28bb5685f6295fe057734452b0e6d20dc15f86"
+
+[update]
+[update.modrinth]
+mod-id = "Y6HhXts4"
+version = "lJkkcA4a"

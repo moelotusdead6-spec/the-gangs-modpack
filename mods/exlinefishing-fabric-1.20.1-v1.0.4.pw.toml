@@ -1,0 +1,13 @@
+﻿name = "Exline's Fishing - v1.0.4 - Fabric - MC 1.20.1"
+filename = "exlinefishing-fabric-1.20.1-v1.0.4.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/lZw3wXT5/versions/LKUiKzMl/exlinefishing-fabric-1.20.1-v1.0.4.jar"
+hash-format = "sha512"
+hash = "de24a90c1a74fc4153399d94a1ee8d2cf911de04919f1675afaf0e28ca6180d3650237f273e6c4ae33590982fe31f20a4f8856ab99302c8ea08c222bda34df37"
+
+[update]
+[update.modrinth]
+mod-id = "lZw3wXT5"
+version = "LKUiKzMl"

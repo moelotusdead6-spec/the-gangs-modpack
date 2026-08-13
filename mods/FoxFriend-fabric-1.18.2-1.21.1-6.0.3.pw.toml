@@ -1,0 +1,13 @@
+﻿name = "FoxFriend-6.0.3"
+filename = "FoxFriend-fabric-1.18.2-1.21.1-6.0.3.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/yPdzmBAj/versions/OkIsbjGS/FoxFriend-fabric-1.18.2-1.21.1-6.0.3.jar"
+hash-format = "sha512"
+hash = "7db6ca9e81bff2661bdb7937ade3ca8d34c47b7b094ad97ddc3cac3ee5f1d9492fd85fb4386ef907a8463d96cb2fdeb5be2caf6b0080d5ec774bd32e25f4171f"
+
+[update]
+[update.modrinth]
+mod-id = "yPdzmBAj"
+version = "OkIsbjGS"

@@ -1,0 +1,13 @@
+﻿name = "WWEE Fabric 3.2.4"
+filename = "expanded_ecosphere-3.2.4-fabric.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/O1XGs7ps/versions/xrUchinI/expanded_ecosphere-3.2.4-fabric.jar"
+hash-format = "sha512"
+hash = "0a406459197e520d80e3c5c0fcd4188496dbbe98aee379e558a404b9c3c5a7e2a922047702baf8bf2541684078bdef69f14a40178aca11eb0ce2bfa7813969a8"
+
+[update]
+[update.modrinth]
+mod-id = "O1XGs7ps"
+version = "xrUchinI"

@@ -1,0 +1,13 @@
+﻿name = "v19.3.6 - Fabric - 1.19.3-1.20.1"
+filename = "globalpacks-fabric-1.20.1-19.3.6.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/NRLPy2mk/versions/punDkQTd/globalpacks-fabric-1.20.1-19.3.6.jar"
+hash-format = "sha512"
+hash = "c7143403438458ed7e9f2de7edb0b366acedb1767537ef8b1e5f13f453f18e65889d4dacc14be036e91d26cd2843dad170a1fad98d14ac092d60f0eee740643e"
+
+[update]
+[update.modrinth]
+mod-id = "NRLPy2mk"
+version = "punDkQTd"

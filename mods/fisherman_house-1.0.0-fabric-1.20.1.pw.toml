@@ -1,0 +1,13 @@
+﻿name = "The Fisherman House 1.0.0"
+filename = "fisherman_house-1.0.0-fabric-1.20.1.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/Dku9hJfB/versions/EFmDDDaV/fisherman_house-1.0.0-fabric-1.20.1.jar"
+hash-format = "sha512"
+hash = "66af04d72305f6ccbdd3246e5400e79b89faa7ae1cfc0349b67d623f8337c673555c2165d2c30d319695ba0ea0c5ff0adb0540ec9bd37f84d8b77a1bc5a79aeb"
+
+[update]
+[update.modrinth]
+mod-id = "Dku9hJfB"
+version = "EFmDDDaV"

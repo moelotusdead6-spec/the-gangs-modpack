@@ -1,0 +1,13 @@
+﻿name = "Galosphere 1.20.1 - 1.5.2 - FABRIC"
+filename = "Galosphere-1.20.1-1.5.2-Fabric.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/Kn7xyQ1v/versions/Jqxb7gnx/Galosphere-1.20.1-1.5.2-Fabric.jar"
+hash-format = "sha512"
+hash = "31a44f05c9b468bfe73ad2468608d36c3ddb7f3afed0ea6529314abe5a16358550545be95cc6eb49bb7d49b39d0cb5d03b16927fb44467021f571155142bf466"
+
+[update]
+[update.modrinth]
+mod-id = "Kn7xyQ1v"
+version = "Jqxb7gnx"
