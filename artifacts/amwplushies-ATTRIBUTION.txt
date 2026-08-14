@@ -1,0 +1,7 @@
+This mod includes a locally modified build based on:
+"A Man With Plushies" by Maxsteelbro
+Source: https://www.curseforge.com/minecraft/mc-mods/a-man-with-plushies
+License: MIT License
+
+The MIT License requires this copyright and permission notice be included
+with all copies or substantial portions of the software.

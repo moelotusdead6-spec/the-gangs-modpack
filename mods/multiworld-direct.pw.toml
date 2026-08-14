@@ -1,0 +1,8 @@
+name = "Multiworld (Official Unmodified)"
+filename = "Multiworld-Fabric-1.20.1.jar"
+side = "both"
+
+[download]
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/Multiworld-Fabric-1.20.1.jar"
+hash-format = "sha256"
+hash = "d3fc5e454ee2c777a4ce85d28a4328890df4c86a6a1087446bc2babf33abfb7b"

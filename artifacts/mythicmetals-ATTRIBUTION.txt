@@ -1,0 +1,7 @@
+This mod is redistributed unmodified from:
+"MythicMetals" by Noaaan
+Source: https://github.com/Noaaan/MythicMetals
+License: MIT License
+
+The MIT License requires this copyright and permission notice be included
+with all copies or substantial portions of the software.

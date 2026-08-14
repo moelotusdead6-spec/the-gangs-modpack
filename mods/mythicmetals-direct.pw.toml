@@ -1,0 +1,8 @@
+name = "MythicMetals (Official Unmodified)"
+filename = "mythicmetals-0.19.12+1.20.1.jar"
+side = "both"
+
+[download]
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/mythicmetals-0.19.12+1.20.1.jar"
+hash-format = "sha256"
+hash = "c7fa3f3bcab2329bacb3fd4abd1e1445c736a3f5c64994f115743fa2fff70215"

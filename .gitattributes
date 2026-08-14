@@ -1,0 +1,4 @@
+# GitHub normalizes CRLF to LF on commit unless told otherwise, which breaks
+# the file hashes packwiz refresh computes locally. Force LF for served files.
+*.toml text eol=lf
+*.txt text eol=lf

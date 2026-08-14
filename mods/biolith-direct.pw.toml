@@ -1,0 +1,8 @@
+name = "Biolith (Official Unmodified)"
+filename = "biolith-fabric-1.0.1-beta.1.jar"
+side = "both"
+
+[download]
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/biolith-fabric-1.0.1-beta.1.jar"
+hash-format = "sha256"
+hash = "93103bee7c55d239a65d2603543d13266509b8c9cf5e30f1297c5777dba052d7"

@@ -1,0 +1,6 @@
+This mod is redistributed unmodified from:
+"Multiworld" by Isaiah
+Source: https://github.com/IsaiahMC/multiworld
+License: LGPL-3.0
+
+This binary is unmodified. Official source is linked above per LGPL-3.0.

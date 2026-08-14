@@ -1,0 +1,6 @@
+This mod is redistributed unmodified from:
+"Biolith" by TerraformersMC, gniftygnome
+Source: https://github.com/TerraformersMC/Biolith
+License: LGPL-3.0
+
+This binary is unmodified. Official source is linked above per LGPL-3.0.

@@ -1,0 +1,8 @@
+name = "A Man With Plushies (Modified)"
+filename = "amwplushies-fabric-1.20.1-4.4.01.jar"
+side = "both"
+
+[download]
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/amwplushies-fabric-1.20.1-4.4.01.jar"
+hash-format = "sha256"
+hash = "e09ff91a882e67ce358da6a932df8ea306df9e4d9c77ac5ffa03f1994c5f0499"
