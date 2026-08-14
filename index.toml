@@ -342,6 +342,11 @@ hash = "243d452e95f2b9a1d6e0f24c567ee8b6cf4fb7cd39fa4e492b2f2958d36a7277"
 metafile = true
 
 [[files]]
+file = "mods/_1.20.1-Fabric__Hybrid_Aquatic_1.6.8.pw.toml"
+hash = "012a6525d2df5bef1c446fc2494c683c243722aa32d3b8bf08a358a030cf4fcb"
+metafile = true
+
+[[files]]
 file = "mods/additional-fishing.pw.toml"
 hash = "cae46383e63a013f4c0449c54e0293d7af309bdda3d1ae4193c9aea193f48890"
 metafile = true
@@ -414,6 +419,11 @@ metafile = true
 [[files]]
 file = "mods/badpackets-fabric-0.4.3.pw.toml"
 hash = "1bb1b8720fb7094a16b7ec6858116a7dbfe0f9206d338b5235db8b23eeb78a86"
+metafile = true
+
+[[files]]
+file = "mods/balm-fabric-1.20.1-7.3.41.pw.toml"
+hash = "a3226ebd3421d5a6bea93c13f2684e3d3e0fcbd21a11d0209719bd7249a9c1bd"
 metafile = true
 
 [[files]]

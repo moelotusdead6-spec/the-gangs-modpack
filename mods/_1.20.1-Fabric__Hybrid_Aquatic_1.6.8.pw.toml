@@ -3,7 +3,11 @@ filename = "[1.20.1-Fabric] Hybrid Aquatic 1.6.8.jar"
 side = "both"
 
 [download]
-url = "https://mediafilez.forgecdn.net/files/8594/172/%5B1.20.1-Fabric%5D%20Hybrid%20Aquatic%201.6.8.jar"
-hash-format = "sha1"
-hash = "77872193cfcaeeecd2426bcb400ce48185b52d54"
+url = "https://cdn.modrinth.com/data/HH4FjUqN/versions/7sKgm1YD/%5B1.20.1-Fabric%5D%20Hybrid%20Aquatic%201.6.8.jar"
+hash-format = "sha512"
+hash = "7d01a92ee4e19c93418f61065a66709acb21d48ad48f16b095875f216f6d4691ca0df7791734624ddcab744e81b8a6679ea733fc7778023c47c8bd4cbb3d86fe"
 
+[update]
+[update.modrinth]
+mod-id = "HH4FjUqN"
+version = "7sKgm1YD"
