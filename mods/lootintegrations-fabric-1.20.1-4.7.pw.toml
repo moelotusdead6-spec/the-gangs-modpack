@@ -3,6 +3,7 @@ filename = "lootintegrations-fabric-1.20.1-4.7.jar"
 side = "both"
 
 [download]
-url = "https://www.curseforge.com/minecraft/mc-mods/loot-integrations/download/6640997"
+url = "https://mediafilez.forgecdn.net/files/6640/997/lootintegrations-fabric-1.20.1-4.7.jar"
 hash-format = "sha1"
 hash = "7d8bdb6c9613f9b5b4ea2623f402c17a6d12bdb8"
+

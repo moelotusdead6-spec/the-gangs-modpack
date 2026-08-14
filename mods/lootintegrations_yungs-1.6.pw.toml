@@ -3,6 +3,7 @@ filename = "lootintegrations_yungs-1.6.jar"
 side = "both"
 
 [download]
-url = "https://www.curseforge.com/minecraft/mc-mods/yung-structures-addon-for-loot-integrations/download/8323152"
+url = "https://mediafilez.forgecdn.net/files/8323/152/lootintegrations_yungs-1.6.jar"
 hash-format = "sha1"
 hash = "a0a2a57cb89435048819be14666c2a9f8d956828"
+

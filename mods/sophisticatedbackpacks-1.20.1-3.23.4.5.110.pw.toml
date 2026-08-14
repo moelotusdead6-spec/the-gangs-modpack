@@ -3,6 +3,7 @@ filename = "sophisticatedbackpacks-1.20.1-3.23.4.5.110.jar"
 side = "both"
 
 [download]
-url = "https://www.curseforge.com/minecraft/mc-mods/sophisticated-backpacks-unofficial-fabric-port/download/7147929"
+url = "https://mediafilez.forgecdn.net/files/7147/929/sophisticatedbackpacks-1.20.1-3.23.4.5.110.jar"
 hash-format = "sha1"
 hash = "a4f49de0f9df379cb151dde440467b90e8923724"
+

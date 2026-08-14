@@ -3,6 +3,7 @@ filename = "sophisticatedcore-1.20.1-1.2.7.15.166.jar"
 side = "both"
 
 [download]
-url = "https://www.curseforge.com/minecraft/mc-mods/sophisticated-core-unofficial-fabric-port/download/7341057"
+url = "https://mediafilez.forgecdn.net/files/7341/57/sophisticatedcore-1.20.1-1.2.7.15.166.jar"
 hash-format = "sha1"
 hash = "3d32bdf672b33b90ac38dc9572f9af6a6afae82e"
+

@@ -3,6 +3,7 @@ filename = "mobscarecrow-2.3.0.jar"
 side = "both"
 
 [download]
-url = "https://www.curseforge.com/minecraft/mc-mods/mob-scarecrows/download/4810026"
+url = "https://mediafilez.forgecdn.net/files/4810/26/mobscarecrow-2.3.0.jar"
 hash-format = "sha1"
 hash = "e721e7e1308e03630ffef5e2dfcd6ac2cd82e1e9"
+

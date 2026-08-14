@@ -3,6 +3,7 @@ filename = "waystones-fabric-1.20.1-14.1.20.jar"
 side = "both"
 
 [download]
-url = "https://www.curseforge.com/minecraft/mc-mods/waystones/download/7682268"
+url = "https://mediafilez.forgecdn.net/files/7682/268/waystones-fabric-1.20.1-14.1.20.jar"
 hash-format = "sha1"
 hash = "e1a800ab1ebcd7c12f42a55d9eb728e6b4d33e21"
+

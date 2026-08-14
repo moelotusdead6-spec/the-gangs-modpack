@@ -3,6 +3,7 @@ filename = "balm-fabric-1.20.1-7.3.41.jar"
 side = "both"
 
 [download]
-url = "https://www.curseforge.com/minecraft/mc-mods/balm/download/8545381"
+url = "https://mediafilez.forgecdn.net/files/8545/381/balm-fabric-1.20.1-7.3.41.jar"
 hash-format = "sha1"
 hash = "e82b2e28b907c7ccf3d84ee47403bff2464c8234"
+

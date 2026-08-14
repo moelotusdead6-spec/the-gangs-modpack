@@ -3,6 +3,7 @@ filename = "ftb-library-fabric-2001.2.13.jar"
 side = "both"
 
 [download]
-url = "https://www.curseforge.com/minecraft/mc-mods/ftb-library-fabric/download/8226926"
+url = "https://mediafilez.forgecdn.net/files/8226/926/ftb-library-fabric-2001.2.13.jar"
 hash-format = "sha1"
 hash = "f8d8cf106b34bcc890ef7835ea73e72899df9b8d"
+

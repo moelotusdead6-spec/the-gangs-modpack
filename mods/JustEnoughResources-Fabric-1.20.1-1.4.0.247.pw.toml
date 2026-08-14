@@ -3,6 +3,7 @@ filename = "JustEnoughResources-Fabric-1.20.1-1.4.0.247.jar"
 side = "both"
 
 [download]
-url = "https://www.curseforge.com/minecraft/mc-mods/just-enough-resources-jer/download/5057223"
+url = "https://mediafilez.forgecdn.net/files/5057/223/JustEnoughResources-Fabric-1.20.1-1.4.0.247.jar"
 hash-format = "sha1"
 hash = "5377fa98f9591b33092e4c7a6f6ba773365928a8"
+
