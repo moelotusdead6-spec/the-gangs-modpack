@@ -1,0 +1,8 @@
+﻿name = "connectivity-fabric-1.20.1-7.6"
+filename = "connectivity-fabric-1.20.1-7.6.jar"
+side = "both"
+
+[download]
+url = "https://www.curseforge.com/minecraft/mc-mods/connectivity/download/7361211"
+hash-format = "sha1"
+hash = "4b23cff87b1e23edb179868ee0eb58e4d34c98b6"

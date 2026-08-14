@@ -1,0 +1,8 @@
+﻿name = "[1.20.1-Fabric] Hybrid Aquatic 1.6.8"
+filename = "[1.20.1-Fabric] Hybrid Aquatic 1.6.8.jar"
+side = "both"
+
+[download]
+url = "https://www.curseforge.com/minecraft/mc-mods/hybrid-aquatic/download/8594172"
+hash-format = "sha1"
+hash = "77872193cfcaeeecd2426bcb400ce48185b52d54"

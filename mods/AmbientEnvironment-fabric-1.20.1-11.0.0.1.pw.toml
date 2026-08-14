@@ -1,0 +1,8 @@
+﻿name = "AmbientEnvironment-fabric-1.20.1-11.0.0.1"
+filename = "AmbientEnvironment-fabric-1.20.1-11.0.0.1.jar"
+side = "both"
+
+[download]
+url = "https://www.curseforge.com/minecraft/mc-mods/ambient-environment/download/4598389"
+hash-format = "sha1"
+hash = "7f807bd19c842789275531c11e954b72580c31b0"

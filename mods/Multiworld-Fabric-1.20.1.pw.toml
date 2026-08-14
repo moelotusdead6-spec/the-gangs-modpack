@@ -1,0 +1,8 @@
+﻿name = "Multiworld-Fabric-1.20.1"
+filename = "Multiworld-Fabric-1.20.1.jar"
+side = "both"
+
+[download]
+url = "https://www.curseforge.com/minecraft/mc-mods/multiworld-mod/download/3737897"
+hash-format = "sha1"
+hash = "0442c0a14346a84243a8e9ed11a1ad245cdc1785"

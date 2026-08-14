@@ -1,0 +1,8 @@
+name = "Alex's Caves Fabric Custom Build"
+filename = "alexscaves-2.1.8.jar"
+side = "both"
+
+[download]
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/alexscaves-2.1.8.jar"
+hash-format = "sha256"
+hash = "376ce601fc19b5672e534c8523484f7ffb152b43abfafee8369d54d8391b3eff"

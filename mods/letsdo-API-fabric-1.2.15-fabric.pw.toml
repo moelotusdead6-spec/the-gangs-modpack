@@ -1,0 +1,8 @@
+﻿name = "letsdo-API-fabric-1.2.15-fabric"
+filename = "letsdo-API-fabric-1.2.15-fabric.jar"
+side = "both"
+
+[download]
+url = "https://www.curseforge.com/minecraft/mc-mods/do-api/download/5468180"
+hash-format = "sha1"
+hash = "75fe2c9ee62ed131620c0dfb4be8a9cad616eec0"

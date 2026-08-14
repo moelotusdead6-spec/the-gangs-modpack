@@ -1,0 +1,8 @@
+﻿name = "TerraBlender-fabric-1.20.1-3.0.1.10"
+filename = "TerraBlender-fabric-1.20.1-3.0.1.10.jar"
+side = "both"
+
+[download]
+url = "https://www.curseforge.com/minecraft/mc-mods/terrablender-fabric/download/6290449"
+hash-format = "sha1"
+hash = "bc61e5ac5ec75f33827b65942df6d533c8d166e3"

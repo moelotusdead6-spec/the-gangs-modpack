@@ -1,0 +1,8 @@
+﻿name = "ftb-teams-fabric-2001.3.2"
+filename = "ftb-teams-fabric-2001.3.2.jar"
+side = "both"
+
+[download]
+url = "https://www.curseforge.com/minecraft/mc-mods/ftb-teams-fabric/download/7499808"
+hash-format = "sha1"
+hash = "fcfc1afb1aef5a7878f56a09868b9b6a74bf841b"

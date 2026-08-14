@@ -1,0 +1,8 @@
+﻿name = "GuardRibbits-1.20.1-Fabric-1.0.8"
+filename = "GuardRibbits-1.20.1-Fabric-1.0.8.jar"
+side = "both"
+
+[download]
+url = "https://www.curseforge.com/minecraft/mc-mods/guard-ribbits/download/6328447"
+hash-format = "sha1"
+hash = "0892ac043f6957e2b51787b7a1a5950a600d00bd"

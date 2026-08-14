@@ -1,0 +1,8 @@
+﻿name = "cupboard-fabric-1.20.1-3.9"
+filename = "cupboard-fabric-1.20.1-3.9.jar"
+side = "both"
+
+[download]
+url = "https://www.curseforge.com/minecraft/mc-mods/cupboard/download/8481124"
+hash-format = "sha1"
+hash = "14749d724b1dc6957502addc89003f4712b60c90"

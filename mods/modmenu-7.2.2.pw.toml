@@ -1,0 +1,8 @@
+﻿name = "modmenu-7.2.2"
+filename = "modmenu-7.2.2.jar"
+side = "both"
+
+[download]
+url = "https://www.curseforge.com/minecraft/mc-mods/modmenu/download/5162837"
+hash-format = "sha1"
+hash = "099c68feeb74887cbbbd8ce9a27c6123804a2c5a"

@@ -1,0 +1,8 @@
+﻿name = "Gobber2-Fabric-1.20.1-2.9.5"
+filename = "Gobber2-Fabric-1.20.1-2.9.5.jar"
+side = "both"
+
+[download]
+url = "https://www.curseforge.com/minecraft/mc-mods/gobber-fabric/download/5279837"
+hash-format = "sha1"
+hash = "e8a6c7067560aeeddd37150e60c3fab28ce67ec9"
