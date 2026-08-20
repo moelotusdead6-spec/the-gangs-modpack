@@ -152,11 +152,6 @@ hash = "8cadedc1fc30d0724624620deb6eec40b34e082441c51f82e8500f2b73de3cba"
 metafile = true
 
 [[files]]
-file = "mods/ItemBorders-1.20.1-fabric-1.2.2.pw.toml"
-hash = "e72ea9e95f7f419eaed7c6ec0a343cb4a9cb0aedd78a0e7fc6d28e5c57b96d43"
-metafile = true
-
-[[files]]
 file = "mods/Jade-1.20-Fabric-11.13.3.pw.toml"
 hash = "0ad508b9990939adb9b4320fc7f9c106d408b308062025a3e1324ce6337370f7"
 metafile = true
