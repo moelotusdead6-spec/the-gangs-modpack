@@ -57,6 +57,10 @@ file = "artifacts/mythicmetals-ATTRIBUTION.txt"
 hash = "6149fd76cca317765b83ae2d1196879c88708985aa8bc22436ad09af5899c787"
 
 [[files]]
+file = "config/bcc.json"
+hash = "d5fe406368e27abebf69930effee725fd4836e16178da9ebcfc944d08e869733"
+
+[[files]]
 file = "config/fancymenu/assets/2025-11-20_16.49.42.png"
 hash = "d87de49f02ad72cda11adb361ed4c5217a1dc5e14751a8177089c742b8b2722b"
 
