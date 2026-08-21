@@ -229,11 +229,6 @@ hash = "0ad508b9990939adb9b4320fc7f9c106d408b308062025a3e1324ce6337370f7"
 metafile = true
 
 [[files]]
-file = "mods/JustEnoughResources-Fabric-1.20.1-1.4.0.247.pw.toml"
-hash = "c9299f2b2d99c0581d5b6fbd013ca1512c066abd62af54607653eeb755bbdab3"
-metafile = true
-
-[[files]]
 file = "mods/LegendaryTooltips-1.20.1-fabric-1.4.5.pw.toml"
 hash = "2f978a35cb8b73089d83db1372ee6109e32bec4d3b0134d7e8c79ba10ee9f8f0"
 metafile = true
