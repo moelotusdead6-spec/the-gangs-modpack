@@ -5,8 +5,12 @@ file = ".nojekyll"
 hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
+file = ".vscode/tasks.json"
+hash = "67720b5df4d5850d5d8c681ac7040f56edd6af87b07b22bb905ed1f4886dc2ba"
+
+[[files]]
 file = "ARTIFACTS.md"
-hash = "21e7b91acfe235ee80784b94501f847bf586cab21d8d4548599f55db24b2033c"
+hash = "00b6135af28ed67b7b0f1e090c5d3f105e7431f7e227993c52a8fcc435945e9a"
 
 [[files]]
 file = "README.md"
@@ -43,6 +47,10 @@ hash = "2a5e26ed9124e5c392d1ab4d1bd0e854c4db54627d491e9c7ede5268254516b5"
 [[files]]
 file = "artifacts/gangsboots-ATTRIBUTION.txt"
 hash = "de9756c83bd304ecf034a143a4de5be22cd89e6167fdcfdc29088379cad7ad8e"
+
+[[files]]
+file = "artifacts/goldclaim-1.0.0.jar"
+hash = "28670f22fd28f682aa560be9d2b71d21245961a8680bbf2a465b7c9f36cd47e4"
 
 [[files]]
 file = "artifacts/multiworld-ATTRIBUTION.txt"
@@ -90,7 +98,7 @@ hash = "3972096301d213ea4cb645f0a9ce929300249231e6f32e6f603280e79c1266b6"
 
 [[files]]
 file = "config/fancymenu/customization/title_screen_layout.txt"
-hash = "c41ef557a3bcefe806370b93bfcc5a558e8c6acc904dcd629cb8710c7314c88e"
+hash = "b1489663f1deb9957561341a5085e41eef67e9687bf8efc1513e11684aa4b997"
 
 [[files]]
 file = "config/fancymenu/customization/universal_layout.txt"
@@ -101,8 +109,40 @@ file = "config/fancymenu/options.txt"
 hash = "34a76d784b045bc3614fbc1147c3a2d4a3cd749a815df98a5120cf7015b28183"
 
 [[files]]
+file = "config/options.txt"
+hash = "eaa9d04fb56435a070d81b6d5251d7b7a74beb17cefab1496028b5f93741e39a"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_hub/data/gangs/dimension/hub.json"
+hash = "a81febddacf78089439d3fc852535990e0dbf6be3ffeb898e5ef383fe9870f97"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_hub/data/gangs/dimension_type/hub.json"
+hash = "19cbe04400d01f5e354af2f408e8c798766a80f5676e0145e0fd8e00e08b9354"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_hub/data/gangs/worldgen/biome/hub_void.json"
+hash = "2cc3fd307518505da5e330711f262592de558e8adb8bddac316f2ae06304602a"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_hub/data/gangs_hub/functions/init.mcfunction"
+hash = "8a30175a25ea53c098eb0ee0257c24c35274736676df0a2ddfc4101cf2a12965"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_hub/data/gangs_hub/functions/load.mcfunction"
+hash = "e3ffdf5de1890a7f7b00c393b1240444a586cd52c5979c02850e98536b1818f6"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_hub/data/minecraft/tags/functions/load.json"
+hash = "9c05f3c0bb11176c81a3df2734a5ecf0e6d062d2569977408ba71cac5094846d"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_hub/pack.mcmeta"
+hash = "526284fe85f7465e6a5c0103a76286480112a2cf824d3ef640758683498a051d"
+
+[[files]]
 file = "index.html"
-hash = "98252ea23a2f1d9b2144ceea429548ff9a446a15d1a9bbfcc4b3b36703aac464"
+hash = "e339803f878682c1777035a97f9845acf4d394ae6f0117b3620d8c845d6d495f"
 
 [[files]]
 file = "mods/.gitkeep"
@@ -731,6 +771,11 @@ metafile = true
 [[files]]
 file = "mods/globalpacks-fabric-1.20.1-19.3.6.pw.toml"
 hash = "ac2c3c0afb1572ba051fe83eb30f83b9fbc4f2ec98c41749d14185e5d0b9d5b6"
+metafile = true
+
+[[files]]
+file = "mods/goldclaim-direct.pw.toml"
+hash = "897361cf97ebf73b62967d991c04bb258037312d8ff9ac51ad0ba687ac19971a"
 metafile = true
 
 [[files]]
