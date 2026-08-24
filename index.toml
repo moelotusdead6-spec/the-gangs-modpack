@@ -5,10 +5,6 @@ file = ".nojekyll"
 hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
-file = ".vscode/tasks.json"
-hash = "67720b5df4d5850d5d8c681ac7040f56edd6af87b07b22bb905ed1f4886dc2ba"
-
-[[files]]
 file = "ARTIFACTS.md"
 hash = "00b6135af28ed67b7b0f1e090c5d3f105e7431f7e227993c52a8fcc435945e9a"
 
@@ -1147,7 +1143,3 @@ metafile = true
 file = "mods/zoomify-2.15.2_1.20.1.pw.toml"
 hash = "e103459b0deda63fb66ffb484dbb49d4bf81eb8b6ebcdb7ece81ecbaa8fd76b1"
 metafile = true
-
-[[files]]
-file = "sources/alexscaves-fabric-2.1.8-source.zip"
-hash = "463f5948de3b253f4e19b2aac463e938fb7fabf1c1c918145cc31262a98d5384"
