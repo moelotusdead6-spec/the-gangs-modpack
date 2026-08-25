@@ -46,7 +46,7 @@ hash = "de9756c83bd304ecf034a143a4de5be22cd89e6167fdcfdc29088379cad7ad8e"
 
 [[files]]
 file = "artifacts/goldclaim-1.0.0.jar"
-hash = "28670f22fd28f682aa560be9d2b71d21245961a8680bbf2a465b7c9f36cd47e4"
+hash = "faf48d0bb2cdee2b3aa2100bda67f15ec4d803e7d29437e198249e99b14c336d"
 
 [[files]]
 file = "artifacts/multiworld-ATTRIBUTION.txt"
@@ -114,7 +114,7 @@ hash = "a81febddacf78089439d3fc852535990e0dbf6be3ffeb898e5ef383fe9870f97"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_hub/data/gangs/dimension_type/hub.json"
-hash = "19cbe04400d01f5e354af2f408e8c798766a80f5676e0145e0fd8e00e08b9354"
+hash = "078258528e2c834326eba89434bc1e1b67c28fd98e4df0d85b5e0ee272b4bdf9"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_hub/data/gangs/worldgen/biome/hub_void.json"
@@ -122,7 +122,7 @@ hash = "2cc3fd307518505da5e330711f262592de558e8adb8bddac316f2ae06304602a"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_hub/data/gangs_hub/functions/init.mcfunction"
-hash = "8a30175a25ea53c098eb0ee0257c24c35274736676df0a2ddfc4101cf2a12965"
+hash = "40c6bddbd54a7f4a910c1093f93e48b9e48a367037f5eaa599949aa668bded8c"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_hub/data/gangs_hub/functions/load.mcfunction"
@@ -771,7 +771,7 @@ metafile = true
 
 [[files]]
 file = "mods/goldclaim-direct.pw.toml"
-hash = "897361cf97ebf73b62967d991c04bb258037312d8ff9ac51ad0ba687ac19971a"
+hash = "b5f08a5493e85cff20c480961e13a6f1ca161685b3824c2f7df9bc7bb41efd95"
 metafile = true
 
 [[files]]
@@ -1072,6 +1072,11 @@ metafile = true
 [[files]]
 file = "mods/spell_power-0.12.0_1.20.1.pw.toml"
 hash = "4494bc84c56a3817d65efaa536b1b2768404f704c47f88e0cadeb36373c80f54"
+metafile = true
+
+[[files]]
+file = "mods/straw-statues.pw.toml"
+hash = "17854a62e3c6e079f0925305a3e47b40272c6cbab8fcaab850da319b5904bb6b"
 metafile = true
 
 [[files]]
