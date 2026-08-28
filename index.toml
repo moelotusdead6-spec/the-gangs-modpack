@@ -6,7 +6,7 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "00b6135af28ed67b7b0f1e090c5d3f105e7431f7e227993c52a8fcc435945e9a"
+hash = "9cfae70f96a95bfdbc6e34895ec85e5061c37373e830ba0a940107fbb02b9aa1"
 
 [[files]]
 file = "README.md"
@@ -22,7 +22,7 @@ hash = "376ce601fc19b5672e534c8523484f7ffb152b43abfafee8369d54d8391b3eff"
 
 [[files]]
 file = "artifacts/amwplushies-ATTRIBUTION.txt"
-hash = "f93dd0b62df2f3a1e088f2c719694ff16cd27b016fcc65bba8cc2181c1bea247"
+hash = "79e2ce77d7acf620be3dfaadd392f7ed194078caabe7f899525fe24f77e58029"
 
 [[files]]
 file = "artifacts/amwplushies-fabric-1.20.1-4.4.01.jar"
@@ -30,7 +30,7 @@ hash = "e09ff91a882e67ce358da6a932df8ea306df9e4d9c77ac5ffa03f1994c5f0499"
 
 [[files]]
 file = "artifacts/biolith-ATTRIBUTION.txt"
-hash = "499b7074b6104c75ab9ec263d7dfaea69547c228e0ba40b6612227773894dc58"
+hash = "c972350d73e6c427284ea43c0cc220a6ce7f85e79002ac772370734439747522"
 
 [[files]]
 file = "artifacts/biolith-fabric-1.0.1-beta.1.jar"
@@ -42,7 +42,7 @@ hash = "2a5e26ed9124e5c392d1ab4d1bd0e854c4db54627d491e9c7ede5268254516b5"
 
 [[files]]
 file = "artifacts/gangsboots-ATTRIBUTION.txt"
-hash = "de9756c83bd304ecf034a143a4de5be22cd89e6167fdcfdc29088379cad7ad8e"
+hash = "5fc053aec99227affe324860c492cbaf42e24df074788fe4a03f95dbf0ca7004"
 
 [[files]]
 file = "artifacts/goldclaim-1.0.0.jar"
@@ -50,7 +50,7 @@ hash = "faf48d0bb2cdee2b3aa2100bda67f15ec4d803e7d29437e198249e99b14c336d"
 
 [[files]]
 file = "artifacts/multiworld-ATTRIBUTION.txt"
-hash = "44088dc94a7cd0b3991756e7750004412445e3bf2588c5e29c03500974704d11"
+hash = "cd4b909eeda690207e73b52f99b89ccea4649ec8f2f95bd1ed8521d847e69cf7"
 
 [[files]]
 file = "artifacts/mythicmetals-0.19.12+1.20.1.jar"
@@ -58,11 +58,15 @@ hash = "c7fa3f3bcab2329bacb3fd4abd1e1445c736a3f5c64994f115743fa2fff70215"
 
 [[files]]
 file = "artifacts/mythicmetals-ATTRIBUTION.txt"
-hash = "6149fd76cca317765b83ae2d1196879c88708985aa8bc22436ad09af5899c787"
+hash = "b9eed99cf6b1e4e9ffef7fe83851e06086bd0a401dd2ffb7c7f95a3d4e65ad0b"
+
+[[files]]
+file = "artifacts/rankbadges-1.0.0.jar"
+hash = "a1a283532933a1d3e70ed53e8bd1146ed49dfe231619343e2d968d705420513f"
 
 [[files]]
 file = "config/bcc.json"
-hash = "d5fe406368e27abebf69930effee725fd4836e16178da9ebcfc944d08e869733"
+hash = "882743871a6ab65ff81a77819079462390240baec6d3964681c8ed7652a43be8"
 
 [[files]]
 file = "config/fancymenu/assets/2025-11-20_16.49.42.png"
@@ -82,7 +86,7 @@ hash = "0dc9fdad27975617c8b0777ac0a5a775785f4b07814fdc2e80d41aac7f3a8d03"
 
 [[files]]
 file = "config/fancymenu/customizablemenus.txt"
-hash = "766a3c8556b1c4fef89f089b1bc413637840f81e75ccbad4886142ddc6a122af"
+hash = "4bb5ea35978dcc0b04aa0fa143549432d4f89b6feda8cd470723d2dcb7fe843e"
 
 [[files]]
 file = "config/fancymenu/customization/join_multiplayer_screen_layout.txt"
@@ -106,7 +110,7 @@ hash = "34a76d784b045bc3614fbc1147c3a2d4a3cd749a815df98a5120cf7015b28183"
 
 [[files]]
 file = "config/options.txt"
-hash = "eaa9d04fb56435a070d81b6d5251d7b7a74beb17cefab1496028b5f93741e39a"
+hash = "f63349c62517c2cad61300512de96e0ce8abab8d344a7f327129b2feef14ff37"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_hub/data/gangs/dimension/hub.json"
@@ -286,7 +290,7 @@ metafile = true
 
 [[files]]
 file = "mods/Multiworld-Fabric-1.20.1.pw.toml"
-hash = "d9af2ad0a5669ce32aa583b57ff1330eed1c8566c46a3fa7893d79b71237d0f2"
+hash = "812568fc51b2524354318cefa22e21f58e195dd01b3fedf447ebaafaa7f80c52"
 metafile = true
 
 [[files]]
@@ -491,7 +495,7 @@ metafile = true
 
 [[files]]
 file = "mods/amwplushies-fabric-1.20.1-4.4.01.pw.toml"
-hash = "9cccf7b1da2a914b81bd27232e2eb807e1212c8916021583fe44506d328c5021"
+hash = "9af1977873861d92c2e460eb05d45ffdca5a7342f264362c889cd2dc2dd991ea"
 metafile = true
 
 [[files]]
@@ -561,7 +565,7 @@ metafile = true
 
 [[files]]
 file = "mods/biolith-fabric-1.0.1-beta.1.pw.toml"
-hash = "518a90e01ccc539132c527d84ce4b76ad5b564342ddb698751f9881ef0096557"
+hash = "ec2f7ae848adcda1204e2cc24e864fbd35732f02e1f62bf5e54fcfe016972366"
 metafile = true
 
 [[files]]
@@ -771,7 +775,7 @@ metafile = true
 
 [[files]]
 file = "mods/goldclaim-direct.pw.toml"
-hash = "b5f08a5493e85cff20c480961e13a6f1ca161685b3824c2f7df9bc7bb41efd95"
+hash = "e4a932ef018a3061739a569ea7f3d378cf5499376acbf3bb158feaca28314f8d"
 metafile = true
 
 [[files]]
@@ -941,7 +945,7 @@ metafile = true
 
 [[files]]
 file = "mods/mythicmetals-0.19.12_1.20.1.pw.toml"
-hash = "d460b4081fb3fdca9e0c7d8bde23039ab0f650b20e0293925efe2cd580571098"
+hash = "7391a7bc1de0b6f734f50aa0fa4e2f22cfe9f4356747b5c92e71a81eca2cbaed"
 metafile = true
 
 [[files]]
@@ -992,6 +996,11 @@ metafile = true
 [[files]]
 file = "mods/porting_lib-2.3.15_1.20.1.pw.toml"
 hash = "017067aca05afc58da183512636560414bc84c3782db716800c0fd2fbeb21857"
+metafile = true
+
+[[files]]
+file = "mods/rankbadges-direct.pw.toml"
+hash = "915e0813d3de59f5e416e2b5acd75cfb071ef678c01761bd8a6365a6c02cc5f9"
 metafile = true
 
 [[files]]
@@ -1076,7 +1085,7 @@ metafile = true
 
 [[files]]
 file = "mods/straw-statues.pw.toml"
-hash = "17854a62e3c6e079f0925305a3e47b40272c6cbab8fcaab850da319b5904bb6b"
+hash = "fb1852827e74163514a20debeb7ccbbc1d23d847f1773a66acb9a1890bee676e"
 metafile = true
 
 [[files]]

@@ -1,0 +1,8 @@
+name = "Rank Badges"
+filename = "rankbadges-1.0.0.jar"
+side = "both"
+
+[download]
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/rankbadges-1.0.0.jar"
+hash-format = "sha256"
+hash = "a1a283532933a1d3e70ed53e8bd1146ed49dfe231619343e2d968d705420513f"
