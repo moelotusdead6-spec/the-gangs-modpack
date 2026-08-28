@@ -6,7 +6,7 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "9cfae70f96a95bfdbc6e34895ec85e5061c37373e830ba0a940107fbb02b9aa1"
+hash = "00b6135af28ed67b7b0f1e090c5d3f105e7431f7e227993c52a8fcc435945e9a"
 
 [[files]]
 file = "README.md"
@@ -142,7 +142,7 @@ hash = "526284fe85f7465e6a5c0103a76286480112a2cf824d3ef640758683498a051d"
 
 [[files]]
 file = "index.html"
-hash = "23ffd237ab27114891c9a81ba3c5c8155db357bd05a6e3854d739b913ff89e08"
+hash = "0b79c65b5a4a2a82adff090f3e366866e1565761453608ee525c4506301f3229"
 
 [[files]]
 file = "mods/.gitkeep"

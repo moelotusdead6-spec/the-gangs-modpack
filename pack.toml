@@ -1,12 +1,12 @@
 name = "The Gangs Modpack"
 author = "moelotusdead6-spec"
-version = "0.1.9"
+version = "0.1.10"
 pack-format = "packwiz:1.1.0"
 
 [index]
 file = "index.toml"
 hash-format = "sha256"
-hash = "f100cbabbaaad531813cd098daae795529d424c82660ec61437a1ef19a5297db"
+hash = "f618b81c988e4e9b3557d68ce7d042ca422f594a04b8c3cbaf8ac9d68974baaf"
 
 [versions]
 fabric = "0.19.3"
