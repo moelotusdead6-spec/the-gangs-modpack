@@ -6,7 +6,7 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "00b6135af28ed67b7b0f1e090c5d3f105e7431f7e227993c52a8fcc435945e9a"
+hash = "359db7ee618d4fbe1fcfd7b978d14a8edbda36cd4a02df5a48954ff254ebc24d"
 
 [[files]]
 file = "README.md"
@@ -43,6 +43,10 @@ hash = "5d3e10c05c7b06718b994ca93702fffd446f2518f993d91f714ffa9c4582d344"
 [[files]]
 file = "artifacts/gangsboots-ATTRIBUTION.txt"
 hash = "de9756c83bd304ecf034a143a4de5be22cd89e6167fdcfdc29088379cad7ad8e"
+
+[[files]]
+file = "artifacts/gangshats-1.0.0.jar"
+hash = "a3fc33ad8a4e4a3a50be692acd4ccd453301dd778589c78bfcf4ee93772bb214"
 
 [[files]]
 file = "artifacts/goldclaim-1.0.0.jar"
@@ -147,6 +151,10 @@ hash = "526284fe85f7465e6a5c0103a76286480112a2cf824d3ef640758683498a051d"
 [[files]]
 file = "config/paxi/resourcepack_load_order.json"
 hash = "d0aaf3172f34275479f0669aa5b0a94b85788ae638f3062b948ec49d31c38293"
+
+[[files]]
+file = "config/serverhats.json"
+hash = "e5e0c404117a39c26029361d154455d7a8974230ac6453ef8726af51d9a39f6d"
 
 [[files]]
 file = "index.html"
@@ -772,6 +780,11 @@ hash = "7a034bd6bd6e4a4a4c220e87924c69cf8dc68809361a153d390a7d7eb972928d"
 metafile = true
 
 [[files]]
+file = "mods/gangshats-direct.pw.toml"
+hash = "05ed0501495397dae5c0066f3c07f34833017593e532d82e16f590a3a496a773"
+metafile = true
+
+[[files]]
 file = "mods/geckolib-fabric-1.20.1-4.8.4.pw.toml"
 hash = "a21cb10566a4d75ee28a634b9bcdc68e2cd55eadce2c8119cb36683937fdd17e"
 metafile = true
@@ -1034,6 +1047,11 @@ metafile = true
 [[files]]
 file = "mods/sarosplayerplushiemod-fabric-1.20.1-1.1.pw.toml"
 hash = "223d552b066138d7c3a1e53179bf35b247dad06ea1e17b6484a7c2f4ac4b773e"
+metafile = true
+
+[[files]]
+file = "mods/server-hats-0.16.pw.toml"
+hash = "29a78ba8cfc8ffa097c5425de5b7215905d330546147f5da3df933675b790b1a"
 metafile = true
 
 [[files]]

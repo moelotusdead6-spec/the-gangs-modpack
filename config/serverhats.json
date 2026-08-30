@@ -1,0 +1,8 @@
+{
+  "shiftClickEquipping": false,
+  "dispenserEquipping": true,
+  "enchanting": true,
+  "mobsCanEquipHats": false,
+  "allowAllItems": true,
+  "allowedItems": []
+}

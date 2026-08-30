@@ -1,0 +1,21 @@
+{
+	"replace": false,
+	"values": [
+		{
+			"id": "#a_man_with_plushies:plushies",
+			"required": false
+		},
+		{
+			"id": "#perfectplushies:plushies",
+			"required": false
+		},
+		{
+			"id": "#sarosplayerplushiemod:plushies",
+			"required": false
+		},
+		{
+			"id": "#saros_player_plushie:plushies",
+			"required": false
+		}
+	]
+}

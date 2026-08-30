@@ -1,0 +1,13 @@
+name = "Server Hats 1.20 - 0.16"
+filename = "server-hats-0.16.jar"
+side = "server"
+
+[download]
+url = "https://cdn.modrinth.com/data/1VRzrrw9/versions/PBLEaKFE/server-hats-0.16.jar"
+hash-format = "sha512"
+hash = "299bcc12013dc2dc85affb609167b7d4f24f5e34df061adb0f477527c577276d46094b3baeaf63eac458afc9c53f31300fd0702c54ea09bd2125d69bb41924e5"
+
+[update]
+[update.modrinth]
+mod-id = "1VRzrrw9"
+version = "PBLEaKFE"

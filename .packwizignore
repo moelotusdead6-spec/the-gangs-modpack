@@ -1,3 +1,6 @@
 .vscode/
 world_archive*/
 *.zip
+sources/gangshats/
+sources/*/.gradle/
+sources/*/build/

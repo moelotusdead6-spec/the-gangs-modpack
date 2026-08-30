@@ -1,0 +1,28 @@
+{
+	"schemaVersion": 1,
+	"id": "gangshats",
+	"version": "${version}",
+	"name": "Gangs Hats",
+	"description": "Adds a /hat command and custom head-slot rendering for The Gangs Modpack.",
+	"authors": [
+		"moelotusdead6-spec"
+	],
+	"contact": {},
+	"license": "ARR",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.thegangs.gangshats.GangsHats"
+		],
+		"client": [
+			"com.thegangs.gangshats.client.GangsHatsClient"
+		]
+	},
+	"mixins": [],
+	"depends": {
+		"fabricloader": ">=0.15.0",
+		"minecraft": "~1.20.1",
+		"java": ">=17",
+		"fabric-api": "*"
+	}
+}
