@@ -66,7 +66,7 @@ hash = "b9eed99cf6b1e4e9ffef7fe83851e06086bd0a401dd2ffb7c7f95a3d4e65ad0b"
 
 [[files]]
 file = "artifacts/rankbadges-1.0.0.jar"
-hash = "5b45252edbc4856f2a7f27cf47d5a67f4688354c64546cc1e4bc8eee31217ab1"
+hash = "158157ec129dad8a56ea77d683f62933009cb037384d663097a201fa1584420f"
 
 [[files]]
 file = "config/bcc.json"
@@ -122,7 +122,7 @@ hash = "d0aaf3172f34275479f0669aa5b0a94b85788ae638f3062b948ec49d31c38293"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_fixes/data/gangs_fixes/functions/load.mcfunction"
-hash = "b72f867bfcfecbe8dbf302144552ad75555454a8394bca3caa4924831788ce03"
+hash = "111381c1687a647dcbf61fa08281f7b535831bbb798ca01bb5a0bbfae8abda10"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_fixes/data/minecraft/tags/functions/load.json"
@@ -170,7 +170,7 @@ hash = "e5e0c404117a39c26029361d154455d7a8974230ac6453ef8726af51d9a39f6d"
 
 [[files]]
 file = "index.html"
-hash = "2d9c8f39cf38b8f48709751f8c43ccef9c0f4ddf35ab34fcbbec34be69056289"
+hash = "29840f456030fa511c730da034ff37bf4126f848786394caa3b3baee323f8612"
 
 [[files]]
 file = "mods/.gitkeep"
@@ -1033,7 +1033,7 @@ metafile = true
 
 [[files]]
 file = "mods/rankbadges-direct.pw.toml"
-hash = "ed682cd4319d0780cb03e7e0765c1b8f9dfff8900e0bb3ef510dc451af639144"
+hash = "5c8dccfd490357566816be34b335b236b2731a3751c468bbb14fdb5eea89d8c6"
 metafile = true
 
 [[files]]
@@ -1169,6 +1169,11 @@ metafile = true
 [[files]]
 file = "mods/tru.e-ending-v1.1.0c.pw.toml"
 hash = "08922e86a562f4804a68c1dca7bb80c7a8b0a14372635ee81dee1538f59dbaf4"
+metafile = true
+
+[[files]]
+file = "mods/universal-graves.pw.toml"
+hash = "3850ba97b0333e8a93577e2d6352659e63bdefa295c704b18431ae233b6040e8"
 metafile = true
 
 [[files]]

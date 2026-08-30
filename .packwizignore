@@ -2,5 +2,6 @@
 world_archive*/
 *.zip
 sources/gangshats/
+sources/rankbadges/
 sources/*/.gradle/
 sources/*/build/
