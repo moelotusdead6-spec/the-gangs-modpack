@@ -1,4 +1,5 @@
 .vscode/
+.release-work/
 world_archive*/
 *.zip
 sources/gangshats/
