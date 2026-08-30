@@ -13,6 +13,7 @@ Fabric 1.20.1 companion mod for The Gangs Modpack.
 
 ## Rendering
 
-- Placeable block items render around the player head at a compact block scale.
+- Vanilla placeable block items render around the player head at a compact block scale.
+- Modded block items render through their item models to avoid incompatibilities with placed-block renderers.
 - Non-placeable items render above the player head like a crown.
 - Plushie namespaces are forced into crown rendering even when the items are placeable.

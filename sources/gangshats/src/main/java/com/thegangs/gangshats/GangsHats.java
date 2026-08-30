@@ -3,6 +3,7 @@ package com.thegangs.gangshats;
 import java.util.Objects;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.StringArgumentType;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -28,6 +29,14 @@ public class GangsHats implements ModInitializer {
 		Objects.requireNonNull(registryAccess);
 		Objects.requireNonNull(environment);
 		dispatcher.register(CommandManager.literal("hat").executes(context -> equipHat(context.getSource().getPlayer())));
+
+		// Alias for Essential Commands' /nickname; re-dispatched at runtime so registration order between mods doesn't matter.
+		dispatcher.register(CommandManager.literal("nick")
+				.executes(context -> dispatcher.execute("nickname", context.getSource()))
+				.then(CommandManager.argument("nicknameArgs", StringArgumentType.greedyString())
+						.executes(context -> dispatcher.execute(
+								"nickname " + StringArgumentType.getString(context, "nicknameArgs"),
+								context.getSource()))));
 	}
 
 	private static int equipHat(ServerPlayerEntity player) {

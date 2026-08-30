@@ -1,6 +1,7 @@
 package com.thegangs.gangshats;
 
 import java.util.Set;
+
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.RegistryKeys;
@@ -20,7 +21,9 @@ public final class HatRenderClassifier {
 		}
 
 		Identifier itemId = net.minecraft.registry.Registries.ITEM.getId(stack.getItem());
-		return stack.isIn(CROWN_RENDER_OVERRIDE) || PLUSHIE_NAMESPACES.contains(itemId.getNamespace()) || !(stack.getItem() instanceof BlockItem);
+		return stack.isIn(CROWN_RENDER_OVERRIDE) || PLUSHIE_NAMESPACES.contains(itemId.getNamespace())
+				|| (stack.getItem() instanceof BlockItem && !itemId.getNamespace().equals("minecraft"))
+				|| !(stack.getItem() instanceof BlockItem);
 	}
 
 	public static boolean shouldRenderAsPlacedBlock(ItemStack stack) {

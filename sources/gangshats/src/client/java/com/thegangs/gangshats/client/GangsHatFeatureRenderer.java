@@ -14,14 +14,22 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SkullItem;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.math.RotationAxis;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GangsHatFeatureRenderer
         extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GangsHatFeatureRenderer.class);
     private static final float BLOCK_HAT_SCALE = 0.72F;
     private static final float CROWN_HAT_SCALE = 0.55F;
+
+    // Avoids re-logging every frame when the same broken hat is worn.
+    private Item lastFailedHatItem;
 
     private final ItemRenderer itemRenderer;
     private final BlockRenderManager blockRenderManager;
@@ -46,10 +54,19 @@ public class GangsHatFeatureRenderer
         matrices.push();
         getContextModel().head.rotate(matrices);
 
-        if (HatRenderClassifier.shouldRenderAsPlacedBlock(hatStack)) {
-            renderBlockHat(matrices, vertexConsumers, light, hatStack);
-        } else if (HatRenderClassifier.shouldRenderAsCrown(hatStack)) {
-            renderCrownHat(matrices, vertexConsumers, light, player, hatStack);
+        try {
+            if (HatRenderClassifier.shouldRenderAsPlacedBlock(hatStack)) {
+                renderBlockHat(matrices, vertexConsumers, light, hatStack);
+            } else if (HatRenderClassifier.shouldRenderAsCrown(hatStack)) {
+                renderCrownHat(matrices, vertexConsumers, light, player, hatStack);
+            }
+        } catch (Exception e) {
+            // Some modded block/item models (e.g. custom BuiltinModelItemRenderer furniture) throw
+            // when rendered outside their normal block-entity context; never let that crash the client.
+            if (hatStack.getItem() != lastFailedHatItem) {
+                lastFailedHatItem = hatStack.getItem();
+                LOGGER.error("Failed to render hat item {}", Registries.ITEM.getId(hatStack.getItem()), e);
+            }
         }
 
         matrices.pop();
