@@ -18,7 +18,7 @@ hash = "d3fc5e454ee2c777a4ce85d28a4328890df4c86a6a1087446bc2babf33abfb7b"
 
 [[files]]
 file = "artifacts/alexscaves-2.1.8.jar"
-hash = "376ce601fc19b5672e534c8523484f7ffb152b43abfafee8369d54d8391b3eff"
+hash = "f748286c86f361e9ed05f5c70846d18ddd01f77ee4abfed588e45164173ba766"
 
 [[files]]
 file = "artifacts/amwplushies-ATTRIBUTION.txt"
@@ -38,7 +38,7 @@ hash = "93103bee7c55d239a65d2603543d13266509b8c9cf5e30f1297c5777dba052d7"
 
 [[files]]
 file = "artifacts/gangsboots-1.0.0.jar"
-hash = "2a5e26ed9124e5c392d1ab4d1bd0e854c4db54627d491e9c7ede5268254516b5"
+hash = "5d3e10c05c7b06718b994ca93702fffd446f2518f993d91f714ffa9c4582d344"
 
 [[files]]
 file = "artifacts/gangsboots-ATTRIBUTION.txt"
@@ -46,7 +46,7 @@ hash = "de9756c83bd304ecf034a143a4de5be22cd89e6167fdcfdc29088379cad7ad8e"
 
 [[files]]
 file = "artifacts/goldclaim-1.0.0.jar"
-hash = "faf48d0bb2cdee2b3aa2100bda67f15ec4d803e7d29437e198249e99b14c336d"
+hash = "d42a56c52ed746c0ce90d76f1cb3ca4914c13f838a6a04d92937dc8dd6b52a45"
 
 [[files]]
 file = "artifacts/multiworld-ATTRIBUTION.txt"
@@ -62,7 +62,7 @@ hash = "b9eed99cf6b1e4e9ffef7fe83851e06086bd0a401dd2ffb7c7f95a3d4e65ad0b"
 
 [[files]]
 file = "artifacts/rankbadges-1.0.0.jar"
-hash = "a1a283532933a1d3e70ed53e8bd1146ed49dfe231619343e2d968d705420513f"
+hash = "5b45252edbc4856f2a7f27cf47d5a67f4688354c64546cc1e4bc8eee31217ab1"
 
 [[files]]
 file = "config/bcc.json"
@@ -113,6 +113,10 @@ file = "config/options.txt"
 hash = "f63349c62517c2cad61300512de96e0ce8abab8d344a7f327129b2feef14ff37"
 
 [[files]]
+file = "config/paxi/datapack_load_order.json"
+hash = "d0aaf3172f34275479f0669aa5b0a94b85788ae638f3062b948ec49d31c38293"
+
+[[files]]
 file = "config/paxi/datapacks/gangs_hub/data/gangs/dimension/hub.json"
 hash = "a81febddacf78089439d3fc852535990e0dbf6be3ffeb898e5ef383fe9870f97"
 
@@ -139,6 +143,10 @@ hash = "9c05f3c0bb11176c81a3df2734a5ecf0e6d062d2569977408ba71cac5094846d"
 [[files]]
 file = "config/paxi/datapacks/gangs_hub/pack.mcmeta"
 hash = "526284fe85f7465e6a5c0103a76286480112a2cf824d3ef640758683498a051d"
+
+[[files]]
+file = "config/paxi/resourcepack_load_order.json"
+hash = "d0aaf3172f34275479f0669aa5b0a94b85788ae638f3062b948ec49d31c38293"
 
 [[files]]
 file = "index.html"
@@ -465,7 +473,7 @@ metafile = true
 
 [[files]]
 file = "mods/alexscaves-direct.pw.toml"
-hash = "95b7f2c345b6b64c65db52a63b8249f856c8e9a1be086de786b53213056d102b"
+hash = "4090b592c0fad4cedcd123188a5995c5eacf2d7206b232ef05c4df4f89257b40"
 metafile = true
 
 [[files]]
@@ -760,7 +768,7 @@ metafile = true
 
 [[files]]
 file = "mods/gangsboots-direct.pw.toml"
-hash = "cfb44b66b6f0a4a9da1e13e2165301305102cc3d4abcd3eecc7499c191cf9970"
+hash = "7a034bd6bd6e4a4a4c220e87924c69cf8dc68809361a153d390a7d7eb972928d"
 metafile = true
 
 [[files]]
@@ -775,7 +783,7 @@ metafile = true
 
 [[files]]
 file = "mods/goldclaim-direct.pw.toml"
-hash = "e4a932ef018a3061739a569ea7f3d378cf5499376acbf3bb158feaca28314f8d"
+hash = "480e2de0ded630322c41814cd9c6a60c7498cfa54ffd113081a46076388667a2"
 metafile = true
 
 [[files]]
@@ -1000,7 +1008,7 @@ metafile = true
 
 [[files]]
 file = "mods/rankbadges-direct.pw.toml"
-hash = "f94782c843d4c1a26342dc955e2a4690497c714327334dc883e7a117b9997072"
+hash = "ed682cd4319d0780cb03e7e0765c1b8f9dfff8900e0bb3ef510dc451af639144"
 metafile = true
 
 [[files]]
