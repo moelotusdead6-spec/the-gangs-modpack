@@ -19,7 +19,7 @@ S:game_intro_sound_channel = 'master';
 S:preload_resources = '';
 B:allow_game_intro_skip = 'true';
 S:game_intro_animation_name = '';
-F:game_intro_volume = '1.0';
+F:game_intro_volume = '0.5';
 S:custom_game_intro_skip_text = '';
 
 

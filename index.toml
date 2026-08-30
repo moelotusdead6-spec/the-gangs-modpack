@@ -38,7 +38,7 @@ hash = "93103bee7c55d239a65d2603543d13266509b8c9cf5e30f1297c5777dba052d7"
 
 [[files]]
 file = "artifacts/gangsboots-1.0.0.jar"
-hash = "5d3e10c05c7b06718b994ca93702fffd446f2518f993d91f714ffa9c4582d344"
+hash = "f595fab42604ebebcf48f986cad62c6fb4dee1bd4d4220b0676e6581c5511de5"
 
 [[files]]
 file = "artifacts/gangsboots-ATTRIBUTION.txt"
@@ -110,7 +110,7 @@ hash = "fac102f637be60d94ad6c8fb3df57d0a75fcb907b31be83b59b31c81680b1bd2"
 
 [[files]]
 file = "config/fancymenu/options.txt"
-hash = "34a76d784b045bc3614fbc1147c3a2d4a3cd749a815df98a5120cf7015b28183"
+hash = "c5b291c07ecfd54300872da2b36c6eb860e2b174976af1a9e88debf004a22949"
 
 [[files]]
 file = "config/options.txt"
