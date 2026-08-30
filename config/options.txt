@@ -106,7 +106,7 @@ key_key.smoothCamera:key.keyboard.unknown
 key_key.fullscreen:key.keyboard.f11
 key_key.spectatorOutlines:key.keyboard.unknown
 key_key.swapOffhand:key.keyboard.f
-key_key.saveToolbarActivator:key.keyboard.c
+key_key.saveToolbarActivator:key.keyboard.unknown
 key_key.loadToolbarActivator:key.keyboard.x
 key_key.advancements:key.keyboard.l
 key_key.hotbar.1:key.keyboard.1
@@ -125,7 +125,7 @@ key_auditory.sound_reload_key:key.keyboard.unknown
 key_keybinds.bettercombat.feint:key.keyboard.unknown
 key_keybinds.bettercombat.toggle_mine_with_weapons:key.keyboard.unknown
 key_Open Backpack:key.keyboard.b
-key_key.deeperdarker.boost:key.keyboard.b
+key_key.deeperdarker.boost:key.keyboard.unknown
 key_key.deeperdarker.transmit:key.keyboard.v
 key_key.jade.config:key.keyboard.keypad.0
 key_key.jade.show_overlay:key.keyboard.keypad.1
@@ -175,13 +175,13 @@ key_key.journeymap.fullscreen_waypoints:key.keyboard.n
 key_key.journeymap.toggle_render_waypoints_world:key.keyboard.unknown
 key_key.journeymap.fullscreen.east:key.keyboard.right
 key_key.journeymap.zoom_out:key.keyboard.minus
-key_key.journeymap.create_waypoint:key.keyboard.b
+key_key.journeymap.create_waypoint:key.keyboard.unknown
 key_key.journeymap.fullscreen.disable_buttons:key.keyboard.unknown
 key_key.journeymap.minimap_type:key.keyboard.left.bracket
-key_key.journeymap.fullscreen_create_waypoint:key.keyboard.b
+key_key.journeymap.fullscreen_create_waypoint:key.keyboard.unknown
 key_key.journeymap.fullscreen.west:key.keyboard.left
 key_key.journeymap.toggle_waypoints:key.keyboard.unknown
-key_key.journeymap.fullscreen_chat_position:key.keyboard.c
+key_key.journeymap.fullscreen_chat_position:key.keyboard.unknown
 key_key.journeymap.map_toggle_alt:key.keyboard.j
 key_key.journeymap.toggle_render_waypoints:key.keyboard.unknown
 key_key.journeymap.minimap_toggle_alt:key.keyboard.m
@@ -208,7 +208,7 @@ key_key.shouldersurfing.enter_third_person_front:key.keyboard.unknown
 key_key.shouldersurfing.enter_third_person_back:key.keyboard.unknown
 key_key.shouldersurfing.enter_shoulder_surfing:key.keyboard.unknown
 key_keybind.sophisticatedbackpacks.open_backpack:key.keyboard.b
-key_keybind.sophisticatedbackpacks.inventory_interaction:key.keyboard.c
+key_keybind.sophisticatedbackpacks.inventory_interaction:key.keyboard.unknown
 key_keybind.sophisticatedbackpacks.tool_swap:key.keyboard.unknown
 key_keybind.sophisticatedbackpacks.sort:key.mouse.middle
 key_keybind.sophisticatedbackpacks.toggle_upgrade_5:key.keyboard.unknown
@@ -226,7 +226,7 @@ key_keybindings.spell_engine.spell_hotbar_6:key.keyboard.unknown
 key_keybindings.spell_engine.spell_hotbar_7:key.keyboard.unknown
 key_keybindings.spell_engine.spell_hotbar_8:key.keyboard.unknown
 key_keybindings.spell_engine.spell_hotbar_9:key.keyboard.unknown
-key_key.toms_storage.open_terminal:key.keyboard.b
+key_key.toms_storage.open_terminal:key.keyboard.unknown
 key_zoomify.key.zoom:key.keyboard.c
 key_zoomify.key.zoom.secondary:key.keyboard.f6
 soundCategory_master:1.0
