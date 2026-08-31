@@ -50,7 +50,7 @@ menu_background {
   background_type = video
   show_background = false
   loop = false
-  volume = 1.0
+  volume = 0.5
   sound_source = master
   parallax = false
   parallax_intensity_x = 0.02
@@ -64,7 +64,7 @@ menu_background {
   background_type = video_mcef
   show_background = false
   loop = false
-  volume = 1.0
+  volume = 0.5
   sound_source = master
   parallax = false
   parallax_intensity_x = 0.02
@@ -86,7 +86,7 @@ menu_background {
   hide_video_controls = false
   loop_videos = false
   mute_media = false
-  media_volume = 1.0
+  media_volume = 0.5
 }
 
 menu_background {
