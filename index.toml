@@ -94,15 +94,15 @@ hash = "4bb5ea35978dcc0b04aa0fa143549432d4f89b6feda8cd470723d2dcb7fe843e"
 
 [[files]]
 file = "config/fancymenu/customization/join_multiplayer_screen_layout.txt"
-hash = "87a2a0cd61bc638ef1f3c196493efbd9a71b08d980e99d8ce92346a691471e5a"
+hash = "b03c53acd98e0939b65f12cbc40334615462d0f07bbac85200ef379b1fe88262"
 
 [[files]]
 file = "config/fancymenu/customization/join_multiplayer_screen_layout_1.txt"
-hash = "3972096301d213ea4cb645f0a9ce929300249231e6f32e6f603280e79c1266b6"
+hash = "dc0d52fa9c85e6c29c72c2bea250c93ce7b2eeac10720ce8ee600a31a7b72b5f"
 
 [[files]]
 file = "config/fancymenu/customization/title_screen_layout.txt"
-hash = "b1489663f1deb9957561341a5085e41eef67e9687bf8efc1513e11684aa4b997"
+hash = "a68f20424455852d2bad1c629bb327bad2f9de5bc613444dd31d51a00ea471d8"
 
 [[files]]
 file = "config/fancymenu/customization/universal_layout.txt"
@@ -110,11 +110,11 @@ hash = "fac102f637be60d94ad6c8fb3df57d0a75fcb907b31be83b59b31c81680b1bd2"
 
 [[files]]
 file = "config/fancymenu/options.txt"
-hash = "c5b291c07ecfd54300872da2b36c6eb860e2b174976af1a9e88debf004a22949"
+hash = "39c8fbcb59e108ea11a928e491fd605aced9d318c93ee343df83fe9aa45ddfd4"
 
 [[files]]
 file = "config/options.txt"
-hash = "5752b44faccff505c073f5f5f4f540ffada27cacd7ad46087da2b5b6cd91d4ef"
+hash = "62d6d92168703d9761ed7581479d0586c284c5f94136e05d32f3c5a6b67b7078"
 
 [[files]]
 file = "config/paxi/datapack_load_order.json"
