@@ -174,7 +174,7 @@ hash = "2cc3fd307518505da5e330711f262592de558e8adb8bddac316f2ae06304602a"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_hub/data/gangs_hub/functions/init.mcfunction"
-hash = "40c6bddbd54a7f4a910c1093f93e48b9e48a367037f5eaa599949aa668bded8c"
+hash = "cc2c3db5b2cc134afca14bd06a5227200c8d86203806bb5f24eabf3bf282a1bb"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_hub/data/gangs_hub/functions/load.mcfunction"
