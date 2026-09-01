@@ -1,0 +1,8 @@
+name = "FTB Ultimine"
+filename = "ftb-ultimine-fabric-2001.1.8.jar"
+side = "both"
+
+[download]
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/ftb-ultimine-fabric-2001.1.8.jar"
+hash-format = "sha256"
+hash = "c2f53d4de42bbfd5d921f94b89e4665ff913add75a226426096429d7e0751f7f"

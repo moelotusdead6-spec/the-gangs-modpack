@@ -1,1 +1,3 @@
 The-Gangs-Modpack-Prism-*.zip
+sources/*/.gradle/
+sources/*/build/

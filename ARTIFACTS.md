@@ -6,6 +6,10 @@
 
 `artifacts/gangshats-1.0.0.jar` is a first-party Gangs Hats build. Its source is maintained in `sources/gangshats`.
 
+`artifacts/gangshop-1.0.0.jar` is the server-only first-party Gang Shop build. It provides the shared Gang Bucks wallet and the server shop GUI.
+
+`artifacts/gangsales-1.0.0.jar` is the server-only first-party GangSales build. Its source is maintained in `sources/gangsales`; it requires Gang Shop and uses its Gang Bucks wallet for player-to-player sales.
+
 `artifacts/alexscaves-2.1.8.jar` is the custom Fabric build used by this pack. Its corresponding source archive is at `sources/alexscaves-fabric-2.1.8-source.zip`. The upstream Alex's Caves project is LGPL-3.0-only; the source archive and this notice are published with the modified binary to provide the required source access and license notice.
 
 Third-party mods remain downloaded from their official Modrinth or CurseForge metadata. This directory must not contain unapproved third-party binary mirrors.

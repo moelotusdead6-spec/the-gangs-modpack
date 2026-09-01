@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "gangsales",
+  "version": "${version}",
+  "name": "GangSales",
+  "description": "Player-to-player trading with Gang Bucks.",
+  "authors": [
+    "Prof_it"
+  ],
+  "license": "CC-BY-4.0",
+  "environment": "server",
+  "entrypoints": {
+    "main": [
+      "com.gangs.gangsales.GangSalesMod"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.15.11",
+    "fabric": "*",
+    "minecraft": "~1.20.1",
+    "java": ">=17",
+    "gangshop": "*"
+  }
+}

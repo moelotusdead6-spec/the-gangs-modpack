@@ -2,3 +2,4 @@
 # the file hashes packwiz refresh computes locally. Force LF for served files.
 *.toml text eol=lf
 *.txt text eol=lf
+*.md text eol=lf

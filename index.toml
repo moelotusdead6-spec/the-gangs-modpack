@@ -6,7 +6,7 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "359db7ee618d4fbe1fcfd7b978d14a8edbda36cd4a02df5a48954ff254ebc24d"
+hash = "6cb1b2eb891efd49385d274556217622da32b22675aa18a427590baaa2e4a3dc"
 
 [[files]]
 file = "README.md"
@@ -37,6 +37,14 @@ file = "artifacts/biolith-fabric-1.0.1-beta.1.jar"
 hash = "93103bee7c55d239a65d2603543d13266509b8c9cf5e30f1297c5777dba052d7"
 
 [[files]]
+file = "artifacts/ftb-ultimine-fabric-2001.1.8.jar"
+hash = "c2f53d4de42bbfd5d921f94b89e4665ff913add75a226426096429d7e0751f7f"
+
+[[files]]
+file = "artifacts/gangsales-1.0.0.jar"
+hash = "aa2f8c5783ef5860d76f17bd1e22dba1d2be40c2facbdb560d41db349512273a"
+
+[[files]]
 file = "artifacts/gangsboots-1.0.0.jar"
 hash = "f595fab42604ebebcf48f986cad62c6fb4dee1bd4d4220b0676e6581c5511de5"
 
@@ -47,6 +55,26 @@ hash = "de9756c83bd304ecf034a143a4de5be22cd89e6167fdcfdc29088379cad7ad8e"
 [[files]]
 file = "artifacts/gangshats-1.0.0.jar"
 hash = "d4b5f92d6648da1d216b1e961f59e1cfb2ce44f3077feb326c460fab85a4a622"
+
+[[files]]
+file = "artifacts/gangshop-1.0.0.jar"
+hash = "4f55178ab70f325787c2b1b2c675a2297aba6ff6498b765f801870fcfa9761db"
+
+[[files]]
+file = "artifacts/gangshop-1.0.0.pre-admin-editor-fix-20260812.jar.bak"
+hash = "c6e9d166cbd2458a4a2818414251bda65263cdca2f40634a1526150ce2a34db7"
+
+[[files]]
+file = "artifacts/gangshop-1.0.0.pre-catalog-overhaul-20260812.jar.bak"
+hash = "af5ccb4abce9d14df21fc45ab0be67817e83e407116cb6f7a4084fbe028da61e"
+
+[[files]]
+file = "artifacts/gangshop-1.0.0.pre-final-20260812.jar.bak"
+hash = "20318282b4656cb2f89646903f03719fbeb724be2e627af052d22653285d6313"
+
+[[files]]
+file = "artifacts/gangshop-1.0.0.pre-ocean-20260812.jar.bak"
+hash = "53a702adff0df723afbb59f2d9208fca47d002d9bb2ec1e626eadb28d78a643e"
 
 [[files]]
 file = "artifacts/goldclaim-1.0.0.jar"
@@ -102,7 +130,7 @@ hash = "dc0d52fa9c85e6c29c72c2bea250c93ce7b2eeac10720ce8ee600a31a7b72b5f"
 
 [[files]]
 file = "config/fancymenu/customization/title_screen_layout.txt"
-hash = "a68f20424455852d2bad1c629bb327bad2f9de5bc613444dd31d51a00ea471d8"
+hash = "f48c50c4bbe9084ae89f6729892c73253db24d4ce924567c397af9d5a1c6fab5"
 
 [[files]]
 file = "config/fancymenu/customization/universal_layout.txt"
@@ -150,7 +178,7 @@ hash = "40c6bddbd54a7f4a910c1093f93e48b9e48a367037f5eaa599949aa668bded8c"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_hub/data/gangs_hub/functions/load.mcfunction"
-hash = "e3ffdf5de1890a7f7b00c393b1240444a586cd52c5979c02850e98536b1818f6"
+hash = "3c086d7c02ee38a0e7b2aadccfbfabf205ca77dc67f3f1df9906f17cb354f297"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_hub/data/minecraft/tags/functions/load.json"
@@ -782,8 +810,18 @@ hash = "26a7a1fac54b69e0d157885f7dedde486cdb0fcfbb066aba23de58bfa7164ce4"
 metafile = true
 
 [[files]]
+file = "mods/ftb-ultimine-direct.pw.toml"
+hash = "3af041b78bc6e32ec462d5a0560404d4c95ee5d16f96cd228c642125e75c02d7"
+metafile = true
+
+[[files]]
 file = "mods/fzzy_config-0.7.6_1.20.1.pw.toml"
 hash = "2ba74627329119476e6f4346ad5d4944d23466933336e16a2775ac7b1e61e1fc"
+metafile = true
+
+[[files]]
+file = "mods/gangsales-direct.pw.toml"
+hash = "574ea58965a8ea7e5cf19e32b844a967ea54e45150dcd3706979da1781d10ec0"
 metafile = true
 
 [[files]]
@@ -794,6 +832,11 @@ metafile = true
 [[files]]
 file = "mods/gangshats-direct.pw.toml"
 hash = "30adc8e098cfdda6bb45d8282da4f7736fde50c40f7ed1934bedcaa9a9ceb8d0"
+metafile = true
+
+[[files]]
+file = "mods/gangshop-direct.pw.toml"
+hash = "919a3a9987f34a09acb77228b955cfbd86fabb13454861a95b36ee27204ac57c"
 metafile = true
 
 [[files]]
@@ -1200,3 +1243,55 @@ metafile = true
 file = "mods/zoomify-2.15.2_1.20.1.pw.toml"
 hash = "e103459b0deda63fb66ffb484dbb49d4bf81eb8b6ebcdb7ece81ecbaa8fd76b1"
 metafile = true
+
+[[files]]
+file = "sources/gangsales/build.gradle"
+hash = "b5611b0c960392f5dc900b3b91a21aa273b2a44727a140aaae00fe342fa47892"
+
+[[files]]
+file = "sources/gangsales/gradle.properties"
+hash = "30ca8496234dda3f000056c12a73c4cca30bca908db19eeff588e56081025d1f"
+
+[[files]]
+file = "sources/gangsales/gradle/wrapper/gradle-wrapper.jar"
+hash = "cb0da6751c2b753a16ac168bb354870ebb1e162e9083f116729cec9c781156b8"
+
+[[files]]
+file = "sources/gangsales/gradle/wrapper/gradle-wrapper.properties"
+hash = "aef20d5786335d9ee67f7175c47aadbe686bf9fd688e691ea1b53a490e16213d"
+
+[[files]]
+file = "sources/gangsales/gradlew.bat"
+hash = "e54283c0f86074fa408c1161d08ef8f63992323a8c940c66f3626e8abc5bd8cc"
+
+[[files]]
+file = "sources/gangsales/settings.gradle"
+hash = "5be935573db3bff2315c2d9e7efb7073c16c543838fb32eea6e3c2cbb3143e6a"
+
+[[files]]
+file = "sources/gangsales/src/main/java/com/gangs/gangsales/GangSalesCommands.java"
+hash = "8413209813b5c8e38ae9c3bbd4d32c99f1fce6be5743df9ae87add02f64f9245"
+
+[[files]]
+file = "sources/gangsales/src/main/java/com/gangs/gangsales/GangSalesGui.java"
+hash = "9e828a5bbf65d16c9859d82841f00ff8ee8c62923cbbb61346d94b8f748f353e"
+
+[[files]]
+file = "sources/gangsales/src/main/java/com/gangs/gangsales/GangSalesMod.java"
+hash = "3d33fbac0913daacd7db6d52488a667b53cd684153c319c08a7c6324a9f4a72d"
+
+[[files]]
+file = "sources/gangsales/src/main/java/com/gangs/gangsales/ListingStatus.java"
+hash = "983754e1698486774829fdc63d69e8e9f809833f3387f61c4f3f29b56181b368"
+
+[[files]]
+file = "sources/gangsales/src/main/java/com/gangs/gangsales/SaleListing.java"
+hash = "3976f5a1f532500aa59b71b28d4e97f659e2d4a0018e7abb072e529a1f614203"
+
+[[files]]
+file = "sources/gangsales/src/main/java/com/gangs/gangsales/SalesStore.java"
+hash = "9114fab0897e422623a40dd17da67ae349d4f181cf94aa6d9de110f6f3b5b320"
+
+[[files]]
+file = "sources/gangsales/src/main/resources/fabric.mod.json"
+hash = "e23e7f25b3ec0c0406ab2385cfa590d05dd3e65b8324bf68ea438f07630da0ff"
