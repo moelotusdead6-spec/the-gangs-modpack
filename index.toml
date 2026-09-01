@@ -178,7 +178,7 @@ hash = "cc2c3db5b2cc134afca14bd06a5227200c8d86203806bb5f24eabf3bf282a1bb"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_hub/data/gangs_hub/functions/load.mcfunction"
-hash = "3c086d7c02ee38a0e7b2aadccfbfabf205ca77dc67f3f1df9906f17cb354f297"
+hash = "85e300291ddb4ddae3046e7a66eec10e31bfe30d5f90b0f10e39f1569a5ee390"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_hub/data/minecraft/tags/functions/load.json"

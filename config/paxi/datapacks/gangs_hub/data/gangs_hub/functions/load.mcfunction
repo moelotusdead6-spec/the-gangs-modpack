@@ -1,2 +1,2 @@
 schedule function gangs_hub:init 20t replace
-execute in gangs:hub as @e[type=minecraft:text_display,tag=gangs_hub_commands] run data modify entity @s text set value '{"color":"white","text":"Useful Commands:\n/hub /wild /rtp /shop /claim /tpa /tpahere /gs"}'
+execute in gangs:hub as @e[type=minecraft:text_display,tag=gangs_hub_commands] run data modify entity @s text set value '{"color":"white","text":"Useful Commands:\\n/hub /wild /rtp /shop /claim /tpa /tpahere /gs"}'
