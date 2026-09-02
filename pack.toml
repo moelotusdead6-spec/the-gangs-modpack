@@ -1,6 +1,6 @@
 name = "The Gangs Modpack"
 author = "moelotusdead6-spec"
-version = "0.1.18"
+version = "0.1.19"
 pack-format = "packwiz:1.1.0"
 
 [index]
