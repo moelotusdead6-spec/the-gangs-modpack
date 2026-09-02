@@ -16,6 +16,9 @@ import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.NbtString;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
@@ -116,7 +119,20 @@ public final class GangSalesGui {
 		private ItemStack listingStack(SaleListing listing) {
 			ItemStack stack = listing.getStack();
 			stack.setCustomName(whiteText(stack.getName().getString() + " | " + listing.getPrice() + " Gang Bucks"));
+			applySaleInfo(stack, listing);
 			return stack;
+		}
+
+		private void applySaleInfo(ItemStack stack, SaleListing listing) {
+			NbtList lore = new NbtList();
+			lore.add(NbtString.of(Text.Serializer.toJson(Text.empty())));
+			lore.add(NbtString.of(Text.Serializer.toJson(whiteText("Sale Information"))));
+			lore.add(NbtString.of(Text.Serializer.toJson(whiteText("Seller: " + listing.getSellerName()))));
+			lore.add(NbtString.of(Text.Serializer.toJson(whiteText("Price: " + listing.getPrice() + " Gang Bucks"))));
+			lore.add(NbtString.of(Text.Serializer.toJson(whiteText("Amount: " + listing.getStack().getCount()))));
+			lore.add(NbtString.of(Text.Serializer.toJson(whiteText("Expires: " + DATE_TIME.format(Instant.ofEpochMilli(listing.getExpiresAt()))))));
+			NbtCompound display = stack.getOrCreateSubNbt("display");
+			display.put("Lore", lore);
 		}
 
 		private ItemStack historyStack(SaleListing listing) {

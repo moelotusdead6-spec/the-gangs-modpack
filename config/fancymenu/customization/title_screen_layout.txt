@@ -37,7 +37,6 @@ menu_background {
   parallax_intensity_y = 0.02
   invert_parallax = false
   restart_animated_on_menu_load = false
-  volume = 0.5
 }
 
 menu_background {

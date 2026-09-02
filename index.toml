@@ -42,11 +42,11 @@ hash = "c2f53d4de42bbfd5d921f94b89e4665ff913add75a226426096429d7e0751f7f"
 
 [[files]]
 file = "artifacts/gangsales-1.0.0.jar"
-hash = "aa2f8c5783ef5860d76f17bd1e22dba1d2be40c2facbdb560d41db349512273a"
+hash = "61b92c0a8184b8f96fa53540b2205bc37fdae4e2d68bb98fdd3f8a5e7d773087"
 
 [[files]]
 file = "artifacts/gangsboots-1.0.0.jar"
-hash = "f595fab42604ebebcf48f986cad62c6fb4dee1bd4d4220b0676e6581c5511de5"
+hash = "4b9bc22af1599d1250fa8410c9319437472e50d4a6238b843851db16ed6c723a"
 
 [[files]]
 file = "artifacts/gangsboots-ATTRIBUTION.txt"
@@ -58,7 +58,7 @@ hash = "d4b5f92d6648da1d216b1e961f59e1cfb2ce44f3077feb326c460fab85a4a622"
 
 [[files]]
 file = "artifacts/gangshop-1.0.0.jar"
-hash = "4f55178ab70f325787c2b1b2c675a2297aba6ff6498b765f801870fcfa9761db"
+hash = "1375e24045e153960ca32a6414927c3a413585379da82931e500fcf7ebf7f40e"
 
 [[files]]
 file = "artifacts/gangshop-1.0.0.pre-admin-editor-fix-20260812.jar.bak"
@@ -130,7 +130,7 @@ hash = "dc0d52fa9c85e6c29c72c2bea250c93ce7b2eeac10720ce8ee600a31a7b72b5f"
 
 [[files]]
 file = "config/fancymenu/customization/title_screen_layout.txt"
-hash = "f48c50c4bbe9084ae89f6729892c73253db24d4ce924567c397af9d5a1c6fab5"
+hash = "a68f20424455852d2bad1c629bb327bad2f9de5bc613444dd31d51a00ea471d8"
 
 [[files]]
 file = "config/fancymenu/customization/universal_layout.txt"
@@ -150,7 +150,7 @@ hash = "d0aaf3172f34275479f0669aa5b0a94b85788ae638f3062b948ec49d31c38293"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_fixes/data/gangs_fixes/functions/load.mcfunction"
-hash = "111381c1687a647dcbf61fa08281f7b535831bbb798ca01bb5a0bbfae8abda10"
+hash = "0711613eacf2245f47da6087a83616a7ac2b39158b45d2c5fc3d099d713f5fab"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_fixes/data/minecraft/tags/functions/load.json"
@@ -821,12 +821,12 @@ metafile = true
 
 [[files]]
 file = "mods/gangsales-direct.pw.toml"
-hash = "574ea58965a8ea7e5cf19e32b844a967ea54e45150dcd3706979da1781d10ec0"
+hash = "36ae4161ddfb9500f48978ec86431b2eebbfa83b39fa1e194cd16de6e246e1c2"
 metafile = true
 
 [[files]]
 file = "mods/gangsboots-direct.pw.toml"
-hash = "7a034bd6bd6e4a4a4c220e87924c69cf8dc68809361a153d390a7d7eb972928d"
+hash = "064db1f1f4361efe0ac675c77f5629cde10370eda798a23a76d1da942c01a594"
 metafile = true
 
 [[files]]
@@ -836,7 +836,7 @@ metafile = true
 
 [[files]]
 file = "mods/gangshop-direct.pw.toml"
-hash = "919a3a9987f34a09acb77228b955cfbd86fabb13454861a95b36ee27204ac57c"
+hash = "819b93a6865a4140bca9899128011d187bc071bea56550098f3cfe093b838ed8"
 metafile = true
 
 [[files]]
@@ -1245,6 +1245,46 @@ hash = "e103459b0deda63fb66ffb484dbb49d4bf81eb8b6ebcdb7ece81ecbaa8fd76b1"
 metafile = true
 
 [[files]]
+file = "sources/gangsales/bin/main/com/gangs/gangsales/GangSalesCommands.class"
+hash = "9b144c761f36226cd0702f28543d9882ef90e5a5c43d6357765d5b6cc49948d3"
+
+[[files]]
+file = "sources/gangsales/bin/main/com/gangs/gangsales/GangSalesGui$MenuHandler.class"
+hash = "9eb7bc91436b4ac7eff8aab02a323900215f017d61f22c9c7d664bdb3f804d3d"
+
+[[files]]
+file = "sources/gangsales/bin/main/com/gangs/gangsales/GangSalesGui$ReadOnlySlot.class"
+hash = "418388102f1b475b792f72b8d20d83a0f3eab0f965096e742a02a7ac1197f1f2"
+
+[[files]]
+file = "sources/gangsales/bin/main/com/gangs/gangsales/GangSalesGui$View.class"
+hash = "b28081fdc31208472494491fcccfc46f0ff20adba86b4afd62529590c2259154"
+
+[[files]]
+file = "sources/gangsales/bin/main/com/gangs/gangsales/GangSalesGui.class"
+hash = "1222c50c2e060cfffa74517e5c4d280a04942162001c5dce46ea5a1dfcda35f2"
+
+[[files]]
+file = "sources/gangsales/bin/main/com/gangs/gangsales/GangSalesMod.class"
+hash = "d4ffa152389137ebdd45e278906032913023fa312c1455e6933af65c52857c11"
+
+[[files]]
+file = "sources/gangsales/bin/main/com/gangs/gangsales/ListingStatus.class"
+hash = "0e0a988afabb411e251711844f5f40fcaaa995689b8937d72d8303b1fa451891"
+
+[[files]]
+file = "sources/gangsales/bin/main/com/gangs/gangsales/SaleListing.class"
+hash = "038c85d8fe231b9fed6b94ca90b92947d03ed6c7a2fc78efde8930ac42e751f9"
+
+[[files]]
+file = "sources/gangsales/bin/main/com/gangs/gangsales/SalesStore$PurchaseResult.class"
+hash = "49baf2a7a36d144f02d653d09822ea6d7002f7812256ba2fe8c73facb7c23d6c"
+
+[[files]]
+file = "sources/gangsales/bin/main/com/gangs/gangsales/SalesStore.class"
+hash = "ef0e72e96888a12524b3d12e9235d26609beb66ec121141f67f0f1c39358632c"
+
+[[files]]
 file = "sources/gangsales/build.gradle"
 hash = "b5611b0c960392f5dc900b3b91a21aa273b2a44727a140aaae00fe342fa47892"
 
@@ -1270,11 +1310,11 @@ hash = "5be935573db3bff2315c2d9e7efb7073c16c543838fb32eea6e3c2cbb3143e6a"
 
 [[files]]
 file = "sources/gangsales/src/main/java/com/gangs/gangsales/GangSalesCommands.java"
-hash = "8413209813b5c8e38ae9c3bbd4d32c99f1fce6be5743df9ae87add02f64f9245"
+hash = "21055c0d2ac2125b7f1f4605085d2781c2222c63a602fdf26a9de90e20c4bf72"
 
 [[files]]
 file = "sources/gangsales/src/main/java/com/gangs/gangsales/GangSalesGui.java"
-hash = "9e828a5bbf65d16c9859d82841f00ff8ee8c62923cbbb61346d94b8f748f353e"
+hash = "c30dad6c3f09f9c928d8dc2f01b10f5fb12daa8724e9eb765d7986607d10e679"
 
 [[files]]
 file = "sources/gangsales/src/main/java/com/gangs/gangsales/GangSalesMod.java"
@@ -1290,8 +1330,176 @@ hash = "3976f5a1f532500aa59b71b28d4e97f659e2d4a0018e7abb072e529a1f614203"
 
 [[files]]
 file = "sources/gangsales/src/main/java/com/gangs/gangsales/SalesStore.java"
-hash = "9114fab0897e422623a40dd17da67ae349d4f181cf94aa6d9de110f6f3b5b320"
+hash = "82af5abbe6640f78c76628f8827de0e6c6ee921a368fcb57bf0db692f9479eb8"
 
 [[files]]
 file = "sources/gangsales/src/main/resources/fabric.mod.json"
 hash = "e23e7f25b3ec0c0406ab2385cfa590d05dd3e65b8324bf68ea438f07630da0ff"
+
+[[files]]
+file = "sources/gangshop/build.gradle"
+hash = "d2c3cbc8e081b9e275ad28a3494aed1c48b3a99912443d6950a03ac1104a0874"
+
+[[files]]
+file = "sources/gangshop/gradle.properties"
+hash = "122518bca1d3904ca304bfb64eb4f6c80cc157c7243f074fdc2ce314f08eb68d"
+
+[[files]]
+file = "sources/gangshop/gradle/wrapper/gradle-wrapper.jar"
+hash = "cb0da6751c2b753a16ac168bb354870ebb1e162e9083f116729cec9c781156b8"
+
+[[files]]
+file = "sources/gangshop/gradle/wrapper/gradle-wrapper.properties"
+hash = "aef20d5786335d9ee67f7175c47aadbe686bf9fd688e691ea1b53a490e16213d"
+
+[[files]]
+file = "sources/gangshop/gradlew.bat"
+hash = "e54283c0f86074fa408c1161d08ef8f63992323a8c940c66f3626e8abc5bd8cc"
+
+[[files]]
+file = "sources/gangshop/settings.gradle"
+hash = "5be935573db3bff2315c2d9e7efb7073c16c543838fb32eea6e3c2cbb3143e6a"
+
+[[files]]
+file = "sources/gangshop/src/main/java/com/gangs/gangshop/GangShopMod.java"
+hash = "07a172336d7a549c3b3b960ef5486a1fbc7fafc2ea64eb605e947405753e658b"
+
+[[files]]
+file = "sources/gangshop/src/main/java/com/gangs/gangshop/command/GangShopCommands.java"
+hash = "ff2e2749a504ccf1e0f55cc8fc6e5041198d9435cbf987266772a2b976578476"
+
+[[files]]
+file = "sources/gangshop/src/main/java/com/gangs/gangshop/economy/GangBucksService.java"
+hash = "072625939bdfbc8ef912308b61593377e6ee45f3582ef3eb9bd77ee557460fd8"
+
+[[files]]
+file = "sources/gangshop/src/main/java/com/gangs/gangshop/economy/WalletStore.java"
+hash = "19ff20300e501e9d80fcced28073baeefbdf897fa164b00167dd57d868ee3ce3"
+
+[[files]]
+file = "sources/gangshop/src/main/java/com/gangs/gangshop/gui/GangShopScreenHandler.java"
+hash = "4b5cee8022f91e8c1585b1e8923e3d3ac5ee0fc12b5fa2571b3428748423e776"
+
+[[files]]
+file = "sources/gangshop/src/main/java/com/gangs/gangshop/gui/ShopGuiService.java"
+hash = "c77c51630777908a13e5c812427919851f458e918d97d9dd7080791647d95590"
+
+[[files]]
+file = "sources/gangshop/src/main/java/com/gangs/gangshop/shop/CatalogService.java"
+hash = "e1b6361e4e94df84fe3c2f39feaf188a6826a9a49ff914b5b2961026eb262c01"
+
+[[files]]
+file = "sources/gangshop/src/main/java/com/gangs/gangshop/shop/PriceConfigService.java"
+hash = "119246fbbdf8995f2a68278588767a2b5fa5a26ae461a6476278140b50b94a17"
+
+[[files]]
+file = "sources/gangshop/src/main/java/com/gangs/gangshop/shop/ShopCategory.java"
+hash = "970bdaba386e8869526eb756a336238226d0131198289d683d688a206b034d6b"
+
+[[files]]
+file = "sources/gangshop/src/main/java/com/gangs/gangshop/shop/ShopEntry.java"
+hash = "d433bc206d8b29e4d286b07d1c2306423d7937f5512b7342900eb738e91eb8df"
+
+[[files]]
+file = "sources/gangshop/src/main/resources/fabric.mod.json"
+hash = "f780d30e1932e4634b53bc0ae66ce4893dad992b997abf0fbc0d4c153bd0db79"
+
+[[files]]
+file = "tmp/cfr/cfr-0.152.jar"
+hash = "f686e8f3ded377d7bc87d216a90e9e9512df4156e75b06c655a16648ae8765b2"
+
+[[files]]
+file = "tmp/gangshop-commands-javap.txt"
+hash = "01ef1cb35f4ba7f09ccf00f2243946a1537a8fd5999a4419f0ae46c85e4b8ef5"
+
+[[files]]
+file = "tmp/gangshop-decompiled-named/com/gangs/gangshop/GangShopMod.java"
+hash = "07a172336d7a549c3b3b960ef5486a1fbc7fafc2ea64eb605e947405753e658b"
+
+[[files]]
+file = "tmp/gangshop-decompiled-named/com/gangs/gangshop/command/GangShopCommands.java"
+hash = "ff2e2749a504ccf1e0f55cc8fc6e5041198d9435cbf987266772a2b976578476"
+
+[[files]]
+file = "tmp/gangshop-decompiled-named/com/gangs/gangshop/economy/GangBucksService.java"
+hash = "072625939bdfbc8ef912308b61593377e6ee45f3582ef3eb9bd77ee557460fd8"
+
+[[files]]
+file = "tmp/gangshop-decompiled-named/com/gangs/gangshop/economy/WalletStore.java"
+hash = "beb378f0e0c4aa6f2632e34d8a0d942b571cc714c85bcecd1d7dc52d0ad109e9"
+
+[[files]]
+file = "tmp/gangshop-decompiled-named/com/gangs/gangshop/gui/GangShopScreenHandler.java"
+hash = "436d9cd6ad5e1d2b300e4f56ae8517c538b082c55c2cef27411a102b85bcc70b"
+
+[[files]]
+file = "tmp/gangshop-decompiled-named/com/gangs/gangshop/gui/ShopGuiService.java"
+hash = "ebc7fc9ed6370500eca328d7d3b89ed2748971ff68a6cd2fd26591393d154b00"
+
+[[files]]
+file = "tmp/gangshop-decompiled-named/com/gangs/gangshop/shop/CatalogService.java"
+hash = "fdbf698198257f7d4a89dff53476cf88d5af86399a0d1788f7481993d1c840d4"
+
+[[files]]
+file = "tmp/gangshop-decompiled-named/com/gangs/gangshop/shop/PriceConfigService.java"
+hash = "4daacb2bffaaca730f9a2c59a3b8570d76165983e17e052d1fcba5954cedd824"
+
+[[files]]
+file = "tmp/gangshop-decompiled-named/com/gangs/gangshop/shop/ShopCategory.java"
+hash = "7b9aa6f2d26e629529dbb3998c968be3f5271f078bfb7efecc0be414cf923314"
+
+[[files]]
+file = "tmp/gangshop-decompiled-named/com/gangs/gangshop/shop/ShopEntry.java"
+hash = "d433bc206d8b29e4d286b07d1c2306423d7937f5512b7342900eb738e91eb8df"
+
+[[files]]
+file = "tmp/gangshop-decompiled-named/summary.txt"
+hash = "ff0acfa7eeec0e160ecbea9e41f81322aaff4a30d4770440f461d49d736d9098"
+
+[[files]]
+file = "tmp/gangshop-decompiled/com/gangs/gangshop/GangShopMod.java"
+hash = "da8016c2d99e6435747dcffe61602ec4dd22a21a9a4ddf0a14838ab68b34cb08"
+
+[[files]]
+file = "tmp/gangshop-decompiled/com/gangs/gangshop/command/GangShopCommands.java"
+hash = "8ba89b28b2a23276d651b545a8362f4760602d325b8d35a5bf4c294fc9d799eb"
+
+[[files]]
+file = "tmp/gangshop-decompiled/com/gangs/gangshop/economy/GangBucksService.java"
+hash = "b36f9502f1e91684e7d7f564f63c9246d27f14d2938312e3154cf8f4e956ba82"
+
+[[files]]
+file = "tmp/gangshop-decompiled/com/gangs/gangshop/economy/WalletStore.java"
+hash = "c890986816a6a44ed39e6937d15f3cc502b3eacc06e9ada51386c9accd5cd808"
+
+[[files]]
+file = "tmp/gangshop-decompiled/com/gangs/gangshop/gui/GangShopScreenHandler.java"
+hash = "b1a8ceaa9c000cc0b912288d27690f5f442637fff1860a37ad377a80f5f654e4"
+
+[[files]]
+file = "tmp/gangshop-decompiled/com/gangs/gangshop/gui/ShopGuiService.java"
+hash = "5cd7c96c709adf53687bb6ef3fe3f8a950ab9c6a30dd48457f7765456ed802d8"
+
+[[files]]
+file = "tmp/gangshop-decompiled/com/gangs/gangshop/shop/CatalogService.java"
+hash = "8cfaf49c0741b9937779fbc90d941359d2766b81d1c94b8b6a3edf91e5a975a8"
+
+[[files]]
+file = "tmp/gangshop-decompiled/com/gangs/gangshop/shop/PriceConfigService.java"
+hash = "c5e88c69404beb237ef0f7ec35413a8a410d652741f29ccdc098d3c6bfffca43"
+
+[[files]]
+file = "tmp/gangshop-decompiled/com/gangs/gangshop/shop/ShopCategory.java"
+hash = "7b9aa6f2d26e629529dbb3998c968be3f5271f078bfb7efecc0be414cf923314"
+
+[[files]]
+file = "tmp/gangshop-decompiled/com/gangs/gangshop/shop/ShopEntry.java"
+hash = "113c5b928f1eaebdf95ff248a293767032e8ffaba91ec21f1e1c03a4d9792fce"
+
+[[files]]
+file = "tmp/gangshop-decompiled/summary.txt"
+hash = "5ec25e8eab79e12c48c081e74b538f684d1a08edd7e0e5bc66b0aff26f672de6"
+
+[[files]]
+file = "tmp/goldclaim-javap.txt"
+hash = "41fe68a04bf73b03d4b1370c80c6706d99663ba43b0b93cf272ccde116cc5f04"

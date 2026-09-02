@@ -5,4 +5,4 @@ side = "server"
 [download]
 url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/gangsales-1.0.0.jar"
 hash-format = "sha256"
-hash = "aa2f8c5783ef5860d76f17bd1e22dba1d2be40c2facbdb560d41db349512273a"
+hash = "61b92c0a8184b8f96fa53540b2205bc37fdae4e2d68bb98fdd3f8a5e7d773087"

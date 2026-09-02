@@ -8,17 +8,14 @@ import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
 
 import java.lang.reflect.Method;
 import java.util.Locale;
 import java.util.UUID;
 
 public class RankBadgesMod implements ModInitializer {
-    private static final Identifier BADGE_FONT = new Identifier("rankbadges", "badges");
     private static final String OWNER_TEAM = "rankbadges_owner";
     private static final String MOD_TEAM = "rankbadges_mod";
     private static final String PLAYER_TEAM = "rankbadges_player";
@@ -87,7 +84,7 @@ public class RankBadgesMod implements ModInitializer {
     }
 
     private enum Rank {
-        OWNER(Text.literal("\ue001 ").setStyle(Style.EMPTY.withFont(BADGE_FONT)), Formatting.BLUE),
+        OWNER(Text.literal("[owner] "), Formatting.BLUE),
         MOD(Text.literal("[mod] "), Formatting.GREEN),
         PLAYER(Text.literal("[player] "), Formatting.WHITE);
 

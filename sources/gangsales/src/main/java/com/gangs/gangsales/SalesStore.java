@@ -93,6 +93,8 @@ public final class SalesStore {
 		buyer.getInventory().markDirty();
 		GangShopMod.ECONOMY.add(listing.getSellerId(), listing.getPrice());
 		listing.complete(buyer.getUuid(), buyer.getName().getString(), System.currentTimeMillis());
+		ServerPlayerEntity seller = buyer.getServer().getPlayerManager().getPlayer(listing.getSellerId());
+		if (seller != null) seller.sendMessage(net.minecraft.text.Text.literal(buyer.getName().getString() + " has bought your " + stack.getName().getString() + " for " + listing.getPrice() + " Gang Bucks."), false);
 		save();
 		return PurchaseResult.SUCCESS;
 	}
@@ -105,7 +107,7 @@ public final class SalesStore {
 		if (!hasRoomFor(seller, stack)) return false;
 		seller.getInventory().insertStack(stack);
 		seller.getInventory().markDirty();
-		listing.claim();
+		listings.remove(listing);
 		save();
 		return true;
 	}
@@ -133,7 +135,7 @@ public final class SalesStore {
 		Iterator<SaleListing> iterator = listings.iterator();
 		while (iterator.hasNext()) {
 			SaleListing listing = iterator.next();
-			if ((listing.getStatus() == ListingStatus.SOLD || listing.getStatus() == ListingStatus.CLAIMED) && now - historyTime(listing) > HISTORY_MILLIS) iterator.remove();
+			if (listing.getStatus() == ListingStatus.CLAIMED || (listing.getStatus() == ListingStatus.SOLD && now - historyTime(listing) > HISTORY_MILLIS)) iterator.remove();
 		}
 	}
 
