@@ -431,9 +431,6 @@ public class CatalogService {
 
     private static long defaultSellPrice(Identifier id, ShopCategory category) {
         String itemId = id.toString();
-        if ("openblocks:elevator_block".equals(itemId)) {
-            return 5000L;
-        }
         if (CatalogService.isVanillaShulkerBox(id)) {
             return 5000L;
         }
@@ -466,9 +463,6 @@ public class CatalogService {
         String namespace = id.getNamespace().toLowerCase();
         String path = id.getPath().toLowerCase();
         if (!"minecraft".equals(namespace)) {
-            if ("openblocks".equals(namespace) && "elevator_block".equals(path)) {
-                return ShopCategory.CRAFTED_ITEMS;
-            }
             if (namespace.startsWith("letsdo-") || LETS_DO_NAMESPACES.contains(namespace)) {
                 return ShopCategory.forMod("letsdo", "[lets do]");
             }
