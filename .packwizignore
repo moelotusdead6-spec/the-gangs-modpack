@@ -4,5 +4,9 @@ world_archive*/
 *.zip
 sources/gangshats/
 sources/rankbadges/
+sources/gangshop/
 sources/*/.gradle/
 sources/*/build/
+sources/*/bin/
+tmp/
+artifacts/*.bak
