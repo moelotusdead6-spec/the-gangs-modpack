@@ -58,7 +58,7 @@ hash = "d4b5f92d6648da1d216b1e961f59e1cfb2ce44f3077feb326c460fab85a4a622"
 
 [[files]]
 file = "artifacts/gangshop-1.0.0.jar"
-hash = "0d7c44d32276858df9e977d886be6beb8e35ba9dbb3e5e6ff52260281290020a"
+hash = "266e209485585dc323720184d8cb86660124c642955ff983668b0b0185de6d2d"
 
 [[files]]
 file = "artifacts/gangshop-1.0.0.pre-admin-editor-fix-20260812.jar.bak"
@@ -91,6 +91,10 @@ hash = "c7fa3f3bcab2329bacb3fd4abd1e1445c736a3f5c64994f115743fa2fff70215"
 [[files]]
 file = "artifacts/mythicmetals-ATTRIBUTION.txt"
 hash = "b9eed99cf6b1e4e9ffef7fe83851e06086bd0a401dd2ffb7c7f95a3d4e65ad0b"
+
+[[files]]
+file = "artifacts/openblockselevator-0.0.3-1.20.1.jar"
+hash = "353f9a3c59e8fb6a6ba37eb2ed092306a9151b7de4037b226508c517e28ecc64"
 
 [[files]]
 file = "artifacts/rankbadges-1.0.0.jar"
@@ -836,7 +840,7 @@ metafile = true
 
 [[files]]
 file = "mods/gangshop-direct.pw.toml"
-hash = "cdbdb8c82e6d56f8134e096ff7ade1eda25891b3e82b03cc71198e5bf9c1c8f9"
+hash = "52a53cb5aac27b05b9c3e0c350b5eac0ec8c76eb1d1f2938c8d0fd6024e29699"
 metafile = true
 
 [[files]]
@@ -1037,6 +1041,11 @@ metafile = true
 [[files]]
 file = "mods/noisiumed-fabric-3.0.6_mc1.20-1.20.1.pw.toml"
 hash = "5a9b45672d7e655d01fed01683520425366178af5d4cf69cd2de0c8c0cd91b75"
+metafile = true
+
+[[files]]
+file = "mods/openblockselevator-direct.pw.toml"
+hash = "20643425a92d3c141e846e1adec2271881d21b7c89e16ffb6fdc3bd29149a1d3"
 metafile = true
 
 [[files]]

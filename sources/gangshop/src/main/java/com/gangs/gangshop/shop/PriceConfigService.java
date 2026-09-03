@@ -164,6 +164,11 @@ public class PriceConfigService {
     public long ensureSellPrice(Identifier id, ShopCategory category, long defaultSell) {
         long base;
         String key = id.toString();
+        if ("openblocks:elevator_block".equals(key)) {
+            this.itemSellPrices.put(key, 5000L);
+            this.itemBuyPrices.put(key, 5000L);
+            return 5000L;
+        }
         if ("minecraft".equals(id.getNamespace()) && ("shulker_box".equals(id.getPath()) || id.getPath().endsWith("_shulker_box"))) {
             this.itemSellPrices.put(key, 5000L);
             this.itemBuyPrices.put(key, 5000L);
@@ -188,6 +193,10 @@ public class PriceConfigService {
 
     public long ensureBuyPrice(Identifier id, long sellValue) {
         String key = id.toString();
+        if ("openblocks:elevator_block".equals(key)) {
+            this.itemBuyPrices.put(key, 5000L);
+            return 5000L;
+        }
         if ("minecraft".equals(id.getNamespace()) && ("shulker_box".equals(id.getPath()) || id.getPath().endsWith("_shulker_box"))) {
             this.itemBuyPrices.put(key, 5000L);
             return 5000L;

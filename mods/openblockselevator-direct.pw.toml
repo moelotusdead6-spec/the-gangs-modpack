@@ -1,0 +1,8 @@
+name = "Open Block Elevator Mod"
+filename = "openblockselevator-0.0.3-1.20.1.jar"
+side = "both"
+
+[download]
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/openblockselevator-0.0.3-1.20.1.jar"
+hash-format = "sha256"
+hash = "353f9a3c59e8fb6a6ba37eb2ed092306a9151b7de4037b226508c517e28ecc64"
