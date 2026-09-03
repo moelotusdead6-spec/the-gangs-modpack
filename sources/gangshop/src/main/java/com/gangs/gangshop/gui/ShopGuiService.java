@@ -101,6 +101,25 @@ public class ShopGuiService {
         this.openMainMenu(player, 0);
     }
 
+    public boolean openHeldItemForSale(ServerPlayerEntity player) {
+        ItemStack heldStack = player.getMainHandStack();
+        if (heldStack.isEmpty()) {
+            return false;
+        }
+        Identifier itemId = Registries.ITEM.getId(heldStack.getItem());
+        ShopEntry entry = this.catalog.getEntry(itemId);
+        if (entry == null) {
+            return false;
+        }
+        List<ShopEntry> entries = this.catalog.getEntries(entry.category());
+        int index = entries.indexOf(entry);
+        Session session = this.getOrCreateSession(player);
+        session.category = entry.category();
+        session.page = Math.max(0, index / 36);
+        this.openItemDetail(player, itemId, heldStack.getCount());
+        return true;
+    }
+
     private void openMainMenu(ServerPlayerEntity player, int page) {
         this.openMainMenu(player, page, false);
     }
@@ -140,9 +159,38 @@ public class ShopGuiService {
             return;
         }
         Session session = this.getOrCreateSession(player);
-        session.view = View.ADMIN_CATEGORY;
         session.adminMode = true;
-        this.openAdminCategory(player, ShopCategory.MINERALS, 0);
+        this.openAdminMenu(player, 0);
+    }
+
+    private void openAdminMenu(ServerPlayerEntity player, int page) {
+        Session session = this.getOrCreateSession(player);
+        session.view = View.ADMIN_MENU;
+        List<ShopCategory> categories = new java.util.ArrayList<>(this.catalog.categories());
+        int pageCount = Math.max(1, (int)Math.ceil((double)categories.size() / CONTENT_SLOTS.length));
+        session.menuPage = ShopGuiService.clamp(page, 0, pageCount - 1);
+        session.slotCategory.clear();
+        SimpleInventory inv = ShopGuiService.emptyMenu();
+        int start = session.menuPage * CONTENT_SLOTS.length;
+        int end = Math.min(categories.size(), start + CONTENT_SLOTS.length);
+        for (int index = start; index < end; ++index) {
+            ShopCategory category = categories.get(index);
+            int slot = CONTENT_SLOTS[index - start];
+            ItemStack categoryIcon = new ItemStack(this.iconForCategory(category));
+            Text categoryTitle = Text.literal(ShopGuiService.cap(category.getDisplayName())).formatted(Formatting.GOLD);
+            Text[] categoryLore = new Text[]{Text.literal(ShopGuiService.categorySummary(category)).formatted(Formatting.GRAY), Text.literal("Click to edit prices").formatted(Formatting.YELLOW)};
+            inv.setStack(slot, ShopGuiService.withLore(ShopGuiService.named(categoryIcon, categoryTitle), categoryLore));
+            session.slotCategory.put(slot, category);
+        }
+        if (session.menuPage > 0) {
+            inv.setStack(SLOT_PREV, ShopGuiService.named(new ItemStack(Items.ARROW), Text.literal("Previous Page").formatted(Formatting.YELLOW)));
+        }
+        if (session.menuPage < pageCount - 1) {
+            inv.setStack(SLOT_NEXT, ShopGuiService.named(new ItemStack(Items.ARROW), Text.literal("Next Page").formatted(Formatting.YELLOW)));
+        }
+        inv.setStack(SLOT_PAGE_INFO, ShopGuiService.named(new ItemStack(Items.PAPER), Text.literal("Page " + (session.menuPage + 1) + "/" + pageCount).formatted(Formatting.GOLD)));
+        inv.setStack(4, this.balanceToken(player));
+        this.open(player, Text.literal("Gang Shop Admin - Categories"), inv, this::handleAdminMenuClick);
     }
 
     private void openCategory(ServerPlayerEntity player, ShopCategory category, int page) {
@@ -164,7 +212,7 @@ public class ShopGuiService {
             ShopEntry entry = entries.get(i);
             int slot = CONTENT_SLOTS[i - start];
             ItemStack item = new ItemStack((ItemConvertible)entry.item());
-            ItemStack named = ShopGuiService.named(item, (Text)Text.literal((String)entry.id().toString()).formatted(Formatting.WHITE));
+            ItemStack named = ShopGuiService.named(item, (Text)Text.literal((String)ShopGuiService.itemName(entry.id())).formatted(Formatting.WHITE));
             named = ShopGuiService.withLore(named, new Text[]{Text.literal((String)("Sell: " + ShopGuiService.money(entry.sellPrice()) + " Gang Bucks")).formatted(Formatting.GREEN), Text.literal((String)("Buy: " + ShopGuiService.money(entry.buyPrice()) + " Gang Bucks")).formatted(Formatting.RED), Text.literal((String)"Click to open").formatted(Formatting.YELLOW)});
             inv.setStack(slot, named);
             session.slotEntry.put(slot, entry.id());
@@ -192,7 +240,7 @@ public class ShopGuiService {
         session.itemId = itemId;
         session.quantity = ShopGuiService.clamp(quantity, 1, 9999);
         SimpleInventory inv = ShopGuiService.emptyMenu();
-        ItemStack preview = ShopGuiService.named(new ItemStack((ItemConvertible)entry.item()), (Text)Text.literal((String)entry.id().toString()).formatted(Formatting.WHITE));
+        ItemStack preview = ShopGuiService.named(new ItemStack((ItemConvertible)entry.item()), (Text)Text.literal((String)ShopGuiService.itemName(entry.id())).formatted(Formatting.WHITE));
         inv.setStack(22, ShopGuiService.withLore(preview, new Text[]{Text.literal((String)("Sell each: " + ShopGuiService.money(entry.sellPrice()))).formatted(Formatting.GREEN), Text.literal((String)("Buy each: " + ShopGuiService.money(entry.buyPrice()))).formatted(Formatting.RED), Text.literal((String)"Only placeable block/decor items are listed.").formatted(Formatting.DARK_GRAY)}));
         inv.setStack(18, ShopGuiService.named(new ItemStack((ItemConvertible)Items.RED_STAINED_GLASS_PANE), (Text)Text.literal((String)"-1").formatted(Formatting.RED)));
         inv.setStack(19, ShopGuiService.named(new ItemStack((ItemConvertible)Items.RED_STAINED_GLASS_PANE), (Text)Text.literal((String)"-64").formatted(Formatting.RED)));
@@ -223,7 +271,7 @@ public class ShopGuiService {
         long total = (buyAction ? entry.buyPrice() : entry.sellPrice()) * (long)session.quantity;
         SimpleInventory inv = ShopGuiService.emptyMenu();
         ItemStack preview = ShopGuiService.named(new ItemStack((ItemConvertible)entry.item()), (Text)Text.literal((String)(buyAction ? "Confirm Buy" : "Confirm Sell")).formatted(Formatting.GOLD));
-        inv.setStack(22, ShopGuiService.withLore(preview, new Text[]{Text.literal((String)("Item: " + String.valueOf(entry.id()))).formatted(Formatting.GRAY), Text.literal((String)("Amount: " + session.quantity)).formatted(Formatting.GRAY), Text.literal((String)("Total: " + ShopGuiService.money(total) + " Gang Bucks")).formatted(Formatting.GRAY)}));
+        inv.setStack(22, ShopGuiService.withLore(preview, new Text[]{Text.literal((String)("Item: " + ShopGuiService.itemName(entry.id()))).formatted(Formatting.GRAY), Text.literal((String)("Amount: " + session.quantity)).formatted(Formatting.GRAY), Text.literal((String)("Total: " + ShopGuiService.money(total) + " Gang Bucks")).formatted(Formatting.GRAY)}));
         inv.setStack(30, ShopGuiService.named(new ItemStack((ItemConvertible)Items.LIME_STAINED_GLASS_PANE), (Text)Text.literal((String)"Accept").formatted(Formatting.GREEN)));
         inv.setStack(32, ShopGuiService.named(new ItemStack((ItemConvertible)Items.RED_STAINED_GLASS_PANE), (Text)Text.literal((String)"Cancel").formatted(Formatting.RED)));
         inv.setStack(4, this.balanceToken(player));
@@ -244,7 +292,7 @@ public class ShopGuiService {
         for (int i = start; i < end; ++i) {
             ShopEntry entry = entries.get(i);
             int slot = CONTENT_SLOTS[i - start];
-            ItemStack item = ShopGuiService.withLore(ShopGuiService.named(new ItemStack((ItemConvertible)entry.item()), (Text)Text.literal((String)entry.id().toString()).formatted(Formatting.WHITE)), new Text[]{Text.literal((String)("Sell: " + ShopGuiService.money(entry.sellPrice()) + " Gang Bucks")).formatted(Formatting.GREEN), Text.literal((String)("Buy: " + ShopGuiService.money(entry.buyPrice()) + " Gang Bucks")).formatted(Formatting.RED), Text.literal((String)"Click to edit").formatted(Formatting.YELLOW)});
+            ItemStack item = ShopGuiService.withLore(ShopGuiService.named(new ItemStack((ItemConvertible)entry.item()), (Text)Text.literal((String)ShopGuiService.itemName(entry.id())).formatted(Formatting.WHITE)), new Text[]{Text.literal((String)("Sell: " + ShopGuiService.money(entry.sellPrice()) + " Gang Bucks")).formatted(Formatting.GREEN), Text.literal((String)("Buy: " + ShopGuiService.money(entry.buyPrice()) + " Gang Bucks")).formatted(Formatting.RED), Text.literal((String)"Click to edit").formatted(Formatting.YELLOW)});
             inv.setStack(slot, item);
             session.slotEntry.put(slot, entry.id());
         }
@@ -274,7 +322,7 @@ public class ShopGuiService {
             session.adminBuy = entry.buyPrice();
         }
         SimpleInventory inv = ShopGuiService.emptyMenu();
-        inv.setStack(22, ShopGuiService.withLore(ShopGuiService.named(new ItemStack((ItemConvertible)entry.item()), (Text)Text.literal((String)entry.id().toString()).formatted(Formatting.WHITE)), new Text[]{Text.literal((String)("Sell: " + ShopGuiService.money(session.adminSell) + " Gang Bucks")).formatted(Formatting.GREEN), Text.literal((String)("Buy: " + ShopGuiService.money(session.adminBuy) + " Gang Bucks")).formatted(Formatting.RED), Text.literal((String)"Pending values update with every click").formatted(Formatting.GRAY)}));
+        inv.setStack(22, ShopGuiService.withLore(ShopGuiService.named(new ItemStack((ItemConvertible)entry.item()), (Text)Text.literal((String)ShopGuiService.itemName(entry.id())).formatted(Formatting.WHITE)), new Text[]{Text.literal((String)("Sell: " + ShopGuiService.money(session.adminSell) + " Gang Bucks")).formatted(Formatting.GREEN), Text.literal((String)("Buy: " + ShopGuiService.money(session.adminBuy) + " Gang Bucks")).formatted(Formatting.RED), Text.literal((String)"Pending values update with every click").formatted(Formatting.GRAY)}));
         for (int i = 0; i < ADMIN_PRICE_STEPS.length; ++i) {
             long step = ADMIN_PRICE_STEPS[i];
             inv.setStack(ADMIN_SELL_MINUS_SLOTS[i], ShopGuiService.adminPriceButton("Sell -" + step, session.adminSell));
@@ -420,13 +468,33 @@ public class ShopGuiService {
             return;
         }
         if (slot == 49) {
-            this.openMainMenu(player);
+            this.openAdminMenu(player, session.menuPage);
             ShopGuiService.sound(player, true);
             return;
         }
         Identifier itemId = session.slotEntry.get(slot);
         if (itemId != null) {
             this.openAdminItemDetail(player, itemId, true);
+            ShopGuiService.sound(player, true);
+        }
+    }
+
+    private void handleAdminMenuClick(ServerPlayerEntity player, int slot, SlotActionType actionType, int button) {
+        Session session = this.getOrCreateSession(player);
+        if (slot == SLOT_PREV) {
+            this.openAdminMenu(player, session.menuPage - 1);
+            ShopGuiService.sound(player, true);
+            return;
+        }
+        if (slot == SLOT_NEXT) {
+            this.openAdminMenu(player, session.menuPage + 1);
+            ShopGuiService.sound(player, true);
+            return;
+        }
+        ShopCategory category = session.slotCategory.get(slot);
+        if (category != null) {
+            session.slotCategory.clear();
+            this.openAdminCategory(player, category, 0);
             ShopGuiService.sound(player, true);
         }
     }
@@ -499,7 +567,7 @@ public class ShopGuiService {
             return;
         }
         ShopGuiService.giveOrDrop(player, entry.item(), quantity);
-        player.sendMessage((Text)Text.literal((String)("Purchased " + quantity + "x " + String.valueOf(entry.id()) + " for " + ShopGuiService.money(total) + " Gang Bucks.")).formatted(Formatting.GREEN), false);
+        player.sendMessage((Text)Text.literal((String)("Purchased " + quantity + "x " + ShopGuiService.itemName(entry.id()) + " for " + ShopGuiService.money(total) + " Gang Bucks.")).formatted(Formatting.GREEN), false);
         ShopGuiService.sound(player, true);
     }
 
@@ -522,7 +590,7 @@ public class ShopGuiService {
         }
         long total = entry.sellPrice() * (long)quantity;
         this.economy.add(player, total);
-        player.sendMessage((Text)Text.literal((String)("Sold " + quantity + "x " + String.valueOf(entry.id()) + " for " + ShopGuiService.money(total) + " Gang Bucks.")).formatted(Formatting.GREEN), false);
+        player.sendMessage((Text)Text.literal((String)("Sold " + quantity + "x " + ShopGuiService.itemName(entry.id()) + " for " + ShopGuiService.money(total) + " Gang Bucks.")).formatted(Formatting.GREEN), false);
         ShopGuiService.sound(player, true);
     }
 
@@ -575,6 +643,11 @@ public class ShopGuiService {
         return String.format("%,d", value);
     }
 
+    private static String itemName(Identifier id) {
+        String path = id.getPath();
+        return Character.toUpperCase(path.charAt(0)) + path.substring(1);
+    }
+
     private static int clamp(int value, int min, int max) {
         return Math.max(min, Math.min(max, value));
     }
@@ -607,6 +680,11 @@ public class ShopGuiService {
 
     private Item iconForCategory(ShopCategory category) {
         if (category.isModded()) {
+            if ("farmersdelight".equals(category.getId())) return ShopGuiService.itemById("farmersdelight:beetroot_crate", Items.BEETROOT);
+            if ("hybrid_aquatic".equals(category.getId())) return ShopGuiService.itemById("hybrid_aquatic:anemone", Items.SEA_PICKLE);
+            if ("chipped".equals(category.getId())) return ShopGuiService.itemById("chipped:barred_ochre_froglight", Items.OCHRE_FROGLIGHT);
+            if ("letsdo".equals(category.getId())) return ShopGuiService.itemById("brewery:barrel_main", Items.BARREL);
+            if ("nethersdelight".equals(category.getId())) return ShopGuiService.itemById("nethersdelight:hoglin_trophy", Items.NETHER_WART);
             List<ShopEntry> entries = this.catalog.getEntries(category);
             return entries.isEmpty() ? Items.ALLIUM : entries.get(0).item();
         }
@@ -614,13 +692,12 @@ public class ShopGuiService {
         if (category == ShopCategory.STONE) return Items.STONE;
         if (category == ShopCategory.MINERALS) return Items.IRON_INGOT;
         if (category == ShopCategory.REDSTONE) return Items.REDSTONE;
-        if (category == ShopCategory.FURNITURE) return ShopGuiService.itemById("another_furniture:blue_sofa", Items.BLUE_WOOL);
         if (category == ShopCategory.LIGHTING) return Items.LANTERN;
         if (category == ShopCategory.STAIRS_SLABS) return Items.STONE_STAIRS;
         if (category == ShopCategory.COLOR_MATERIALS) return Items.WHITE_WOOL;
         if (category == ShopCategory.SAND_GLASS) return Items.GLASS;
         if (category == ShopCategory.VEGETATION) return Items.OAK_LEAVES;
-        if (category == ShopCategory.OCEAN) return Items.SEA_PICKLE;
+        if (category == ShopCategory.OCEAN) return Items.FIRE_CORAL_FAN;
         if (category == ShopCategory.NETHER) return Items.NETHERRACK;
         if (category == ShopCategory.END) return Items.END_STONE;
         if (category == ShopCategory.MOB_DROPS) return Items.SKELETON_SKULL;
@@ -639,7 +716,6 @@ public class ShopGuiService {
         if (category == ShopCategory.STONE) return "Stone, deepslate, bricks, hard blocks";
         if (category == ShopCategory.MINERALS) return "Coal, flint, precious ores/forms";
         if (category == ShopCategory.REDSTONE) return "Dust, wiring, logic, automation parts";
-        if (category == ShopCategory.FURNITURE) return "Decorative furniture-style blocks";
         if (category == ShopCategory.LIGHTING) return "Torches, lanterns, lamps, candles";
         if (category == ShopCategory.STAIRS_SLABS) return "All stair and slab variants";
         if (category == ShopCategory.COLOR_MATERIALS) return "Concrete, terracotta, clay, wool, carpet";
@@ -654,7 +730,7 @@ public class ShopGuiService {
     }
 
     private void open(ServerPlayerEntity player, final Text title, final SimpleInventory inventory, final GangShopScreenHandler.SlotClickHandler clickHandler) {
-        this.open(player, title, inventory, clickHandler, false);
+        this.open(player, title, inventory, clickHandler, true);
     }
 
     private void open(ServerPlayerEntity player, final Text title, final SimpleInventory inventory, final GangShopScreenHandler.SlotClickHandler clickHandler, boolean preserveCursor) {
@@ -713,6 +789,7 @@ public class ShopGuiService {
 
     private static enum View {
         MAIN,
+        ADMIN_MENU,
         CATEGORY,
         DETAIL,
         CONFIRM,

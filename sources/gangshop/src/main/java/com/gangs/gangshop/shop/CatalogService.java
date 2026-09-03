@@ -85,6 +85,10 @@ public class CatalogService {
     private static final Set<String> HARD_DENY_EXACT_IDS = new HashSet<String>(Arrays.asList("minecraft:nether_star", "minecraft:wither_skeleton_skull", "minecraft:wither_skeleton_wall_skull", "minecraft:beacon", "minecraft:bedrock", "minecraft:barrier", "minecraft:ancient_debris", "minecraft:reinforced_deepslate", "minecraft:command_block", "minecraft:chain_command_block", "minecraft:repeating_command_block", "minecraft:jigsaw", "minecraft:light", "minecraft:spawner", "minecraft:structure_void", "minecraft:structure_block", "minecraft:dragon_head", "minecraft:dragon_wall_head", "minecraft:dragon_egg", "minecraft:sniffer_egg", "minecraft:frogspawn", "minecraft:farmland", "minecraft:dirt_path"));
     private static final Set<String> SURVIVAL_UNOBTAINABLE_VANILLA_IDS = new HashSet<String>(Arrays.asList("minecraft:bedrock", "minecraft:barrier", "minecraft:light", "minecraft:command_block", "minecraft:chain_command_block", "minecraft:repeating_command_block", "minecraft:structure_block", "minecraft:structure_void", "minecraft:jigsaw", "minecraft:spawner", "minecraft:end_portal_frame", "minecraft:end_portal", "minecraft:end_gateway", "minecraft:reinforced_deepslate", "minecraft:debug_stick"));
     private static final Set<String> VANILLA_VEGETATION_GROUND_IDS = new HashSet<String>(Arrays.asList("minecraft:grass_block", "minecraft:dirt", "minecraft:coarse_dirt", "minecraft:rooted_dirt", "minecraft:podzol", "minecraft:mycelium", "minecraft:mud", "minecraft:muddy_mangrove_roots", "minecraft:moss_block", "minecraft:moss_carpet"));
+    private static final Set<String> VANILLA_VEGETATION_IDS = new HashSet<String>(Arrays.asList("minecraft:azalea", "minecraft:flowering_azalea", "minecraft:carrot", "minecraft:carrots", "minecraft:carved_pumpkin", "minecraft:glow_berries", "minecraft:hanging_roots", "minecraft:lily_of_the_valley", "minecraft:pitcher_pod", "minecraft:potato", "minecraft:potatoes", "minecraft:pumpkin", "minecraft:pumpkin_stem", "minecraft:attached_pumpkin_stem", "minecraft:sugar_cane", "minecraft:sweet_berries", "minecraft:sweet_berry_bush"));
+    private static final Set<String> LETS_DO_NAMESPACES = new HashSet<String>(Arrays.asList("bakery", "beachparty", "brewery", "candlelight", "farm_and_charm", "herbalbrews", "meadow", "vinery"));
+    private static final Set<String> SHOP_EXCLUDED_NAMESPACES = new HashSet<String>(Arrays.asList("advancednetherite", "alexsmobs", "bosses_of_mass_destruction", "creeperoverhaul", "crittersandcompanions", "endermanoverhaul", "ftbquests", "gobber2", "lootr", "moonlight", "mythicmetals", "paladins", "runes", "spell_engine", "universal_graves", "waystones"));
+    private static final Set<String> CAMPING_BAG_IDS = new HashSet<String>(Arrays.asList("enderbag", "enderpack", "goodybag", "sheepbag", "wanderer_bag", "large_backpack", "small_backpack", "wanderer_backpack"));
     private static final Map<String, Long> MINERAL_PRICE_BY_ID = new HashMap<String, Long>();
     private final Map<ShopCategory, List<ShopEntry>> byCategory = new LinkedHashMap<ShopCategory, List<ShopEntry>>();
     private final Map<Identifier, ShopEntry> byId = new HashMap<Identifier, ShopEntry>();
@@ -114,20 +118,42 @@ public class CatalogService {
             Identifier id = Registries.ITEM.getId(item);
             if (id.getNamespace().equals("minecraft") && id.getPath().equals("air") || !this.isAllowedItem(item, id)) continue;
             category = this.detectCategory(id);
-            if (category.isModded() && !CatalogService.isFullCubeBlock(item)) continue;
             long sell = this.priceConfig.ensureSellPrice(id, category, CatalogService.defaultSellPrice(id, category));
             long buy = this.priceConfig.ensureBuyPrice(id, sell);
             ShopEntry entry = new ShopEntry(id, item, category, sell, buy);
             this.byCategory.computeIfAbsent(category, ignored -> new ArrayList<>()).add(entry);
             this.byId.put(id, entry);
         }
-        for (List<ShopEntry> entries : this.byCategory.values()) {
-            entries.sort((left, right) -> left.id().toString().compareTo(right.id().toString()));
+        for (Map.Entry<ShopCategory, List<ShopEntry>> categoryEntries : this.byCategory.entrySet()) {
+            ShopCategory category = categoryEntries.getKey();
+            List<ShopEntry> entries = categoryEntries.getValue();
+            entries.sort((left, right) -> {
+                int tierOrder = Integer.compare(this.sortTier(left, category), this.sortTier(right, category));
+                if (tierOrder != 0) {
+                    return tierOrder;
+                }
+                int pathOrder = left.id().getPath().compareToIgnoreCase(right.id().getPath());
+                return pathOrder != 0 ? pathOrder : left.id().toString().compareToIgnoreCase(right.id().toString());
+            });
         }
         this.priceConfig.savePrices();
     }
 
     private int sortTier(ShopEntry entry, ShopCategory category) {
+        String path = entry.id().getPath().toLowerCase();
+        if (category == ShopCategory.END) {
+            return CatalogService.isVanillaShulkerBox(entry.id()) ? 1 : 0;
+        }
+        if (category == ShopCategory.SAND_GLASS) {
+            return CatalogService.isSandPath(path) ? 0 : CatalogService.isGlassPath(path) ? 1 : 2;
+        }
+        if (category == ShopCategory.COLOR_MATERIALS) {
+            if (path.contains("concrete")) return 0;
+            if (path.contains("terracotta") || path.contains("clay")) return 1;
+            if (path.contains("wool")) return 2;
+            if (path.contains("carpet")) return 3;
+            return 4;
+        }
         return 0;
     }
 
@@ -217,7 +243,34 @@ public class CatalogService {
     }
 
     private boolean isAllowedItem(Item item, Identifier id) {
-        if (item.isFood()) {
+        if (SHOP_EXCLUDED_NAMESPACES.contains(id.getNamespace().toLowerCase())) {
+            return false;
+        }
+        if (item.isFood() && !(item instanceof BlockItem) && !CatalogService.isVanillaVegetation(id)) {
+            return false;
+        }
+        if ("camping".equals(id.getNamespace()) && CAMPING_BAG_IDS.contains(id.getPath())) {
+            return false;
+        }
+        if ("naturalist".equals(id.getNamespace()) && id.getPath().contains("teddy")) {
+            return false;
+        }
+        if (!"minecraft".equals(id.getNamespace()) && id.getPath().contains("banner")) {
+            return false;
+        }
+        if ("betterarcheology".equals(id.getNamespace()) && id.getPath().contains("fossil")) {
+            return false;
+        }
+        if (id.getPath().contains("suspicious")) {
+            return false;
+        }
+        if ("bettercaves".equals(id.getNamespace()) && "rare_ice".equals(id.getPath())) {
+            return false;
+        }
+        if ("minecraft:tnt".equals(id.toString()) || "minecraft:respawn_anchor".equals(id.toString())) {
+            return false;
+        }
+        if ("toms_storage".equals(id.getNamespace())) {
             return false;
         }
         if (CatalogService.isVanillaSurvivalUnobtainable(id)) {
@@ -232,6 +285,9 @@ public class CatalogService {
         if (CatalogService.isVanillaMineral(id) || CatalogService.isVanillaRedstoneItem(id) || CatalogService.isVanillaMobDrop(id)) {
             return true;
         }
+        if (CatalogService.isItemFrame(id)) {
+            return true;
+        }
         if (!"minecraft".equals(id.getNamespace()) && CatalogService.isModdedMineralVariant(id.getPath().toLowerCase())) {
             return false;
         }
@@ -244,9 +300,6 @@ public class CatalogService {
         String path = id.getPath().toLowerCase();
         if (path.contains("sword") || path.contains("shield") || path.contains("helmet") || path.contains("chestplate") || path.contains("leggings") || path.contains("boots") || path.contains("elytra") || path.contains("bow") || path.contains("crossbow") || path.contains("trident")) {
             return false;
-        }
-        if (!"minecraft".equals(id.getNamespace())) {
-            return !CatalogService.isFunctionalModdedBlock(item, id);
         }
         return true;
     }
@@ -279,7 +332,7 @@ public class CatalogService {
         if (path.contains("mob_ward") || path.contains("volcano_core") || path.contains("uranium_ore")) {
             return true;
         }
-        if (path.contains("evoker_trap") || path.contains("man_with_plushie") || path.contains("shulker_box") || path.contains("spawner")) {
+        if (path.contains("evoker_trap") || path.contains("man_with_plushie") || (path.contains("shulker_box") && !CatalogService.isVanillaShulkerBox(id)) || path.contains("spawner")) {
             return true;
         }
         if (namespace.contains("letsdo") && path.contains("standard")) {
@@ -340,12 +393,32 @@ public class CatalogService {
         return "minecraft".equals(id.getNamespace()) && VANILLA_VEGETATION_GROUND_IDS.contains(id.toString());
     }
 
+    private static boolean isVanillaVegetation(Identifier id) {
+        return "minecraft".equals(id.getNamespace()) && (VANILLA_VEGETATION_GROUND_IDS.contains(id.toString()) || VANILLA_VEGETATION_IDS.contains(id.toString()));
+    }
+
+    private static boolean isItemFrame(Identifier id) {
+        return "minecraft:item_frame".equals(id.toString()) || "minecraft:glow_item_frame".equals(id.toString());
+    }
+
+    private static boolean isVanillaShulkerBox(Identifier id) {
+        return "minecraft".equals(id.getNamespace()) && ("shulker_box".equals(id.getPath()) || id.getPath().endsWith("_shulker_box"));
+    }
+
     private static boolean isVanillaSurvivalUnobtainable(Identifier id) {
         return "minecraft".equals(id.getNamespace()) && SURVIVAL_UNOBTAINABLE_VANILLA_IDS.contains(id.toString());
     }
 
     private static boolean isVegetationPath(String path) {
-        return path.contains("leaf") || path.contains("leaves") || path.contains("grass") || path.contains("flower") || path.contains("vine") || path.contains("sapling") || path.contains("crop") || path.contains("seed") || path.contains("beans") || path.contains("bean") || path.contains("fern") || path.contains("dead_bush") || path.contains("dandelion") || path.contains("glow_lichen") || path.contains("melon") || path.contains("cactus") || path.contains("lily_pad") || path.contains("fungus") || path.contains("mushroom");
+        return path.contains("leaf") || path.contains("leaves") || path.contains("grass") || path.contains("flower") || path.contains("vine") || path.contains("sapling") || path.contains("crop") || path.contains("seed") || path.contains("beans") || path.contains("bean") || path.contains("fern") || path.contains("dead_bush") || path.contains("dandelion") || path.contains("glow_lichen") || path.contains("melon") || path.contains("cactus") || path.contains("lily_pad") || path.contains("fungus") || path.contains("mushroom") || path.contains("allium") || path.contains("daisy") || path.contains("lilac") || path.contains("orchid") || path.contains("tulip") || path.contains("poppy") || path.contains("peony") || path.contains("cornflower") || path.contains("rose") || path.contains("bluet") || path.contains("petal") || path.contains("blossom") || path.contains("sunflower") || path.contains("lavender") || path.contains("clover");
+    }
+
+    private static boolean isSandPath(String path) {
+        return path.contains("sand") || path.contains("sandstone");
+    }
+
+    private static boolean isGlassPath(String path) {
+        return path.contains("glass") || path.contains("pane");
     }
 
     private static boolean isRedstoneUtilityPath(String path) {
@@ -358,6 +431,12 @@ public class CatalogService {
 
     private static long defaultSellPrice(Identifier id, ShopCategory category) {
         String itemId = id.toString();
+        if ("openblocks:elevator_block".equals(itemId)) {
+            return 5000L;
+        }
+        if (CatalogService.isVanillaShulkerBox(id)) {
+            return 5000L;
+        }
         if ("minecraft:dirt".equals(itemId)) {
             return 2L;
         }
@@ -384,22 +463,46 @@ public class CatalogService {
     }
 
     private ShopCategory detectCategory(Identifier id) {
-        if (CatalogService.isVanillaMineral(id)) {
-            return ShopCategory.MINERALS;
-        }
         String namespace = id.getNamespace().toLowerCase();
         String path = id.getPath().toLowerCase();
         if (!"minecraft".equals(namespace)) {
-            if (namespace.startsWith("letsdo-")) {
+            if ("openblocks".equals(namespace) && "elevator_block".equals(path)) {
+                return ShopCategory.CRAFTED_ITEMS;
+            }
+            if (namespace.startsWith("letsdo-") || LETS_DO_NAMESPACES.contains(namespace)) {
                 return ShopCategory.forMod("letsdo", "[lets do]");
             }
             return ShopCategory.forMod(namespace, this.modDisplayName(namespace));
+        }
+        if (path.contains("quartz")) {
+            return ShopCategory.NETHER;
+        }
+        if (CatalogService.isVanillaMineral(id)) {
+            return ShopCategory.MINERALS;
+        }
+        if (CatalogService.isVanillaShulkerBox(id)) {
+            return ShopCategory.END;
+        }
+        if (CatalogService.isItemFrame(id)) {
+            return ShopCategory.MISC;
+        }
+        if (CatalogService.isVanillaVegetation(id) || CatalogService.isVegetationPath(path)) {
+            return ShopCategory.VEGETATION;
+        }
+        if (path.equals("tuff") || path.equals("gravel")) {
+            return ShopCategory.STONE;
+        }
+        if (path.equals("anvil") || path.equals("decorated_pot") || path.equals("jukebox")) {
+            return ShopCategory.CRAFTED_ITEMS;
         }
         if (CatalogService.isWoodPath(path)) {
             return ShopCategory.WOOD;
         }
         if (CatalogService.isStoneFamilyPath(path)) {
             return ShopCategory.STONE;
+        }
+        if (CatalogService.isFurniturePath(path)) {
+            return ShopCategory.CRAFTED_ITEMS;
         }
         if (CatalogService.isCraftedStorageOrStationPath(path) || CatalogService.isStoveFurnaceOvenPath(path)) {
             return ShopCategory.CRAFTED_ITEMS;
@@ -409,9 +512,6 @@ public class CatalogService {
         }
         if (CatalogService.isNetherPath(namespace, path)) {
             return ShopCategory.NETHER;
-        }
-        if (CatalogService.isVanillaVegetationGround(id) || CatalogService.isVegetationPath(path)) {
-            return ShopCategory.VEGETATION;
         }
         if (CatalogService.isRedstoneUtilityPath(id.getPath().toLowerCase()) || CatalogService.isVanillaRedstoneItem(id)) {
             return ShopCategory.REDSTONE;
@@ -467,7 +567,6 @@ public class CatalogService {
         if (category == ShopCategory.STAIRS_SLABS) return 12L;
         if (category == ShopCategory.COLOR_MATERIALS) return 20L;
         if (category == ShopCategory.SAND_GLASS) return 12L;
-        if (category == ShopCategory.FURNITURE) return 35L;
         if (category == ShopCategory.VEGETATION) return 15L;
         if (category == ShopCategory.OCEAN) return 20L;
         if (category == ShopCategory.NETHER || category == ShopCategory.CRAFTED_ITEMS) return 25L;

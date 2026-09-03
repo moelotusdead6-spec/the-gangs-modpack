@@ -58,7 +58,23 @@ hash = "d4b5f92d6648da1d216b1e961f59e1cfb2ce44f3077feb326c460fab85a4a622"
 
 [[files]]
 file = "artifacts/gangshop-1.0.0.jar"
-hash = "1375e24045e153960ca32a6414927c3a413585379da82931e500fcf7ebf7f40e"
+hash = "266e209485585dc323720184d8cb86660124c642955ff983668b0b0185de6d2d"
+
+[[files]]
+file = "artifacts/gangshop-1.0.0.pre-admin-editor-fix-20260812.jar.bak"
+hash = "c6e9d166cbd2458a4a2818414251bda65263cdca2f40634a1526150ce2a34db7"
+
+[[files]]
+file = "artifacts/gangshop-1.0.0.pre-catalog-overhaul-20260812.jar.bak"
+hash = "af5ccb4abce9d14df21fc45ab0be67817e83e407116cb6f7a4084fbe028da61e"
+
+[[files]]
+file = "artifacts/gangshop-1.0.0.pre-final-20260812.jar.bak"
+hash = "20318282b4656cb2f89646903f03719fbeb724be2e627af052d22653285d6313"
+
+[[files]]
+file = "artifacts/gangshop-1.0.0.pre-ocean-20260812.jar.bak"
+hash = "53a702adff0df723afbb59f2d9208fca47d002d9bb2ec1e626eadb28d78a643e"
 
 [[files]]
 file = "artifacts/goldclaim-1.0.0.jar"
@@ -75,6 +91,10 @@ hash = "c7fa3f3bcab2329bacb3fd4abd1e1445c736a3f5c64994f115743fa2fff70215"
 [[files]]
 file = "artifacts/mythicmetals-ATTRIBUTION.txt"
 hash = "b9eed99cf6b1e4e9ffef7fe83851e06086bd0a401dd2ffb7c7f95a3d4e65ad0b"
+
+[[files]]
+file = "artifacts/openblocks-1.0.0-1.20_1.20.1.jar"
+hash = "0a3ef3ac75500533b819d0de2852e5c4fc81119d43c04417e6812d0f5c232cfe"
 
 [[files]]
 file = "artifacts/rankbadges-1.0.0.jar"
@@ -280,7 +300,7 @@ metafile = true
 
 [[files]]
 file = "mods/Gobber2-Fabric-1.20.1-2.9.5.pw.toml"
-hash = "13f6d2c33a3764e4d91e221311d04c9b408e3dbe2c2ef864238dd7d01c2fb2f6"
+hash = "ee1d38e247dd2afa8102568db4bf05759e66f61a06b963fc4f457c4136a8c807"
 metafile = true
 
 [[files]]
@@ -785,7 +805,7 @@ metafile = true
 
 [[files]]
 file = "mods/ftb-quests-fabric-2001.4.22.pw.toml"
-hash = "9b688103a41070bf0ec606099b44f0c201e22eb334030e77fc06fdeb44b8ee0b"
+hash = "d57a098ce23751545f12cea1f0756afc73979fccd0721a3d3e31bc6d270a96d4"
 metafile = true
 
 [[files]]
@@ -820,7 +840,7 @@ metafile = true
 
 [[files]]
 file = "mods/gangshop-direct.pw.toml"
-hash = "819b93a6865a4140bca9899128011d187bc071bea56550098f3cfe093b838ed8"
+hash = "52a53cb5aac27b05b9c3e0c350b5eac0ec8c76eb1d1f2938c8d0fd6024e29699"
 metafile = true
 
 [[files]]
@@ -1005,7 +1025,7 @@ metafile = true
 
 [[files]]
 file = "mods/mythicmetals-0.19.12_1.20.1.pw.toml"
-hash = "d460b4081fb3fdca9e0c7d8bde23039ab0f650b20e0293925efe2cd580571098"
+hash = "7391a7bc1de0b6f734f50aa0fa4e2f22cfe9f4356747b5c92e71a81eca2cbaed"
 metafile = true
 
 [[files]]
@@ -1024,13 +1044,18 @@ hash = "5a9b45672d7e655d01fed01683520425366178af5d4cf69cd2de0c8c0cd91b75"
 metafile = true
 
 [[files]]
+file = "mods/openblocks-direct.pw.toml"
+hash = "e136781c0b30c32b2371a2480b4f5b4d303226eb841c7e367d1434cd97d9ca97"
+metafile = true
+
+[[files]]
 file = "mods/owo-lib-0.11.2_1.20.pw.toml"
 hash = "4e4c54f2ba6319bf5dace722992a985a83134ce179e5285da24ebccb48c330ae"
 metafile = true
 
 [[files]]
 file = "mods/paladins-1.4.0_1.20.1.pw.toml"
-hash = "548a6963ee113391b87a451f4114478c63a42544f3a5ef87b17222df3fbfd82c"
+hash = "cd31bc816724523ecb072dc9587787993b9e0a9e19ee5f16c43614e199583966"
 metafile = true
 
 [[files]]
@@ -1080,7 +1105,7 @@ metafile = true
 
 [[files]]
 file = "mods/runes-0.9.13_1.20.1.pw.toml"
-hash = "1bf0e21c2e4b4ff7181a89fa28f243810606e7ef9b4ce5c262c6ce154d5756bb"
+hash = "1cc6df431bab87fc6d6edceadb61a36c8476dbbccbb69e706cafca2939f660c1"
 metafile = true
 
 [[files]]
@@ -1140,7 +1165,7 @@ metafile = true
 
 [[files]]
 file = "mods/spell_engine-0.15.12_1.20.1.pw.toml"
-hash = "1d1f197e2a470ffc999e4d01b10b115894ebdb79b52c454ac93625636cec4e54"
+hash = "c1a6382462f9e3a6aee250331b4fba43cc6f0fae85a5f1d082faeaa7afa301db"
 metafile = true
 
 [[files]]
@@ -1210,7 +1235,7 @@ metafile = true
 
 [[files]]
 file = "mods/waystones-fabric-1.20.1-14.1.20.pw.toml"
-hash = "f2967c2cf15cfb34b592ba516b15c315485a3caac08c3f6c92ffbe7af10df5e4"
+hash = "b1f8e4cd3cf4821ae7f8ee786325988290c908bbd1f1eaa2acf93db9930e9070"
 metafile = true
 
 [[files]]

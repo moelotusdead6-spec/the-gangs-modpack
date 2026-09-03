@@ -11,7 +11,6 @@ public final class ShopCategory {
     public static final ShopCategory STAIRS_SLABS = vanilla("STAIRS_SLABS", "stairs & slabs");
     public static final ShopCategory COLOR_MATERIALS = vanilla("COLOR_MATERIALS", "concrete/clay/wool");
     public static final ShopCategory SAND_GLASS = vanilla("SAND_GLASS", "sand/glass");
-    public static final ShopCategory FURNITURE = vanilla("FURNITURE", "furniture");
     public static final ShopCategory VEGETATION = vanilla("VEGETATION", "vegetation");
     public static final ShopCategory OCEAN = vanilla("OCEAN", "ocean");
     public static final ShopCategory NETHER = vanilla("NETHER", "nether");
@@ -19,7 +18,7 @@ public final class ShopCategory {
     public static final ShopCategory MOB_DROPS = vanilla("MOB_DROPS", "mob drops");
     public static final ShopCategory CRAFTED_ITEMS = vanilla("CRAFTED_ITEMS", "crafted items");
     public static final ShopCategory MISC = vanilla("MISC", "misc");
-    private static final List<ShopCategory> VANILLA_CATEGORIES = List.of(WOOD, STONE, MINERALS, REDSTONE, LIGHTING, STAIRS_SLABS, COLOR_MATERIALS, SAND_GLASS, FURNITURE, VEGETATION, OCEAN, NETHER, END, MOB_DROPS, CRAFTED_ITEMS, MISC);
+    private static final List<ShopCategory> VANILLA_CATEGORIES = List.of(WOOD, STONE, MINERALS, REDSTONE, LIGHTING, STAIRS_SLABS, COLOR_MATERIALS, SAND_GLASS, VEGETATION, OCEAN, NETHER, END, MOB_DROPS, CRAFTED_ITEMS, MISC);
 
     private final String id;
     private final String displayName;
