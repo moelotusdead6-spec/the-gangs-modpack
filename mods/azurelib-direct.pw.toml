@@ -1,8 +1,8 @@
 name = "AzureLib"
-filename = "azurelib-fabric-1.20.1-3.1.12.jar"
+filename = "azurelib-fabric-1.20.1-2.0.41.jar"
 side = "both"
 
 [download]
-url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/azurelib-fabric-1.20.1-3.1.12.jar"
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/azurelib-fabric-1.20.1-2.0.41.jar"
 hash-format = "sha256"
-hash = "67a8ee6b6b21aa3524ccce48c230819638ba81078cc01fe57a6e47111e43692d"
+hash = "5618696e3af9f62da8a13c87f33ef899688664fb4486cdc954d328469affef59"
