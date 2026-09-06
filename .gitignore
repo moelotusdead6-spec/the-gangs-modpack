@@ -1,3 +1,8 @@
 The-Gangs-Modpack-Prism-*.zip
+.vscode/
+tmp/
+artifacts/*.bak*
+artifacts/gangs_hub_backup_*/
 sources/*/.gradle/
 sources/*/build/
+sources/*/bin/

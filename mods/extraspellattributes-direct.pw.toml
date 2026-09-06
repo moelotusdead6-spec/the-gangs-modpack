@@ -1,0 +1,8 @@
+name = "Extra RPG Attributes"
+filename = "extraspellattributes-1.3.2.jar"
+side = "both"
+
+[download]
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/extraspellattributes-1.3.2.jar"
+hash-format = "sha256"
+hash = "c964bf77681c6db37334f8a660d999370ae5d3af5c8096a5dd6870982cf741c3"

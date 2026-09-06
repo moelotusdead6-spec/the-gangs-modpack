@@ -6,11 +6,15 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "6cb1b2eb891efd49385d274556217622da32b22675aa18a427590baaa2e4a3dc"
+hash = "e9dc2c3ac3e8b1e0463d3a3e72aff5ed069a0a93724de2a009e63803d09af273"
 
 [[files]]
 file = "README.md"
 hash = "bfddbad21c64826aabbe1a8cea7ad4d4ff487b6cbd3cd1a2d912835a36199ce4"
+
+[[files]]
+file = "artifacts/AdaptiveTooltips-1.3.0-fabric-1.20.2.jar"
+hash = "7949b9ef4b7ea263a1b1370f7b2193b1d0c7f17b61ba953b31a02b1caf8aa1c7"
 
 [[files]]
 file = "artifacts/Multiworld-Fabric-1.20.1.jar"
@@ -29,12 +33,28 @@ file = "artifacts/amwplushies-fabric-1.20.1-4.4.01.jar"
 hash = "e09ff91a882e67ce358da6a932df8ea306df9e4d9c77ac5ffa03f1994c5f0499"
 
 [[files]]
+file = "artifacts/archers-1.3.0+1.20.1.jar"
+hash = "6bbd735427e9421fc498a76bb807eb96375697107c868163049278296b37de7e"
+
+[[files]]
+file = "artifacts/azurelib-fabric-1.20.1-3.1.12.jar"
+hash = "67a8ee6b6b21aa3524ccce48c230819638ba81078cc01fe57a6e47111e43692d"
+
+[[files]]
 file = "artifacts/biolith-ATTRIBUTION.txt"
 hash = "c972350d73e6c427284ea43c0cc220a6ce7f85e79002ac772370734439747522"
 
 [[files]]
 file = "artifacts/biolith-fabric-1.0.1-beta.1.jar"
 hash = "93103bee7c55d239a65d2603543d13266509b8c9cf5e30f1297c5777dba052d7"
+
+[[files]]
+file = "artifacts/exposure-fabric-1.20.1-1.9.20.jar"
+hash = "00b5e5371955f4f18b15f921b4830147116f5127e39f75d6cebee7dbb462274d"
+
+[[files]]
+file = "artifacts/extraspellattributes-1.3.2.jar"
+hash = "c964bf77681c6db37334f8a660d999370ae5d3af5c8096a5dd6870982cf741c3"
 
 [[files]]
 file = "artifacts/ftb-ultimine-fabric-2001.1.8.jar"
@@ -49,6 +69,10 @@ file = "artifacts/gangsboots-1.0.0.jar"
 hash = "4b9bc22af1599d1250fa8410c9319437472e50d4a6238b843851db16ed6c723a"
 
 [[files]]
+file = "artifacts/gangsboots-1.0.1.jar"
+hash = "912fc62f402ab7dd36fd82724a4a8f3dd1ef1ba29309eea0e556886e8fe43d39"
+
+[[files]]
 file = "artifacts/gangsboots-ATTRIBUTION.txt"
 hash = "de9756c83bd304ecf034a143a4de5be22cd89e6167fdcfdc29088379cad7ad8e"
 
@@ -58,27 +82,27 @@ hash = "d4b5f92d6648da1d216b1e961f59e1cfb2ce44f3077feb326c460fab85a4a622"
 
 [[files]]
 file = "artifacts/gangshop-1.0.0.jar"
-hash = "266e209485585dc323720184d8cb86660124c642955ff983668b0b0185de6d2d"
+hash = "b8c4bc499c5739ccd77dfcf3f02b8205cc838ad1e3e6fb60e0626d6d1778e44c"
 
 [[files]]
-file = "artifacts/gangshop-1.0.0.pre-admin-editor-fix-20260812.jar.bak"
-hash = "c6e9d166cbd2458a4a2818414251bda65263cdca2f40634a1526150ce2a34db7"
+file = "artifacts/goldclaim-1.0.2.jar"
+hash = "1ee3a61ce3bf20224bfbe8c86eca9697ab49820b870245e1e37b386f8a7329fa"
 
 [[files]]
-file = "artifacts/gangshop-1.0.0.pre-catalog-overhaul-20260812.jar.bak"
-hash = "af5ccb4abce9d14df21fc45ab0be67817e83e407116cb6f7a4084fbe028da61e"
+file = "artifacts/goldclaim-1.0.3.jar"
+hash = "4997f6b93032bf5aaa42561620edb3bf4977ad24b73d3dd22202cdac5c79d1f0"
 
 [[files]]
-file = "artifacts/gangshop-1.0.0.pre-final-20260812.jar.bak"
-hash = "20318282b4656cb2f89646903f03719fbeb724be2e627af052d22653285d6313"
+file = "artifacts/goldclaim-1.0.5.jar"
+hash = "86145852d68019832eed70bfcd1a90c2650b95d50819bd16b6155013da0bf959"
 
 [[files]]
-file = "artifacts/gangshop-1.0.0.pre-ocean-20260812.jar.bak"
-hash = "53a702adff0df723afbb59f2d9208fca47d002d9bb2ec1e626eadb28d78a643e"
+file = "artifacts/goldclaim-1.0.6.jar"
+hash = "5986b3b48f77666f637f1a8149474287344ca5e2318cf38e6fc24335962a6e83"
 
 [[files]]
-file = "artifacts/goldclaim-1.0.0.jar"
-hash = "d42a56c52ed746c0ce90d76f1cb3ca4914c13f838a6a04d92937dc8dd6b52a45"
+file = "artifacts/goldclaim-1.0.7.jar"
+hash = "b6e64c1cb137db64c046a08734bb42cd07f5c3a504e34044fa82e606bfcc65cf"
 
 [[files]]
 file = "artifacts/multiworld-ATTRIBUTION.txt"
@@ -97,8 +121,28 @@ file = "artifacts/openblockselevator-0.0.3-1.20.1.jar"
 hash = "353f9a3c59e8fb6a6ba37eb2ed092306a9151b7de4037b226508c517e28ecc64"
 
 [[files]]
+file = "artifacts/ranged_weapon_api-1.1.4+1.20.1.jar"
+hash = "afa0f8379aca3ca719a88b3c6c3ed8643177bf2b6dfadf8e0bf533154d6c904a"
+
+[[files]]
 file = "artifacts/rankbadges-1.0.0.jar"
 hash = "7e7e696b2cb9a633e5fb2259cb0a4ae13fa007285e94d08b186f19a27617b832"
+
+[[files]]
+file = "artifacts/rankbadges-1.0.1.jar"
+hash = "a31956628a3febfbd20b63e8643e340ebb1244d7e0f03805ac5241ad12e1fd23"
+
+[[files]]
+file = "artifacts/spellbladenext-2.4.0+1.20.1.jar"
+hash = "81ccc3a58a618649b25aa91fa24127cdca35113bdc93958cbbec6ccccdbb5181"
+
+[[files]]
+file = "artifacts/wizards-1.4.1+1.20.1.jar"
+hash = "e968f8b836716a6f6c21f6f9a44304b2aef64490c6f75bb54de9007db229aab6"
+
+[[files]]
+file = "artifacts/xercapaint-fabric-1.20.1-2.0.0.jar"
+hash = "4c75af9342a5c0d5c8ded49d92bbf2613890aeb3aac7e988a9a572b71138f850"
 
 [[files]]
 file = "config/bcc.json"
@@ -154,7 +198,7 @@ hash = "d0aaf3172f34275479f0669aa5b0a94b85788ae638f3062b948ec49d31c38293"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_fixes/data/gangs_fixes/functions/load.mcfunction"
-hash = "0711613eacf2245f47da6087a83616a7ac2b39158b45d2c5fc3d099d713f5fab"
+hash = "ba05391872e062b8b85552dad615474f7f231fa2b75d94fb0572a4480b003b40"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_fixes/data/minecraft/tags/functions/load.json"
@@ -514,6 +558,11 @@ hash = "012a6525d2df5bef1c446fc2494c683c243722aa32d3b8bf08a358a030cf4fcb"
 metafile = true
 
 [[files]]
+file = "mods/adaptive-tooltips-direct.pw.toml"
+hash = "4e88fc4841a12639f5954c381c294d3e6634f3937c91398115eac042b48662a9"
+metafile = true
+
+[[files]]
 file = "mods/additional-fishing.pw.toml"
 hash = "cae46383e63a013f4c0449c54e0293d7af309bdda3d1ae4193c9aea193f48890"
 metafile = true
@@ -564,6 +613,11 @@ hash = "3194761af5154bf796d925ea7c78a63685c7c2c8779ee699266f8c1bc5e0eeb6"
 metafile = true
 
 [[files]]
+file = "mods/archers-direct.pw.toml"
+hash = "b42680e1c871d2d48c070e29230d7d36add9ba36c3f26e9fe8140c51cb536f0b"
+metafile = true
+
+[[files]]
 file = "mods/architectury-9.2.14-fabric.pw.toml"
 hash = "a01f2f8c4fab3a19127e9983b82356934be209f611ab438f9d9a1f92efb0d3f4"
 metafile = true
@@ -581,6 +635,11 @@ metafile = true
 [[files]]
 file = "mods/auditory-0.0.6-1.20.1.pw.toml"
 hash = "5e48a085c46a8ec021e082d19cb11889945ee02fe8b04199fef7bacee366eb3b"
+metafile = true
+
+[[files]]
+file = "mods/azurelib-direct.pw.toml"
+hash = "31c0d7b7667df8d1818c8bae0798352d9bf7a7bb2c5d1452ec30c531b400af16"
 metafile = true
 
 [[files]]
@@ -734,6 +793,16 @@ hash = "27b99ec091917127c7dd9ea0ef83173cd24add2f5cde4c8b422bbdaaf433ee2a"
 metafile = true
 
 [[files]]
+file = "mods/exposure-direct.pw.toml"
+hash = "0d75db06423acf43ee2dddc2bd431a54482ca0c7639c6d5e2ed833c298d23df8"
+metafile = true
+
+[[files]]
+file = "mods/extraspellattributes-direct.pw.toml"
+hash = "77aa304e866a79bf471024d9b54d04868d2e4462feed8917a63e78541902fa12"
+metafile = true
+
+[[files]]
 file = "mods/fabric-api.pw.toml"
 hash = "5cbcd9395c1788ed7a1356e392a4483a30d903312faffd9795c6dee9afba3fac"
 metafile = true
@@ -830,7 +899,7 @@ metafile = true
 
 [[files]]
 file = "mods/gangsboots-direct.pw.toml"
-hash = "064db1f1f4361efe0ac675c77f5629cde10370eda798a23a76d1da942c01a594"
+hash = "88c7550d678052a484eaf40800ef518445ca97765cb79f0d2167f6de1d61be37"
 metafile = true
 
 [[files]]
@@ -840,7 +909,7 @@ metafile = true
 
 [[files]]
 file = "mods/gangshop-direct.pw.toml"
-hash = "52a53cb5aac27b05b9c3e0c350b5eac0ec8c76eb1d1f2938c8d0fd6024e29699"
+hash = "b18a8061c10323a09a4bed2da8e9deea11371936aab9a7e997dedcf4dd13b550"
 metafile = true
 
 [[files]]
@@ -855,7 +924,7 @@ metafile = true
 
 [[files]]
 file = "mods/goldclaim-direct.pw.toml"
-hash = "480e2de0ded630322c41814cd9c6a60c7498cfa54ffd113081a46076388667a2"
+hash = "e864f6d6fbf46c8a88f60c27fb567c81d302494f57f4f456580887d07a8dc3af"
 metafile = true
 
 [[files]]
@@ -1084,8 +1153,13 @@ hash = "85ca6db6f1741fdf3ff1b89b712b3f7671024ba718effed5c55da4cd7cc6c0fc"
 metafile = true
 
 [[files]]
+file = "mods/ranged-weapon-api-direct.pw.toml"
+hash = "7c24e461957096845dee0b848f61d877531d5d371737d0e148b372024267e5f8"
+metafile = true
+
+[[files]]
 file = "mods/rankbadges-direct.pw.toml"
-hash = "62ded325b61ba92569965314862b5745085b4e5bda75d76f19e8e98e8034806f"
+hash = "b3d59ce246775eb77dbbeda76aea1990ab438ea2134635c64a6b8575ad20e3ab"
 metafile = true
 
 [[files]]
@@ -1174,6 +1248,11 @@ hash = "0b0aea5d8c0a62cdaedd14ff7b76ddb8814a8328dd790836e2f4d3155de393f8"
 metafile = true
 
 [[files]]
+file = "mods/spellbladenext-direct.pw.toml"
+hash = "f4c72d13b7b5ce7a3e96cb5fae8e70837829ed24f4de037f79074ff4cc6aeefd"
+metafile = true
+
+[[files]]
 file = "mods/straw-statues.pw.toml"
 hash = "fb1852827e74163514a20debeb7ccbbc1d23d847f1773a66acb9a1890bee676e"
 metafile = true
@@ -1241,6 +1320,16 @@ metafile = true
 [[files]]
 file = "mods/wildlife-1.20.1-2.2.pw.toml"
 hash = "ed57dc69f3cae098fc8d131a523acfb3ff8229a42859ee8c86d30f2870cd8571"
+metafile = true
+
+[[files]]
+file = "mods/wizards-direct.pw.toml"
+hash = "f0336933418ba1f4e6b279376d39e66dba21e9421ea07a3545afdfd4b7d985a8"
+metafile = true
+
+[[files]]
+file = "mods/xercapaint-direct.pw.toml"
+hash = "5d5109189060bef46337b772c2fa09a1889e8292d802c619e731b2460735efe5"
 metafile = true
 
 [[files]]

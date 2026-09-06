@@ -50,7 +50,7 @@ public class RankBadgesMod implements ModInitializer {
         }
 
         team.setPrefix(rank.getPrefix());
-        team.setColor(rank.color);
+        team.setColor(Formatting.RESET);
         team.setFriendlyFireAllowed(true);
 
         return team;
@@ -84,9 +84,9 @@ public class RankBadgesMod implements ModInitializer {
     }
 
     private enum Rank {
-        OWNER(Text.literal("[owner] "), Formatting.BLUE),
-        MOD(Text.literal("[mod] "), Formatting.GREEN),
-        PLAYER(Text.literal("[player] "), Formatting.WHITE);
+        OWNER(Text.literal("[owner] ").formatted(Formatting.BLUE), Formatting.BLUE),
+        MOD(Text.literal("[mod] ").formatted(Formatting.GREEN), Formatting.GREEN),
+        PLAYER(Text.literal("[player] ").formatted(Formatting.WHITE), Formatting.WHITE);
 
         private final Text prefix;
         private final Formatting color;

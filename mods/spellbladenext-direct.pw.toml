@@ -1,0 +1,8 @@
+name = "Spellblades and Such"
+filename = "spellbladenext-2.4.0+1.20.1.jar"
+side = "both"
+
+[download]
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/spellbladenext-2.4.0+1.20.1.jar"
+hash-format = "sha256"
+hash = "81ccc3a58a618649b25aa91fa24127cdca35113bdc93958cbbec6ccccdbb5181"

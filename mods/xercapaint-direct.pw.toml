@@ -1,0 +1,8 @@
+name = "Joy of Painting"
+filename = "xercapaint-fabric-1.20.1-2.0.0.jar"
+side = "both"
+
+[download]
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/xercapaint-fabric-1.20.1-2.0.0.jar"
+hash-format = "sha256"
+hash = "4c75af9342a5c0d5c8ded49d92bbf2613890aeb3aac7e988a9a572b71138f850"

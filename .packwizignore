@@ -5,8 +5,10 @@ world_archive*/
 sources/gangshats/
 sources/rankbadges/
 sources/gangshop/
+sources/goldclaim/
 sources/*/.gradle/
 sources/*/build/
 sources/*/bin/
 tmp/
-artifacts/*.bak
+artifacts/*.bak*
+artifacts/gangs_hub_backup_*/

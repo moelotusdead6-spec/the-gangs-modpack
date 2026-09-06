@@ -1,10 +1,12 @@
 # Published Artifacts
 
-`artifacts/goldclaim-1.0.0.jar` is the server-only GoldClaim build used by this pack. It supplies hub protection and dimension routing; clients do not download it.
+`artifacts/goldclaim-1.0.7.jar` is the server-only GoldClaim build used by this pack. It supplies hub protection and dimension routing; clients do not download it.
 
-`artifacts/gangsboots-1.0.0.jar` is a first-party Gangs Boots build. Its required CC-BY 4.0 attribution is in `artifacts/gangsboots-ATTRIBUTION.txt`.
+`artifacts/gangsboots-1.0.1.jar` is a first-party Gangs Boots build. Its required CC-BY 4.0 attribution is in `artifacts/gangsboots-ATTRIBUTION.txt`.
 
 `artifacts/gangshats-1.0.0.jar` is a first-party Gangs Hats build. Its source is maintained in `sources/gangshats`.
+
+`artifacts/rankbadges-1.0.1.jar` is a first-party Rank Badges build. Its source is maintained in `sources/rankbadges`.
 
 `artifacts/gangshop-1.0.0.jar` is the server-only first-party Gang Shop build. It provides the shared Gang Bucks wallet and the server shop GUI.
 
@@ -12,4 +14,6 @@
 
 `artifacts/alexscaves-2.1.8.jar` is the custom Fabric build used by this pack. Its corresponding source archive is at `sources/alexscaves-fabric-2.1.8-source.zip`. The upstream Alex's Caves project is LGPL-3.0-only; the source archive and this notice are published with the modified binary to provide the required source access and license notice.
 
-Third-party mods remain downloaded from their official Modrinth or CurseForge metadata. This directory must not contain unapproved third-party binary mirrors.
+The following user-supplied third-party jars are mirrored here for direct packwiz delivery: Adaptive Tooltips 1.3.0, Archers 1.3.0+1.20.1, AzureLib 3.1.12, Exposure 1.9.20, Extra RPG Attributes 1.3.2, Joy of Painting fabric-1.20.1-2.0.0, RangedWeaponAPI 1.1.4+1.20.1, Spellblades and Such 2.4.0+1.20.1, and Wizards 1.4.1+1.20.1.
+
+Other third-party mods remain downloaded from their official Modrinth or CurseForge metadata. This directory must not contain unapproved third-party binary mirrors.

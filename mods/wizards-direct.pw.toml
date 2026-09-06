@@ -1,0 +1,8 @@
+name = "Wizards (RPG Series)"
+filename = "wizards-1.4.1+1.20.1.jar"
+side = "both"
+
+[download]
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/wizards-1.4.1+1.20.1.jar"
+hash-format = "sha256"
+hash = "e968f8b836716a6f6c21f6f9a44304b2aef64490c6f75bb54de9007db229aab6"

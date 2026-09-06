@@ -1,0 +1,8 @@
+name = "Exposure"
+filename = "exposure-fabric-1.20.1-1.9.20.jar"
+side = "both"
+
+[download]
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/exposure-fabric-1.20.1-1.9.20.jar"
+hash-format = "sha256"
+hash = "00b5e5371955f4f18b15f921b4830147116f5127e39f75d6cebee7dbb462274d"
