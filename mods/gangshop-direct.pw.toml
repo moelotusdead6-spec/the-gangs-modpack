@@ -5,4 +5,4 @@ side = "server"
 [download]
 url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/gangshop-1.0.0.jar"
 hash-format = "sha256"
-hash = "b8c4bc499c5739ccd77dfcf3f02b8205cc838ad1e3e6fb60e0626d6d1778e44c"
+hash = "70e5d1589afe63d9995fabb8e7a307dfb2555a53f5fe8b9d15a03e65d212b57e"
