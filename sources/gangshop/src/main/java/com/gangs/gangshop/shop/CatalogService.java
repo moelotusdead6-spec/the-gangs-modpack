@@ -86,7 +86,7 @@ public class CatalogService {
     private static final Set<String> SURVIVAL_UNOBTAINABLE_VANILLA_IDS = new HashSet<String>(Arrays.asList("minecraft:bedrock", "minecraft:barrier", "minecraft:light", "minecraft:command_block", "minecraft:chain_command_block", "minecraft:repeating_command_block", "minecraft:structure_block", "minecraft:structure_void", "minecraft:jigsaw", "minecraft:spawner", "minecraft:end_portal_frame", "minecraft:end_portal", "minecraft:end_gateway", "minecraft:reinforced_deepslate", "minecraft:debug_stick"));
     private static final Set<String> VANILLA_VEGETATION_GROUND_IDS = new HashSet<String>(Arrays.asList("minecraft:grass_block", "minecraft:dirt", "minecraft:coarse_dirt", "minecraft:rooted_dirt", "minecraft:podzol", "minecraft:mycelium", "minecraft:mud", "minecraft:muddy_mangrove_roots", "minecraft:moss_block", "minecraft:moss_carpet"));
     private static final Set<String> VANILLA_VEGETATION_IDS = new HashSet<String>(Arrays.asList("minecraft:azalea", "minecraft:flowering_azalea", "minecraft:carrot", "minecraft:carrots", "minecraft:carved_pumpkin", "minecraft:glow_berries", "minecraft:hanging_roots", "minecraft:lily_of_the_valley", "minecraft:pitcher_pod", "minecraft:potato", "minecraft:potatoes", "minecraft:pumpkin", "minecraft:pumpkin_stem", "minecraft:attached_pumpkin_stem", "minecraft:sugar_cane", "minecraft:sweet_berries", "minecraft:sweet_berry_bush"));
-    private static final Set<String> LETS_DO_NAMESPACES = new HashSet<String>(Arrays.asList("bakery", "beachparty", "brewery", "candlelight", "farm_and_charm", "herbalbrews", "meadow", "vinery"));
+    private static final Set<String> LETS_DO_NAMESPACES = new HashSet<String>(Arrays.asList("bakery", "beachparty", "bloomingnature", "brewery", "candlelight", "doapi", "farm_and_charm", "furniture", "herbalbrews", "meadow", "vinery", "wildernature"));
     private static final Set<String> SHOP_EXCLUDED_NAMESPACES = new HashSet<String>(Arrays.asList("advancednetherite", "alexsmobs", "bosses_of_mass_destruction", "creeperoverhaul", "crittersandcompanions", "endermanoverhaul", "ftbquests", "gobber2", "lootr", "moonlight", "mythicmetals", "paladins", "runes", "spell_engine", "spellbladenext", "universal_graves", "waystones"));
     private static final Set<String> CAMPING_BAG_IDS = new HashSet<String>(Arrays.asList("enderbag", "enderpack", "goodybag", "sheepbag", "wanderer_bag", "large_backpack", "small_backpack", "wanderer_backpack"));
     private static final Map<String, Long> MINERAL_PRICE_BY_ID = new HashMap<String, Long>();
@@ -335,7 +335,7 @@ public class CatalogService {
         if (path.contains("evoker_trap") || path.contains("man_with_plushie") || (path.contains("shulker_box") && !CatalogService.isVanillaShulkerBox(id)) || path.contains("spawner")) {
             return true;
         }
-        if (namespace.contains("letsdo") && path.contains("standard")) {
+        if ((LETS_DO_NAMESPACES.contains(namespace) || namespace.startsWith("letsdo-")) && path.contains("standard")) {
             return true;
         }
         return path.contains("plush");
