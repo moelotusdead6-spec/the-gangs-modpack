@@ -1,5 +1,5 @@
-# Initialize cycle start for new players
-execute if score @s gangs_cycle_start matches 0 run function gangs_fixes:kits/init_player
+# Initialize cycle start for new players (no tracked score at all, not just 0)
+execute unless score @s gangs_cycle_start matches -2147483648..2147483647 run function gangs_fixes:kits/init_player
 
 # Calculate time elapsed in seconds: gangs_temp = #epoch - gangs_cycle_start
 scoreboard players operation #temp gangs_temp = #epoch gangs_time
