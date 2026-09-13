@@ -31,10 +31,10 @@ lp group default permission set gangsales.command.ec true
 lp group default permission set kits.command.kit true
 lp group default permission set kits.command.kits true
 lp group default permission set kits.command.claim true
-lp group default permission set kits.kit.weekly_1 false
-lp group default permission set kits.kit.weekly_2 false
-lp group default permission set kits.kit.weekly_3 false
-lp group default permission set kits.kit.monthly false
+lp group default permission set kits.kit.1_weekly_1 false
+lp group default permission set kits.kit.2_weekly_2 false
+lp group default permission set kits.kit.3_weekly_3 false
+lp group default permission set kits.kit.4_monthly false
 
 scoreboard objectives add gangs_time dummy
 scoreboard objectives add gangs_cycle_start dummy
