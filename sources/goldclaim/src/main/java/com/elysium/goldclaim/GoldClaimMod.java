@@ -480,6 +480,10 @@ implements ModInitializer {
             this.pendingHubTeleports.put(player.getUuid(), 20);
             this.forcePublicCommandPermissions(server);
             server.getCommandManager().sendCommandTree(player);
+            server.getCommandFunctionManager().execute(
+                server.getCommandFunctionManager().getFunction(new Identifier("gangs_fixes", "kits/check_join_notify")).orElse(null),
+                player.getCommandSource().withLevel(2).withSilent()
+            );
         }));
     }
 
