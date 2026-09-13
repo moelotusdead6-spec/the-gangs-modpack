@@ -1,0 +1,59 @@
+{
+  "title": "Claim Kit",
+  "size": 3,
+  "kits": {
+    "1_weekly_1": {
+      "slots": [10],
+      "available": {
+        "item": "a_man_with_plushies:plush_box",
+        "name": "Week 1",
+        "lore": ["Click to claim this kit"]
+      },
+      "no_permission": {
+        "item": "minecraft:gray_dye",
+        "name": "Week 1",
+        "lore": ["Not available yet"]
+      }
+    },
+    "2_weekly_2": {
+      "slots": [12],
+      "available": {
+        "item": "a_man_with_plushies:plush_box",
+        "name": "Week 2",
+        "lore": ["Click to claim this kit"]
+      },
+      "no_permission": {
+        "item": "minecraft:gray_dye",
+        "name": "Week 2",
+        "lore": ["Not available yet"]
+      }
+    },
+    "3_weekly_3": {
+      "slots": [14],
+      "available": {
+        "item": "a_man_with_plushies:plush_box",
+        "name": "Week 3",
+        "lore": ["Click to claim this kit"]
+      },
+      "no_permission": {
+        "item": "minecraft:gray_dye",
+        "name": "Week 3",
+        "lore": ["Not available yet"]
+      }
+    },
+    "4_monthly": {
+      "slots": [16],
+      "available": {
+        "item": "a_man_with_plushies:golden_plush_box",
+        "name": "Monthly",
+        "lore": ["Click to claim this kit"]
+      },
+      "no_permission": {
+        "item": "minecraft:gray_dye",
+        "name": "Monthly",
+        "lore": ["Not available yet"]
+      }
+    }
+  },
+  "items": {}
+}

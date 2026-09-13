@@ -1,4 +1,6 @@
 loot give @s loot gangs:kits/monthly
+rc monthly_bow_staff @s 1
+rc monthly_trinket_gem_totem @s 1
 lp user @s permission set kits.kit.4_monthly false
 scoreboard players set @s gangs_claimed_m 1
 scoreboard players set @s gangs_perm_m 0

@@ -1,0 +1,13 @@
+name = "RandomCollections"
+filename = "RandomCollections-fabric-1.20.1-1.0.1.jar"
+side = "server"
+
+[download]
+url = "https://cdn.modrinth.com/data/lyVFvlZx/versions/T7liuNfm/RandomCollections-fabric-1.20.1-1.0.1.jar"
+hash-format = "sha512"
+hash = "4436354613ff5ea0765ef0490dd514fa856fedaed77c076009ce3eb7571af216b9dd92617380cbaeb16d5a549fd20d3449591d596ed80ebf92770b21c37c871f"
+
+[update]
+[update.modrinth]
+mod-id = "lyVFvlZx"
+version = "T7liuNfm"

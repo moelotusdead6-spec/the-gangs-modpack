@@ -28,9 +28,8 @@ lp group default permission set universal_graves.list true
 lp group default permission set gangshats.command.hat true
 lp group default permission set gangshats.command.nick true
 lp group default permission set gangsales.command.ec true
-lp group default permission set kits.command.kit true
-lp group default permission set kits.command.kits true
-lp group default permission set kits.command.claim true
+lp group default permission set skieskits.command.base true
+lp group default permission set skieskits.command.claim true
 lp group default permission set kits.kit.1_weekly_1 false
 lp group default permission set kits.kit.2_weekly_2 false
 lp group default permission set kits.kit.3_weekly_3 false

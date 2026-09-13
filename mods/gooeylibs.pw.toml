@@ -1,0 +1,13 @@
+name = "GooeyLibs"
+filename = "GooeyLibs-Fabric-3.0.0+1.20.1.jar"
+side = "server"
+
+[download]
+url = "https://cdn.modrinth.com/data/KzjvlKEN/versions/BXIm53Zb/GooeyLibs-Fabric-3.0.0%2B1.20.1.jar"
+hash-format = "sha512"
+hash = "7457550e0f378bcccafa79ed5e7c576304bf111430cce2f2056aee35bb931e20db4754139cde6fda5f5adc283d9b2def68ab864889c6ca759983231ffd1f6a32"
+
+[update]
+[update.modrinth]
+mod-id = "KzjvlKEN"
+version = "BXIm53Zb"

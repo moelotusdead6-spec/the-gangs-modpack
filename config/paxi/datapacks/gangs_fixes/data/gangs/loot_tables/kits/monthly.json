@@ -99,26 +99,6 @@
     {
       "rolls": 1,
       "entries": [
-        {"type": "minecraft:empty", "weight": 70},
-        {"type": "minecraft:item", "name": "archers:mechanic_shortbow", "weight": 2},
-        {"type": "minecraft:item", "name": "archers:royal_longbow", "weight": 2},
-        {"type": "minecraft:item", "name": "archers:composite_crossbow", "weight": 2},
-        {"type": "minecraft:item", "name": "archers:auto_crossbow", "weight": 2},
-        {"type": "minecraft:item", "name": "archers:deadeye_bow", "weight": 2},
-        {"type": "minecraft:item", "name": "wizards:fire_staff", "weight": 2},
-        {"type": "minecraft:item", "name": "wizards:frost_staff", "weight": 2},
-        {"type": "minecraft:item", "name": "wizards:arcane_staff", "weight": 2},
-        {"type": "minecraft:item", "name": "wizards:fire_wand", "weight": 3},
-        {"type": "minecraft:item", "name": "wizards:frost_wand", "weight": 3},
-        {"type": "minecraft:item", "name": "wizards:arcane_wand", "weight": 3},
-        {"type": "minecraft:item", "name": "wizards:staff_crystal_arcane", "weight": 2},
-        {"type": "minecraft:item", "name": "wizards:staff_crystal_fire", "weight": 2},
-        {"type": "minecraft:item", "name": "wizards:staff_crystal_frost", "weight": 1}
-      ]
-    },
-    {
-      "rolls": 1,
-      "entries": [
         {
           "type": "minecraft:item",
           "name": "minecraft:wither_skeleton_skull"
@@ -453,29 +433,6 @@
         {"type": "minecraft:item", "name": "perfectplushies:tslat_plushie"},
         {"type": "minecraft:item", "name": "perfectplushies:turtle_plushie"},
         {"type": "minecraft:item", "name": "perfectplushies:white_rabbit_plushie"}
-      ]
-    },
-    {
-      "rolls": 1,
-      "entries": [
-        {"type": "minecraft:item", "name": "extraspellattributes:goldquartzring", "weight": 15},
-        {"type": "minecraft:item", "name": "extraspellattributes:goldquartzamulet", "weight": 15},
-        {"type": "minecraft:item", "name": "extraspellattributes:defiancering", "weight": 12},
-        {"type": "minecraft:item", "name": "extraspellattributes:netheritediamondring", "weight": 8},
-        {"type": "minecraft:item", "name": "extraspellattributes:netheritediamondamulet", "weight": 8},
-        {"type": "minecraft:item", "name": "extraspellattributes:nonbelieversamulet", "weight": 8},
-        {"type": "minecraft:item", "name": "archers:archer_spell_book", "weight": 8},
-        {"type": "minecraft:item", "name": "wizards:arcane_spell_book", "weight": 8},
-        {"type": "minecraft:item", "name": "wizards:fire_spell_book", "weight": 8},
-        {"type": "minecraft:item", "name": "wizards:frost_spell_book", "weight": 8},
-        {"type": "minecraft:item", "name": "spellbladenext:phoenix_spell_book", "weight": 6},
-        {"type": "minecraft:item", "name": "simplyswords:runefused_gem", "weight": 8},
-        {"type": "minecraft:item", "name": "simplyswords:netherfused_gem", "weight": 2},
-        {"type": "minecraft:item", "name": "minecraft:totem_of_undying", "weight": 6},
-        {"type": "minecraft:item", "name": "betterarcheology:growth_totem", "weight": 6},
-        {"type": "minecraft:item", "name": "betterarcheology:radiance_totem", "weight": 6},
-        {"type": "minecraft:item", "name": "betterarcheology:soul_totem", "weight": 6},
-        {"type": "minecraft:item", "name": "betterarcheology:torrent_totem", "weight": 6}
       ]
     }
   ]

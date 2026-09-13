@@ -1,0 +1,42 @@
+{
+  "debug": false,
+  "collections": {
+    "monthly_bow_staff": [
+      {"type": "COMMAND_CONSOLE", "weight": 70, "commands": []},
+      {"type": "COMMAND_CONSOLE", "weight": 2, "commands": ["give %player% archers:mechanic_shortbow 1"]},
+      {"type": "COMMAND_CONSOLE", "weight": 2, "commands": ["give %player% archers:royal_longbow 1"]},
+      {"type": "COMMAND_CONSOLE", "weight": 2, "commands": ["give %player% archers:composite_crossbow 1"]},
+      {"type": "COMMAND_CONSOLE", "weight": 2, "commands": ["give %player% archers:auto_crossbow 1"]},
+      {"type": "COMMAND_CONSOLE", "weight": 2, "commands": ["give %player% archers:deadeye_bow 1"]},
+      {"type": "COMMAND_CONSOLE", "weight": 2, "commands": ["give %player% wizards:fire_staff 1"]},
+      {"type": "COMMAND_CONSOLE", "weight": 2, "commands": ["give %player% wizards:frost_staff 1"]},
+      {"type": "COMMAND_CONSOLE", "weight": 2, "commands": ["give %player% wizards:arcane_staff 1"]},
+      {"type": "COMMAND_CONSOLE", "weight": 3, "commands": ["give %player% wizards:fire_wand 1"]},
+      {"type": "COMMAND_CONSOLE", "weight": 3, "commands": ["give %player% wizards:frost_wand 1"]},
+      {"type": "COMMAND_CONSOLE", "weight": 3, "commands": ["give %player% wizards:arcane_wand 1"]},
+      {"type": "COMMAND_CONSOLE", "weight": 2, "commands": ["give %player% wizards:staff_crystal_arcane 1"]},
+      {"type": "COMMAND_CONSOLE", "weight": 2, "commands": ["give %player% wizards:staff_crystal_fire 1"]},
+      {"type": "COMMAND_CONSOLE", "weight": 1, "commands": ["give %player% wizards:staff_crystal_frost 1"]}
+    ],
+    "monthly_trinket_gem_totem": [
+      {"type": "COMMAND_CONSOLE", "weight": 15, "commands": ["give %player% extraspellattributes:goldquartzring 1"]},
+      {"type": "COMMAND_CONSOLE", "weight": 15, "commands": ["give %player% extraspellattributes:goldquartzamulet 1"]},
+      {"type": "COMMAND_CONSOLE", "weight": 12, "commands": ["give %player% extraspellattributes:defiancering 1"]},
+      {"type": "COMMAND_CONSOLE", "weight": 8, "commands": ["give %player% extraspellattributes:netheritediamondring 1"]},
+      {"type": "COMMAND_CONSOLE", "weight": 8, "commands": ["give %player% extraspellattributes:netheritediamondamulet 1"]},
+      {"type": "COMMAND_CONSOLE", "weight": 8, "commands": ["give %player% extraspellattributes:nonbelieversamulet 1"]},
+      {"type": "COMMAND_CONSOLE", "weight": 8, "commands": ["give %player% archers:archer_spell_book 1"]},
+      {"type": "COMMAND_CONSOLE", "weight": 8, "commands": ["give %player% wizards:arcane_spell_book 1"]},
+      {"type": "COMMAND_CONSOLE", "weight": 8, "commands": ["give %player% wizards:fire_spell_book 1"]},
+      {"type": "COMMAND_CONSOLE", "weight": 8, "commands": ["give %player% wizards:frost_spell_book 1"]},
+      {"type": "COMMAND_CONSOLE", "weight": 6, "commands": ["give %player% spellbladenext:phoenix_spell_book 1"]},
+      {"type": "COMMAND_CONSOLE", "weight": 8, "commands": ["give %player% simplyswords:runefused_gem 1"]},
+      {"type": "COMMAND_CONSOLE", "weight": 2, "commands": ["give %player% simplyswords:netherfused_gem 1"]},
+      {"type": "COMMAND_CONSOLE", "weight": 6, "commands": ["give %player% minecraft:totem_of_undying 1"]},
+      {"type": "COMMAND_CONSOLE", "weight": 6, "commands": ["give %player% betterarcheology:growth_totem 1"]},
+      {"type": "COMMAND_CONSOLE", "weight": 6, "commands": ["give %player% betterarcheology:radiance_totem 1"]},
+      {"type": "COMMAND_CONSOLE", "weight": 6, "commands": ["give %player% betterarcheology:soul_totem 1"]},
+      {"type": "COMMAND_CONSOLE", "weight": 6, "commands": ["give %player% betterarcheology:torrent_totem 1"]}
+    ]
+  }
+}

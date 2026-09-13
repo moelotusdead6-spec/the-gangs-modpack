@@ -1,0 +1,17 @@
+{
+  "display_name": "Week 3",
+  "permission": "kits.kit.3_weekly_3",
+  "cooldown": 0,
+  "max_uses": 0,
+  "on_join": false,
+  "notifications": false,
+  "items": [],
+  "actions": {
+    "claimed": {
+      "run_claim": {
+        "type": "COMMAND_CONSOLE",
+        "commands": ["execute as %player% at %player% run function gangs_fixes:kits/claim_weekly_3"]
+      }
+    }
+  }
+}
