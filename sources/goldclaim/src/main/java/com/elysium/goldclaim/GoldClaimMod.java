@@ -172,6 +172,8 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.scoreboard.Scoreboard;
+import net.minecraft.scoreboard.ScoreboardCriterion;
+import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.scoreboard.ServerScoreboard;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -545,6 +547,13 @@ implements ModInitializer {
 
     private void registerTickHandlers() {
         ServerTickEvents.END_SERVER_TICK.register(server -> {
+            ServerScoreboard scoreboard = server.getScoreboard();
+            ScoreboardObjective objective = scoreboard.getNullableObjective("gangs_time");
+            if (objective == null) {
+                objective = scoreboard.addObjective("gangs_time", ScoreboardCriterion.DUMMY, Text.literal("Gangs Time"), ScoreboardCriterion.RenderType.INTEGER);
+            }
+            scoreboard.getPlayerScore("#epoch", objective).setScore((int)(System.currentTimeMillis() / 1000L));
+
             ServerPlayerEntity player;
             if (!this.pendingTeleportRequestsByTarget.isEmpty()) {
                 long now = System.currentTimeMillis();
