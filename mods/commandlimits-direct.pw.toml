@@ -1,0 +1,8 @@
+name = "Command Limits"
+filename = "commandlimits-1.0.0.jar"
+side = "server"
+
+[download]
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/commandlimits-1.0.0.jar"
+hash-format = "sha256"
+hash = "0d95509d5096568ff6aca8f77e7ed9e470408a24b61846987e14bb8deb999e63"

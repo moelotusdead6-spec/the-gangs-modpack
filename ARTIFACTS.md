@@ -2,15 +2,17 @@
 
 `artifacts/goldclaim-1.0.7.jar` is the server-only GoldClaim build used by this pack. It supplies hub protection and dimension routing; clients do not download it.
 
-`artifacts/gangsboots-1.0.1.jar` is a first-party Gangs Boots build. Its required CC-BY 4.0 attribution is in `artifacts/gangsboots-ATTRIBUTION.txt`.
+`artifacts/gangsboots-1.0.2.jar` is a first-party Gangs Boots build. Its required CC-BY 4.0 attribution is in `artifacts/gangsboots-ATTRIBUTION.txt`.
 
 `artifacts/gangshats-1.0.0.jar` is a first-party Gangs Hats build. Its source is maintained in `sources/gangshats`.
 
 `artifacts/rankbadges-1.0.1.jar` is a first-party Rank Badges build. Its source is maintained in `sources/rankbadges`.
 
-`artifacts/gangshop-1.0.0.jar` is the server-only first-party Gang Shop build. It provides the shared Gang Bucks wallet and the server shop GUI.
+`artifacts/gangshop-1.0.3.jar` is the server-only first-party Gang Shop build. It provides the shared Gang Bucks wallet and the server shop GUI.
 
 `artifacts/gangsales-1.0.0.jar` is the server-only first-party GangSales build. Its source is maintained in `sources/gangsales`; it requires Gang Shop and uses its Gang Bucks wallet for player-to-player sales.
+
+`artifacts/commandlimits-1.0.0.jar` is a server-only first-party mod that caps expensive `locate` command search radii.
 
 `artifacts/alexscaves-2.1.8.jar` is the custom Fabric build used by this pack. Its corresponding source archive is at `sources/alexscaves-fabric-2.1.8-source.zip`. The upstream Alex's Caves project is LGPL-3.0-only; the source archive and this notice are published with the modified binary to provide the required source access and license notice.
 

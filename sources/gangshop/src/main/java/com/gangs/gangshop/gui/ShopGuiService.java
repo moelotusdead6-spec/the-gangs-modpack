@@ -101,6 +101,72 @@ public class ShopGuiService {
         this.openMainMenu(player, 0);
     }
 
+    public void openSearch(ServerPlayerEntity player, String query) {
+        this.openSearch(player, query, 0);
+    }
+
+    private void openSearch(ServerPlayerEntity player, String query, int page) {
+        Session session = this.getOrCreateSession(player);
+        session.view = View.SEARCH;
+        session.searchQuery = query;
+        session.searchResults = this.findMatchingEntries(query);
+        List<ShopEntry> entries = session.searchResults;
+        int pageCount = Math.max(1, (int) Math.ceil((double) entries.size() / 36.0));
+        session.page = ShopGuiService.clamp(page, 0, pageCount - 1);
+        session.slotEntry.clear();
+        SimpleInventory inv = ShopGuiService.emptyMenu();
+        int start = session.page * 36;
+        int end = Math.min(entries.size(), start + 36);
+        for (int i = start; i < end; ++i) {
+            ShopEntry entry = entries.get(i);
+            int slot = CONTENT_SLOTS[i - start];
+            ItemStack item = new ItemStack((ItemConvertible) entry.item());
+            ItemStack named = ShopGuiService.named(item, (Text) Text.literal((String) ShopGuiService.itemName(entry.id())).formatted(Formatting.WHITE));
+            named = ShopGuiService.withLore(named, new Text[]{Text.literal((String) ("Category: " + ShopGuiService.cap(entry.category().getDisplayName()))).formatted(Formatting.GRAY), Text.literal((String) ("Sell: " + ShopGuiService.money(entry.sellPrice()) + " Gang Bucks")).formatted(Formatting.GREEN), Text.literal((String) ("Buy: " + ShopGuiService.money(entry.buyPrice()) + " Gang Bucks")).formatted(Formatting.RED), Text.literal((String) "Click to open").formatted(Formatting.YELLOW)});
+            inv.setStack(slot, named);
+            session.slotEntry.put(slot, entry.id());
+        }
+        if (entries.isEmpty()) {
+            inv.setStack(22, ShopGuiService.withLore(ShopGuiService.named(new ItemStack((ItemConvertible) Items.BARRIER), (Text) Text.literal((String) "No matches").formatted(Formatting.RED)), new Text[]{Text.literal((String) ("Nothing found for \"" + query + "\"")).formatted(Formatting.GRAY)}));
+        }
+        if (session.page > 0) {
+            inv.setStack(45, ShopGuiService.withLore(ShopGuiService.named(new ItemStack((ItemConvertible) Items.ARROW), (Text) Text.literal((String) "Previous Page").formatted(Formatting.YELLOW)), new Text[]{Text.literal((String) ("Go to page " + session.page)).formatted(Formatting.GRAY)}));
+        }
+        if (session.page < pageCount - 1) {
+            inv.setStack(53, ShopGuiService.withLore(ShopGuiService.named(new ItemStack((ItemConvertible) Items.ARROW), (Text) Text.literal((String) "Next Page").formatted(Formatting.YELLOW)), new Text[]{Text.literal((String) ("Go to page " + (session.page + 2))).formatted(Formatting.GRAY)}));
+        }
+        inv.setStack(49, ShopGuiService.named(new ItemStack((ItemConvertible) Items.BEACON), (Text) Text.literal((String) "Back To Menu").formatted(Formatting.AQUA)));
+        inv.setStack(48, ShopGuiService.withLore(ShopGuiService.named(new ItemStack((ItemConvertible) Items.PAPER), (Text) Text.literal((String) ("Page " + (session.page + 1) + "/" + pageCount)).formatted(Formatting.GOLD)), new Text[]{Text.literal((String) ("Search: \"" + query + "\"")).formatted(Formatting.GRAY), Text.literal((String) (entries.size() + " result(s)")).formatted(Formatting.GRAY)}));
+        inv.setStack(4, this.balanceToken(player));
+        this.open(player, (Text) Text.literal((String) ("Gang Shop - Search: " + query)), inv, this::handleSearchClick);
+    }
+
+    private List<ShopEntry> findMatchingEntries(String query) {
+        String normalized = query == null ? "" : query.trim().toLowerCase(java.util.Locale.ROOT);
+        if (normalized.isEmpty()) {
+            return java.util.Collections.emptyList();
+        }
+        String[] tokens = normalized.split("\\s+");
+        List<ShopEntry> results = new java.util.ArrayList<>();
+        for (ShopCategory category : this.catalog.categories()) {
+            for (ShopEntry entry : this.catalog.getEntries(category)) {
+                String haystack = (entry.id().toString() + " " + entry.id().getPath().replace('_', ' ')).toLowerCase(java.util.Locale.ROOT);
+                boolean matchesAll = true;
+                for (String token : tokens) {
+                    if (!haystack.contains(token)) {
+                        matchesAll = false;
+                        break;
+                    }
+                }
+                if (matchesAll) {
+                    results.add(entry);
+                }
+            }
+        }
+        results.sort(java.util.Comparator.comparing(entry -> entry.id().getPath(), String.CASE_INSENSITIVE_ORDER));
+        return results;
+    }
+
     public boolean openHeldItemForSale(ServerPlayerEntity player) {
         ItemStack heldStack = player.getMainHandStack();
         if (heldStack.isEmpty()) {
@@ -377,6 +443,34 @@ public class ShopGuiService {
         }
         Identifier itemId = session.slotEntry.get(slot);
         if (itemId != null) {
+            this.openItemDetail(player, itemId, 1);
+            ShopGuiService.sound(player, true);
+        }
+    }
+
+    private void handleSearchClick(ServerPlayerEntity player, int slot, SlotActionType actionType, int button) {
+        Session session = this.getOrCreateSession(player);
+        if (slot == 45) {
+            this.openSearch(player, session.searchQuery, session.page - 1);
+            ShopGuiService.sound(player, true);
+            return;
+        }
+        if (slot == 53) {
+            this.openSearch(player, session.searchQuery, session.page + 1);
+            ShopGuiService.sound(player, true);
+            return;
+        }
+        if (slot == 49) {
+            this.openMainMenu(player);
+            ShopGuiService.sound(player, true);
+            return;
+        }
+        Identifier itemId = session.slotEntry.get(slot);
+        if (itemId != null) {
+            ShopEntry entry = this.catalog.getEntry(itemId);
+            if (entry != null) {
+                session.category = entry.category();
+            }
             this.openItemDetail(player, itemId, 1);
             ShopGuiService.sound(player, true);
         }
@@ -780,6 +874,8 @@ public class ShopGuiService {
         private boolean adminMode = false;
         private long adminSell = 1L;
         private long adminBuy = 1L;
+        private String searchQuery = "";
+        private List<ShopEntry> searchResults = new java.util.ArrayList<>();
         private final Map<Integer, ShopCategory> slotCategory = new HashMap<Integer, ShopCategory>();
         private final Map<Integer, Identifier> slotEntry = new HashMap<Integer, Identifier>();
 
@@ -791,6 +887,7 @@ public class ShopGuiService {
         MAIN,
         ADMIN_MENU,
         CATEGORY,
+        SEARCH,
         DETAIL,
         CONFIRM,
         ADMIN_CATEGORY,

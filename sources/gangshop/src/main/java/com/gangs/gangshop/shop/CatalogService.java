@@ -82,7 +82,7 @@ public class CatalogService {
     private static final Set<String> VANILLA_MOB_DROP_IDS = new HashSet<String>(Arrays.asList("minecraft:rotten_flesh", "minecraft:bone", "minecraft:arrow", "minecraft:string", "minecraft:spider_eye", "minecraft:gunpowder", "minecraft:slime_ball", "minecraft:magma_cream", "minecraft:ender_pearl", "minecraft:blaze_rod", "minecraft:ghast_tear", "minecraft:prismarine_shard", "minecraft:prismarine_crystals", "minecraft:shulker_shell", "minecraft:phantom_membrane", "minecraft:ink_sac", "minecraft:glow_ink_sac", "minecraft:leather", "minecraft:feather", "minecraft:rabbit_hide", "minecraft:rabbit_foot", "minecraft:porkchop", "minecraft:beef", "minecraft:chicken", "minecraft:mutton", "minecraft:rabbit", "minecraft:cod", "minecraft:salmon", "minecraft:tropical_fish", "minecraft:pufferfish", "minecraft:poppy", "minecraft:egg", "minecraft:nautilus_shell"));
     private static final Set<String> VANILLA_MINERAL_IDS = new HashSet<String>(Arrays.asList("minecraft:coal", "minecraft:coal_block", "minecraft:flint", "minecraft:redstone", "minecraft:redstone_block", "minecraft:redstone_ore", "minecraft:deepslate_redstone_ore", "minecraft:coal_ore", "minecraft:deepslate_coal_ore", "minecraft:raw_iron", "minecraft:iron_ingot", "minecraft:iron_block", "minecraft:raw_iron_block", "minecraft:iron_ore", "minecraft:deepslate_iron_ore", "minecraft:raw_copper", "minecraft:copper_ingot", "minecraft:copper_block", "minecraft:copper_ore", "minecraft:deepslate_copper_ore", "minecraft:raw_gold", "minecraft:gold_ingot", "minecraft:gold_block", "minecraft:raw_gold_block", "minecraft:gold_ore", "minecraft:deepslate_gold_ore", "minecraft:nether_gold_ore", "minecraft:diamond", "minecraft:diamond_block", "minecraft:diamond_ore", "minecraft:deepslate_diamond_ore", "minecraft:emerald", "minecraft:emerald_block", "minecraft:emerald_ore", "minecraft:deepslate_emerald_ore", "minecraft:lapis_lazuli", "minecraft:lapis_block", "minecraft:lapis_ore", "minecraft:deepslate_lapis_ore", "minecraft:amethyst_shard", "minecraft:amethyst_block", "minecraft:quartz", "minecraft:quartz_block", "minecraft:nether_quartz_ore"));
     private static final Set<String> VANILLA_REDSTONE_EXTRA_IDS = new HashSet<String>(Arrays.asList("minecraft:repeater", "minecraft:comparator", "minecraft:observer", "minecraft:piston", "minecraft:sticky_piston", "minecraft:dispenser", "minecraft:dropper", "minecraft:hopper", "minecraft:target", "minecraft:daylight_detector", "minecraft:tripwire_hook", "minecraft:lever", "minecraft:note_block", "minecraft:sculk_sensor", "minecraft:calibrated_sculk_sensor"));
-    private static final Set<String> HARD_DENY_EXACT_IDS = new HashSet<String>(Arrays.asList("minecraft:nether_star", "minecraft:wither_skeleton_skull", "minecraft:wither_skeleton_wall_skull", "minecraft:beacon", "minecraft:bedrock", "minecraft:barrier", "minecraft:ancient_debris", "minecraft:reinforced_deepslate", "minecraft:command_block", "minecraft:chain_command_block", "minecraft:repeating_command_block", "minecraft:jigsaw", "minecraft:light", "minecraft:spawner", "minecraft:structure_void", "minecraft:structure_block", "minecraft:dragon_head", "minecraft:dragon_wall_head", "minecraft:dragon_egg", "minecraft:sniffer_egg", "minecraft:frogspawn", "minecraft:farmland", "minecraft:dirt_path"));
+    private static final Set<String> HARD_DENY_EXACT_IDS = new HashSet<String>(Arrays.asList("minecraft:nether_star", "minecraft:wither_skeleton_skull", "minecraft:wither_skeleton_wall_skull", "minecraft:beacon", "minecraft:bedrock", "minecraft:barrier", "minecraft:ancient_debris", "minecraft:reinforced_deepslate", "minecraft:command_block", "minecraft:chain_command_block", "minecraft:repeating_command_block", "minecraft:jigsaw", "minecraft:light", "minecraft:spawner", "minecraft:structure_void", "minecraft:structure_block", "minecraft:dragon_head", "minecraft:dragon_wall_head", "minecraft:dragon_egg", "minecraft:sniffer_egg", "minecraft:frogspawn", "minecraft:farmland", "minecraft:dirt_path", "minecraft:budding_amethyst"));
     private static final Set<String> SURVIVAL_UNOBTAINABLE_VANILLA_IDS = new HashSet<String>(Arrays.asList("minecraft:bedrock", "minecraft:barrier", "minecraft:light", "minecraft:command_block", "minecraft:chain_command_block", "minecraft:repeating_command_block", "minecraft:structure_block", "minecraft:structure_void", "minecraft:jigsaw", "minecraft:spawner", "minecraft:end_portal_frame", "minecraft:end_portal", "minecraft:end_gateway", "minecraft:reinforced_deepslate", "minecraft:debug_stick"));
     private static final Set<String> VANILLA_VEGETATION_GROUND_IDS = new HashSet<String>(Arrays.asList("minecraft:grass_block", "minecraft:dirt", "minecraft:coarse_dirt", "minecraft:rooted_dirt", "minecraft:podzol", "minecraft:mycelium", "minecraft:mud", "minecraft:muddy_mangrove_roots", "minecraft:moss_block", "minecraft:moss_carpet"));
     private static final Set<String> VANILLA_VEGETATION_IDS = new HashSet<String>(Arrays.asList("minecraft:azalea", "minecraft:flowering_azalea", "minecraft:carrot", "minecraft:carrots", "minecraft:carved_pumpkin", "minecraft:glow_berries", "minecraft:hanging_roots", "minecraft:lily_of_the_valley", "minecraft:pitcher_pod", "minecraft:potato", "minecraft:potatoes", "minecraft:pumpkin", "minecraft:pumpkin_stem", "minecraft:attached_pumpkin_stem", "minecraft:sugar_cane", "minecraft:sweet_berries", "minecraft:sweet_berry_bush"));
@@ -249,6 +249,9 @@ public class CatalogService {
         if (item.isFood() && !(item instanceof BlockItem) && !CatalogService.isVanillaVegetation(id)) {
             return false;
         }
+        if (item.getFoodComponent() != null && !item.getFoodComponent().getStatusEffects().isEmpty()) {
+            return false;
+        }
         if ("camping".equals(id.getNamespace()) && CAMPING_BAG_IDS.contains(id.getPath())) {
             return false;
         }
@@ -264,7 +267,7 @@ public class CatalogService {
         if (id.getPath().contains("suspicious")) {
             return false;
         }
-        if ("bettercaves".equals(id.getNamespace()) && "rare_ice".equals(id.getPath())) {
+        if ("rare_ice".equals(id.getPath())) {
             return false;
         }
         if ("minecraft:tnt".equals(id.toString()) || "minecraft:respawn_anchor".equals(id.toString())) {
@@ -308,7 +311,13 @@ public class CatalogService {
         String key = id.toString();
         String path = id.getPath().toLowerCase();
         String namespace = id.getNamespace().toLowerCase();
-        if (namespace.equals("a_man_with_plushies") || namespace.equals("alexscaves")) {
+        if (namespace.equals("a_man_with_plushies") || namespace.equals("alexscaves") || namespace.equals("galosphere")) {
+            return true;
+        }
+        if (path.contains("cocktail") || (path.contains("wine") && !key.equals("vinery:wine_bottle")) || path.contains("grapejuice") || path.contains("beer") || path.contains("cider") || path.contains("tea") || path.contains("netherite") || path.contains("baguette") || path.contains("bun") || path.contains("bread") || path.contains("cheese_block") || path.contains("tart") || path.contains("cake") || path.contains("dumpling") || path.contains("roasted") || path.contains("pork") || path.contains("beef") || path.contains("jam") || path.contains("stuffed") || path.contains("salad") || path.contains("whiskey") || path.contains("pie") || path.contains("chicken")) {
+            return true;
+        }
+        if (path.equals("mojang_noir") || path.equals("bottle_mojang_noir") || path.equals("villagers_fright") || path.equals("creeper_crush") || path.equals("creepers_crush") || path.equals("eiswein") || path.equals("jo_special_mixture") || path.equals("mead") || path.equals("waffle") || path.equals("rice_roll_medley_block") || path.equals("chiller") || path.equals("season_detector") || path.equals("heater") || path.equals("message_in_a_bottle") || path.equals("pork_knuckle") || path.equals("potato_salad") || path.equals("potato_with_roasted_meat") || path.equals("potato_with_roast_meat") || path.equals("chocolate_gateau") || path.equals("farmers_breakfast") || path.equals("pudding") || path.equals("pudding_slice") || path.equals("toast") || path.equals("honey_glazed_ham") || path.equals("honey_glazed_ham_block")) {
             return true;
         }
         if (path.contains("totem")) {

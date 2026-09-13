@@ -6,7 +6,7 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "bd7126c98b4de8aa58f1a5600e36d6da1d7fbc15138f6743d6f62e90fd394ad3"
+hash = "2348833ab83c0907cbca05a10e3918207b3fc7d9792872f29abfe5b3c0c02a27"
 
 [[files]]
 file = "README.md"
@@ -49,6 +49,10 @@ file = "artifacts/biolith-fabric-1.0.1-beta.1.jar"
 hash = "93103bee7c55d239a65d2603543d13266509b8c9cf5e30f1297c5777dba052d7"
 
 [[files]]
+file = "artifacts/commandlimits-1.0.0.jar"
+hash = "0d95509d5096568ff6aca8f77e7ed9e470408a24b61846987e14bb8deb999e63"
+
+[[files]]
 file = "artifacts/exposure-fabric-1.20.1-1.9.20.jar"
 hash = "00b5e5371955f4f18b15f921b4830147116f5127e39f75d6cebee7dbb462274d"
 
@@ -70,7 +74,11 @@ hash = "4b9bc22af1599d1250fa8410c9319437472e50d4a6238b843851db16ed6c723a"
 
 [[files]]
 file = "artifacts/gangsboots-1.0.1.jar"
-hash = "912fc62f402ab7dd36fd82724a4a8f3dd1ef1ba29309eea0e556886e8fe43d39"
+hash = "e7aabf37fb5c8cd4aed737ab54450a85d42cb449f45ef427ad1ec12772aa2a81"
+
+[[files]]
+file = "artifacts/gangsboots-1.0.2.jar"
+hash = "e2d4e36f156f890df43cdea606719c817ee9c3a7b808e92f0b2c005c0b850f6a"
 
 [[files]]
 file = "artifacts/gangsboots-ATTRIBUTION.txt"
@@ -82,7 +90,19 @@ hash = "d4b5f92d6648da1d216b1e961f59e1cfb2ce44f3077feb326c460fab85a4a622"
 
 [[files]]
 file = "artifacts/gangshop-1.0.0.jar"
-hash = "b8c4bc499c5739ccd77dfcf3f02b8205cc838ad1e3e6fb60e0626d6d1778e44c"
+hash = "ac1dd4608293defe70ac6cd68f60a20269d4db2f47ff32a613183e1eb0e4067f"
+
+[[files]]
+file = "artifacts/gangshop-1.0.1.jar"
+hash = "3b4fd165882ac85917bededf588601f2c65b4a4dcc737e1b5a80850749349386"
+
+[[files]]
+file = "artifacts/gangshop-1.0.2.jar"
+hash = "e1d5d70adfc5f7c264c539d3bbf7393a1940cf7743007be904840dc74aa9ea5c"
+
+[[files]]
+file = "artifacts/gangshop-1.0.3.jar"
+hash = "3dd2a48fd03378843aeb50b7925f91fc185cacbee6d1eed1073b12e402832691"
 
 [[files]]
 file = "artifacts/goldclaim-1.0.2.jar"
@@ -102,7 +122,7 @@ hash = "5986b3b48f77666f637f1a8149474287344ca5e2318cf38e6fc24335962a6e83"
 
 [[files]]
 file = "artifacts/goldclaim-1.0.7.jar"
-hash = "b6e64c1cb137db64c046a08734bb42cd07f5c3a504e34044fa82e606bfcc65cf"
+hash = "cd65f342014ea74f7894d32410dee1d0c4c3e332ed6f214dfd9665fe8eed6f52"
 
 [[files]]
 file = "artifacts/multiworld-ATTRIBUTION.txt"
@@ -198,7 +218,7 @@ hash = "d0aaf3172f34275479f0669aa5b0a94b85788ae638f3062b948ec49d31c38293"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_fixes/data/gangs_fixes/functions/load.mcfunction"
-hash = "ba05391872e062b8b85552dad615474f7f231fa2b75d94fb0572a4480b003b40"
+hash = "45a9e2d6d2d18c4ae203be6102b6defbb15f250359e82421aeacfd96c2f047cd"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_fixes/data/minecraft/tags/functions/load.json"
@@ -658,6 +678,11 @@ hash = "a3226ebd3421d5a6bea93c13f2684e3d3e0fcbd21a11d0209719bd7249a9c1bd"
 metafile = true
 
 [[files]]
+file = "mods/banhammer.pw.toml"
+hash = "542fac150babe88c3be7a6e52c4c528a4ae635e90a899fe868e8898ce6cd6098"
+metafile = true
+
+[[files]]
 file = "mods/beekeeperhut-fabric-mc1.20.1-2.0.1.pw.toml"
 hash = "067845387d8daf2b2a54311ef44a4124a0f7b0aaa7048e2cd3d813e838476bc4"
 metafile = true
@@ -728,6 +753,11 @@ hash = "05acd939f866a4eb75d20894fa57abee8bddba46ad4d310775c6531a89cada4f"
 metafile = true
 
 [[files]]
+file = "mods/commandlimits-direct.pw.toml"
+hash = "e8b4e7dc516d449cf0840bebefd4f5fb956e2160c6a273601b17d2a2e02bd5db"
+metafile = true
+
+[[files]]
 file = "mods/compass2map-2.0.3-fabric-1.20.1.pw.toml"
 hash = "f4ae26162ac0cda3f199dacc86d5c0098c417d36a338249888faeb7379667ef2"
 metafile = true
@@ -780,6 +810,11 @@ metafile = true
 [[files]]
 file = "mods/endermanoverhaul-fabric-1.20.1-1.0.4.pw.toml"
 hash = "37b2b6337a44efe0a1de75538236b2667ed06270658e8bdc0d14818fc180ec47"
+metafile = true
+
+[[files]]
+file = "mods/essential-commands.pw.toml"
+hash = "21c3264543db261d2b7fca1b0debbae16d11a1945999ff1dfa51551fec381bbf"
 metafile = true
 
 [[files]]
@@ -899,7 +934,7 @@ metafile = true
 
 [[files]]
 file = "mods/gangsboots-direct.pw.toml"
-hash = "88c7550d678052a484eaf40800ef518445ca97765cb79f0d2167f6de1d61be37"
+hash = "c02256de624445b2e431458d4a5fd9f4bf5f266aaa7bad321a36cad44bb4d4af"
 metafile = true
 
 [[files]]
@@ -909,7 +944,7 @@ metafile = true
 
 [[files]]
 file = "mods/gangshop-direct.pw.toml"
-hash = "b18a8061c10323a09a4bed2da8e9deea11371936aab9a7e997dedcf4dd13b550"
+hash = "a1bcada648bc660a8537ead5aa774cd950b206b646f076e63b08732f6a420334"
 metafile = true
 
 [[files]]
@@ -924,7 +959,12 @@ metafile = true
 
 [[files]]
 file = "mods/goldclaim-direct.pw.toml"
-hash = "e864f6d6fbf46c8a88f60c27fb567c81d302494f57f4f456580887d07a8dc3af"
+hash = "3680f1cc17ea84842196de491f0be672ff843ec9ffea5030f4ba6f1ebb9bfb31"
+metafile = true
+
+[[files]]
+file = "mods/grimac.pw.toml"
+hash = "6a22e07b354134ac5934464bfa80bfcf1218669de9276f89f116a1b3e7ea8368"
 metafile = true
 
 [[files]]
@@ -955,6 +995,11 @@ metafile = true
 [[files]]
 file = "mods/krypton-0.2.3.pw.toml"
 hash = "4f33d4e71a1db5cc186c793f1c8259fed9f2244e608d8a77fc9c60f20858f680"
+metafile = true
+
+[[files]]
+file = "mods/ledger.pw.toml"
+hash = "56094cd33726792df84e8991bf1e9e3d69383a65793d47aab66bf2cac3f9acfb"
 metafile = true
 
 [[files]]
@@ -1048,6 +1093,11 @@ hash = "c935733eff394041b57fb9e6c432d1d781f002f5bc897ef1d853427135a3fad5"
 metafile = true
 
 [[files]]
+file = "mods/maintenancemode.pw.toml"
+hash = "e6518e53d3f55ba3f10cd68d9334a9b58fee3228da6ab00d408c4f44fe0423bb"
+metafile = true
+
+[[files]]
 file = "mods/malilib-fabric-1.20.1-0.16.3.pw.toml"
 hash = "8e8e4072cdde1eb487a49a2f8363cc807635f946eda82cb45cbfa0528ab05d7a"
 metafile = true
@@ -1120,6 +1170,11 @@ metafile = true
 [[files]]
 file = "mods/owo-lib-0.11.2_1.20.pw.toml"
 hash = "4e4c54f2ba6319bf5dace722992a985a83134ce179e5285da24ebccb48c330ae"
+metafile = true
+
+[[files]]
+file = "mods/packwiz-modpack-loader.pw.toml"
+hash = "34fc4d484605a6ad67fcce516a8635bc3f9662271c2d0d3fb39d7e89f5c63037"
 metafile = true
 
 [[files]]

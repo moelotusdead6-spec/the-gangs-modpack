@@ -55,7 +55,7 @@ public final class GangShopCommands {
     }
 
     private static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        dispatcher.register((LiteralArgumentBuilder)CommandManager.literal((String)"shop").executes(ctx -> GangShopCommands.openShop((ServerCommandSource)ctx.getSource())));
+        dispatcher.register((LiteralArgumentBuilder)((LiteralArgumentBuilder)CommandManager.literal((String)"shop").executes(ctx -> GangShopCommands.openShop((ServerCommandSource)ctx.getSource()))).then(CommandManager.argument((String)"query", (ArgumentType)StringArgumentType.greedyString()).executes(ctx -> GangShopCommands.searchShop((ServerCommandSource)ctx.getSource(), StringArgumentType.getString((CommandContext)ctx, (String)"query")))));
         dispatcher.register((LiteralArgumentBuilder)CommandManager.literal((String)"shopsell").executes(ctx -> GangShopCommands.openShopSell((ServerCommandSource)ctx.getSource())));
         dispatcher.register((LiteralArgumentBuilder)((LiteralArgumentBuilder)CommandManager.literal((String)"bal").executes(ctx -> GangShopCommands.balanceSelf((ServerCommandSource)ctx.getSource()))).then(CommandManager.argument((String)"player", (ArgumentType)EntityArgumentType.player()).executes(ctx -> GangShopCommands.balanceTarget((ServerCommandSource)ctx.getSource(), EntityArgumentType.getPlayer((CommandContext)ctx, (String)"player")))));
         dispatcher.register((LiteralArgumentBuilder)((LiteralArgumentBuilder)CommandManager.literal((String)"balance").executes(ctx -> GangShopCommands.balanceSelf((ServerCommandSource)ctx.getSource()))).then(CommandManager.argument((String)"player", (ArgumentType)EntityArgumentType.player()).executes(ctx -> GangShopCommands.balanceTarget((ServerCommandSource)ctx.getSource(), EntityArgumentType.getPlayer((CommandContext)ctx, (String)"player")))));
@@ -134,6 +134,16 @@ public final class GangShopCommands {
             source.sendError((Text)Text.literal((String)"Hold an item currently listed in the Gang Shop to sell it."));
             return 0;
         }
+        return 1;
+    }
+
+    private static int searchShop(ServerCommandSource source, String query) {
+        ServerPlayerEntity player = source.getPlayer();
+        if (player == null) {
+            source.sendError((Text)Text.literal((String)"Only players can use /shop <item>."));
+            return 0;
+        }
+        GangShopMod.GUI.openSearch(player, query);
         return 1;
     }
 

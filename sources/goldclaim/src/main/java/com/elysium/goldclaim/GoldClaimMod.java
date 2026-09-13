@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Decompiled with CFR 0.152.
  *
  * Could not load the following classes:
@@ -182,6 +182,10 @@ import net.minecraft.registry.Registries;
 import net.minecraft.network.packet.s2c.play.TitleFadeS2CPacket;
 import net.minecraft.network.packet.s2c.play.SubtitleS2CPacket;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
+import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.server.MinecraftServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -826,6 +830,12 @@ implements ModInitializer {
         prompt.append(ScreenTexts.SPACE);
         prompt.append((Text)this.actionButton("[Decline]", "/tpdecline", Formatting.RED, "Decline teleport request from " + request.requesterName));
         target.sendMessage((Text)prompt, false);
+        this.playTeleportRequestPing(target);
+    }
+
+    private void playTeleportRequestPing(ServerPlayerEntity target) {
+        RegistryEntry<net.minecraft.sound.SoundEvent> sound = RegistryEntry.of((net.minecraft.sound.SoundEvent)SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP);
+        target.networkHandler.sendPacket((Packet)new PlaySoundS2CPacket(sound, SoundCategory.PLAYERS, target.getX(), target.getY(), target.getZ(), 0.6f, 1.4f, target.getWorld().getRandom().nextLong()));
     }
 
     private int acceptTeleportRequest(ServerCommandSource source) {

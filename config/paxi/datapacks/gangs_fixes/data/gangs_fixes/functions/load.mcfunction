@@ -1,4 +1,5 @@
 gamerule keepInventory false
+gamerule doFireTick false
 team modify rankbadges_owner color reset
 team modify rankbadges_mod color reset
 team modify rankbadges_player color reset

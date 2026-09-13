@@ -5,4 +5,4 @@ side = "server"
 [download]
 url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/goldclaim-1.0.7.jar"
 hash-format = "sha256"
-hash = "b6e64c1cb137db64c046a08734bb42cd07f5c3a504e34044fa82e606bfcc65cf"
+hash = "cd65f342014ea74f7894d32410dee1d0c4c3e332ed6f214dfd9665fe8eed6f52"
