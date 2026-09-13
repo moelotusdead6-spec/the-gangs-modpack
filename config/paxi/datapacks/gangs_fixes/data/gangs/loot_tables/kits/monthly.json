@@ -1,0 +1,190 @@
+{
+  "type": "minecraft:generic",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:netherite_ingot",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {"type": "minecraft:item", "name": "simplyswords:arcanus"},
+        {"type": "minecraft:item", "name": "simplyswords:bramblethorn"},
+        {"type": "minecraft:item", "name": "simplyswords:carnage"},
+        {"type": "minecraft:item", "name": "simplyswords:caecus"},
+        {"type": "minecraft:item", "name": "simplyswords:watcher_gaze"},
+        {"type": "minecraft:item", "name": "simplyswords:righteous_mace"},
+        {"type": "minecraft:item", "name": "simplyswords:icewhisper"},
+        {"type": "minecraft:item", "name": "simplyswords:hearthflame"},
+        {"type": "minecraft:item", "name": "simplyswords:soulkeeper"},
+        {"type": "minecraft:item", "name": "simplyswords:harbinger"},
+        {"type": "minecraft:item", "name": "simplyswords:shadowlibrium"},
+        {"type": "minecraft:item", "name": "simplyswords:dormant_relic"},
+        {"type": "minecraft:item", "name": "simplyswords:dreadtide"},
+        {"type": "minecraft:item", "name": "simplyswords:emberblade"},
+        {"type": "minecraft:item", "name": "simplyswords:flamewind"},
+        {"type": "minecraft:item", "name": "simplyswords:frostfall"},
+        {"type": "minecraft:item", "name": "simplyswords:hiveheart"},
+        {"type": "minecraft:item", "name": "simplyswords:livyatan"},
+        {"type": "minecraft:item", "name": "simplyswords:magiblade"},
+        {"type": "minecraft:item", "name": "simplyswords:magiscythe"},
+        {"type": "minecraft:item", "name": "simplyswords:magispear"},
+        {"type": "minecraft:item", "name": "simplyswords:mjolnir"},
+        {"type": "minecraft:item", "name": "simplyswords:molten_edge"},
+        {"type": "minecraft:item", "name": "simplyswords:whisperwind"},
+        {"type": "minecraft:item", "name": "simplyswords:sunfire"},
+        {"type": "minecraft:item", "name": "simplyswords:soulpyre"},
+        {"type": "minecraft:item", "name": "simplyswords:soulrend"},
+        {"type": "minecraft:item", "name": "simplyswords:stormbringer"},
+        {"type": "minecraft:item", "name": "simplyswords:breezebreaker"},
+        {"type": "minecraft:item", "name": "simplyswords:toxic_longsword"},
+        {"type": "minecraft:item", "name": "simplyswords:thunderbrand"},
+        {"type": "minecraft:item", "name": "simplyswords:watching_warglaive"},
+        {"type": "minecraft:item", "name": "simplymore:earthshatter"},
+        {"type": "minecraft:item", "name": "simplymore:exedrill"},
+        {"type": "minecraft:item", "name": "simplymore:glimmerstep"},
+        {"type": "minecraft:item", "name": "simplymore:smouldering_ruin"}
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "simplyswords:empowered_remnant"
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {"type": "minecraft:empty", "weight": 70},
+        {"type": "minecraft:item", "name": "archers:mechanic_shortbow", "weight": 2},
+        {"type": "minecraft:item", "name": "archers:royal_longbow", "weight": 2},
+        {"type": "minecraft:item", "name": "archers:composite_crossbow", "weight": 2},
+        {"type": "minecraft:item", "name": "archers:auto_crossbow", "weight": 2},
+        {"type": "minecraft:item", "name": "archers:deadeye_bow", "weight": 2},
+        {"type": "minecraft:item", "name": "wizards:fire_staff", "weight": 2},
+        {"type": "minecraft:item", "name": "wizards:frost_staff", "weight": 2},
+        {"type": "minecraft:item", "name": "wizards:arcane_staff", "weight": 2},
+        {"type": "minecraft:item", "name": "wizards:fire_wand", "weight": 3},
+        {"type": "minecraft:item", "name": "wizards:frost_wand", "weight": 3},
+        {"type": "minecraft:item", "name": "wizards:arcane_wand", "weight": 3},
+        {"type": "minecraft:item", "name": "wizards:staff_crystal_arcane", "weight": 2},
+        {"type": "minecraft:item", "name": "wizards:staff_crystal_fire", "weight": 2},
+        {"type": "minecraft:item", "name": "wizards:staff_crystal_frost", "weight": 1}
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:wither_skeleton_skull"
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {"type": "minecraft:item", "name": "betterarcheology:fossil_snout"},
+        {"type": "minecraft:item", "name": "betterarcheology:creeper_fossil"},
+        {"type": "minecraft:item", "name": "betterarcheology:villager_fossil"},
+        {"type": "minecraft:item", "name": "betterarcheology:chicken_fossil"},
+        {"type": "minecraft:item", "name": "betterarcheology:sheep_fossil"},
+        {"type": "minecraft:item", "name": "betterarcheology:guardian_fossil"},
+        {"type": "minecraft:item", "name": "betterarcheology:ocelot_fossil"},
+        {"type": "minecraft:item", "name": "betterarcheology:wolf_fossil"}
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "a_man_with_plushies:golden_plush_box"
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {"type": "minecraft:item", "name": "mobscarecrow:default_scarecrow"},
+        {"type": "minecraft:item", "name": "mobscarecrow:axolotl_plushie"},
+        {"type": "minecraft:item", "name": "mobscarecrow:cat_plushie"},
+        {"type": "minecraft:item", "name": "mobscarecrow:chicken_plushie"},
+        {"type": "minecraft:item", "name": "mobscarecrow:copper_golem_plushie"},
+        {"type": "minecraft:item", "name": "mobscarecrow:gold_pig_plushie"},
+        {"type": "minecraft:item", "name": "mobscarecrow:iron_golem_plushie"},
+        {"type": "minecraft:item", "name": "mobscarecrow:pigeon_plushie"},
+        {"type": "minecraft:item", "name": "mobscarecrow:piglin_plushie"},
+        {"type": "minecraft:item", "name": "mobscarecrow:pillager_plushie"},
+        {"type": "minecraft:item", "name": "mobscarecrow:rabbit_plushie"},
+        {"type": "minecraft:item", "name": "mobscarecrow:snow_golem_plushie"},
+        {"type": "minecraft:item", "name": "mobscarecrow:steve_plushie"},
+        {"type": "minecraft:item", "name": "mobscarecrow:villager_plushie"},
+        {"type": "minecraft:item", "name": "mobscarecrow:wolf_plushie"},
+        {"type": "minecraft:item", "name": "mobscarecrow:zombie_plushie"},
+        {"type": "minecraft:item", "name": "mobscarecrow:zombified_piglin_plushie"}
+      ]
+    },
+    {
+      "rolls": 3,
+      "entries": [
+        {"type": "minecraft:item", "name": "perfectplushies:bear_plushie"},
+        {"type": "minecraft:item", "name": "perfectplushies:cat_plushie"},
+        {"type": "minecraft:item", "name": "perfectplushies:dog_plushie"},
+        {"type": "minecraft:item", "name": "perfectplushies:panda_plushie"},
+        {"type": "minecraft:item", "name": "perfectplushies:capybara_plushie"},
+        {"type": "minecraft:item", "name": "perfectplushies:red_panda_plushie"},
+        {"type": "minecraft:item", "name": "perfectplushies:raccoon_plushie"},
+        {"type": "minecraft:item", "name": "perfectplushies:koala_plushie"},
+        {"type": "minecraft:item", "name": "perfectplushies:lion_cub_plushie"},
+        {"type": "minecraft:item", "name": "perfectplushies:turtle_plushie"},
+        {"type": "minecraft:item", "name": "perfectplushies:frog_plushie"},
+        {"type": "minecraft:item", "name": "perfectplushies:quokka_plushie"},
+        {"type": "minecraft:item", "name": "perfectplushies:seal_plushie"},
+        {"type": "minecraft:item", "name": "perfectplushies:duck_plushie"},
+        {"type": "minecraft:item", "name": "a_man_with_plushies:bendy_plush"},
+        {"type": "minecraft:item", "name": "a_man_with_plushies:cuphead_plush"},
+        {"type": "minecraft:item", "name": "a_man_with_plushies:sans_plush"},
+        {"type": "minecraft:item", "name": "a_man_with_plushies:companion_block_plush"},
+        {"type": "minecraft:item", "name": "a_man_with_plushies:the_knight_plush"}
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {"type": "minecraft:item", "name": "extraspellattributes:goldquartzring", "weight": 15},
+        {"type": "minecraft:item", "name": "extraspellattributes:goldquartzamulet", "weight": 15},
+        {"type": "minecraft:item", "name": "extraspellattributes:defiancering", "weight": 12},
+        {"type": "minecraft:item", "name": "extraspellattributes:netheritediamondring", "weight": 8},
+        {"type": "minecraft:item", "name": "extraspellattributes:netheritediamondamulet", "weight": 8},
+        {"type": "minecraft:item", "name": "extraspellattributes:nonbelieversamulet", "weight": 8},
+        {"type": "minecraft:item", "name": "archers:archer_spell_book", "weight": 8},
+        {"type": "minecraft:item", "name": "wizards:arcane_spell_book", "weight": 8},
+        {"type": "minecraft:item", "name": "wizards:fire_spell_book", "weight": 8},
+        {"type": "minecraft:item", "name": "wizards:frost_spell_book", "weight": 8},
+        {"type": "minecraft:item", "name": "spellbladenext:phoenix_spell_book", "weight": 6},
+        {"type": "minecraft:item", "name": "simplyswords:runefused_gem", "weight": 8},
+        {"type": "minecraft:item", "name": "simplyswords:netherfused_gem", "weight": 2},
+        {"type": "minecraft:item", "name": "minecraft:totem_of_undying", "weight": 6},
+        {"type": "minecraft:item", "name": "betterarcheology:growth_totem", "weight": 6},
+        {"type": "minecraft:item", "name": "betterarcheology:radiance_totem", "weight": 6},
+        {"type": "minecraft:item", "name": "betterarcheology:soul_totem", "weight": 6},
+        {"type": "minecraft:item", "name": "betterarcheology:torrent_totem", "weight": 6}
+      ]
+    }
+  ]
+}
