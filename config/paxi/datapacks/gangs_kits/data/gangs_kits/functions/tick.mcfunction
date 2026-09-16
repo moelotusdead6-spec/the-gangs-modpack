@@ -1,0 +1,1 @@
+execute as @a run function gangs_kits:player_tick

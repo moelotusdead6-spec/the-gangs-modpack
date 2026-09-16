@@ -282,7 +282,7 @@ hash = "526284fe85f7465e6a5c0103a76286480112a2cf824d3ef640758683498a051d"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs/loot_tables/kits/monthly.json"
-hash = "41a2eb0bf19899854ed55ee760badce835c04d916535696ca3037b3c44fdcbce"
+hash = "490a52cab655286297540b2f81c1e98cdd7e41676b3e891ddf607b2f4eaa487f"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs/loot_tables/kits/non_curse_book.json"
