@@ -1,8 +1,0 @@
-name = "Cosmetica"
-filename = "cosmetica-fabric-2.0.1-1.20.1.jar"
-side = "client"
-
-[download]
-url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/cosmetica-fabric-2.0.1-1.20.1.jar"
-hash-format = "sha256"
-hash = "D7A358A62CC35C6F6FA7D978DCD16221B30BB6F6C2E27827786B37609404B4E3"

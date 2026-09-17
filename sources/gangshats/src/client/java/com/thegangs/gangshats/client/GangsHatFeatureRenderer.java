@@ -1,6 +1,10 @@
 package com.thegangs.gangshats.client;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.thegangs.gangshats.HatRenderClassifier;
+
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -19,8 +23,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.SkullItem;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.math.RotationAxis;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class GangsHatFeatureRenderer
         extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
@@ -47,6 +49,10 @@ public class GangsHatFeatureRenderer
             AbstractClientPlayerEntity player, float limbAngle, float limbDistance, float tickDelta,
             float animationProgress, float headYaw, float headPitch) {
         ItemStack hatStack = player.getEquippedStack(EquipmentSlot.HEAD);
+        if (isWing(hatStack)) {
+            renderWing(matrices, vertexConsumers, light, player, hatStack);
+            return;
+        }
         if (shouldUseVanillaRenderer(hatStack)) {
             return;
         }
@@ -69,6 +75,29 @@ public class GangsHatFeatureRenderer
             }
         }
 
+        matrices.pop();
+    }
+
+    private static boolean isWing(ItemStack stack) {
+        if (stack == null) {
+            return false;
+        }
+        if (stack.isEmpty()) {
+            return false;
+        }
+        var nbt = stack.getNbt();
+        return nbt != null && nbt.getBoolean("gangshats_wing");
+    }
+
+    private void renderWing(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light,
+            AbstractClientPlayerEntity player, ItemStack stack) {
+        matrices.push();
+        getContextModel().body.rotate(matrices);
+        matrices.translate(0.0D, 0.05D, 0.24D);
+        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180.0F));
+        matrices.scale(0.75F, 0.75F, 0.75F);
+        itemRenderer.renderItem(player, stack, ModelTransformationMode.HEAD, false, matrices, vertexConsumers,
+                player.getWorld(), light, OverlayTexture.DEFAULT_UV, player.getId());
         matrices.pop();
     }
 

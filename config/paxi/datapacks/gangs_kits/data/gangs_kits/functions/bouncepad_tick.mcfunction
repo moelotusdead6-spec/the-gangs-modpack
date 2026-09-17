@@ -1,0 +1,8 @@
+execute if block ~ ~-1 ~ minecraft:red_concrete run data modify entity @s Motion set value [0.0d,0.85d,0.0d]
+execute if block ~ ~-1 ~ minecraft:orange_concrete run data modify entity @s Motion set value [0.0d,0.85d,0.0d]
+execute if block ~ ~-1 ~ minecraft:yellow_concrete run data modify entity @s Motion set value [0.0d,0.85d,0.0d]
+execute if block ~ ~-1 ~ minecraft:green_concrete run data modify entity @s Motion set value [0.0d,0.85d,0.0d]
+execute if block ~ ~-1 ~ minecraft:blue_concrete run data modify entity @s Motion set value [0.0d,0.85d,0.0d]
+execute if block ~ ~-1 ~ minecraft:cyan_concrete run data modify entity @s Motion set value [0.0d,0.85d,0.0d]
+execute if block ~ ~-1 ~ minecraft:purple_concrete run data modify entity @s Motion set value [0.0d,0.85d,0.0d]
+execute if block ~ ~-1 ~ minecraft:white_concrete run data modify entity @s Motion set value [0.0d,0.85d,0.0d]

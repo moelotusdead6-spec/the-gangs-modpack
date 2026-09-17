@@ -53,10 +53,6 @@ file = "artifacts/commandlimits-1.0.0.jar"
 hash = "0d95509d5096568ff6aca8f77e7ed9e470408a24b61846987e14bb8deb999e63"
 
 [[files]]
-file = "artifacts/cosmetica-fabric-2.0.1-1.20.1.jar"
-hash = "d7a358a62cc35c6f6fa7d978dcd16221b30bb6f6c2e27827786b376094043d37"
-
-[[files]]
 file = "artifacts/exposure-fabric-1.20.1-1.9.20.jar"
 hash = "00b5e5371955f4f18b15f921b4830147116f5127e39f75d6cebee7dbb462274d"
 
@@ -90,7 +86,7 @@ hash = "de9756c83bd304ecf034a143a4de5be22cd89e6167fdcfdc29088379cad7ad8e"
 
 [[files]]
 file = "artifacts/gangshats-1.0.0.jar"
-hash = "d4b5f92d6648da1d216b1e961f59e1cfb2ce44f3077feb326c460fab85a4a622"
+hash = "0bb8fcb12474e49b07ac1f193e221351afea7be4edda834bd60b6c90abe1c277"
 
 [[files]]
 file = "artifacts/gangshop-1.0.0.jar"
@@ -301,6 +297,10 @@ file = "config/paxi/datapacks/gangs_kits/data/gangs/loot_tables/kits/weekly_3.js
 hash = "a6003cc9e926f9d980dac5419e034e5d47910e636e1f18b56832d59e6563f4a5"
 
 [[files]]
+file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/bouncepad_tick.mcfunction"
+hash = "b550f0f331ebd50bb7268c32520163653e24380f07217c4639e56a7940326d5e"
+
+[[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/check_join_notify.mcfunction"
 hash = "1a72c66cbedd78c2b7a9f13dc3a852fc34ed10bfae11462894bdbc3dbd7caa6c"
 
@@ -326,19 +326,19 @@ hash = "dff84a09cf561889823a1ef8aab5115c28b8f63d5242f8c42e5988f0d376cd7a"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/do_claim_m.mcfunction"
-hash = "94fad3a104d0b8279a3e76193db2302694ac6857ecd029c42614ab175fdfcf59"
+hash = "ec82402f0d6094c8d1e5f04cfca78f09843fb65c445efa361831ded9c238de5f"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/do_claim_w1.mcfunction"
-hash = "142d191e39eee200b117de59c2a2674026143316e52a0b99d3d5f1cb88d7ac98"
+hash = "2e2ad96e8063ff456a2462b2439ae35afe232a322d9c4bdd7fb28c359cca5826"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/do_claim_w2.mcfunction"
-hash = "b7e37b5071f733f3a9a1d033c03837820b77307177d176c18d53b993022d4fa7"
+hash = "84758ef58c9d2cd198cb846a9746f628077fdf4540e57cab1dcf61c8ed0bc713"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/do_claim_w3.mcfunction"
-hash = "8062d78296dbb7fe03ec90e0359464a3bde4b2610856df76210b00385d727916"
+hash = "d4a92249153e643c20e080580790a3627507115c2923aaaf996e00122e5d5755"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/init_player.mcfunction"
@@ -354,7 +354,7 @@ hash = "e81fc6ec6a0c0a0e19a5b19f8c66d9fab9fbfb995185c9488ff924bf562398be"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/tick.mcfunction"
-hash = "42454ba3ececf7455f10b8aa0f88984684f25f31feac2270b6bc6bd7d255930c"
+hash = "fd952f317e9a41b2a3499bda3d827d79a267483f8ca1d09f0cdd261525781e16"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/unlock_m.mcfunction"
@@ -430,7 +430,7 @@ hash = "4f4f427c325702d5f55f93dd96ddee4831fd23814d088dd1f24e1bf540637246"
 
 [[files]]
 file = "index.html"
-hash = "7f630827ad7c3d674a64c9bbaec9d827d5b527a81bfe75a575169360867ce696"
+hash = "900521926b5422e7213d6669d6a7ba2663f1e8f6a0459988338617862bb79691"
 
 [[files]]
 file = "mods/.gitkeep"
@@ -937,11 +937,6 @@ hash = "931e1888696f76794414eb1d491efb432eeb0ca8f47cf58cef189d88f4bd5caf"
 metafile = true
 
 [[files]]
-file = "mods/cosmetica-fabric-2.0.1-1.20.1.pw.toml"
-hash = "87bdb8994ebd1cb5c3bfff1e5e91e5c99d76d967133d26ec3d903c11bd1df1bf"
-metafile = true
-
-[[files]]
 file = "mods/creeperoverhaul-3.0.2-fabric.pw.toml"
 hash = "178e37925575c77d36c7fea7ac9ab41df7577c637c5c3b4cdcc9017487f80ee7"
 metafile = true
@@ -1113,12 +1108,12 @@ metafile = true
 
 [[files]]
 file = "mods/gangshats-direct.pw.toml"
-hash = "30adc8e098cfdda6bb45d8282da4f7736fde50c40f7ed1934bedcaa9a9ceb8d0"
+hash = "66fa541c1d3d32adcf0ca0c529640aff5051de01dcca37e3aa3f2fcedb39aa52"
 metafile = true
 
 [[files]]
 file = "mods/gangshop-direct.pw.toml"
-hash = "edc81e3303a7240756270623702b7e909ff63595dc4737295cdc2f822c0f0008"
+hash = "a1bcada648bc660a8537ead5aa774cd950b206b646f076e63b08732f6a420334"
 metafile = true
 
 [[files]]
