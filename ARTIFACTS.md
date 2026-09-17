@@ -4,7 +4,9 @@
 
 `artifacts/gangsboots-1.0.2.jar` is a first-party Gangs Boots build. Its required CC-BY 4.0 attribution is in `artifacts/gangsboots-ATTRIBUTION.txt`.
 
-`artifacts/gangshats-1.0.0.jar` is a first-party Gangs Hats build. Its source is maintained in `sources/gangshats`.
+`artifacts/gangshats-1.0.0.jar` is a first-party Gangs Hats build. Its source is maintained in `sources/gangshats`; it provides the Fabric-native cosmetic, pet, and bouncepad features.
+
+`artifacts/polymer-bundled-0.5.20+1.20.1.jar` is the user-supplied official Polymer bundle used on both client and server for server-driven resources.
 
 `artifacts/rankbadges-1.0.1.jar` is a first-party Rank Badges build. Its source is maintained in `sources/rankbadges`.
 

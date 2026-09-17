@@ -1,4 +1,4 @@
-{
+﻿{
     "credit":  "Converted from supplied Blockbench asset",
     "textures":  {
                      "0":  "gangshats:item/bouncepads/bouncepad_blue"
@@ -15,7 +15,6 @@
                                     9,
                                     5
                                 ],
-                         "rotation":  null,
                          "faces":  {
                                        "north":  {
                                                      "uv":  [
@@ -84,7 +83,6 @@
                                     9,
                                     -5
                                 ],
-                         "rotation":  null,
                          "faces":  {
                                        "north":  {
                                                      "uv":  [
@@ -153,7 +151,6 @@
                                     9,
                                     -5
                                 ],
-                         "rotation":  null,
                          "faces":  {
                                        "north":  {
                                                      "uv":  [
@@ -222,7 +219,6 @@
                                     6,
                                     7
                                 ],
-                         "rotation":  null,
                          "faces":  {
                                        "north":  {
                                                      "uv":  [
@@ -291,7 +287,6 @@
                                     9,
                                     3
                                 ],
-                         "rotation":  null,
                          "faces":  {
                                        "north":  {
                                                      "uv":  [
@@ -360,7 +355,6 @@
                                     9,
                                     3
                                 ],
-                         "rotation":  null,
                          "faces":  {
                                        "north":  {
                                                      "uv":  [
@@ -429,7 +423,6 @@
                                     2,
                                     -2
                                 ],
-                         "rotation":  null,
                          "faces":  {
                                        "north":  {
                                                      "uv":  [
@@ -498,7 +491,6 @@
                                     2,
                                     0
                                 ],
-                         "rotation":  null,
                          "faces":  {
                                        "north":  {
                                                      "uv":  [
@@ -567,7 +559,6 @@
                                     2,
                                     2
                                 ],
-                         "rotation":  null,
                          "faces":  {
                                        "north":  {
                                                      "uv":  [
@@ -636,7 +627,6 @@
                                     10,
                                     4.5
                                 ],
-                         "rotation":  null,
                          "faces":  {
                                        "north":  {
                                                      "uv":  [

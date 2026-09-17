@@ -107,8 +107,8 @@ public class GangsHats implements ModInitializer {
 		try {
 			Class<?> queryOptionsClass = Class.forName("net.luckperms.api.query.QueryOptions");
 			Object contextManager = luckPerms.getClass().getMethod("getContextManager").invoke(luckPerms);
-			Optional<?> queryOptions = (Optional<?>) contextManager.getClass().getMethod("getQueryOptions", Object.class).invoke(contextManager, player);
-			Object options = queryOptions.orElse(null);
+			Object queryOptions = contextManager.getClass().getMethod("getQueryOptions", Object.class).invoke(contextManager, player);
+			Object options = queryOptions instanceof Optional<?> optional ? optional.orElse(null) : queryOptions;
 			if (options == null) {
 				options = queryOptionsClass.getMethod("defaultContextualOptions").invoke(null);
 			}

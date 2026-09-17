@@ -1,4 +1,4 @@
-{
+﻿{
     "credit":  "Converted from supplied Blockbench asset",
     "textures":  {
                      "0":  "gangshats:item/pets/kit"
@@ -15,7 +15,6 @@
                                     4,
                                     1
                                 ],
-                         "rotation":  null,
                          "faces":  {
                                        "north":  {
                                                      "uv":  [
@@ -84,7 +83,6 @@
                                     4,
                                     1
                                 ],
-                         "rotation":  null,
                          "faces":  {
                                        "north":  {
                                                      "uv":  [
@@ -153,7 +151,6 @@
                                     8,
                                     2
                                 ],
-                         "rotation":  null,
                          "faces":  {
                                        "north":  {
                                                      "uv":  [
@@ -222,7 +219,6 @@
                                     8,
                                     1
                                 ],
-                         "rotation":  null,
                          "faces":  {
                                        "north":  {
                                                      "uv":  [
@@ -291,7 +287,6 @@
                                     8,
                                     1
                                 ],
-                         "rotation":  null,
                          "faces":  {
                                        "north":  {
                                                      "uv":  [
@@ -360,7 +355,6 @@
                                     14.000000000000004,
                                     3
                                 ],
-                         "rotation":  null,
                          "faces":  {
                                        "north":  {
                                                      "uv":  [
@@ -429,7 +423,6 @@
                                     15,
                                     1.0000000000000022
                                 ],
-                         "rotation":  null,
                          "faces":  {
                                        "north":  {
                                                      "uv":  [
@@ -498,7 +491,6 @@
                                     10.000000000000004,
                                     -2.1999999999999993
                                 ],
-                         "rotation":  null,
                          "faces":  {
                                        "north":  {
                                                      "uv":  [
@@ -567,7 +559,6 @@
                                     14,
                                     4
                                 ],
-                         "rotation":  null,
                          "faces":  {
                                        "north":  {
                                                      "uv":  [
@@ -636,7 +627,6 @@
                                     15,
                                     1.0000000000000022
                                 ],
-                         "rotation":  null,
                          "faces":  {
                                        "north":  {
                                                      "uv":  [

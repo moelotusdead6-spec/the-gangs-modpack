@@ -6,7 +6,7 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "ae3cafe7170786eed7f399d277f748d9ea8d7d86c349a17ee6996da36475be52"
+hash = "6cf57d67c6cc4ecebf0952c8e4d3cae080b25be964c57bce059a9fe82b8cd736"
 
 [[files]]
 file = "README.md"
@@ -86,7 +86,7 @@ hash = "de9756c83bd304ecf034a143a4de5be22cd89e6167fdcfdc29088379cad7ad8e"
 
 [[files]]
 file = "artifacts/gangshats-1.0.0.jar"
-hash = "266c688b4f3f5851ba9c410882fc7ec0bbc5dc4f4b0fb4c1fe61bac91dc5dbe1"
+hash = "a75ad97d0281940bcde8c18a31204eac2d2dac9e70dc80b3f8d0c024ce88b0f7"
 
 [[files]]
 file = "artifacts/gangshop-1.0.0.jar"
@@ -147,6 +147,10 @@ hash = "b9eed99cf6b1e4e9ffef7fe83851e06086bd0a401dd2ffb7c7f95a3d4e65ad0b"
 [[files]]
 file = "artifacts/openblockselevator-0.0.3-1.20.1.jar"
 hash = "353f9a3c59e8fb6a6ba37eb2ed092306a9151b7de4037b226508c517e28ecc64"
+
+[[files]]
+file = "artifacts/polymer-bundled-0.5.20+1.20.1.jar"
+hash = "2e0a9781922beab01d8995eae8ed03c4829403345ea169a56a0d7c3a6887c622"
 
 [[files]]
 file = "artifacts/ranged_weapon_api-1.1.4+1.20.1.jar"
@@ -430,7 +434,7 @@ hash = "4f4f427c325702d5f55f93dd96ddee4831fd23814d088dd1f24e1bf540637246"
 
 [[files]]
 file = "index.html"
-hash = "2dcaf3a7d8949ff5a3591c3f2de951dfd03def17e0554dca982473cad56958f5"
+hash = "03fbe88ae64c5aecbcdd21b49f450a5980a5967f7884d17d5dd2c6f6379d9d10"
 
 [[files]]
 file = "mods/.gitkeep"
@@ -1108,7 +1112,7 @@ metafile = true
 
 [[files]]
 file = "mods/gangshats-direct.pw.toml"
-hash = "e96161d99cd32534337e23c904e9cd5fbe08433dea87d73ba806c644a48817e0"
+hash = "b55895663f9bd51e90d903b877d27c33455ab9a558f1d18bdd87088941854cc0"
 metafile = true
 
 [[files]]
@@ -1369,6 +1373,11 @@ metafile = true
 [[files]]
 file = "mods/player-animation-lib-fabric-1.0.2-rc1_1.20.pw.toml"
 hash = "2d680c80722004cd8f29bbaad9f183c6c111acfd30dc28f64a619aad1ab24b62"
+metafile = true
+
+[[files]]
+file = "mods/polymer-bundled-0.5.20+1.20.1.pw.toml"
+hash = "bf09afd2bbafa1e155f38f9ca8644cf4533125d2bd1283b8d1243514e7bd9163"
 metafile = true
 
 [[files]]

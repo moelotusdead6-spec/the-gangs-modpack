@@ -1,4 +1,4 @@
-{
+﻿{
     "credit":  "Converted from supplied Blockbench asset",
     "textures":  {
                      "0":  "gangshats:item/pets/ghost"
@@ -15,7 +15,6 @@
                                     17,
                                     6
                                 ],
-                         "rotation":  null,
                          "faces":  {
                                        "north":  {
                                                      "uv":  [
@@ -84,7 +83,6 @@
                                     5,
                                     6
                                 ],
-                         "rotation":  null,
                          "faces":  {
                                        "north":  {
                                                      "uv":  [
@@ -153,7 +151,6 @@
                                     5,
                                     6
                                 ],
-                         "rotation":  null,
                          "faces":  {
                                        "north":  {
                                                      "uv":  [
@@ -222,7 +219,6 @@
                                     17,
                                     6
                                 ],
-                         "rotation":  null,
                          "faces":  {
                                        "north":  {
                                                      "uv":  [
@@ -291,7 +287,6 @@
                                     5,
                                     6
                                 ],
-                         "rotation":  null,
                          "faces":  {
                                        "north":  {
                                                      "uv":  [
@@ -360,7 +355,6 @@
                                     5,
                                     -6
                                 ],
-                         "rotation":  null,
                          "faces":  {
                                        "north":  {
                                                      "uv":  [
