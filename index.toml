@@ -86,7 +86,7 @@ hash = "de9756c83bd304ecf034a143a4de5be22cd89e6167fdcfdc29088379cad7ad8e"
 
 [[files]]
 file = "artifacts/gangshats-1.0.0.jar"
-hash = "0bb8fcb12474e49b07ac1f193e221351afea7be4edda834bd60b6c90abe1c277"
+hash = "266c688b4f3f5851ba9c410882fc7ec0bbc5dc4f4b0fb4c1fe61bac91dc5dbe1"
 
 [[files]]
 file = "artifacts/gangshop-1.0.0.jar"
@@ -430,7 +430,7 @@ hash = "4f4f427c325702d5f55f93dd96ddee4831fd23814d088dd1f24e1bf540637246"
 
 [[files]]
 file = "index.html"
-hash = "900521926b5422e7213d6669d6a7ba2663f1e8f6a0459988338617862bb79691"
+hash = "2dcaf3a7d8949ff5a3591c3f2de951dfd03def17e0554dca982473cad56958f5"
 
 [[files]]
 file = "mods/.gitkeep"
@@ -1108,7 +1108,7 @@ metafile = true
 
 [[files]]
 file = "mods/gangshats-direct.pw.toml"
-hash = "66fa541c1d3d32adcf0ca0c529640aff5051de01dcca37e3aa3f2fcedb39aa52"
+hash = "e96161d99cd32534337e23c904e9cd5fbe08433dea87d73ba806c644a48817e0"
 metafile = true
 
 [[files]]
