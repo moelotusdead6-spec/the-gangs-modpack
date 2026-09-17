@@ -23,6 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.SkullItem;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.math.RotationAxis;
+import net.minecraft.util.Identifier;
 
 public class GangsHatFeatureRenderer
         extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
@@ -48,6 +49,9 @@ public class GangsHatFeatureRenderer
     public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light,
             AbstractClientPlayerEntity player, float limbAngle, float limbDistance, float tickDelta,
             float animationProgress, float headYaw, float headPitch) {
+        renderSelected(matrices, vertexConsumers, light, player, "hat", false);
+        renderSelected(matrices, vertexConsumers, light, player, "halo", false);
+        renderSelected(matrices, vertexConsumers, light, player, "back", true);
         ItemStack hatStack = player.getEquippedStack(EquipmentSlot.HEAD);
         if (isWing(hatStack)) {
             renderWing(matrices, vertexConsumers, light, player, hatStack);
@@ -75,6 +79,35 @@ public class GangsHatFeatureRenderer
             }
         }
 
+        matrices.pop();
+    }
+
+    private void renderSelected(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light,
+            AbstractClientPlayerEntity player, String slot, boolean back) {
+        String rewardId = ClientCosmeticState.selected(slot);
+        if (rewardId == null) {
+            return;
+        }
+        Item item = Registries.ITEM.get(new Identifier(rewardId));
+        if (item == net.minecraft.item.Items.AIR) {
+            return;
+        }
+        ItemStack stack = new ItemStack(item);
+        matrices.push();
+        if (back) {
+            getContextModel().body.rotate(matrices);
+            matrices.translate(0.0D, 0.05D, 0.24D);
+            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180.0F));
+            matrices.scale(0.75F, 0.75F, 0.75F);
+        } else {
+            getContextModel().head.rotate(matrices);
+            matrices.translate(0.0D, slot.equals("halo") ? -0.85D : -0.72D, 0.0D);
+            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180.0F));
+            float scale = slot.equals("halo") ? 0.65F : CROWN_HAT_SCALE;
+            matrices.scale(scale, scale, scale);
+        }
+        itemRenderer.renderItem(player, stack, ModelTransformationMode.HEAD, false, matrices, vertexConsumers,
+                player.getWorld(), light, OverlayTexture.DEFAULT_UV, player.getId());
         matrices.pop();
     }
 

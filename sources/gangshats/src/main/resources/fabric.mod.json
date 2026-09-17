@@ -3,7 +3,7 @@
 	"id": "gangshats",
 	"version": "${version}",
 	"name": "Gangs Hats",
-	"description": "Adds a /hat command and custom head-slot rendering for The Gangs Modpack.",
+	"description": "Adds hats, cosmetic and pet keys, and custom cosmetic rendering for The Gangs Modpack.",
 	"authors": [
 		"moelotusdead6-spec"
 	],

@@ -1,5 +1,5 @@
 loot give @s loot gangs:kits/weekly_2
-cosmeticgiveinternal @s
+cosmetickeyinternal @s
 lp user @s permission set kits.kit.2_weekly_2 false
 scoreboard players set @s gangs_claimed_w2 1
 scoreboard players set @s gangs_perm_w2 0

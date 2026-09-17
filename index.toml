@@ -89,6 +89,10 @@ file = "artifacts/gangshats-1.0.0.jar"
 hash = "a75ad97d0281940bcde8c18a31204eac2d2dac9e70dc80b3f8d0c024ce88b0f7"
 
 [[files]]
+file = "artifacts/gangshats-1.0.1.jar"
+hash = "fdc14c274573b268c4b20eacef2ddbda8f2ebbd29434c5a0bea148e5fcd173c7"
+
+[[files]]
 file = "artifacts/gangshop-1.0.0.jar"
 hash = "ac1dd4608293defe70ac6cd68f60a20269d4db2f47ff32a613183e1eb0e4067f"
 
@@ -330,19 +334,19 @@ hash = "dff84a09cf561889823a1ef8aab5115c28b8f63d5242f8c42e5988f0d376cd7a"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/do_claim_m.mcfunction"
-hash = "ec82402f0d6094c8d1e5f04cfca78f09843fb65c445efa361831ded9c238de5f"
+hash = "03b5b7708566695b46b0d7a71936c554fb73310f2b3383783035925f5900fb35"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/do_claim_w1.mcfunction"
-hash = "2e2ad96e8063ff456a2462b2439ae35afe232a322d9c4bdd7fb28c359cca5826"
+hash = "6822bdf0d8a04a6730ae82081ba3738c0ce634eaca330a604ff8d2837705d136"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/do_claim_w2.mcfunction"
-hash = "84758ef58c9d2cd198cb846a9746f628077fdf4540e57cab1dcf61c8ed0bc713"
+hash = "8cdf537cbc47b0ac2ba73e58a6bd9db491f55a2bcae5edb62fccaf2fc77352df"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/do_claim_w3.mcfunction"
-hash = "d4a92249153e643c20e080580790a3627507115c2923aaaf996e00122e5d5755"
+hash = "b38241f1d0d463e77536fc7c4aa8804a183fab916d585210233a855f5e7d17f1"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/init_player.mcfunction"
@@ -434,7 +438,7 @@ hash = "4f4f427c325702d5f55f93dd96ddee4831fd23814d088dd1f24e1bf540637246"
 
 [[files]]
 file = "index.html"
-hash = "03fbe88ae64c5aecbcdd21b49f450a5980a5967f7884d17d5dd2c6f6379d9d10"
+hash = "18ac75558728bc0a11f6cf09e6db01cbf04fd079a4872d9b1cfac0599f8c036f"
 
 [[files]]
 file = "mods/.gitkeep"
@@ -1112,7 +1116,7 @@ metafile = true
 
 [[files]]
 file = "mods/gangshats-direct.pw.toml"
-hash = "b55895663f9bd51e90d903b877d27c33455ab9a558f1d18bdd87088941854cc0"
+hash = "2e2161e7da1b8eaa4dd7aff8a8b8521388bc3a1cab883117dfec13b09c633ce0"
 metafile = true
 
 [[files]]
