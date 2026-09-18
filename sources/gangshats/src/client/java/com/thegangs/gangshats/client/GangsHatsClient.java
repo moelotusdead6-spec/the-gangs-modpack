@@ -17,7 +17,8 @@ public class GangsHatsClient implements ClientModInitializer {
                 (client, handler, buffer, responseSender) -> {
                     String slot = buffer.readString();
                     String rewardId = buffer.readString();
-                    client.execute(() -> ClientCosmeticState.select(slot, rewardId));
+                    java.util.UUID playerId = buffer.readUuid();
+                    client.execute(() -> ClientCosmeticState.select(playerId, slot, rewardId));
                 });
         LivingEntityFeatureRendererRegistrationCallback.EVENT
                 .register((entityType, entityRenderer, registrationHelper, context) -> {

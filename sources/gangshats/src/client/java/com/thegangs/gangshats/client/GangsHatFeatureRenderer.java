@@ -84,7 +84,7 @@ public class GangsHatFeatureRenderer
 
     private void renderSelected(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light,
             AbstractClientPlayerEntity player, String slot, boolean back) {
-        String rewardId = ClientCosmeticState.selected(slot);
+        String rewardId = ClientCosmeticState.selected(player.getUuid(), slot);
         if (rewardId == null) {
             return;
         }

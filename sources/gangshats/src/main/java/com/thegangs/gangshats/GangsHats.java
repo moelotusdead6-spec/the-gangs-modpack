@@ -127,6 +127,7 @@ public class GangsHats implements ModInitializer {
 		PacketByteBuf buffer = PacketByteBufs.create();
 		buffer.writeString(slot);
 		buffer.writeString(rewardId);
+		buffer.writeUuid(player.getUuid());
 		ServerPlayNetworking.send(player, COSMETIC_SELECTION_PACKET, buffer);
 	}
 

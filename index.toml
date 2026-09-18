@@ -105,6 +105,10 @@ file = "artifacts/gangshats-1.0.4.jar"
 hash = "c8e87cfd366afc71abf3b8678162e5f27dbacf736c758bfb7ed20c0e8667bf15"
 
 [[files]]
+file = "artifacts/gangshats-1.0.5.jar"
+hash = "702da75170faa0facd0f42c71b3206d9c4b28ad426b62e134549a1e413caf159"
+
+[[files]]
 file = "artifacts/gangshop-1.0.0.jar"
 hash = "ac1dd4608293defe70ac6cd68f60a20269d4db2f47ff32a613183e1eb0e4067f"
 
