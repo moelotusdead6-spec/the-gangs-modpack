@@ -153,10 +153,7 @@ public class GangsHats implements ModInitializer {
 
 	private static ItemStack createVoucher(ItemStack reward) {
 		String path = Registries.ITEM.getId(reward.getItem()).getPath();
-		Identifier voucherId = new Identifier("wildernature", path.startsWith("pet_") ? "leveling_contract"
-				: path.startsWith("wing_") ? "uncommon_contract" : path.startsWith("sword_") ? "rare_contract"
-						: "common_contract");
-		ItemStack voucher = new ItemStack(Registries.ITEM.get(voucherId));
+		ItemStack voucher = new ItemStack(CosmeticItems.COSMETIC_VOUCHER);
 		voucher.getOrCreateNbt().putBoolean(VOUCHER_TAG, true);
 		voucher.getOrCreateNbt().putString(VOUCHER_REWARD_TAG, Registries.ITEM.getId(reward.getItem()).toString());
 		voucher.setCustomName(Text.literal("Cosmetic Voucher: ").append(reward.getName()));

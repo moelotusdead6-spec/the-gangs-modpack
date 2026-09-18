@@ -1,7 +1,4 @@
 loot give @s loot gangs:kits/monthly
-cosmetickeyinternal @s
-cosmetickeyinternal @s
-cosmetickeyinternal @s
 rc monthly_bow_staff @s 1
 rc monthly_trinket_gem_totem @s 1
 lp user @s permission set kits.kit.4_monthly false

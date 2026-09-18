@@ -60,6 +60,7 @@ public final class CosmeticItems {
 	public static final Item PET_TRANS_BEE = register("pet_trans_bee");
 
 	public static final Item COSMETIC_KEY = register("cosmetic_key", new FabricItemSettings().maxCount(16));
+	public static final Item COSMETIC_VOUCHER = register("cosmetic_voucher", new FabricItemSettings().maxCount(16));
 
 	public static final ItemGroup GROUP = Registry.register(Registries.ITEM_GROUP,
 			new Identifier(GangsHats.MOD_ID, "cosmetics"), FabricItemGroup.builder()
@@ -67,6 +68,7 @@ public final class CosmeticItems {
 					.icon(() -> new ItemStack(HALO_BLUE))
 					.entries((context, entries) -> {
 						entries.add(COSMETIC_KEY);
+						entries.add(COSMETIC_VOUCHER);
 						all().forEach(entries::add);
 					})
 					.build());
