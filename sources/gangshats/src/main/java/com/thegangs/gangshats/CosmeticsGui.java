@@ -43,15 +43,11 @@ public final class CosmeticsGui {
 		if (player == null) {
 			return;
 		}
-		int removed = 0;
-		for (net.minecraft.server.world.ServerWorld world : player.getServer().getWorlds()) {
-			for (GangPetEntity pet : world.getEntitiesByType(PetEntities.GANG_PET,
-					entity -> entity.belongsTo(player.getUuid()))) {
-				pet.discard();
-				removed++;
-			}
-		}
-		player.sendMessage(Text.literal(removed == 0 ? "No active pet to dismiss." : "Pet dismissed."), false);
+		CosmeticUnlockState state = CosmeticUnlockState.get(player.getServer());
+		boolean hadPet = state.selected(player.getUuid(), "pet") != null;
+		state.clear(player.getUuid(), "pet");
+		PetService.despawn(player);
+		player.sendMessage(Text.literal(hadPet ? "Pet dismissed." : "No active pet to dismiss."), false);
 	}
 
 	private static final class MenuHandler extends ScreenHandler {
@@ -81,7 +77,7 @@ public final class CosmeticsGui {
 		}
 
 		private void populate() {
-			CosmeticUnlockState state = CosmeticUnlockState.get(player.getServerWorld());
+			CosmeticUnlockState state = CosmeticUnlockState.get(player.getServer());
 			for (Item item : CosmeticItems.all()) {
 				String path = net.minecraft.registry.Registries.ITEM.getId(item).getPath();
 				if (petsOnly != path.startsWith("pet_")) {
@@ -127,7 +123,7 @@ public final class CosmeticsGui {
 			}
 			Item item = entries.get(entryIndex);
 			String id = net.minecraft.registry.Registries.ITEM.getId(item).toString();
-			CosmeticUnlockState state = CosmeticUnlockState.get(serverPlayer.getServerWorld());
+			CosmeticUnlockState state = CosmeticUnlockState.get(serverPlayer.getServer());
 			if (!state.hasUnlock(serverPlayer.getUuid(), id)) {
 				serverPlayer.sendMessage(Text.literal("That cosmetic is locked."), false);
 				return;
@@ -137,6 +133,9 @@ public final class CosmeticsGui {
 					: path.startsWith("halo_") ? "halo" : path.startsWith("wing_") ? "back" : "weapon";
 			state.select(serverPlayer.getUuid(), slot, id);
 			GangsHats.sendSelection(serverPlayer, slot, id);
+			if (slot.equals("pet")) {
+				PetService.spawn(serverPlayer, id);
+			}
 			serverPlayer.sendMessage(Text.literal("Selected cosmetic: ").append(item.getName()), false);
 		}
 

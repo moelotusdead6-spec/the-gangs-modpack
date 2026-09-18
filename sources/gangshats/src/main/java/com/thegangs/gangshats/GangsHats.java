@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -12,6 +13,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -22,13 +24,16 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.item.Item;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
@@ -48,20 +53,23 @@ public class GangsHats implements ModInitializer {
 	private static final String HAT_PERMISSION = "gangshats.command.hat";
 	private static final String NICK_PERMISSION = "gangshats.command.nick";
 	private static final Map<UUID, Integer> BOUNCEPAD_COOLDOWNS = new HashMap<>();
-	private static final int[] COSMETIC_MODEL_DATA = {
-			9000, 9001, 9002, 9003, 9004, 9005, 9006, 9007, 9008, 9009, 9010, 9011,
-			10000, 10001, 10002, 10003, 10004, 10005,
-			6181, 6182, 6183, 6184, 6185, 6186, 6187
-	};
-	private static final int[] SWORD_MODEL_DATA = {20000, 20001, 20002};
+	private static final int PET_SYNC_INTERVAL = 40;
+	private static int petSyncTicks;
 
 	@Override
 	public void onInitialize() {
+		CosmeticItems.init();
 		PetEntities.register();
 		Bouncepads.register();
 		CommandRegistrationCallback.EVENT.register(GangsHats::registerCommands);
 		ServerTickEvents.END_SERVER_TICK.register(GangsHats::tickPets);
-		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> sendSelections(handler.player));
+		ServerLifecycleEvents.SERVER_STARTED.register(GangsHats::removeLegacyPets);
+		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+			removeLegacyPets(server);
+			sendSelections(handler.player);
+			PetService.reconcile(handler.player);
+		});
+		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> PetService.despawn(handler.player));
 		UseItemCallback.EVENT.register((player, world, hand) -> {
 			ItemStack stack = player.getStackInHand(hand);
 			if (world.isClient || !(player instanceof ServerPlayerEntity serverPlayer)) {
@@ -73,32 +81,39 @@ public class GangsHats implements ModInitializer {
 			if (!isRedeemKey(stack)) {
 				return TypedActionResult.pass(stack);
 			}
-			ItemStack reward = new ItemStack(CosmeticItems.all().get(ThreadLocalRandom.current().nextInt(CosmeticItems.all().size())));
-			String rewardId = Registries.ITEM.getId(reward.getItem()).toString();
-			boolean firstUnlock = CosmeticUnlockState.get(serverPlayer.getServerWorld()).unlock(serverPlayer.getUuid(), rewardId);
-			if (!serverPlayer.getAbilities().creativeMode) {
-				stack.decrement(1);
-			}
-			if (!firstUnlock) {
-				ItemStack voucher = createVoucher(reward);
-				if (!serverPlayer.giveItemStack(voucher)) {
-					serverPlayer.dropItem(voucher, false);
-				}
-				serverPlayer.sendMessage(Text.literal("Duplicate reward voucher: ").append(reward.getName()), false);
-				return TypedActionResult.success(stack);
-			}
-			if (!serverPlayer.giveItemStack(reward)) {
-				serverPlayer.dropItem(reward, false);
-			}
-			Text result = firstUnlock ? Text.literal("Unlocked cosmetic: ").append(reward.getName())
-					: Text.literal("Duplicate cosmetic roll: ").append(reward.getName());
-			serverPlayer.sendMessage(result, false);
-			return TypedActionResult.success(stack);
+			return redeemKey(serverPlayer, stack);
 		});
 	}
 
+	private static TypedActionResult<ItemStack> redeemKey(ServerPlayerEntity player, ItemStack key) {
+		List<Item> pool = CosmeticItems.all();
+		ItemStack reward = new ItemStack(pool.get(ThreadLocalRandom.current().nextInt(pool.size())));
+		String rewardId = Registries.ITEM.getId(reward.getItem()).toString();
+		boolean firstUnlock = CosmeticUnlockState.get(player.getServer()).unlock(player.getUuid(), rewardId);
+		if (!player.getAbilities().creativeMode) {
+			key.decrement(1);
+		}
+		ItemStack payout = firstUnlock ? reward : createVoucher(reward);
+		if (!player.giveItemStack(payout)) {
+			player.dropItem(payout, false);
+		}
+		player.sendMessage(Text.literal(firstUnlock ? "Unlocked cosmetic: " : "Duplicate reward voucher: ")
+				.append(reward.getName()), false);
+		return TypedActionResult.success(key);
+	}
+
+	// Clears invisible armor-stand pets left behind by the pre-entity cosmetic system.
+	private static void removeLegacyPets(MinecraftServer server) {
+		for (ServerWorld world : server.getWorlds()) {
+			for (ArmorStandEntity stand : world.getEntitiesByType(EntityType.ARMOR_STAND,
+					entity -> entity.getCommandTags().contains("gangs_pet"))) {
+				stand.discard();
+			}
+		}
+	}
+
 	private static void sendSelections(ServerPlayerEntity player) {
-		CosmeticUnlockState state = CosmeticUnlockState.get(player.getServerWorld());
+		CosmeticUnlockState state = CosmeticUnlockState.get(player.getServer());
 		for (String slot : new String[] {"hat", "halo", "back", "weapon", "pet"}) {
 			String rewardId = state.selected(player.getUuid(), slot);
 			if (rewardId == null) {
@@ -116,17 +131,19 @@ public class GangsHats implements ModInitializer {
 	}
 
 	private static boolean isRedeemKey(ItemStack stack) {
-		if (stack.isEmpty() || stack.getItem() != Registries.ITEM.get(TEMPEST_ID)) {
+		if (stack.isEmpty()) {
 			return false;
 		}
-		return stack.getNbt() != null && stack.getNbt().getBoolean(REDEEM_KEY_TAG);
+		if (stack.isOf(CosmeticItems.COSMETIC_KEY)) {
+			return true;
+		}
+		// Keys issued before 1.0.2 were NBT-marked Simply Swords Tempest stacks.
+		return stack.getItem() == Registries.ITEM.get(TEMPEST_ID)
+				&& stack.getNbt() != null && stack.getNbt().getBoolean(REDEEM_KEY_TAG);
 	}
 
 	private static ItemStack createRedeemKey() {
-		ItemStack key = new ItemStack(Registries.ITEM.get(TEMPEST_ID));
-		key.getOrCreateNbt().putBoolean(REDEEM_KEY_TAG, true);
-		key.setCustomName(Text.literal("Cosmetic & Pet Key"));
-		return key;
+		return new ItemStack(CosmeticItems.COSMETIC_KEY);
 	}
 
 	private static boolean isVoucher(ItemStack stack) {
@@ -153,7 +170,7 @@ public class GangsHats implements ModInitializer {
 			player.sendMessage(Text.literal("This voucher is invalid."), false);
 			return TypedActionResult.fail(voucher);
 		}
-		CosmeticUnlockState.get(player.getServerWorld()).unlock(player.getUuid(), rewardId);
+		CosmeticUnlockState.get(player.getServer()).unlock(player.getUuid(), rewardId);
 		if (!player.getAbilities().creativeMode) {
 			voucher.decrement(1);
 		}
@@ -178,6 +195,11 @@ public class GangsHats implements ModInitializer {
 				.requires(source -> source.hasPermissionLevel(2))
 				.then(CommandManager.argument("player", EntityArgumentType.player())
 						.executes(context -> giveCosmeticKey(EntityArgumentType.getPlayer(context, "player")))));
+		dispatcher.register(CommandManager.literal("cosmetic")
+				.requires(source -> source.hasPermissionLevel(2))
+				.then(CommandManager.literal("key")
+						.then(CommandManager.argument("player", EntityArgumentType.player())
+							.executes(context -> giveCosmeticKey(EntityArgumentType.getPlayer(context, "player"))))));
 		dispatcher.register(CommandManager.literal("cosmetickeyinternal")
 				.then(CommandManager.argument("player", EntityArgumentType.player())
 						.executes(context -> giveCosmeticKey(EntityArgumentType.getPlayer(context, "player")))));
@@ -298,19 +320,17 @@ public class GangsHats implements ModInitializer {
 		return 1;
 	}
 
-	private static int giveRandomSword(ServerPlayerEntity player) {
-		int modelData = SWORD_MODEL_DATA[ThreadLocalRandom.current().nextInt(SWORD_MODEL_DATA.length)];
-		ItemStack sword = new ItemStack(Items.NETHERITE_SWORD);
-		sword.getOrCreateNbt().putInt("CustomModelData", modelData);
-		if (!player.giveItemStack(sword)) {
-			player.dropItem(sword, false);
-		}
-		player.sendMessage(Text.literal("You received a random cosmetic sword."), false);
-		return 1;
-	}
 
-	private static void tickPets(net.minecraft.server.MinecraftServer server) {
+	private static void tickPets(MinecraftServer server) {
+		petSyncTicks++;
+		boolean syncPets = petSyncTicks >= PET_SYNC_INTERVAL;
+		if (syncPets) {
+			petSyncTicks = 0;
+		}
 		for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
+			if (syncPets) {
+				PetService.reconcile(player);
+			}
 			int cooldown = BOUNCEPAD_COOLDOWNS.getOrDefault(player.getUuid(), 0);
 			if (cooldown > 0) {
 				BOUNCEPAD_COOLDOWNS.put(player.getUuid(), cooldown - 1);

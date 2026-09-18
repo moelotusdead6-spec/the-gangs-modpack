@@ -22,7 +22,6 @@ import com.elysium.goldclaim.GoldClaimMod;
 import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.text.Text;
 import net.minecraft.network.packet.c2s.play.PlayerInteractItemC2SPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
@@ -51,7 +50,6 @@ public abstract class ServerPlayNetworkHandlerMixin {
         if (mod == null) {
             return;
         }
-        this.player.sendMessage((Text)Text.literal((String)"GoldClaim debug: packet hook fired"), true);
         mod.identifyClaim(this.player, new BlockPos(this.player.getBlockX(), this.player.getBlockY(), this.player.getBlockZ()));
         ci.cancel();
     }

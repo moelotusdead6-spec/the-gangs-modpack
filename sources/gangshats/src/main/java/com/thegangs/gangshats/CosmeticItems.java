@@ -2,6 +2,7 @@ package com.thegangs.gangshats;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
@@ -10,8 +11,8 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
 public final class CosmeticItems {
 	public static final Item WING_ANGEL = register("wing_angel");
@@ -57,19 +58,33 @@ public final class CosmeticItems {
 	public static final Item PET_PAN_BEE = register("pet_pan_bee");
 	public static final Item PET_PRIDE_BEE = register("pet_pride_bee");
 	public static final Item PET_TRANS_BEE = register("pet_trans_bee");
+
+	public static final Item COSMETIC_KEY = register("cosmetic_key", new FabricItemSettings().maxCount(16));
+
 	public static final ItemGroup GROUP = Registry.register(Registries.ITEM_GROUP,
 			new Identifier(GangsHats.MOD_ID, "cosmetics"), FabricItemGroup.builder()
 					.displayName(Text.translatable("itemGroup.gangshats.cosmetics"))
 					.icon(() -> new ItemStack(HALO_BLUE))
-					.entries((context, entries) -> all().forEach(entries::add))
+					.entries((context, entries) -> {
+						entries.add(COSMETIC_KEY);
+						all().forEach(entries::add);
+					})
 					.build());
 
 	private CosmeticItems() {
 	}
 
-	public static Item register(String name) {
-		return Registry.register(Registries.ITEM, new Identifier(GangsHats.MOD_ID, name),
-				new Item(new FabricItemSettings().maxCount(1)));
+	// Must run during mod init; registering lazily from gameplay code hits a frozen registry.
+	public static void init() {
+		Objects.requireNonNull(GROUP);
+	}
+
+	private static Item register(String name) {
+		return register(name, new FabricItemSettings().maxCount(1));
+	}
+
+	private static Item register(String name, FabricItemSettings settings) {
+		return Registry.register(Registries.ITEM, new Identifier(GangsHats.MOD_ID, name), new Item(settings));
 	}
 
 	public static List<Item> all() {

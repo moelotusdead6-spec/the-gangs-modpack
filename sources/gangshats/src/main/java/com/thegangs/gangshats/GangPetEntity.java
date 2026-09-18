@@ -42,11 +42,13 @@ public final class GangPetEntity extends Entity {
 	@Override
 	public void tick() {
 		super.tick();
-		if (!(getWorld() instanceof ServerWorld serverWorld) || ownerId == null) {
+		if (!(getWorld() instanceof ServerWorld serverWorld)) {
 			return;
 		}
-		ServerPlayerEntity owner = serverWorld.getServer().getPlayerManager().getPlayer(ownerId);
+		ServerPlayerEntity owner = ownerId == null ? null
+				: serverWorld.getServer().getPlayerManager().getPlayer(ownerId);
 		if (owner == null || owner.getWorld() != serverWorld) {
+			discard();
 			return;
 		}
 		if (squaredDistanceTo(owner) > 144.0D) {

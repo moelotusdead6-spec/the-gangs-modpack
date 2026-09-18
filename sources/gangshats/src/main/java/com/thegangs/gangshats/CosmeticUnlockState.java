@@ -58,6 +58,13 @@ public final class CosmeticUnlockState extends PersistentState {
 		return selected.getOrDefault(playerId, Map.of()).get(slot);
 	}
 
+	public void clear(UUID playerId, String slot) {
+		Map<String, String> slots = selected.get(playerId);
+		if (slots != null && slots.remove(slot) != null) {
+			markDirty();
+		}
+	}
+
 	@Override
 	public NbtCompound writeNbt(NbtCompound nbt) {
 		NbtList players = new NbtList();
@@ -76,8 +83,9 @@ public final class CosmeticUnlockState extends PersistentState {
 		return nbt;
 	}
 
-	public static CosmeticUnlockState get(net.minecraft.server.world.ServerWorld world) {
-		return world.getPersistentStateManager().getOrCreate(CosmeticUnlockState::fromNbt,
+	// Always stored on the overworld so unlocks survive dimension changes such as the hub.
+	public static CosmeticUnlockState get(net.minecraft.server.MinecraftServer server) {
+		return server.getOverworld().getPersistentStateManager().getOrCreate(CosmeticUnlockState::fromNbt,
 				CosmeticUnlockState::new, STATE_ID);
 	}
 }
