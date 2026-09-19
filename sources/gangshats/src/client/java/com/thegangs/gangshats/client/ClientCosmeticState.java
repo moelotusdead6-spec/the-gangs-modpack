@@ -11,6 +11,13 @@ public final class ClientCosmeticState {
 	}
 
 	public static void select(UUID playerId, String slot, String rewardId) {
+		if (rewardId.isEmpty()) {
+			Map<String, String> selections = SELECTED.get(playerId);
+			if (selections != null) {
+				selections.remove(slot);
+			}
+			return;
+		}
 		SELECTED.computeIfAbsent(playerId, ignored -> new HashMap<>()).put(slot, rewardId);
 	}
 

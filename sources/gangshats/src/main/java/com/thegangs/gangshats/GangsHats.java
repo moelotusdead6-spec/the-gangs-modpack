@@ -309,6 +309,15 @@ public class GangsHats implements ModInitializer {
 		return 1;
 	}
 
+	public static void clearCosmetics(ServerPlayerEntity player) {
+		CosmeticUnlockState state = CosmeticUnlockState.get(player.getServer());
+		for (String slot : new String[] {"hat", "halo", "back", "weapon", "pet"}) {
+			state.clear(player.getUuid(), slot);
+			sendSelection(player, slot, "");
+		}
+		PetService.despawn(player);
+	}
+
 	private static int giveCosmeticKey(ServerPlayerEntity player) {
 		ItemStack key = createRedeemKey();
 		if (!player.giveItemStack(key)) {

@@ -94,7 +94,7 @@ public final class CosmeticsGui {
 						.formatted(unlocked ? Formatting.GREEN : Formatting.DARK_GRAY));
 				menu.setStack(CONTENT_SLOTS[index], display);
 			}
-			menu.setStack(4, named(Items.BARRIER, petsOnly ? "Dismiss Pet" : "Close Collection"));
+			menu.setStack(4, named(Items.BARRIER, petsOnly ? "Dismiss Pet" : "Clear Cosmetics"));
 			menu.setStack(49, named(Items.BOOK, entries.size() + " catalog item(s)"));
 		}
 
@@ -103,8 +103,13 @@ public final class CosmeticsGui {
 			if (!(clickingPlayer instanceof ServerPlayerEntity serverPlayer) || actionType != SlotActionType.PICKUP) {
 				return;
 			}
-			if (slotIndex == 4 && petsOnly) {
-				CosmeticsGui.recall(serverPlayer);
+			if (slotIndex == 4) {
+				if (petsOnly) {
+					CosmeticsGui.recall(serverPlayer);
+				} else {
+					GangsHats.clearCosmetics(serverPlayer);
+					serverPlayer.sendMessage(Text.literal("Cosmetics cleared."), false);
+				}
 				serverPlayer.closeHandledScreen();
 				return;
 			}
