@@ -109,6 +109,10 @@ file = "artifacts/gangshats-1.0.5.jar"
 hash = "702da75170faa0facd0f42c71b3206d9c4b28ad426b62e134549a1e413caf159"
 
 [[files]]
+file = "artifacts/gangshats-1.0.6.jar"
+hash = "c4bd4ad9e6ce11244826c0cbc5ebe3c01e5986be7896132072b7203f22f12226"
+
+[[files]]
 file = "artifacts/gangshop-1.0.0.jar"
 hash = "ac1dd4608293defe70ac6cd68f60a20269d4db2f47ff32a613183e1eb0e4067f"
 
@@ -301,6 +305,18 @@ file = "config/paxi/datapacks/gangs_hub/pack.mcmeta"
 hash = "526284fe85f7465e6a5c0103a76286480112a2cf824d3ef640758683498a051d"
 
 [[files]]
+file = "config/paxi/datapacks/gangs_kits/data/a_man_with_plushies/recipes/golden_plush_box_recipe.json"
+hash = "c576d09fe3d2ba0d2f8525ab62aed2377c914fffe7e4c369eff6dafa8a8bf949"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/a_man_with_plushies/recipes/plush_box_recipe.json"
+hash = "06074134266267150bc0df89b8febcdfa71bb750699f31223fc099f3ea0ff91a"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/a_man_with_plushies/recipes/plush_box_recipe_2.json"
+hash = "06074134266267150bc0df89b8febcdfa71bb750699f31223fc099f3ea0ff91a"
+
+[[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs/loot_tables/kits/monthly.json"
 hash = "490a52cab655286297540b2f81c1e98cdd7e41676b3e891ddf607b2f4eaa487f"
 
@@ -350,19 +366,19 @@ hash = "dff84a09cf561889823a1ef8aab5115c28b8f63d5242f8c42e5988f0d376cd7a"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/do_claim_m.mcfunction"
-hash = "03b5b7708566695b46b0d7a71936c554fb73310f2b3383783035925f5900fb35"
+hash = "94fad3a104d0b8279a3e76193db2302694ac6857ecd029c42614ab175fdfcf59"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/do_claim_w1.mcfunction"
-hash = "6822bdf0d8a04a6730ae82081ba3738c0ce634eaca330a604ff8d2837705d136"
+hash = "142d191e39eee200b117de59c2a2674026143316e52a0b99d3d5f1cb88d7ac98"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/do_claim_w2.mcfunction"
-hash = "8cdf537cbc47b0ac2ba73e58a6bd9db491f55a2bcae5edb62fccaf2fc77352df"
+hash = "b7e37b5071f733f3a9a1d033c03837820b77307177d176c18d53b993022d4fa7"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/do_claim_w3.mcfunction"
-hash = "b38241f1d0d463e77536fc7c4aa8804a183fab916d585210233a855f5e7d17f1"
+hash = "8062d78296dbb7fe03ec90e0359464a3bde4b2610856df76210b00385d727916"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/init_player.mcfunction"
@@ -411,6 +427,10 @@ hash = "0bc74cfe922ae2f4e96be1e51207db7049b3c52a7888eea310e9bb23a5987fe5"
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/tags/enchantment/non_curse.json"
 hash = "975ed63fd4338c00af96aa35f048d263aaa2f80dc73e902078dc6c03bca4bca3"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/tags/items/uncraftable.json"
+hash = "3cbf8ce6ea206c72230f9876c62bc96f5bb878653607f6e83f759bacf612b898"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/minecraft/tags/functions/tick.json"
@@ -1132,7 +1152,7 @@ metafile = true
 
 [[files]]
 file = "mods/gangshats-direct.pw.toml"
-hash = "add1815ac85a1dcb40c1286d4ae8ac9f92507f454c4234b6edfe0ce979af5abe"
+hash = "7fdbac679691b6ccd8a939a3af014e8e731f422434d69699e2250d74e3a98b75"
 metafile = true
 
 [[files]]
