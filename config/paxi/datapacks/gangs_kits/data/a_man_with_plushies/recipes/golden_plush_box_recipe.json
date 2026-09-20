@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["x"],
+  "key": {
+    "x": {
+      "tag": "gangs_kits:uncraftable"
+    }
+  },
+  "result": {
+    "item": "a_man_with_plushies:golden_plush_box"
+  }
+}

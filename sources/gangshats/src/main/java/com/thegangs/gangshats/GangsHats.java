@@ -50,7 +50,6 @@ public class GangsHats implements ModInitializer {
 	public static final Identifier COSMETIC_SELECTION_PACKET = new Identifier(MOD_ID, "selection");
 	private static final String VOUCHER_REWARD_TAG = "gangshats_reward_id";
 	private static final Identifier TEMPEST_ID = new Identifier("simplyswords", "tempest");
-	private static final String HAT_PERMISSION = "gangshats.command.hat";
 	private static final String NICK_PERMISSION = "gangshats.command.nick";
 	private static final Map<UUID, Integer> BOUNCEPAD_COOLDOWNS = new HashMap<>();
 	private static final int PET_SYNC_INTERVAL = 40;
@@ -180,10 +179,13 @@ public class GangsHats implements ModInitializer {
 		Objects.requireNonNull(registryAccess);
 		Objects.requireNonNull(environment);
 		dispatcher.register(CommandManager.literal("hat")
-				.requires(source -> hasPermission(source, HAT_PERMISSION))
+				.executes(context -> equipHat(context.getSource().getPlayer())));
+		dispatcher.register(CommandManager.literal("hats")
 				.executes(context -> equipHat(context.getSource().getPlayer())));
 		dispatcher.register(CommandManager.literal("cosmetics")
 				.executes(context -> openCosmetics(context.getSource(), false)));
+		dispatcher.register(CommandManager.literal("clearcosmetics")
+				.executes(context -> clearCosmetics(context.getSource())));
 		dispatcher.register(CommandManager.literal("pets")
 				.executes(context -> openCosmetics(context.getSource(), true)));
 		dispatcher.register(CommandManager.literal("pet")
@@ -316,6 +318,17 @@ public class GangsHats implements ModInitializer {
 			sendSelection(player, slot, "");
 		}
 		PetService.despawn(player);
+	}
+
+	private static int clearCosmetics(ServerCommandSource source) {
+		ServerPlayerEntity player = source.getPlayer();
+		if (player == null) {
+			source.sendError(Text.literal("Only players can clear their cosmetics."));
+			return 0;
+		}
+		clearCosmetics(player);
+		player.sendMessage(Text.literal("Cosmetics cleared."), false);
+		return 1;
 	}
 
 	private static int giveCosmeticKey(ServerPlayerEntity player) {

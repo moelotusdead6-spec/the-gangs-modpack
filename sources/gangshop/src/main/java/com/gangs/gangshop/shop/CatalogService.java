@@ -79,7 +79,7 @@ import net.minecraft.world.EmptyBlockView;
 public class CatalogService {
     private final PriceConfigService priceConfig;
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    private static final Set<String> VANILLA_MOB_DROP_IDS = new HashSet<String>(Arrays.asList("minecraft:rotten_flesh", "minecraft:bone", "minecraft:arrow", "minecraft:string", "minecraft:spider_eye", "minecraft:gunpowder", "minecraft:slime_ball", "minecraft:magma_cream", "minecraft:ender_pearl", "minecraft:blaze_rod", "minecraft:ghast_tear", "minecraft:prismarine_shard", "minecraft:prismarine_crystals", "minecraft:shulker_shell", "minecraft:phantom_membrane", "minecraft:ink_sac", "minecraft:glow_ink_sac", "minecraft:leather", "minecraft:feather", "minecraft:rabbit_hide", "minecraft:rabbit_foot", "minecraft:porkchop", "minecraft:beef", "minecraft:chicken", "minecraft:mutton", "minecraft:rabbit", "minecraft:cod", "minecraft:salmon", "minecraft:tropical_fish", "minecraft:pufferfish", "minecraft:poppy", "minecraft:egg", "minecraft:nautilus_shell"));
+    private static final Set<String> VANILLA_MOB_DROP_IDS = new HashSet<String>(Arrays.asList("minecraft:rotten_flesh", "minecraft:bone", "minecraft:arrow", "minecraft:string", "minecraft:spider_eye", "minecraft:gunpowder", "minecraft:slime_ball", "minecraft:magma_cream", "minecraft:ender_pearl", "minecraft:blaze_rod", "minecraft:ghast_tear", "minecraft:prismarine_shard", "minecraft:prismarine_crystals", "minecraft:shulker_shell", "minecraft:phantom_membrane", "minecraft:ink_sac", "minecraft:glow_ink_sac", "minecraft:leather", "minecraft:feather", "minecraft:rabbit_hide", "minecraft:rabbit_foot", "minecraft:porkchop", "minecraft:beef", "minecraft:chicken", "minecraft:mutton", "minecraft:rabbit", "minecraft:cod", "minecraft:salmon", "minecraft:tropical_fish", "minecraft:pufferfish", "minecraft:poppy", "minecraft:egg", "minecraft:nautilus_shell", "minecraft:name_tag"));
     private static final Set<String> VANILLA_MINERAL_IDS = new HashSet<String>(Arrays.asList("minecraft:coal", "minecraft:coal_block", "minecraft:flint", "minecraft:redstone", "minecraft:redstone_block", "minecraft:redstone_ore", "minecraft:deepslate_redstone_ore", "minecraft:coal_ore", "minecraft:deepslate_coal_ore", "minecraft:raw_iron", "minecraft:iron_ingot", "minecraft:iron_block", "minecraft:raw_iron_block", "minecraft:iron_ore", "minecraft:deepslate_iron_ore", "minecraft:raw_copper", "minecraft:copper_ingot", "minecraft:copper_block", "minecraft:copper_ore", "minecraft:deepslate_copper_ore", "minecraft:raw_gold", "minecraft:gold_ingot", "minecraft:gold_block", "minecraft:raw_gold_block", "minecraft:gold_ore", "minecraft:deepslate_gold_ore", "minecraft:nether_gold_ore", "minecraft:diamond", "minecraft:diamond_block", "minecraft:diamond_ore", "minecraft:deepslate_diamond_ore", "minecraft:emerald", "minecraft:emerald_block", "minecraft:emerald_ore", "minecraft:deepslate_emerald_ore", "minecraft:lapis_lazuli", "minecraft:lapis_block", "minecraft:lapis_ore", "minecraft:deepslate_lapis_ore", "minecraft:amethyst_shard", "minecraft:amethyst_block", "minecraft:quartz", "minecraft:quartz_block", "minecraft:nether_quartz_ore"));
     private static final Set<String> VANILLA_REDSTONE_EXTRA_IDS = new HashSet<String>(Arrays.asList("minecraft:repeater", "minecraft:comparator", "minecraft:observer", "minecraft:piston", "minecraft:sticky_piston", "minecraft:dispenser", "minecraft:dropper", "minecraft:hopper", "minecraft:target", "minecraft:daylight_detector", "minecraft:tripwire_hook", "minecraft:lever", "minecraft:note_block", "minecraft:sculk_sensor", "minecraft:calibrated_sculk_sensor"));
     private static final Set<String> HARD_DENY_EXACT_IDS = new HashSet<String>(Arrays.asList("minecraft:nether_star", "minecraft:wither_skeleton_skull", "minecraft:wither_skeleton_wall_skull", "minecraft:beacon", "minecraft:bedrock", "minecraft:barrier", "minecraft:ancient_debris", "minecraft:reinforced_deepslate", "minecraft:command_block", "minecraft:chain_command_block", "minecraft:repeating_command_block", "minecraft:jigsaw", "minecraft:light", "minecraft:spawner", "minecraft:structure_void", "minecraft:structure_block", "minecraft:dragon_head", "minecraft:dragon_wall_head", "minecraft:dragon_egg", "minecraft:sniffer_egg", "minecraft:frogspawn", "minecraft:farmland", "minecraft:dirt_path", "minecraft:budding_amethyst"));
@@ -87,7 +87,7 @@ public class CatalogService {
     private static final Set<String> VANILLA_VEGETATION_GROUND_IDS = new HashSet<String>(Arrays.asList("minecraft:grass_block", "minecraft:dirt", "minecraft:coarse_dirt", "minecraft:rooted_dirt", "minecraft:podzol", "minecraft:mycelium", "minecraft:mud", "minecraft:muddy_mangrove_roots", "minecraft:moss_block", "minecraft:moss_carpet"));
     private static final Set<String> VANILLA_VEGETATION_IDS = new HashSet<String>(Arrays.asList("minecraft:azalea", "minecraft:flowering_azalea", "minecraft:carrot", "minecraft:carrots", "minecraft:carved_pumpkin", "minecraft:glow_berries", "minecraft:hanging_roots", "minecraft:lily_of_the_valley", "minecraft:pitcher_pod", "minecraft:potato", "minecraft:potatoes", "minecraft:pumpkin", "minecraft:pumpkin_stem", "minecraft:attached_pumpkin_stem", "minecraft:sugar_cane", "minecraft:sweet_berries", "minecraft:sweet_berry_bush"));
     private static final Set<String> LETS_DO_NAMESPACES = new HashSet<String>(Arrays.asList("bakery", "beachparty", "bloomingnature", "brewery", "candlelight", "doapi", "farm_and_charm", "furniture", "herbalbrews", "meadow", "vinery", "wildernature"));
-    private static final Set<String> SHOP_EXCLUDED_NAMESPACES = new HashSet<String>(Arrays.asList("advancednetherite", "alexsmobs", "bosses_of_mass_destruction", "creeperoverhaul", "crittersandcompanions", "endermanoverhaul", "ftbquests", "gobber2", "lootr", "moonlight", "mythicmetals", "paladins", "runes", "spell_engine", "spellbladenext", "universal_graves", "waystones"));
+    private static final Set<String> SHOP_EXCLUDED_NAMESPACES = new HashSet<String>(Arrays.asList("advancednetherite", "alexscaves", "alexsmobs", "bosses_of_mass_destruction", "creeperoverhaul", "crittersandcompanions", "endermanoverhaul", "ftbquests", "gobber2", "lootr", "moonlight", "paladins", "runes", "spell_engine", "spellbladenext", "universal_graves", "waystones"));
     private static final Set<String> CAMPING_BAG_IDS = new HashSet<String>(Arrays.asList("enderbag", "enderpack", "goodybag", "sheepbag", "wanderer_bag", "large_backpack", "small_backpack", "wanderer_backpack"));
     private static final Map<String, Long> MINERAL_PRICE_BY_ID = new HashMap<String, Long>();
     private final Map<ShopCategory, List<ShopEntry>> byCategory = new LinkedHashMap<ShopCategory, List<ShopEntry>>();
@@ -108,6 +108,8 @@ public class CatalogService {
 
     public void reload() {
         this.loadCategoryAllowlists();
+        boolean initializeFoodPrices = this.priceConfig.needsZeroPriceInitialization(ShopCategory.FOODS);
+        boolean initializeMetalPrices = this.priceConfig.needsZeroPriceInitialization(ShopCategory.METALS);
         this.byId.clear();
         this.byCategory.clear();
         for (ShopCategory category : ShopCategory.vanillaCategories()) {
@@ -117,7 +119,10 @@ public class CatalogService {
             ShopCategory category;
             Identifier id = Registries.ITEM.getId(item);
             if (id.getNamespace().equals("minecraft") && id.getPath().equals("air") || !this.isAllowedItem(item, id)) continue;
-            category = this.detectCategory(id);
+            category = this.detectCategory(item, id);
+            if (category == ShopCategory.FOODS && initializeFoodPrices || category == ShopCategory.METALS && initializeMetalPrices) {
+                this.priceConfig.initializeZeroPrice(id);
+            }
             long sell = this.priceConfig.ensureSellPrice(id, category, CatalogService.defaultSellPrice(id, category));
             long buy = this.priceConfig.ensureBuyPrice(id, sell);
             ShopEntry entry = new ShopEntry(id, item, category, sell, buy);
@@ -135,6 +140,12 @@ public class CatalogService {
                 int pathOrder = left.id().getPath().compareToIgnoreCase(right.id().getPath());
                 return pathOrder != 0 ? pathOrder : left.id().toString().compareToIgnoreCase(right.id().toString());
             });
+        }
+        if (initializeFoodPrices) {
+            this.priceConfig.markZeroPricesInitialized(ShopCategory.FOODS);
+        }
+        if (initializeMetalPrices) {
+            this.priceConfig.markZeroPricesInitialized(ShopCategory.METALS);
         }
         this.priceConfig.savePrices();
     }
@@ -246,11 +257,11 @@ public class CatalogService {
         if (SHOP_EXCLUDED_NAMESPACES.contains(id.getNamespace().toLowerCase())) {
             return false;
         }
-        if (item.isFood() && !(item instanceof BlockItem) && !CatalogService.isVanillaVegetation(id)) {
-            return false;
+        if (item.isFood()) {
+            return !this.priceConfig.isDenied(id);
         }
-        if (item.getFoodComponent() != null && !item.getFoodComponent().getStatusEffects().isEmpty()) {
-            return false;
+        if (CatalogService.isModdedMaterialCandidate(id)) {
+            return !this.priceConfig.isDenied(id);
         }
         if ("camping".equals(id.getNamespace()) && CAMPING_BAG_IDS.contains(id.getPath())) {
             return false;
@@ -301,6 +312,9 @@ public class CatalogService {
             return false;
         }
         String path = id.getPath().toLowerCase();
+        if ("hybrid_aquatic".equals(id.getNamespace()) && path.contains("crate")) {
+            return false;
+        }
         if (path.contains("sword") || path.contains("shield") || path.contains("helmet") || path.contains("chestplate") || path.contains("leggings") || path.contains("boots") || path.contains("elytra") || path.contains("bow") || path.contains("crossbow") || path.contains("trident")) {
             return false;
         }
@@ -438,8 +452,38 @@ public class CatalogService {
         return path.contains("ore") || path.contains("raw_") || path.contains("ingot") || path.contains("nugget") || path.contains("gem") || path.contains("shard") || path.contains("crystal") || path.contains("dust");
     }
 
+    private static boolean isModdedMaterialCandidate(Identifier id) {
+        if ("minecraft".equals(id.getNamespace())) {
+            return false;
+        }
+        String path = id.getPath().toLowerCase();
+        if (path.endsWith("_ore") || path.contains("_ore_") || path.startsWith("ore_") || path.endsWith("_ingot") || path.endsWith("_bar") || path.endsWith("_bars") || path.startsWith("raw_") || path.endsWith("_nugget")) {
+            return true;
+        }
+        if (path.endsWith("_block")) {
+            String base = path.substring(0, path.length() - "_block".length());
+            return CatalogService.itemExists(id.getNamespace(), base) || CatalogService.itemExists(id.getNamespace(), base + "_ingot") || CatalogService.itemExists(id.getNamespace(), "raw_" + base) || CatalogService.itemExists(id.getNamespace(), base + "_nugget") || CatalogService.itemExists(id.getNamespace(), base + "_ore");
+        }
+        // bare metal name (e.g. "unobtainium") acting as the raw variant of its block
+        return CatalogService.itemExists(id.getNamespace(), path + "_block");
+    }
+
+    private static boolean isMythicMetal(Identifier id) {
+        return "mythicmetals".equals(id.getNamespace()) && CatalogService.isModdedMaterialCandidate(id);
+    }
+
+    private static boolean itemExists(String namespace, String path) {
+        return Registries.ITEM.containsId(new Identifier(namespace, path));
+    }
+
     private static long defaultSellPrice(Identifier id, ShopCategory category) {
         String itemId = id.toString();
+        if (category == ShopCategory.FOODS || category == ShopCategory.METALS) {
+            return 0L;
+        }
+        if ("minecraft:name_tag".equals(itemId)) {
+            return 1128L;
+        }
         if ("openblocks:elevator_block".equals(itemId)) {
             return 5000L;
         }
@@ -453,11 +497,23 @@ public class CatalogService {
             return 5L;
         }
         if (category == ShopCategory.MINERALS) {
-            return MINERAL_PRICE_BY_ID.getOrDefault(itemId, 60L);
+            long mineralPrice = MINERAL_PRICE_BY_ID.getOrDefault(itemId, 60L);
+            return itemId.contains("redstone") ? Math.round((double)mineralPrice * 1.1) : mineralPrice;
         }
         long base = category.isModded() ? 25L : CatalogService.vanillaBasePrice(category);
         String path = id.getPath().toLowerCase();
-        if (path.contains("log") || path.contains("planks") || path.contains("wood") || path.contains("bark")) {
+        if (category == ShopCategory.REDSTONE) {
+            base = Math.round((double)base * 1.1);
+        } else if (category.isModded() && "letsdo".equals(category.getId())) {
+            base = Math.round((double)base * 1.1);
+        }
+        if ((path.contains("greenhouse") || id.getNamespace().toLowerCase().contains("greenhouse")) && (path.contains("glass") || path.contains("pane"))) {
+            base *= 4L;
+        } else if (path.contains("stripped") && (path.contains("log") || path.contains("wood") || path.contains("stem") || path.contains("hyphae"))) {
+            base = (category.isModded() ? 25L : 20L) + 5L;
+        } else if (path.contains("sign") || path.contains("fence_gate") || path.contains("fence")) {
+            base = (category.isModded() ? 25L : 20L) + 10L;
+        } else if (path.contains("log") || path.contains("planks") || path.contains("wood") || path.contains("bark")) {
             base = 20L;
         } else if (path.contains("cobble") || path.contains("stone") || path.contains("sand") || path.contains("gravel")) {
             base = 5L;
@@ -471,9 +527,15 @@ public class CatalogService {
         return Math.max(1L, base);
     }
 
-    private ShopCategory detectCategory(Identifier id) {
+    private ShopCategory detectCategory(Item item, Identifier id) {
         String namespace = id.getNamespace().toLowerCase();
         String path = id.getPath().toLowerCase();
+        if (item.isFood()) {
+            return ShopCategory.FOODS;
+        }
+        if (CatalogService.isMythicMetal(id)) {
+            return ShopCategory.METALS;
+        }
         if (!"minecraft".equals(namespace)) {
             if ("openblocks".equals(namespace) && "elevator_block".equals(path)) {
                 return ShopCategory.CRAFTED_ITEMS;
@@ -653,6 +715,10 @@ public class CatalogService {
 
     public ShopEntry getEntry(Identifier id) {
         return this.byId.get(id);
+    }
+
+    public boolean isBuyingEnabled(ShopCategory category) {
+        return this.priceConfig.isCategoryBuyEnabled(category);
     }
 
     public int getEntryCount() {

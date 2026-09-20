@@ -2,7 +2,7 @@
 
 `artifacts/goldclaim-1.0.7.jar` is the server-only GoldClaim build used by this pack. It supplies hub protection and dimension routing; clients do not download it.
 
-`artifacts/gangsboots-1.0.2.jar` is a first-party Gangs Boots build. Its required CC-BY 4.0 attribution is in `artifacts/gangsboots-ATTRIBUTION.txt`.
+`artifacts/gangsboots-1.0.3.jar` is a first-party Gangs Boots build. Its required CC-BY 4.0 attribution is in `artifacts/gangsboots-ATTRIBUTION.txt`.
 
 `artifacts/gangshats-1.0.0.jar` is a first-party Gangs Hats build. Its source is maintained in `sources/gangshats`; it provides the Fabric-native cosmetic, pet, and bouncepad features.
 

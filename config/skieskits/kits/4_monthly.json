@@ -2,7 +2,7 @@
   "display_name": "Monthly",
   "permission": "kits.kit.4_monthly",
   "cooldown": 0,
-  "max_uses": 0,
+  "max_uses": 1,
   "on_join": false,
   "notifications": false,
   "items": [],
@@ -10,7 +10,7 @@
     "claimed": {
       "run_claim": {
         "type": "COMMAND_CONSOLE",
-        "commands": ["execute as %player% at %player% run function gangs_fixes:kits/claim_monthly"]
+        "commands": ["execute as %player% at %player% run function gangs_kits:claim_monthly"]
       }
     }
   }

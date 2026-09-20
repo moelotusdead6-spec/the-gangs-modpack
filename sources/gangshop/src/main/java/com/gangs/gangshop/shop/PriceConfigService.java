@@ -38,6 +38,8 @@ public class PriceConfigService {
     private final Map<String, Long> itemSellPrices = new HashMap<String, Long>();
     private final Map<String, Long> itemBuyPrices = new HashMap<String, Long>();
     private final Map<ShopCategory, Double> categoryMultipliers = new HashMap<ShopCategory, Double>();
+    private final Map<ShopCategory, Boolean> categoryBuyEnabled = new HashMap<ShopCategory, Boolean>();
+    private final Set<ShopCategory> zeroPriceCategoriesInitialized = new HashSet<ShopCategory>();
     private final Map<String, Long> itemSellOverrides = new HashMap<String, Long>();
     private final Set<String> denyItems = new HashSet<String>();
     private double globalSellMultiplier = 1.0;
@@ -45,19 +47,24 @@ public class PriceConfigService {
     private Path configDir;
     private Path pricesFile;
     private Path overridesFile;
+    private Path categorySettingsFile;
 
     public void load() {
         this.configDir = FabricLoader.getInstance().getConfigDir().resolve("gangshop");
         this.pricesFile = this.configDir.resolve("prices.json");
         this.overridesFile = this.configDir.resolve("overrides.json");
+        this.categorySettingsFile = this.configDir.resolve("category_settings.json");
         this.itemSellPrices.clear();
         this.categoryMultipliers.clear();
+        this.categoryBuyEnabled.clear();
+        this.zeroPriceCategoriesInitialized.clear();
         this.itemSellOverrides.clear();
         this.denyItems.clear();
         this.globalSellMultiplier = 1.0;
         this.moddedBlocksSellMultiplier = 2.0;
         for (ShopCategory category : ShopCategory.vanillaCategories()) {
             this.categoryMultipliers.put(category, 1.0);
+            this.categoryBuyEnabled.put(category, category != ShopCategory.FOODS && category != ShopCategory.METALS);
         }
         this.denyItems.add("sarosplayerplushiemod:player_plushie");
         this.denyItems.add("sarosplayerplushiemod:player_plushie_box");
@@ -65,6 +72,7 @@ public class PriceConfigService {
             Files.createDirectories(this.configDir, new FileAttribute[0]);
             this.loadOrCreatePrices();
             this.loadOrCreateOverrides();
+            this.loadOrCreateCategorySettings();
         }
         catch (Exception e) {
             GangShopMod.LOGGER.error("Failed to load Gang Shop price configs", (Throwable)e);
@@ -88,12 +96,63 @@ public class PriceConfigService {
                     JsonElement value = (JsonElement)entry.getValue();
                     if (!value.isJsonObject()) continue;
                     JsonObject item = value.getAsJsonObject();
-                    long sell = item.has("sell") ? Math.max(1L, item.get("sell").getAsLong()) : 1L;
-                    long buy = item.has("buy") ? Math.max(1L, item.get("buy").getAsLong()) : this.buyFromSell(sell);
+                    long sell = item.has("sell") ? Math.max(0L, item.get("sell").getAsLong()) : 0L;
+                    long buy = item.has("buy") ? Math.max(0L, item.get("buy").getAsLong()) : this.buyFromSell(sell);
                     this.itemSellPrices.put((String)entry.getKey(), sell);
                     this.itemBuyPrices.put((String)entry.getKey(), buy);
                 }
             }
+        }
+    }
+
+    private void loadOrCreateCategorySettings() throws Exception {
+        if (!Files.exists(this.categorySettingsFile, new LinkOption[0])) {
+            this.saveCategorySettings();
+            return;
+        }
+        try (BufferedReader reader = Files.newBufferedReader(this.categorySettingsFile, StandardCharsets.UTF_8);){
+            JsonObject root = (JsonObject)GSON.fromJson((Reader)reader, JsonObject.class);
+            if (root == null || !root.has("buyEnabled") || !root.get("buyEnabled").isJsonObject()) {
+                this.saveCategorySettings();
+                return;
+            }
+            JsonObject buyEnabled = root.getAsJsonObject("buyEnabled");
+            for (ShopCategory category : ShopCategory.vanillaCategories()) {
+                if (buyEnabled.has(category.getId())) {
+                    this.categoryBuyEnabled.put(category, buyEnabled.get(category.getId()).getAsBoolean());
+                }
+            }
+            if (root.has("zeroPricesInitialized") && root.get("zeroPricesInitialized").isJsonObject()) {
+                JsonObject initialized = root.getAsJsonObject("zeroPricesInitialized");
+                for (ShopCategory category : ShopCategory.vanillaCategories()) {
+                    if (initialized.has(category.getId()) && initialized.get(category.getId()).getAsBoolean()) {
+                        this.zeroPriceCategoriesInitialized.add(category);
+                    }
+                }
+            }
+        }
+    }
+
+    private void saveCategorySettings() {
+        if (this.categorySettingsFile == null) {
+            return;
+        }
+        JsonObject root = new JsonObject();
+        root.addProperty("version", (Number)1);
+        JsonObject buyEnabled = new JsonObject();
+        for (ShopCategory category : ShopCategory.vanillaCategories()) {
+            buyEnabled.addProperty(category.getId(), this.isCategoryBuyEnabled(category));
+        }
+        root.add("buyEnabled", (JsonElement)buyEnabled);
+        JsonObject zeroPricesInitialized = new JsonObject();
+        zeroPricesInitialized.addProperty(ShopCategory.FOODS.getId(), this.zeroPriceCategoriesInitialized.contains(ShopCategory.FOODS));
+        zeroPricesInitialized.addProperty(ShopCategory.METALS.getId(), this.zeroPriceCategoriesInitialized.contains(ShopCategory.METALS));
+        root.add("zeroPricesInitialized", (JsonElement)zeroPricesInitialized);
+        try (BufferedWriter writer = Files.newBufferedWriter(this.categorySettingsFile, StandardCharsets.UTF_8, new OpenOption[0]);){
+            GSON.toJson((JsonElement)root, (Appendable)writer);
+        }
+        catch (Exception e) {
+            GangShopMod.LOGGER.error("Failed to save category_settings.json", (Throwable)e);
         }
     }
 
@@ -167,15 +226,14 @@ public class PriceConfigService {
         if (this.itemSellOverrides.containsKey(key)) {
             base = this.itemSellOverrides.get(key);
         } else {
-            long configured = this.itemSellPrices.getOrDefault(key, -1L);
-            if (configured > 0L) {
-                return configured;
+            if (this.itemSellPrices.containsKey(key)) {
+                return this.itemSellPrices.get(key);
             }
-            base = Math.max(1L, defaultSell);
+            base = Math.max(0L, defaultSell);
         }
         double categoryMultiplier = this.categoryMultipliers.getOrDefault((Object)category, 1.0);
         double moddedMultiplier = category.isModded() ? this.moddedBlocksSellMultiplier : 1.0;
-        long adjusted = Math.max(1L, Math.round((double)base * categoryMultiplier * this.globalSellMultiplier * moddedMultiplier));
+        long adjusted = Math.max(0L, Math.round((double)base * categoryMultiplier * this.globalSellMultiplier * moddedMultiplier));
         this.itemSellPrices.put(key, adjusted);
         this.itemBuyPrices.putIfAbsent(key, this.buyFromSell(adjusted));
         return adjusted;
@@ -183,18 +241,15 @@ public class PriceConfigService {
 
     public long ensureBuyPrice(Identifier id, long sellValue) {
         String key = id.toString();
-        long buy = this.itemBuyPrices.getOrDefault(key, -1L);
-        if (buy <= 0L) {
-            buy = this.buyFromSell(sellValue);
-        }
+        long buy = this.itemBuyPrices.containsKey(key) ? this.itemBuyPrices.get(key) : this.buyFromSell(sellValue);
         this.itemBuyPrices.put(key, buy);
         return buy;
     }
 
     public void setItemPrice(Identifier id, long sell, long buy) {
         String key = id.toString();
-        this.itemSellPrices.put(key, Math.max(1L, sell));
-        this.itemBuyPrices.put(key, Math.max(1L, buy));
+        this.itemSellPrices.put(key, Math.max(0L, sell));
+        this.itemBuyPrices.put(key, Math.max(0L, buy));
         this.savePrices();
     }
 
@@ -207,7 +262,31 @@ public class PriceConfigService {
     }
 
     public long buyFromSell(long sell) {
-        return Math.max(1L, Math.round((double)sell * 1.33));
+        return Math.max(0L, Math.round((double)sell * 1.33));
+    }
+
+    public boolean isCategoryBuyEnabled(ShopCategory category) {
+        return this.categoryBuyEnabled.getOrDefault(category, true);
+    }
+
+    public void setCategoryBuyEnabled(ShopCategory category, boolean enabled) {
+        this.categoryBuyEnabled.put(category, enabled);
+        this.saveCategorySettings();
+    }
+
+    public boolean needsZeroPriceInitialization(ShopCategory category) {
+        return (category == ShopCategory.FOODS || category == ShopCategory.METALS) && !this.zeroPriceCategoriesInitialized.contains(category);
+    }
+
+    public void initializeZeroPrice(Identifier id) {
+        this.itemSellPrices.put(id.toString(), 0L);
+        this.itemBuyPrices.put(id.toString(), 0L);
+    }
+
+    public void markZeroPricesInitialized(ShopCategory category) {
+        if (this.zeroPriceCategoriesInitialized.add(category)) {
+            this.saveCategorySettings();
+        }
     }
 
     public void savePrices() {

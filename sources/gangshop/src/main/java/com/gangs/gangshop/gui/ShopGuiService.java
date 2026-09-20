@@ -122,7 +122,8 @@ public class ShopGuiService {
             int slot = CONTENT_SLOTS[i - start];
             ItemStack item = new ItemStack((ItemConvertible) entry.item());
             ItemStack named = ShopGuiService.named(item, (Text) Text.literal((String) ShopGuiService.itemName(entry.id())).formatted(Formatting.WHITE));
-            named = ShopGuiService.withLore(named, new Text[]{Text.literal((String) ("Category: " + ShopGuiService.cap(entry.category().getDisplayName()))).formatted(Formatting.GRAY), Text.literal((String) ("Sell: " + ShopGuiService.money(entry.sellPrice()) + " Gang Bucks")).formatted(Formatting.GREEN), Text.literal((String) ("Buy: " + ShopGuiService.money(entry.buyPrice()) + " Gang Bucks")).formatted(Formatting.RED), Text.literal((String) "Click to open").formatted(Formatting.YELLOW)});
+            Text buyLine = this.buyStatus(entry);
+            named = ShopGuiService.withLore(named, new Text[]{Text.literal((String) ("Category: " + ShopGuiService.cap(entry.category().getDisplayName()))).formatted(Formatting.GRAY), Text.literal((String) ("Sell: " + ShopGuiService.money(entry.sellPrice()) + " Gang Bucks")).formatted(Formatting.GREEN), buyLine, Text.literal((String) "Click to open").formatted(Formatting.YELLOW)});
             inv.setStack(slot, named);
             session.slotEntry.put(slot, entry.id());
         }
@@ -263,6 +264,10 @@ public class ShopGuiService {
         this.openCategory(player, category, page, false);
     }
 
+    public void openCategory(ServerPlayerEntity player, ShopCategory category) {
+        this.openCategory(player, category, 0, false);
+    }
+
     private void openCategory(ServerPlayerEntity player, ShopCategory category, int page, boolean preserveCursor) {
         Session session = this.getOrCreateSession(player);
         session.view = View.CATEGORY;
@@ -279,7 +284,8 @@ public class ShopGuiService {
             int slot = CONTENT_SLOTS[i - start];
             ItemStack item = new ItemStack((ItemConvertible)entry.item());
             ItemStack named = ShopGuiService.named(item, (Text)Text.literal((String)ShopGuiService.itemName(entry.id())).formatted(Formatting.WHITE));
-            named = ShopGuiService.withLore(named, new Text[]{Text.literal((String)("Sell: " + ShopGuiService.money(entry.sellPrice()) + " Gang Bucks")).formatted(Formatting.GREEN), Text.literal((String)("Buy: " + ShopGuiService.money(entry.buyPrice()) + " Gang Bucks")).formatted(Formatting.RED), Text.literal((String)"Click to open").formatted(Formatting.YELLOW)});
+            Text buyLine = this.buyStatus(entry);
+            named = ShopGuiService.withLore(named, new Text[]{Text.literal((String)("Sell: " + ShopGuiService.money(entry.sellPrice()) + " Gang Bucks")).formatted(Formatting.GREEN), buyLine, Text.literal((String)"Click to open").formatted(Formatting.YELLOW)});
             inv.setStack(slot, named);
             session.slotEntry.put(slot, entry.id());
         }
@@ -305,20 +311,25 @@ public class ShopGuiService {
         session.view = View.DETAIL;
         session.itemId = itemId;
         session.quantity = ShopGuiService.clamp(quantity, 1, 9999);
+        boolean buyingEnabled = this.canBuy(entry);
         SimpleInventory inv = ShopGuiService.emptyMenu();
         ItemStack preview = ShopGuiService.named(new ItemStack((ItemConvertible)entry.item()), (Text)Text.literal((String)ShopGuiService.itemName(entry.id())).formatted(Formatting.WHITE));
-        inv.setStack(22, ShopGuiService.withLore(preview, new Text[]{Text.literal((String)("Sell each: " + ShopGuiService.money(entry.sellPrice()))).formatted(Formatting.GREEN), Text.literal((String)("Buy each: " + ShopGuiService.money(entry.buyPrice()))).formatted(Formatting.RED), Text.literal((String)"Only placeable block/decor items are listed.").formatted(Formatting.DARK_GRAY)}));
-        inv.setStack(18, ShopGuiService.named(new ItemStack((ItemConvertible)Items.RED_STAINED_GLASS_PANE), (Text)Text.literal((String)"-1").formatted(Formatting.RED)));
-        inv.setStack(19, ShopGuiService.named(new ItemStack((ItemConvertible)Items.RED_STAINED_GLASS_PANE), (Text)Text.literal((String)"-64").formatted(Formatting.RED)));
-        inv.setStack(20, ShopGuiService.named(new ItemStack((ItemConvertible)Items.RED_STAINED_GLASS_PANE), (Text)Text.literal((String)"-999").formatted(Formatting.RED)));
-        inv.setStack(24, ShopGuiService.named(new ItemStack((ItemConvertible)Items.LIME_STAINED_GLASS_PANE), (Text)Text.literal((String)"+1").formatted(Formatting.GREEN)));
-        inv.setStack(25, ShopGuiService.named(new ItemStack((ItemConvertible)Items.LIME_STAINED_GLASS_PANE), (Text)Text.literal((String)"+64").formatted(Formatting.GREEN)));
-        inv.setStack(26, ShopGuiService.named(new ItemStack((ItemConvertible)Items.LIME_STAINED_GLASS_PANE), (Text)Text.literal((String)"+999").formatted(Formatting.GREEN)));
-        inv.setStack(31, ShopGuiService.withLore(ShopGuiService.named(new ItemStack((ItemConvertible)Items.PAPER), (Text)Text.literal((String)("Quantity: " + session.quantity)).formatted(Formatting.GOLD)), new Text[]{Text.literal((String)"Buy up to 9999 in one go").formatted(Formatting.GRAY), Text.literal((String)"Sell removes every matching item in your inventory").formatted(Formatting.GRAY)}));
-        long buyTotal = entry.buyPrice() * (long)session.quantity;
+        Text buyLine = buyingEnabled ? Text.literal((String)("Buy each: " + ShopGuiService.money(entry.buyPrice()))).formatted(Formatting.RED) : this.buyStatus(entry);
+        inv.setStack(22, ShopGuiService.withLore(preview, new Text[]{Text.literal((String)("Sell each: " + ShopGuiService.money(entry.sellPrice()))).formatted(Formatting.GREEN), buyLine}));
+        if (buyingEnabled) {
+            inv.setStack(18, ShopGuiService.named(new ItemStack((ItemConvertible)Items.RED_STAINED_GLASS_PANE), (Text)Text.literal((String)"-1").formatted(Formatting.RED)));
+            inv.setStack(19, ShopGuiService.named(new ItemStack((ItemConvertible)Items.RED_STAINED_GLASS_PANE), (Text)Text.literal((String)"-64").formatted(Formatting.RED)));
+            inv.setStack(20, ShopGuiService.named(new ItemStack((ItemConvertible)Items.RED_STAINED_GLASS_PANE), (Text)Text.literal((String)"-999").formatted(Formatting.RED)));
+            inv.setStack(24, ShopGuiService.named(new ItemStack((ItemConvertible)Items.LIME_STAINED_GLASS_PANE), (Text)Text.literal((String)"+1").formatted(Formatting.GREEN)));
+            inv.setStack(25, ShopGuiService.named(new ItemStack((ItemConvertible)Items.LIME_STAINED_GLASS_PANE), (Text)Text.literal((String)"+64").formatted(Formatting.GREEN)));
+            inv.setStack(26, ShopGuiService.named(new ItemStack((ItemConvertible)Items.LIME_STAINED_GLASS_PANE), (Text)Text.literal((String)"+999").formatted(Formatting.GREEN)));
+            inv.setStack(42, ShopGuiService.withLore(ShopGuiService.named(new ItemStack((ItemConvertible)Items.GREEN_STAINED_GLASS_PANE), (Text)Text.literal((String)"Buy").formatted(Formatting.GREEN)), new Text[]{Text.literal((String)("Total: " + ShopGuiService.money(entry.buyPrice() * (long)session.quantity) + " Gang Bucks")).formatted(Formatting.GRAY)}));
+        } else {
+            inv.setStack(42, ShopGuiService.named(new ItemStack((ItemConvertible)Items.BARRIER), Text.literal("Buying Disabled").formatted(Formatting.RED)));
+        }
+        inv.setStack(31, ShopGuiService.withLore(ShopGuiService.named(new ItemStack((ItemConvertible)Items.PAPER), (Text)Text.literal((String)("Quantity: " + session.quantity)).formatted(Formatting.GOLD)), new Text[]{Text.literal((String)"Sell removes every matching item in your inventory").formatted(Formatting.GRAY)}));
         int sellQuantity = ShopGuiService.countItem(player, entry.item());
         long sellTotal = entry.sellPrice() * (long)sellQuantity;
-        inv.setStack(42, ShopGuiService.withLore(ShopGuiService.named(new ItemStack((ItemConvertible)Items.GREEN_STAINED_GLASS_PANE), (Text)Text.literal((String)"Buy").formatted(Formatting.GREEN)), new Text[]{Text.literal((String)("Total: " + ShopGuiService.money(buyTotal) + " Gang Bucks")).formatted(Formatting.GRAY)}));
         inv.setStack(38, ShopGuiService.withLore(ShopGuiService.named(new ItemStack((ItemConvertible)Items.RED_STAINED_GLASS_PANE), (Text)Text.literal((String)"ALL").formatted(Formatting.RED)), new Text[]{Text.literal((String)("Sell all: " + sellQuantity)).formatted(Formatting.GRAY), Text.literal((String)("Total: " + ShopGuiService.money(sellTotal) + " Gang Bucks")).formatted(Formatting.GRAY)}));
         inv.setStack(49, ShopGuiService.named(new ItemStack((ItemConvertible)Items.BEACON), (Text)Text.literal((String)"Back To Category").formatted(Formatting.AQUA)));
         inv.setStack(4, this.balanceToken(player));
@@ -498,6 +509,12 @@ public class ShopGuiService {
             quantity += 999;
         }
         if (slot == 42) {
+            ShopEntry entry = this.catalog.getEntry(session.itemId);
+            if (entry == null || !this.canBuy(entry)) {
+                player.sendMessage(Text.literal("Buying is disabled or this item has no buy price.").formatted(Formatting.RED), false);
+                ShopGuiService.sound(player, false);
+                return;
+            }
             this.openConfirm(player, true);
             ShopGuiService.sound(player, true);
             return;
@@ -618,9 +635,9 @@ public class ShopGuiService {
             return;
         }
         if (adjustment.sellPrice()) {
-            session.adminSell = Math.max(1L, session.adminSell + adjustment.amount());
+            session.adminSell = Math.max(0L, session.adminSell + adjustment.amount());
         } else {
-            session.adminBuy = Math.max(1L, session.adminBuy + adjustment.amount());
+            session.adminBuy = Math.max(0L, session.adminBuy + adjustment.amount());
         }
         ShopGuiService.sound(player, true);
         this.openAdminItemDetail(player, session.itemId, false);
@@ -649,6 +666,11 @@ public class ShopGuiService {
     }
 
     private void performBuy(ServerPlayerEntity player, ShopEntry entry, int quantity) {
+        if (!this.canBuy(entry)) {
+            player.sendMessage(Text.literal("Buying is disabled or this item has no buy price.").formatted(Formatting.RED), false);
+            ShopGuiService.sound(player, false);
+            return;
+        }
         if (quantity <= 0 || quantity > 9999) {
             player.sendMessage((Text)Text.literal((String)"Invalid quantity."), false);
             ShopGuiService.sound(player, false);
@@ -737,6 +759,20 @@ public class ShopGuiService {
         return String.format("%,d", value);
     }
 
+    private boolean canBuy(ShopEntry entry) {
+        return this.catalog.isBuyingEnabled(entry.category()) && entry.buyPrice() > 0L;
+    }
+
+    private Text buyStatus(ShopEntry entry) {
+        if (!this.catalog.isBuyingEnabled(entry.category())) {
+            return Text.literal("Buy: Disabled").formatted(Formatting.DARK_GRAY);
+        }
+        if (entry.buyPrice() <= 0L) {
+            return Text.literal("Buy: Not priced").formatted(Formatting.DARK_GRAY);
+        }
+        return Text.literal("Buy: " + ShopGuiService.money(entry.buyPrice()) + " Gang Bucks").formatted(Formatting.RED);
+    }
+
     private static String itemName(Identifier id) {
         String path = id.getPath();
         return Character.toUpperCase(path.charAt(0)) + path.substring(1);
@@ -795,6 +831,8 @@ public class ShopGuiService {
         if (category == ShopCategory.NETHER) return Items.NETHERRACK;
         if (category == ShopCategory.END) return Items.END_STONE;
         if (category == ShopCategory.MOB_DROPS) return Items.SKELETON_SKULL;
+        if (category == ShopCategory.FOODS) return Items.GOLDEN_CARROT;
+        if (category == ShopCategory.METALS) return ShopGuiService.itemById("mythicmetals:mythril_ingot", Items.IRON_INGOT);
         if (category == ShopCategory.CRAFTED_ITEMS) return Items.CRAFTING_TABLE;
         return Items.BELL;
     }
@@ -819,6 +857,8 @@ public class ShopGuiService {
         if (category == ShopCategory.NETHER) return "Nether blocks and nether materials";
         if (category == ShopCategory.END) return "End blocks and end materials";
         if (category == ShopCategory.MOB_DROPS) return "Vanilla mob drops from kills";
+        if (category == ShopCategory.FOODS) return "All food items; buying disabled by default";
+        if (category == ShopCategory.METALS) return "Mythic Metals ores, bars and storage blocks; buying disabled by default";
         if (category == ShopCategory.CRAFTED_ITEMS) return "Cut, polished, stairs/slabs variants";
         return "Everything else that is allowed";
     }

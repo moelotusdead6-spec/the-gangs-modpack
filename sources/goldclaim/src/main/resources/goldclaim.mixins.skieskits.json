@@ -1,0 +1,12 @@
+{
+  "required": false,
+  "package": "com.elysium.goldclaim.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "SkiesKitsSilentCommandMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 0
+  },
+  "refmap": "goldclaim-skieskits-refmap.json"
+}

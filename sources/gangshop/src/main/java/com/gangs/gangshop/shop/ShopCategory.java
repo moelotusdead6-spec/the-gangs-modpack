@@ -16,9 +16,11 @@ public final class ShopCategory {
     public static final ShopCategory NETHER = vanilla("NETHER", "nether");
     public static final ShopCategory END = vanilla("END", "end");
     public static final ShopCategory MOB_DROPS = vanilla("MOB_DROPS", "mob drops");
+    public static final ShopCategory FOODS = vanilla("FOODS", "foods");
+    public static final ShopCategory METALS = vanilla("METALS", "metals");
     public static final ShopCategory CRAFTED_ITEMS = vanilla("CRAFTED_ITEMS", "crafted items");
     public static final ShopCategory MISC = vanilla("MISC", "misc");
-    private static final List<ShopCategory> VANILLA_CATEGORIES = List.of(WOOD, STONE, MINERALS, REDSTONE, LIGHTING, STAIRS_SLABS, COLOR_MATERIALS, SAND_GLASS, VEGETATION, OCEAN, NETHER, END, MOB_DROPS, CRAFTED_ITEMS, MISC);
+    private static final List<ShopCategory> VANILLA_CATEGORIES = List.of(WOOD, STONE, MINERALS, REDSTONE, LIGHTING, STAIRS_SLABS, COLOR_MATERIALS, SAND_GLASS, VEGETATION, OCEAN, NETHER, END, MOB_DROPS, FOODS, METALS, CRAFTED_ITEMS, MISC);
 
     private final String id;
     private final String displayName;

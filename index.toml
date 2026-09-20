@@ -6,7 +6,7 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "6cf57d67c6cc4ecebf0952c8e4d3cae080b25be964c57bce059a9fe82b8cd736"
+hash = "15b82dcb472e60efe2c72a5a485a5a050f515e178882ec909603df4bdf0895e8"
 
 [[files]]
 file = "README.md"
@@ -81,6 +81,10 @@ file = "artifacts/gangsboots-1.0.2.jar"
 hash = "e2d4e36f156f890df43cdea606719c817ee9c3a7b808e92f0b2c005c0b850f6a"
 
 [[files]]
+file = "artifacts/gangsboots-1.0.3.jar"
+hash = "1eed11700e997f4767544737174baa8cd33bcf1a06056bfeae1f3a12da3c384a"
+
+[[files]]
 file = "artifacts/gangsboots-ATTRIBUTION.txt"
 hash = "de9756c83bd304ecf034a143a4de5be22cd89e6167fdcfdc29088379cad7ad8e"
 
@@ -113,8 +117,32 @@ file = "artifacts/gangshats-1.0.6.jar"
 hash = "c4bd4ad9e6ce11244826c0cbc5ebe3c01e5986be7896132072b7203f22f12226"
 
 [[files]]
+file = "artifacts/gangshats-1.0.7.jar"
+hash = "c9b104adddc3aea5923a3fcfaf7729f25339fe2f61d8abf542ac9a4286cf44a3"
+
+[[files]]
+file = "artifacts/gangshats-1.0.8.jar"
+hash = "d02403ef66ba50dc30ec0eb09b0db0f646345b5daddbf294e94f6847a728c8f4"
+
+[[files]]
 file = "artifacts/gangshop-1.0.0.jar"
 hash = "ac1dd4608293defe70ac6cd68f60a20269d4db2f47ff32a613183e1eb0e4067f"
+
+[[files]]
+file = "artifacts/gangshop-1.0.0.pre-admin-editor-fix-20260812.jar.bak"
+hash = "c6e9d166cbd2458a4a2818414251bda65263cdca2f40634a1526150ce2a34db7"
+
+[[files]]
+file = "artifacts/gangshop-1.0.0.pre-catalog-overhaul-20260812.jar.bak"
+hash = "af5ccb4abce9d14df21fc45ab0be67817e83e407116cb6f7a4084fbe028da61e"
+
+[[files]]
+file = "artifacts/gangshop-1.0.0.pre-final-20260812.jar.bak"
+hash = "20318282b4656cb2f89646903f03719fbeb724be2e627af052d22653285d6313"
+
+[[files]]
+file = "artifacts/gangshop-1.0.0.pre-ocean-20260812.jar.bak"
+hash = "53a702adff0df723afbb59f2d9208fca47d002d9bb2ec1e626eadb28d78a643e"
 
 [[files]]
 file = "artifacts/gangshop-1.0.1.jar"
@@ -135,6 +163,18 @@ hash = "076dcb42acd3c21f4c14436ee1c7a6f944c2d34bb656da29c44803dcd818d571"
 [[files]]
 file = "artifacts/gangshop-1.0.5.jar"
 hash = "ed132c194ce3b649ba599c0f00aa5fd350a0f13c1a359d8552726366bfe38fa4"
+
+[[files]]
+file = "artifacts/gangshop-1.0.6.jar"
+hash = "31d4df80138b8b061158c1df69b732f9e1f7add9845fbc83f658c343120e8c78"
+
+[[files]]
+file = "artifacts/goldclaim-1.0.0.jar.bak_rtp_fix"
+hash = "d42a56c52ed746c0ce90d76f1cb3ca4914c13f838a6a04d92937dc8dd6b52a45"
+
+[[files]]
+file = "artifacts/goldclaim-1.0.0.pre-1.0.1.bak"
+hash = "b4da0775b57010dae45ecbe093f4f2de14b35ca67a0b2f3a4d17e41604be413a"
 
 [[files]]
 file = "artifacts/goldclaim-1.0.2.jar"
@@ -1147,17 +1187,17 @@ metafile = true
 
 [[files]]
 file = "mods/gangsboots-direct.pw.toml"
-hash = "c02256de624445b2e431458d4a5fd9f4bf5f266aaa7bad321a36cad44bb4d4af"
+hash = "cf66d98c74237ce833c8fb2bdd6eb8c36389844e7c84162508573a322a78df04"
 metafile = true
 
 [[files]]
 file = "mods/gangshats-direct.pw.toml"
-hash = "7fdbac679691b6ccd8a939a3af014e8e731f422434d69699e2250d74e3a98b75"
+hash = "d0d8831e20d426f0b9aeee3cc75644b4e047d6ba707ac6893a3cf9317011aee5"
 metafile = true
 
 [[files]]
 file = "mods/gangshop-direct.pw.toml"
-hash = "a1bcada648bc660a8537ead5aa774cd950b206b646f076e63b08732f6a420334"
+hash = "73f38b3f3b3834e3a4e4729f1f8cef02464656ad4506f13a991699885222c7aa"
 metafile = true
 
 [[files]]

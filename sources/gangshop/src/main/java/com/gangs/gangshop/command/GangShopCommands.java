@@ -23,7 +23,12 @@
  */
 package com.gangs.gangshop.command;
 
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import com.gangs.gangshop.GangShopMod;
+import com.gangs.gangshop.shop.ShopCategory;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -33,9 +38,7 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.server.MinecraftServer;
@@ -57,6 +60,10 @@ public final class GangShopCommands {
     private static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register((LiteralArgumentBuilder)((LiteralArgumentBuilder)CommandManager.literal((String)"shop").executes(ctx -> GangShopCommands.openShop((ServerCommandSource)ctx.getSource()))).then(CommandManager.argument((String)"query", (ArgumentType)StringArgumentType.greedyString()).executes(ctx -> GangShopCommands.searchShop((ServerCommandSource)ctx.getSource(), StringArgumentType.getString((CommandContext)ctx, (String)"query")))));
         dispatcher.register((LiteralArgumentBuilder)CommandManager.literal((String)"shopsell").executes(ctx -> GangShopCommands.openShopSell((ServerCommandSource)ctx.getSource())));
+        dispatcher.register((LiteralArgumentBuilder)CommandManager.literal((String)"shopfoods").executes(ctx -> GangShopCommands.openCategory((ServerCommandSource)ctx.getSource(), ShopCategory.FOODS)));
+        dispatcher.register((LiteralArgumentBuilder)CommandManager.literal((String)"shopmetals").executes(ctx -> GangShopCommands.openCategory((ServerCommandSource)ctx.getSource(), ShopCategory.METALS)));
+        dispatcher.register(GangShopCommands.categoryBuyCommand("shopfoodsbuy", ShopCategory.FOODS));
+        dispatcher.register(GangShopCommands.categoryBuyCommand("shopmetalsbuy", ShopCategory.METALS));
         dispatcher.register((LiteralArgumentBuilder)((LiteralArgumentBuilder)CommandManager.literal((String)"bal").executes(ctx -> GangShopCommands.balanceSelf((ServerCommandSource)ctx.getSource()))).then(CommandManager.argument((String)"player", (ArgumentType)EntityArgumentType.player()).executes(ctx -> GangShopCommands.balanceTarget((ServerCommandSource)ctx.getSource(), EntityArgumentType.getPlayer((CommandContext)ctx, (String)"player")))));
         dispatcher.register((LiteralArgumentBuilder)((LiteralArgumentBuilder)CommandManager.literal((String)"balance").executes(ctx -> GangShopCommands.balanceSelf((ServerCommandSource)ctx.getSource()))).then(CommandManager.argument((String)"player", (ArgumentType)EntityArgumentType.player()).executes(ctx -> GangShopCommands.balanceTarget((ServerCommandSource)ctx.getSource(), EntityArgumentType.getPlayer((CommandContext)ctx, (String)"player")))));
         dispatcher.register((LiteralArgumentBuilder)CommandManager.literal((String)"pay").then(CommandManager.argument((String)"player", (ArgumentType)EntityArgumentType.player()).then(CommandManager.argument((String)"amount", (ArgumentType)LongArgumentType.longArg((long)1L)).executes(ctx -> GangShopCommands.pay((ServerCommandSource)ctx.getSource(), EntityArgumentType.getPlayer((CommandContext)ctx, (String)"player"), LongArgumentType.getLong((CommandContext)ctx, (String)"amount"))))));
@@ -69,10 +76,18 @@ public final class GangShopCommands {
     }
 
     private static LiteralArgumentBuilder<ServerCommandSource> priceSetCommand() {
-        RequiredArgumentBuilder buyArgument = (RequiredArgumentBuilder)CommandManager.argument((String)"buy", (ArgumentType)LongArgumentType.longArg((long)1L)).executes(ctx -> GangShopCommands.editShopPrice((ServerCommandSource)ctx.getSource(), StringArgumentType.getString((CommandContext)ctx, (String)"item"), LongArgumentType.getLong((CommandContext)ctx, (String)"sell"), LongArgumentType.getLong((CommandContext)ctx, (String)"buy")));
-        RequiredArgumentBuilder sellArgument = (RequiredArgumentBuilder)CommandManager.argument((String)"sell", (ArgumentType)LongArgumentType.longArg((long)1L)).then((ArgumentBuilder)buyArgument);
+        RequiredArgumentBuilder buyArgument = (RequiredArgumentBuilder)CommandManager.argument((String)"buy", (ArgumentType)LongArgumentType.longArg((long)0L)).executes(ctx -> GangShopCommands.editShopPrice((ServerCommandSource)ctx.getSource(), StringArgumentType.getString((CommandContext)ctx, (String)"item"), LongArgumentType.getLong((CommandContext)ctx, (String)"sell"), LongArgumentType.getLong((CommandContext)ctx, (String)"buy")));
+        RequiredArgumentBuilder sellArgument = (RequiredArgumentBuilder)CommandManager.argument((String)"sell", (ArgumentType)LongArgumentType.longArg((long)0L)).then((ArgumentBuilder)buyArgument);
         RequiredArgumentBuilder itemArgument = (RequiredArgumentBuilder)CommandManager.argument((String)"item", (ArgumentType)StringArgumentType.string()).then((ArgumentBuilder)sellArgument);
         return (LiteralArgumentBuilder)CommandManager.literal((String)"set").then((ArgumentBuilder)itemArgument);
+    }
+
+    private static LiteralArgumentBuilder<ServerCommandSource> categoryBuyCommand(String command, ShopCategory category) {
+        return (LiteralArgumentBuilder<ServerCommandSource>)CommandManager.literal(command)
+            .requires(source -> source.hasPermissionLevel(2))
+            .executes(ctx -> GangShopCommands.showCategoryBuyState(ctx.getSource(), category))
+            .then(CommandManager.literal("on").executes(ctx -> GangShopCommands.setCategoryBuyState(ctx.getSource(), category, true)))
+            .then(CommandManager.literal("off").executes(ctx -> GangShopCommands.setCategoryBuyState(ctx.getSource(), category, false)));
     }
 
     private static LiteralArgumentBuilder<ServerCommandSource> priceShowCommand() {
@@ -135,6 +150,33 @@ public final class GangShopCommands {
             return 0;
         }
         return 1;
+    }
+
+    private static int openCategory(ServerCommandSource source, ShopCategory category) {
+        ServerPlayerEntity player = source.getPlayer();
+        if (player == null) {
+            source.sendError(Text.literal("Only players can open shop categories."));
+            return 0;
+        }
+        GangShopMod.GUI.openCategory(player, category);
+        return 1;
+    }
+
+    private static int showCategoryBuyState(ServerCommandSource source, ShopCategory category) {
+        boolean enabled = GangShopMod.PRICES.isCategoryBuyEnabled(category);
+        source.sendFeedback(() -> Text.literal(shopCategoryLabel(category) + " buying is " + (enabled ? "enabled" : "disabled") + "."), false);
+        return 1;
+    }
+
+    private static int setCategoryBuyState(ServerCommandSource source, ShopCategory category, boolean enabled) {
+        GangShopMod.PRICES.setCategoryBuyEnabled(category, enabled);
+        source.sendFeedback(() -> Text.literal(shopCategoryLabel(category) + " buying is now " + (enabled ? "enabled" : "disabled") + "."), true);
+        return 1;
+    }
+
+    private static String shopCategoryLabel(ShopCategory category) {
+        String name = category.getDisplayName();
+        return Character.toUpperCase(name.charAt(0)) + name.substring(1);
     }
 
     private static int searchShop(ServerCommandSource source, String query) {

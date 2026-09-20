@@ -13,6 +13,11 @@
         "item": "minecraft:gray_dye",
         "name": "Week 1",
         "lore": ["Not available yet"]
+      },
+      "max_uses": {
+        "item": "minecraft:barrier",
+        "name": "Already Claimed!",
+        "lore": ["Week 1"]
       }
     },
     "2_weekly_2": {
@@ -26,6 +31,11 @@
         "item": "minecraft:gray_dye",
         "name": "Week 2",
         "lore": ["Not available yet"]
+      },
+      "max_uses": {
+        "item": "minecraft:barrier",
+        "name": "Already Claimed!",
+        "lore": ["Week 2"]
       }
     },
     "3_weekly_3": {
@@ -39,6 +49,11 @@
         "item": "minecraft:gray_dye",
         "name": "Week 3",
         "lore": ["Not available yet"]
+      },
+      "max_uses": {
+        "item": "minecraft:barrier",
+        "name": "Already Claimed!",
+        "lore": ["Week 3"]
       }
     },
     "4_monthly": {
@@ -52,6 +67,11 @@
         "item": "minecraft:gray_dye",
         "name": "Monthly",
         "lore": ["Not available yet"]
+      },
+      "max_uses": {
+        "item": "minecraft:barrier",
+        "name": "Already Claimed!",
+        "lore": ["Monthly"]
       }
     }
   },

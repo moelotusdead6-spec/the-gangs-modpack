@@ -189,6 +189,11 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.GameRules;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.model.group.Group;
+import net.luckperms.api.node.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -247,10 +252,14 @@ implements ModInitializer {
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
             this.portalRegistry.syncToServer(server);
             this.forcePublicCommandPermissions(server);
+            this.runGangsFixesLoad(server);
         });
         ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, resourceManager, success) -> {
             if (success) {
-                server.execute(() -> this.forcePublicCommandPermissions(server));
+                server.execute(() -> {
+                    this.forcePublicCommandPermissions(server);
+                    this.runGangsFixesLoad(server);
+                });
             }
         });
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
@@ -470,6 +479,79 @@ implements ModInitializer {
         }));
     }
 
+    private void runGangsFixesLoad(MinecraftServer server) {
+        server.getGameRules().get(GameRules.KEEP_INVENTORY).set(false, server);
+        server.getGameRules().get(GameRules.DO_FIRE_TICK).set(false, server);
+
+        ServerScoreboard scoreboard = server.getScoreboard();
+        for (String teamName : new String[]{"rankbadges_owner", "rankbadges_mod", "rankbadges_player", "owner", "mod", "player"}) {
+            Team team = scoreboard.getTeam(teamName);
+            if (team != null) {
+                team.setColor(Formatting.RESET);
+            }
+        }
+
+        for (String objectiveName : new String[]{"gangs_time", "gangs_cycle_start", "gangs_claimed_w1", "gangs_claimed_w2",
+                "gangs_claimed_w3", "gangs_claimed_m", "gangs_perm_w1", "gangs_perm_w2", "gangs_perm_w3", "gangs_perm_m", "gangs_temp"}) {
+            if (scoreboard.getNullableObjective(objectiveName) == null) {
+                scoreboard.addObjective(objectiveName, ScoreboardCriterion.DUMMY, Text.literal(objectiveName), ScoreboardCriterion.RenderType.INTEGER);
+            }
+        }
+
+        this.applyDefaultGroupPermissions();
+    }
+
+    private void applyDefaultGroupPermissions() {
+        String[][] permissions = {
+            {"essentialcommands.nickname.self", "true"},
+            {"essentialcommands.nickname.style.color", "true"},
+            {"essentialcommands.nickname.style.fancy", "true"},
+            {"essentialcommands.nickname.style.hover", "true"},
+            {"essentialcommands.nickname.style.click", "true"},
+            {"essentialcommands.feed.self", "true"},
+            {"essentialcommands.home.self", "true"},
+            {"essentialcommands.home.tp", "true"},
+            {"essentialcommands.home.set", "true"},
+            {"essentialcommands.home.delete", "true"},
+            {"essentialcommands.rtp", "true"},
+            {"essentialcommands.randomteleport", "true"},
+            {"goldclaim.command.feed", "true"},
+            {"goldclaim.command.home", "true"},
+            {"goldclaim.command.sethome", "true"},
+            {"goldclaim.command.delhome", "true"},
+            {"goldclaim.command.rtp", "true"},
+            {"goldclaim.command.randomteleport", "true"},
+            {"universal_graves.list", "true"},
+            {"gangshats.command.hat", "true"},
+            {"gangshats.command.nick", "true"},
+            {"gangsales.command.ec", "true"},
+            {"skieskits.command.base", "true"},
+            {"skieskits.command.claim", "true"},
+            {"kits.kit.1_weekly_1", "true"},
+            {"kits.kit.2_weekly_2", "false"},
+            {"kits.kit.3_weekly_3", "false"},
+            {"kits.kit.4_monthly", "false"},
+            {"gangsales.command.gs", "true"},
+            {"gangsales.command.gs.history", "true"},
+            {"gangsales.command.gs.mine", "true"},
+            {"gangsales.command.gs.add", "true"},
+        };
+        try {
+            LuckPerms luckPerms = LuckPermsProvider.get();
+            Group defaultGroup = luckPerms.getGroupManager().getGroup("default");
+            if (defaultGroup == null) {
+                LOGGER.warn("LuckPerms default group not found; skipping permission setup.");
+                return;
+            }
+            for (String[] permission : permissions) {
+                defaultGroup.data().add(Node.builder(permission[0]).value(Boolean.parseBoolean(permission[1])).build());
+            }
+            luckPerms.getGroupManager().saveGroup(defaultGroup).join();
+        } catch (IllegalStateException e) {
+            LOGGER.warn("LuckPerms API not available; skipping permission setup.", e);
+        }
+    }
+
     private void registerJoinHandler() {
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> server.execute(() -> {
             ServerPlayerEntity player = handler.getPlayer();
@@ -480,9 +562,8 @@ implements ModInitializer {
             this.pendingHubTeleports.put(player.getUuid(), 20);
             this.forcePublicCommandPermissions(server);
             server.getCommandManager().sendCommandTree(player);
-            server.getCommandFunctionManager().execute(
-                server.getCommandFunctionManager().getFunction(new Identifier("gangs_fixes", "kits/check_join_notify")).orElse(null),
-                player.getCommandSource().withLevel(2).withSilent()
+            server.getCommandFunctionManager().getFunction(new Identifier("gangs_kits", "check_join_notify")).ifPresent(function ->
+                server.getCommandFunctionManager().execute(function, player.getCommandSource().withLevel(2).withSilent())
             );
         }));
     }
@@ -847,8 +928,8 @@ implements ModInitializer {
     }
 
     private void playTeleportRequestPing(ServerPlayerEntity target) {
-        RegistryEntry<net.minecraft.sound.SoundEvent> sound = RegistryEntry.of((net.minecraft.sound.SoundEvent)SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP);
-        target.networkHandler.sendPacket((Packet)new PlaySoundS2CPacket(sound, SoundCategory.PLAYERS, target.getX(), target.getY(), target.getZ(), 0.6f, 1.4f, target.getWorld().getRandom().nextLong()));
+        RegistryEntry<net.minecraft.sound.SoundEvent> sound = SoundEvents.BLOCK_NOTE_BLOCK_PLING;
+        target.networkHandler.sendPacket((Packet)new PlaySoundS2CPacket(sound, SoundCategory.MASTER, target.getX(), target.getY(), target.getZ(), 1.0f, 1.5f, target.getWorld().getRandom().nextLong()));
     }
 
     private int acceptTeleportRequest(ServerCommandSource source) {
