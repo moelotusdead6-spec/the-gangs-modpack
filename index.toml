@@ -186,7 +186,7 @@ hash = "31d4df80138b8b061158c1df69b732f9e1f7add9845fbc83f658c343120e8c78"
 
 [[files]]
 file = "artifacts/gangshop-1.0.7.jar"
-hash = "74535a34566b273eb31f7b73df9e5a230d7358e75c4a7115aa4853b9d146e3a8"
+hash = "b7507041c7ae09bdd01526f87e06e3a7c5175abf46af5cea2c773c170bbba3d2"
 
 [[files]]
 file = "artifacts/goldclaim-1.0.2.jar"
@@ -1301,7 +1301,7 @@ metafile = true
 
 [[files]]
 file = "mods/gangshop-direct.pw.toml"
-hash = "1c78bc1a6e2fb74f8b9ce37b97a87b43c5da1610c60fcb80344cac6ae4268740"
+hash = "e4361b355780031a189842e464fdb83f3ed16c6f63a3e5d1f10f5443151a8218"
 metafile = true
 
 [[files]]
