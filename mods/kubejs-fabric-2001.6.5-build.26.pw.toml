@@ -1,0 +1,13 @@
+name = "KubeJS Fabric 2001.6.5-build.26"
+filename = "kubejs-fabric-2001.6.5-build.26.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/umyGl7zF/versions/Pu0Ygbq6/kubejs-fabric-2001.6.5-build.26.jar"
+hash-format = "sha1"
+hash = "08d70c86bb9501eeaf936722784c09de18f0e32f"
+
+[update]
+[update.modrinth]
+mod-id = "umyGl7zF"
+version = "Pu0Ygbq6"

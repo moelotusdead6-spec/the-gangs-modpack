@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "gangs_kits:uncraftable"
+    }
+  ],
+  "result": {
+    "item": "mythicmetals:quadrillum_nuke_core"
+  }
+}

@@ -129,22 +129,6 @@ file = "artifacts/gangshop-1.0.0.jar"
 hash = "ac1dd4608293defe70ac6cd68f60a20269d4db2f47ff32a613183e1eb0e4067f"
 
 [[files]]
-file = "artifacts/gangshop-1.0.0.pre-admin-editor-fix-20260812.jar.bak"
-hash = "c6e9d166cbd2458a4a2818414251bda65263cdca2f40634a1526150ce2a34db7"
-
-[[files]]
-file = "artifacts/gangshop-1.0.0.pre-catalog-overhaul-20260812.jar.bak"
-hash = "af5ccb4abce9d14df21fc45ab0be67817e83e407116cb6f7a4084fbe028da61e"
-
-[[files]]
-file = "artifacts/gangshop-1.0.0.pre-final-20260812.jar.bak"
-hash = "20318282b4656cb2f89646903f03719fbeb724be2e627af052d22653285d6313"
-
-[[files]]
-file = "artifacts/gangshop-1.0.0.pre-ocean-20260812.jar.bak"
-hash = "53a702adff0df723afbb59f2d9208fca47d002d9bb2ec1e626eadb28d78a643e"
-
-[[files]]
 file = "artifacts/gangshop-1.0.1.jar"
 hash = "3b4fd165882ac85917bededf588601f2c65b4a4dcc737e1b5a80850749349386"
 
@@ -169,12 +153,8 @@ file = "artifacts/gangshop-1.0.6.jar"
 hash = "31d4df80138b8b061158c1df69b732f9e1f7add9845fbc83f658c343120e8c78"
 
 [[files]]
-file = "artifacts/goldclaim-1.0.0.jar.bak_rtp_fix"
-hash = "d42a56c52ed746c0ce90d76f1cb3ca4914c13f838a6a04d92937dc8dd6b52a45"
-
-[[files]]
-file = "artifacts/goldclaim-1.0.0.pre-1.0.1.bak"
-hash = "b4da0775b57010dae45ecbe093f4f2de14b35ca67a0b2f3a4d17e41604be413a"
+file = "artifacts/gangshop-1.0.7.jar"
+hash = "74535a34566b273eb31f7b73df9e5a230d7358e75c4a7115aa4853b9d146e3a8"
 
 [[files]]
 file = "artifacts/goldclaim-1.0.2.jar"
@@ -357,6 +337,10 @@ file = "config/paxi/datapacks/gangs_kits/data/a_man_with_plushies/recipes/plush_
 hash = "06074134266267150bc0df89b8febcdfa71bb750699f31223fc099f3ea0ff91a"
 
 [[files]]
+file = "config/paxi/datapacks/gangs_kits/data/alexscaves/recipes/nuclear_bomb.json"
+hash = "0d256d9e5705c27dd59c45df8f080c428744963197f3c94672f1452e54cdc17a"
+
+[[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs/loot_tables/kits/monthly.json"
 hash = "490a52cab655286297540b2f81c1e98cdd7e41676b3e891ddf607b2f4eaa487f"
 
@@ -477,6 +461,22 @@ file = "config/paxi/datapacks/gangs_kits/data/minecraft/tags/functions/tick.json
 hash = "a151ee8ebb443b6919b411a62caa6d4f057910f18a3f96501bd22d33e7a85096"
 
 [[files]]
+file = "config/paxi/datapacks/gangs_kits/data/mythicmetals/recipes/crafting/banglum_nuke_core.json"
+hash = "855a4ac44b6db1d0f0ad165a74319b56afe672c157d992d60d3c35a2d355cf46"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/mythicmetals/recipes/crafting/carmot_nuke_core.json"
+hash = "e2766e18eccdef8d2c77c4bea969d9cc6153786d23ea9190214dbfba3f436e5b"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/mythicmetals/recipes/crafting/quadrillum_nuke_core.json"
+hash = "7b6c84585ae047a9326ff44d03c73552011f6d32ef48965cf606ac32e4cec3f8"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/mythicmetals/recipes/crafting/sponge_nuke_core.json"
+hash = "9b31344fef965932e2581275d770450c91b9ea99db3cb233f6ab7fd5284e4337"
+
+[[files]]
 file = "config/paxi/datapacks/gangs_kits/pack.mcmeta"
 hash = "16e65284c5a6a75cf4cb94ab24c020946f5d1aa68b1687c2e7fc53002d63b9e4"
 
@@ -515,6 +515,10 @@ hash = "4f4f427c325702d5f55f93dd96ddee4831fd23814d088dd1f24e1bf540637246"
 [[files]]
 file = "index.html"
 hash = "18ac75558728bc0a11f6cf09e6db01cbf04fd079a4872d9b1cfac0599f8c036f"
+
+[[files]]
+file = "kubejs/server_scripts/disable_galosphere_sparkles.js"
+hash = "d570f1a83ab2aeaae349fdec7c4930611c7625bfa9f6702f4949d354639686b2"
 
 [[files]]
 file = "mods/.gitkeep"
@@ -602,7 +606,7 @@ metafile = true
 
 [[files]]
 file = "mods/Galosphere-1.20.1-1.5.2-Fabric.pw.toml"
-hash = "224e8c5771c86c6593355c4d4578ef8b4c2080c491d26c846085daaec4306f38"
+hash = "ccb92c29c6f29391bcfa82fbac42f6d6a2e2c50b03bbdbbfad8c109c5bd90492"
 metafile = true
 
 [[files]]
@@ -1197,7 +1201,7 @@ metafile = true
 
 [[files]]
 file = "mods/gangshop-direct.pw.toml"
-hash = "73f38b3f3b3834e3a4e4729f1f8cef02464656ad4506f13a991699885222c7aa"
+hash = "1c78bc1a6e2fb74f8b9ce37b97a87b43c5da1610c60fcb80344cac6ae4268740"
 metafile = true
 
 [[files]]
@@ -1253,6 +1257,11 @@ metafile = true
 [[files]]
 file = "mods/krypton-0.2.3.pw.toml"
 hash = "4f33d4e71a1db5cc186c793f1c8259fed9f2244e608d8a77fc9c60f20858f680"
+metafile = true
+
+[[files]]
+file = "mods/kubejs-fabric-2001.6.5-build.26.pw.toml"
+hash = "f0669f68f425dcf0a258a92d271ed7cba146616d21a5166f224d36f38d8c48e5"
 metafile = true
 
 [[files]]
@@ -1503,6 +1512,11 @@ metafile = true
 [[files]]
 file = "mods/respawnablepets-1.20-1.pw.toml"
 hash = "67f7ca2125f580b8d53051ff4c6a81e0cd105228565aa6691131a70361e3ccb6"
+metafile = true
+
+[[files]]
+file = "mods/rhino-fabric-2001.2.3-build.10.pw.toml"
+hash = "d878d4fbdc2f3c4d77c7b8af0e14510f0cbe4bbf4c024b0d3b55f255f6683937"
 metafile = true
 
 [[files]]
