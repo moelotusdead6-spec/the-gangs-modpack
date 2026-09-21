@@ -1,0 +1,8 @@
+name = "Spawn Animations 1.11.5"
+filename = "spawnanimations-v1.11.5-mc1.17-26.2.9-mod.jar"
+side = "client"
+
+[download]
+url = "https://raw.githubusercontent.com/moelotusdead6-spec/the-gangs-modpack/main/artifacts/spawnanimations-v1.11.5-mc1.17-26.2.9-mod.jar"
+hash-format = "sha256"
+hash = "179b7eb6807b47bda83ef8ec92b464bcd274d00420ed79599c99cb1dc6631eb8"

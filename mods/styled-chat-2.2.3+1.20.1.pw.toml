@@ -1,0 +1,8 @@
+name = "Styled Chat 2.2.3+1.20.1"
+filename = "styled-chat-2.2.3+1.20.1.jar"
+side = "both"
+
+[download]
+url = "https://raw.githubusercontent.com/moelotusdead6-spec/the-gangs-modpack/main/artifacts/styled-chat-2.2.3%2B1.20.1.jar"
+hash-format = "sha256"
+hash = "1ddf40066351af7e7441ed2fd1aed6ec4885ae9be847f93e1ef0c59915dc6519"

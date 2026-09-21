@@ -1,0 +1,8 @@
+name = "Cosmetic Armor 1.20 1.6.0"
+filename = "CosmeticArmor-1.20-1.6.0.jar"
+side = "both"
+
+[download]
+url = "https://raw.githubusercontent.com/moelotusdead6-spec/the-gangs-modpack/main/artifacts/CosmeticArmor-1.20-1.6.0.jar"
+hash-format = "sha256"
+hash = "72fd672fd7c25f9a8db49cf6c625c1b6af2acf4971a048d76e0db2557b898859"

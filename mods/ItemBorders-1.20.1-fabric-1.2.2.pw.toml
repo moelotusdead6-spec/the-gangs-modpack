@@ -1,0 +1,8 @@
+name = "ItemBorders 1.20.1 fabric 1.2.2"
+filename = "ItemBorders-1.20.1-fabric-1.2.2.jar"
+side = "client"
+
+[download]
+url = "https://raw.githubusercontent.com/moelotusdead6-spec/the-gangs-modpack/main/artifacts/ItemBorders-1.20.1-fabric-1.2.2.jar"
+hash-format = "sha256"
+hash = "603d1c36270598c9db069bdf76965bccebd487fc534bbef0055e65378f022bb9"

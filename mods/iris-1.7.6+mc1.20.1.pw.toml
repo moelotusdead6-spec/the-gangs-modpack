@@ -1,0 +1,8 @@
+name = "Iris 1.7.6+mc1.20.1"
+filename = "iris-1.7.6+mc1.20.1.jar"
+side = "client"
+
+[download]
+url = "https://raw.githubusercontent.com/moelotusdead6-spec/the-gangs-modpack/main/artifacts/iris-1.7.6%2Bmc1.20.1.jar"
+hash-format = "sha256"
+hash = "9eb15e563e0c9ae6eff15b7863f8432dd290cf9f724c7373e9b15b14aa829ed5"

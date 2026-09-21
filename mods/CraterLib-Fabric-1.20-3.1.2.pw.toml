@@ -1,0 +1,8 @@
+name = "CraterLib Fabric 1.20 3.1.2"
+filename = "CraterLib-Fabric-1.20-3.1.2.jar"
+side = "both"
+
+[download]
+url = "https://raw.githubusercontent.com/moelotusdead6-spec/the-gangs-modpack/main/artifacts/CraterLib-Fabric-1.20-3.1.2.jar"
+hash-format = "sha256"
+hash = "65dd271d4db38c17e9ffb024f5a2e966aff0525a4e58ec9750793b83091c8f97"

@@ -1,0 +1,8 @@
+name = "Teleport Optimizer 1.0.0"
+filename = "teleportoptimizer-1.0.0-obfuscated.jar"
+side = "server"
+
+[download]
+url = "https://raw.githubusercontent.com/moelotusdead6-spec/the-gangs-modpack/main/artifacts/teleportoptimizer-1.0.0-obfuscated.jar"
+hash-format = "sha256"
+hash = "94b02622b2f91a2c8a0226db1faa25a9b6b116bc0ec0e49eb90c622da83ce5ee"

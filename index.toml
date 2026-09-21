@@ -17,6 +17,26 @@ file = "artifacts/AdaptiveTooltips-1.3.0-fabric-1.20.2.jar"
 hash = "7949b9ef4b7ea263a1b1370f7b2193b1d0c7f17b61ba953b31a02b1caf8aa1c7"
 
 [[files]]
+file = "artifacts/Chunky-1.3.146.jar"
+hash = "ae7fb9d35a3a9d9d4f2104aeae7b31a901c5e5842891e2edd9ddcc42c2646a38"
+
+[[files]]
+file = "artifacts/CosmeticArmor-1.20-1.6.0.jar"
+hash = "72fd672fd7c25f9a8db49cf6c625c1b6af2acf4971a048d76e0db2557b898859"
+
+[[files]]
+file = "artifacts/CraterLib-Fabric-1.20-3.1.2.jar"
+hash = "65dd271d4db38c17e9ffb024f5a2e966aff0525a4e58ec9750793b83091c8f97"
+
+[[files]]
+file = "artifacts/ItemBorders-1.20.1-fabric-1.2.2.jar"
+hash = "603d1c36270598c9db069bdf76965bccebd487fc534bbef0055e65378f022bb9"
+
+[[files]]
+file = "artifacts/LuckPerms-Fabric-5.4.102.jar"
+hash = "ad9f6b3459224b5d88774263bd564215f7084c1f7503d15e0bb2c54aafc41582"
+
+[[files]]
 file = "artifacts/Multiworld-Fabric-1.20.1.jar"
 hash = "d3fc5e454ee2c777a4ce85d28a4328890df4c86a6a1087446bc2babf33abfb7b"
 
@@ -53,6 +73,10 @@ file = "artifacts/commandlimits-1.0.0.jar"
 hash = "0d95509d5096568ff6aca8f77e7ed9e470408a24b61846987e14bb8deb999e63"
 
 [[files]]
+file = "artifacts/continuity-3.0.0+1.20.1.jar"
+hash = "fdb646bd51667c57e576d1412c740ac48e3bf6953294dde11a62101a09395fe3"
+
+[[files]]
 file = "artifacts/exposure-fabric-1.20.1-1.9.20.jar"
 hash = "00b5e5371955f4f18b15f921b4830147116f5127e39f75d6cebee7dbb462274d"
 
@@ -61,8 +85,16 @@ file = "artifacts/extraspellattributes-1.3.2.jar"
 hash = "c964bf77681c6db37334f8a660d999370ae5d3af5c8096a5dd6870982cf741c3"
 
 [[files]]
+file = "artifacts/fabric-chunkpregen-0.3.7.jar"
+hash = "cb58fb4ac232b6b76b371bf0332372954348b525879f9bc3c2a094bdafb5c744"
+
+[[files]]
 file = "artifacts/ftb-ultimine-fabric-2001.1.8.jar"
 hash = "c2f53d4de42bbfd5d921f94b89e4665ff913add75a226426096429d7e0751f7f"
+
+[[files]]
+file = "artifacts/galospheretrimming-1.20.1-1.0.0-quilt.jar"
+hash = "8ff9839fcd75c9af252e23e5ce6026283b96f4fe984b81f4eb5add12ae85b632"
 
 [[files]]
 file = "artifacts/gangsales-1.0.0.jar"
@@ -177,6 +209,14 @@ file = "artifacts/goldclaim-1.0.7.jar"
 hash = "b80d719eec73b58f3551758e7ee1a95b53a8ed4483ab55246e929afde1375391"
 
 [[files]]
+file = "artifacts/grand-teleport-1.20.1-build252.jar"
+hash = "d02ae63ce942a235515b2f804d9f4183cfef25e784ed6e31fcda35fc16c0da30"
+
+[[files]]
+file = "artifacts/iris-1.7.6+mc1.20.1.jar"
+hash = "9eb15e563e0c9ae6eff15b7863f8432dd290cf9f724c7373e9b15b14aa829ed5"
+
+[[files]]
 file = "artifacts/multiworld-ATTRIBUTION.txt"
 hash = "cd4b909eeda690207e73b52f99b89ccea4649ec8f2f95bd1ed8521d847e69cf7"
 
@@ -191,6 +231,10 @@ hash = "b9eed99cf6b1e4e9ffef7fe83851e06086bd0a401dd2ffb7c7f95a3d4e65ad0b"
 [[files]]
 file = "artifacts/openblockselevator-0.0.3-1.20.1.jar"
 hash = "353f9a3c59e8fb6a6ba37eb2ed092306a9151b7de4037b226508c517e28ecc64"
+
+[[files]]
+file = "artifacts/placeholder-api-2.1.4+1.20.1.jar"
+hash = "c9d5786d379cf574fb0607dcb8d93cddf2cde2d6e49e714a6597acbe34646708"
 
 [[files]]
 file = "artifacts/polymer-bundled-0.5.20+1.20.1.jar"
@@ -213,8 +257,24 @@ file = "artifacts/respawnablepets-1.20-1.jar"
 hash = "041d498494436a995f42aa983d2dd561797823c83a20ac2a9f390ace0c5071de"
 
 [[files]]
+file = "artifacts/servercore-fabric-1.5.2+1.20.1.jar"
+hash = "d02253ab7566f2a6632cc78c9708dd768cf77ac8123351ed63be25e4f8cb317f"
+
+[[files]]
+file = "artifacts/spawnanimations-v1.11.5-mc1.17-26.2.9-mod.jar"
+hash = "179b7eb6807b47bda83ef8ec92b464bcd274d00420ed79599c99cb1dc6631eb8"
+
+[[files]]
 file = "artifacts/spellbladenext-2.4.0+1.20.1.jar"
 hash = "81ccc3a58a618649b25aa91fa24127cdca35113bdc93958cbbec6ccccdbb5181"
+
+[[files]]
+file = "artifacts/styled-chat-2.2.3+1.20.1.jar"
+hash = "1ddf40066351af7e7441ed2fd1aed6ec4885ae9be847f93e1ef0c59915dc6519"
+
+[[files]]
+file = "artifacts/teleportoptimizer-1.0.0-obfuscated.jar"
+hash = "94b02622b2f91a2c8a0226db1faa25a9b6b116bc0ec0e49eb90c622da83ce5ee"
 
 [[files]]
 file = "artifacts/wizards-1.4.1+1.20.1.jar"
@@ -560,8 +620,23 @@ hash = "2ddfeea6f9d3694ca8bcdbe5b303374f21b12ee336d32d429796b7753e0ebe8e"
 metafile = true
 
 [[files]]
+file = "mods/Chunky-1.3.146.pw.toml"
+hash = "3d9f90159b91cd95f92b484df4ce055052acd4393a046519cf167407a3028320"
+metafile = true
+
+[[files]]
 file = "mods/Corgilib-Fabric-1.20.1-4.0.3.4.pw.toml"
 hash = "107a8c04873c92a178a9539c933ca46669d217ce12d98c2e9de34dc74e4ee7a9"
+metafile = true
+
+[[files]]
+file = "mods/CosmeticArmor-1.20-1.6.0.pw.toml"
+hash = "8991bd048561da76193d09cb13f1c6094b6fd3777de2ea78fd105ffe748a1f2f"
+metafile = true
+
+[[files]]
+file = "mods/CraterLib-Fabric-1.20-3.1.2.pw.toml"
+hash = "8e4eb56731848007f7f3dfd670c6d93ce4ceb37b3a6e7f149130d95d638bfb79"
 metafile = true
 
 [[files]]
@@ -640,6 +715,11 @@ hash = "8cadedc1fc30d0724624620deb6eec40b34e082441c51f82e8500f2b73de3cba"
 metafile = true
 
 [[files]]
+file = "mods/ItemBorders-1.20.1-fabric-1.2.2.pw.toml"
+hash = "df8a161bb028d8aee429156c280c40305b5205daabd5540a0cda5af1c3936837"
+metafile = true
+
+[[files]]
 file = "mods/Jade-1.20-Fabric-11.13.3.pw.toml"
 hash = "0ad508b9990939adb9b4320fc7f9c106d408b308062025a3e1324ce6337370f7"
 metafile = true
@@ -647,6 +727,11 @@ metafile = true
 [[files]]
 file = "mods/LegendaryTooltips-1.20.1-fabric-1.4.5.pw.toml"
 hash = "3ed778728980636f410562fb5513c19ce6ca618e1aa2ea786b95ce57815b0957"
+metafile = true
+
+[[files]]
+file = "mods/LuckPerms-Fabric-5.4.102.pw.toml"
+hash = "171442cdd390af808353dbaaac80eb358edbb000dd6c47ff943b832061393163"
 metafile = true
 
 [[files]]
@@ -1020,6 +1105,11 @@ hash = "f13980e1ebec5cd8246e4f07c795267e257b6a838a37db609aaceaa4034dca24"
 metafile = true
 
 [[files]]
+file = "mods/continuity-3.0.0+1.20.1.pw.toml"
+hash = "39c23202c577ff1701548cdfd798d2c4e6b88a24726bceeeac91f1ddd740bba0"
+metafile = true
+
+[[files]]
 file = "mods/coolrain-1.4.0-1.20.1.pw.toml"
 hash = "931e1888696f76794414eb1d491efb432eeb0ca8f47cf58cef189d88f4bd5caf"
 metafile = true
@@ -1092,6 +1182,11 @@ metafile = true
 [[files]]
 file = "mods/fabric-api.pw.toml"
 hash = "5cbcd9395c1788ed7a1356e392a4483a30d903312faffd9795c6dee9afba3fac"
+metafile = true
+
+[[files]]
+file = "mods/fabric-chunkpregen-0.3.7.pw.toml"
+hash = "7a1d9e6454a930ec21766721494383bcae64f61a4b9824561a62c16c36f52fc4"
 metafile = true
 
 [[files]]
@@ -1185,6 +1280,11 @@ hash = "2ba74627329119476e6f4346ad5d4944d23466933336e16a2775ac7b1e61e1fc"
 metafile = true
 
 [[files]]
+file = "mods/galospheretrimming-1.20.1-1.0.0-quilt.pw.toml"
+hash = "2b8826fbd667a9cdc6d72ae85808542cb46345f657a6e9e3cdd4d1742415a49a"
+metafile = true
+
+[[files]]
 file = "mods/gangsales-direct.pw.toml"
 hash = "36ae4161ddfb9500f48978ec86431b2eebbfa83b39fa1e194cd16de6e246e1c2"
 metafile = true
@@ -1225,6 +1325,11 @@ hash = "57da126b9d2350cd2025c1e0b001de9fb1f43ebea597205b9b95a3bab9421d62"
 metafile = true
 
 [[files]]
+file = "mods/grand-teleport-1.20.1-build252.pw.toml"
+hash = "0a0feb11a6a76a1b9cfc034899c467e538b1ef28a16706a38653b496e35b4a85"
+metafile = true
+
+[[files]]
 file = "mods/grimac.pw.toml"
 hash = "9c0b1943f9fc8edfd74f67bece271a2510788a52b6258ac186e2209112ba83db"
 metafile = true
@@ -1237,6 +1342,11 @@ metafile = true
 [[files]]
 file = "mods/indium-1.0.36_mc1.20.1.pw.toml"
 hash = "87ff9e892ac602ae10cc678bfb8f4c618d8eac23308380850f6f762b06f7dd9a"
+metafile = true
+
+[[files]]
+file = "mods/iris-1.7.6+mc1.20.1.pw.toml"
+hash = "9665e4791ea231a137177d0cfa1c7eb4cfa9f228c39f62bfb95adc1659978ea5"
 metafile = true
 
 [[files]]
@@ -1460,6 +1570,11 @@ hash = "78f5f4be5b4d13342aa779720c978a47276d4aa69817de351e4a6e9556e8b1ab"
 metafile = true
 
 [[files]]
+file = "mods/placeholder-api-2.1.4+1.20.1.pw.toml"
+hash = "298df63556bc4211c2b1f8e8df46fca875292d780c4b8eb7e1bf9a5bb5e3e32e"
+metafile = true
+
+[[files]]
 file = "mods/player-animation-lib-fabric-1.0.2-rc1_1.20.pw.toml"
 hash = "2d680c80722004cd8f29bbaad9f183c6c111acfd30dc28f64a619aad1ab24b62"
 metafile = true
@@ -1535,6 +1650,11 @@ hash = "29a78ba8cfc8ffa097c5425de5b7215905d330546147f5da3df933675b790b1a"
 metafile = true
 
 [[files]]
+file = "mods/servercore-fabric-1.5.2+1.20.1.pw.toml"
+hash = "57420c077cfd1234d414f023d02806763201918ff0fe4ee599b40450d1f10834"
+metafile = true
+
+[[files]]
 file = "mods/simplequests-1.20.1-2.1.2-fabric.pw.toml"
 hash = "9eb981df7b82850116be614bf79c4d9f8a28300fca6fefaed24d36a54a49f6bf"
 metafile = true
@@ -1585,6 +1705,11 @@ hash = "e5f9090e9c49a3884a5a91c7ea7b8d59fda8a5f98081393a65f7ae0cc8830a37"
 metafile = true
 
 [[files]]
+file = "mods/spawnanimations-v1.11.5-mc1.17-26.2.9-mod.pw.toml"
+hash = "3af87a962b56a3a779efe1afc9dd15a8296d9d629abf152889bb18e1f7b33225"
+metafile = true
+
+[[files]]
 file = "mods/spell_engine-0.15.12_1.20.1.pw.toml"
 hash = "c1a6382462f9e3a6aee250331b4fba43cc6f0fae85a5f1d082faeaa7afa301db"
 metafile = true
@@ -1620,6 +1745,11 @@ hash = "df211905a2fc90e04b6d449c3f20d029be6b42bbaed36df8d92c4515eb0370f4"
 metafile = true
 
 [[files]]
+file = "mods/styled-chat-2.2.3+1.20.1.pw.toml"
+hash = "bea823be59f17226a3daf40baa30453da547abffccb6948cfb06cfba797b2ded"
+metafile = true
+
+[[files]]
 file = "mods/supermartijn642configlib-1.1.8a-fabric-mc1.20.pw.toml"
 hash = "26ab3cb9cd7c4132d78d70628d8ff19233c8ac34c7fd632b6fea36dbb4d8a215"
 metafile = true
@@ -1627,6 +1757,11 @@ metafile = true
 [[files]]
 file = "mods/tectonic-3.0.17-fabric-1.20.1.pw.toml"
 hash = "f07fe672d1b16cdd8f06bd981af6fee8288febf1fcb3f783acbce84f12b27497"
+metafile = true
+
+[[files]]
+file = "mods/teleportoptimizer-1.0.0-obfuscated.pw.toml"
+hash = "af88e622ad795c6600f85384e842a82f5d3f7013c47d427977a2ee10ad94d8d4"
 metafile = true
 
 [[files]]

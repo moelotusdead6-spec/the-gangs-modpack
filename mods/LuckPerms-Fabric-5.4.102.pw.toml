@@ -1,0 +1,8 @@
+name = "LuckPerms Fabric 5.4.102"
+filename = "LuckPerms-Fabric-5.4.102.jar"
+side = "server"
+
+[download]
+url = "https://raw.githubusercontent.com/moelotusdead6-spec/the-gangs-modpack/main/artifacts/LuckPerms-Fabric-5.4.102.jar"
+hash-format = "sha256"
+hash = "ad9f6b3459224b5d88774263bd564215f7084c1f7503d15e0bb2c54aafc41582"

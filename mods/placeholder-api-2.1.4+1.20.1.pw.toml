@@ -1,0 +1,8 @@
+name = "Placeholder API 2.1.4+1.20.1"
+filename = "placeholder-api-2.1.4+1.20.1.jar"
+side = "both"
+
+[download]
+url = "https://raw.githubusercontent.com/moelotusdead6-spec/the-gangs-modpack/main/artifacts/placeholder-api-2.1.4%2B1.20.1.jar"
+hash-format = "sha256"
+hash = "c9d5786d379cf574fb0607dcb8d93cddf2cde2d6e49e714a6597acbe34646708"

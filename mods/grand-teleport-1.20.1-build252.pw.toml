@@ -1,0 +1,8 @@
+name = "Grand Teleport 1.20.1 build252"
+filename = "grand-teleport-1.20.1-build252.jar"
+side = "both"
+
+[download]
+url = "https://raw.githubusercontent.com/moelotusdead6-spec/the-gangs-modpack/main/artifacts/grand-teleport-1.20.1-build252.jar"
+hash-format = "sha256"
+hash = "d02ae63ce942a235515b2f804d9f4183cfef25e784ed6e31fcda35fc16c0da30"
