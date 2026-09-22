@@ -17,6 +17,7 @@ execute if score #temp gangs_temp matches 0.. if score @s gangs_claimed_w1 match
 
 # Week 2: Unlocks after 7 days (604,800 seconds)
 execute if score #temp gangs_temp matches 604800.. if score @s gangs_claimed_w2 matches 0 if score @s gangs_perm_w2 matches 0 run function gangs_kits:unlock_w2
+execute if score #temp gangs_temp matches 604800.. if score @s gangs_claimed_w2 matches 0 if score @s gangs_perm_w2 matches 1 run function gangs_kits:unlock_w2
 
 # Week 3: Unlocks after 14 days (1,209,600 seconds)
 execute if score #temp gangs_temp matches 1209600.. if score @s gangs_claimed_w3 matches 0 if score @s gangs_perm_w3 matches 0 run function gangs_kits:unlock_w3
