@@ -19,6 +19,8 @@ public class Claim {
     public int maxZ;
     public Set<String> trustedPlayers = new HashSet<String>();
     public Set<String> trustedPlayerNames = new HashSet<String>();
+    public Set<String> interactPlayers = new HashSet<String>();
+    public Set<String> interactPlayerNames = new HashSet<String>();
 
     public Claim() {
     }
@@ -79,6 +81,17 @@ public class Claim {
         return this.trustedPlayerNames.contains(playerName.toLowerCase(Locale.ROOT));
     }
 
+    public boolean canInteract(UUID playerUuid) {
+        return this.interactPlayers.contains(playerUuid.toString());
+    }
+
+    public boolean canInteractName(String playerName) {
+        if (playerName == null || playerName.isBlank()) {
+            return false;
+        }
+        return this.interactPlayerNames.contains(playerName.toLowerCase(Locale.ROOT));
+    }
+
     public void addTrusted(UUID playerUuid) {
         this.trustedPlayers.add(playerUuid.toString());
     }
@@ -99,6 +112,28 @@ public class Claim {
             return;
         }
         this.trustedPlayerNames.remove(playerName.toLowerCase(Locale.ROOT));
+    }
+
+    public void addInteract(UUID playerUuid) {
+        this.interactPlayers.add(playerUuid.toString());
+    }
+
+    public void addInteractName(String playerName) {
+        if (playerName == null || playerName.isBlank()) {
+            return;
+        }
+        this.interactPlayerNames.add(playerName.toLowerCase(Locale.ROOT));
+    }
+
+    public void removeInteract(UUID playerUuid) {
+        this.interactPlayers.remove(playerUuid.toString());
+    }
+
+    public void removeInteractName(String playerName) {
+        if (playerName == null || playerName.isBlank()) {
+            return;
+        }
+        this.interactPlayerNames.remove(playerName.toLowerCase(Locale.ROOT));
     }
 
     public int width() {

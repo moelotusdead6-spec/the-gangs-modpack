@@ -177,6 +177,7 @@ import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.scoreboard.ServerScoreboard;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.text.TextColor;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
@@ -321,7 +322,12 @@ implements ModInitializer {
             if (this.isUniversalGraveOwner(serverPlayer, world, pos)) {
                 return ActionResult.PASS;
             }
-            if (!this.claimManager.canModify(serverPlayer.getUuid(), serverPlayer.getGameProfile().getName(), serverPlayer.hasPermissionLevel(2), dimension, pos.getX(), pos.getZ())) {
+            boolean fullAccess = this.claimManager.canModify(serverPlayer.getUuid(), serverPlayer.getGameProfile().getName(), serverPlayer.hasPermissionLevel(2), dimension, pos.getX(), pos.getZ());
+            if (world.getBlockEntity(pos) instanceof Inventory && !fullAccess) {
+                this.deny(serverPlayer, "You cannot access inventories in this claim.");
+                return ActionResult.FAIL;
+            }
+            if (!this.claimManager.canInteract(serverPlayer.getUuid(), serverPlayer.getGameProfile().getName(), serverPlayer.hasPermissionLevel(2), dimension, pos.getX(), pos.getZ())) {
                 this.deny(serverPlayer, "You cannot interact here. This area is claimed.");
                 return ActionResult.FAIL;
             }
@@ -402,10 +408,18 @@ implements ModInitializer {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             dispatcher.register(CommandManager.literal("claim")
                 .then(CommandManager.literal("trust")
+                    .then(CommandManager.literal("interact")
+                        .then(CommandManager.argument("player", StringArgumentType.word())
+                            .suggests(this::suggestOnlinePlayerNames)
+                            .executes(ctx -> this.trustPlayer(ctx.getSource(), StringArgumentType.getString(ctx, "player"), true))))
                     .then(CommandManager.argument("player", StringArgumentType.word())
                         .suggests(this::suggestOnlinePlayerNames)
                         .executes(ctx -> this.trustPlayer(ctx.getSource(), StringArgumentType.getString(ctx, "player")))))
                 .then(CommandManager.literal("untrust")
+                    .then(CommandManager.literal("interact")
+                        .then(CommandManager.argument("player", StringArgumentType.word())
+                            .suggests(this::suggestOnlinePlayerNames)
+                            .executes(ctx -> this.untrustPlayer(ctx.getSource(), StringArgumentType.getString(ctx, "player"), true))))
                     .then(CommandManager.argument("player", StringArgumentType.word())
                         .suggests(this::suggestOnlinePlayerNames)
                         .executes(ctx -> this.untrustPlayer(ctx.getSource(), StringArgumentType.getString(ctx, "player"))))));
@@ -832,7 +846,7 @@ implements ModInitializer {
 
     private int sendHelp(ServerCommandSource source) {
         source.sendFeedback(() -> Text.literal((String)("Claim tool: hold a gold shovel, right-click 2 corners to claim (minimum " + this.config.minimumClaimWidth + "x" + this.config.minimumClaimDepth + ", max " + this.config.maxClaimBlocksPerPlayerPerDimension + " blocks per dimension).")), false);
-        source.sendFeedback(() -> Text.literal((String)"Commands: /claim info, /claim visualize, /claim expand <amount>, /claim list, /claim trust <player|uuid>, /claim untrust <player|uuid>, /claim unclaim"), false);
+        source.sendFeedback(() -> Text.literal((String)"Commands: /claim info, /claim visualize, /claim expand <amount>, /claim list, /claim trust <player|uuid>, /claim trust interact <player|uuid>, /claim untrust <player|uuid>, /claim untrust interact <player|uuid>, /claim unclaim"), false);
         source.sendFeedback(() -> Text.literal((String)"Homes: /sethome <name>, /home <name>, /home list, /delhome <name>, /home public <name>, /home private <name>, /phome <name>, /phome list (up to 10 per player)"), false);
         source.sendFeedback(() -> Text.literal((String)"Admin: /claim admin help"), false);
         return 1;
@@ -2068,6 +2082,10 @@ implements ModInitializer {
     }
 
     private int trustPlayer(ServerCommandSource source, String targetName) {
+        return this.trustPlayer(source, targetName, false);
+    }
+
+    private int trustPlayer(ServerCommandSource source, String targetName, boolean interactOnly) {
         ServerPlayerEntity player;
         try {
             player = source.getPlayerOrThrow();
@@ -2081,7 +2099,7 @@ implements ModInitializer {
             source.sendError((Text)Text.literal((String)("Unknown player: " + targetName + ". Use exact name or UUID.")));
             return 0;
         }
-        ClaimManager.TrustResult trusted = this.claimManager.trustPlayerAt(player.getUuid(), profileOpt.get().getId(), profileOpt.get().getName(), player.getWorld().getRegistryKey().getValue().toString(), player.getBlockX(), player.getBlockZ(), this.config.allowOpsBypass, player.hasPermissionLevel(2));
+        ClaimManager.TrustResult trusted = this.claimManager.trustPlayerAt(player.getUuid(), profileOpt.get().getId(), profileOpt.get().getName(), player.getWorld().getRegistryKey().getValue().toString(), player.getBlockX(), player.getBlockZ(), this.config.allowOpsBypass, player.hasPermissionLevel(2), interactOnly);
         if (!trusted.success()) {
             if (trusted.error() == ClaimManager.TrustError.NOT_FOUND) {
                 source.sendError((Text)Text.literal((String)"No claim at your location."));
@@ -2094,7 +2112,7 @@ implements ModInitializer {
             }
             return 0;
         }
-        source.sendFeedback(() -> Text.literal((String)(((GameProfile)profileOpt.get()).getName() + " is now trusted in this claim.")), false);
+        source.sendFeedback(() -> Text.literal((String)(((GameProfile)profileOpt.get()).getName() + (interactOnly ? " may now interact in this claim." : " is now trusted in this claim."))), false);
         ServerPlayerEntity targetPlayer = source.getServer().getPlayerManager().getPlayer(profileOpt.get().getId());
         if (targetPlayer != null && !targetPlayer.getUuid().equals(player.getUuid())) {
             targetPlayer.sendMessage((Text)Text.literal((String)("You were trusted in a claim by " + player.getName().getString() + ".")));
@@ -2103,6 +2121,10 @@ implements ModInitializer {
     }
 
     private int untrustPlayer(ServerCommandSource source, String targetName) {
+        return this.untrustPlayer(source, targetName, false);
+    }
+
+    private int untrustPlayer(ServerCommandSource source, String targetName, boolean interactOnly) {
         ServerPlayerEntity player;
         try {
             player = source.getPlayerOrThrow();
@@ -2116,7 +2138,7 @@ implements ModInitializer {
             source.sendError((Text)Text.literal((String)("Unknown player: " + targetName + ". Use exact name or UUID.")));
             return 0;
         }
-        ClaimManager.TrustResult untrusted = this.claimManager.untrustPlayerAt(player.getUuid(), profileOpt.get().getId(), profileOpt.get().getName(), player.getWorld().getRegistryKey().getValue().toString(), player.getBlockX(), player.getBlockZ(), this.config.allowOpsBypass, player.hasPermissionLevel(2));
+        ClaimManager.TrustResult untrusted = this.claimManager.untrustPlayerAt(player.getUuid(), profileOpt.get().getId(), profileOpt.get().getName(), player.getWorld().getRegistryKey().getValue().toString(), player.getBlockX(), player.getBlockZ(), this.config.allowOpsBypass, player.hasPermissionLevel(2), interactOnly);
         if (!untrusted.success()) {
             if (untrusted.error() == ClaimManager.TrustError.NOT_FOUND) {
                 source.sendError((Text)Text.literal((String)"No claim at your location."));
@@ -2129,7 +2151,7 @@ implements ModInitializer {
             }
             return 0;
         }
-        source.sendFeedback(() -> Text.literal((String)(((GameProfile)profileOpt.get()).getName() + " is no longer trusted in this claim.")), false);
+        source.sendFeedback(() -> Text.literal((String)(((GameProfile)profileOpt.get()).getName() + (interactOnly ? " can no longer interact in this claim." : " is no longer trusted in this claim."))), false);
         ServerPlayerEntity targetPlayer = source.getServer().getPlayerManager().getPlayer(profileOpt.get().getId());
         if (targetPlayer != null && !targetPlayer.getUuid().equals(player.getUuid())) {
             targetPlayer.sendMessage((Text)Text.literal((String)("You were untrusted in a claim by " + player.getName().getString() + ".")));

@@ -209,6 +209,10 @@ file = "artifacts/goldclaim-1.0.7.jar"
 hash = "b80d719eec73b58f3551758e7ee1a95b53a8ed4483ab55246e929afde1375391"
 
 [[files]]
+file = "artifacts/goldclaim-1.0.8.jar"
+hash = "f1e3173ce3aa94ca8c3b4965bced6081a732bac2b645ed34bb2ccc1a403721c3"
+
+[[files]]
 file = "artifacts/grand-teleport-1.20.1-build252.jar"
 hash = "d02ae63ce942a235515b2f804d9f4183cfef25e784ed6e31fcda35fc16c0da30"
 
@@ -402,7 +406,7 @@ hash = "0d256d9e5705c27dd59c45df8f080c428744963197f3c94672f1452e54cdc17a"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs/loot_tables/kits/monthly.json"
-hash = "490a52cab655286297540b2f81c1e98cdd7e41676b3e891ddf607b2f4eaa487f"
+hash = "9a56a52709708672bff693f17843a8e0dd1d8d4de490514ddd9be15c6b9b033f"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs/loot_tables/kits/non_curse_book.json"
@@ -1316,7 +1320,7 @@ metafile = true
 
 [[files]]
 file = "mods/goldclaim-direct.pw.toml"
-hash = "e46f37aab110000ce4b5b535b0585a9c20ccd9c164093e1e76eb8a6f69dfc964"
+hash = "84b4b16d187bbb0a08853138f2887d084a11fbe6047ed77418c2509a0b39e906"
 metafile = true
 
 [[files]]

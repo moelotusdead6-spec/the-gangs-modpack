@@ -170,6 +170,10 @@ public class ClaimManager {
     }
 
     public synchronized TrustResult trustPlayerAt(UUID actorUuid, UUID targetUuid, String targetName, String dimension, int x, int z, boolean allowOpBypass, boolean isOp) {
+        return this.trustPlayerAt(actorUuid, targetUuid, targetName, dimension, x, z, allowOpBypass, isOp, false);
+    }
+
+    public synchronized TrustResult trustPlayerAt(UUID actorUuid, UUID targetUuid, String targetName, String dimension, int x, int z, boolean allowOpBypass, boolean isOp, boolean interactOnly) {
         Optional<Claim> claimOpt = this.getClaimAt(dimension, x, z);
         if (claimOpt.isEmpty()) {
             return TrustResult.fail(TrustError.NOT_FOUND);
@@ -178,20 +182,34 @@ public class ClaimManager {
         if (claim.adminClaim ? !isOp : !claim.isOwner(actorUuid) && (!allowOpBypass || !isOp)) {
             return TrustResult.fail(TrustError.NOT_ALLOWED);
         }
-        if (claim.isTrusted(targetUuid)) {
-            if (!claim.isTrustedName(targetName)) {
-                claim.addTrustedName(targetName);
+        boolean alreadyTrusted = interactOnly ? claim.canInteract(targetUuid) : claim.isTrusted(targetUuid);
+        if (alreadyTrusted) {
+            if (interactOnly ? !claim.canInteractName(targetName) : !claim.isTrustedName(targetName)) {
+                if (interactOnly) {
+                    claim.addInteractName(targetName);
+                } else {
+                    claim.addTrustedName(targetName);
+                }
                 this.save();
             }
             return TrustResult.fail(TrustError.ALREADY_TRUSTED);
         }
-        claim.addTrusted(targetUuid);
-        claim.addTrustedName(targetName);
+        if (interactOnly) {
+            claim.addInteract(targetUuid);
+            claim.addInteractName(targetName);
+        } else {
+            claim.addTrusted(targetUuid);
+            claim.addTrustedName(targetName);
+        }
         this.save();
         return TrustResult.ok();
     }
 
     public synchronized TrustResult untrustPlayerAt(UUID actorUuid, UUID targetUuid, String targetName, String dimension, int x, int z, boolean allowOpBypass, boolean isOp) {
+        return this.untrustPlayerAt(actorUuid, targetUuid, targetName, dimension, x, z, allowOpBypass, isOp, false);
+    }
+
+    public synchronized TrustResult untrustPlayerAt(UUID actorUuid, UUID targetUuid, String targetName, String dimension, int x, int z, boolean allowOpBypass, boolean isOp, boolean interactOnly) {
         Optional<Claim> claimOpt = this.getClaimAt(dimension, x, z);
         if (claimOpt.isEmpty()) {
             return TrustResult.fail(TrustError.NOT_FOUND);
@@ -200,11 +218,19 @@ public class ClaimManager {
         if (claim.adminClaim ? !isOp : !claim.isOwner(actorUuid) && (!allowOpBypass || !isOp)) {
             return TrustResult.fail(TrustError.NOT_ALLOWED);
         }
-        if (!claim.isTrusted(targetUuid) && !claim.isTrustedName(targetName)) {
+        boolean trusted = interactOnly ? claim.canInteract(targetUuid) || claim.canInteractName(targetName) : claim.isTrusted(targetUuid) || claim.isTrustedName(targetName);
+        if (!trusted) {
             return TrustResult.fail(TrustError.NOT_TRUSTED);
         }
-        claim.removeTrusted(targetUuid);
-        claim.removeTrustedName(targetName);
+        if (interactOnly) {
+            claim.removeInteract(targetUuid);
+            claim.removeInteractName(targetName);
+        } else {
+            claim.removeTrusted(targetUuid);
+            claim.removeTrustedName(targetName);
+            claim.removeInteract(targetUuid);
+            claim.removeInteractName(targetName);
+        }
         this.save();
         return TrustResult.ok();
     }
@@ -222,6 +248,22 @@ public class ClaimManager {
             return true;
         }
         if (claim.isTrustedName(playerName)) {
+            return true;
+        }
+        return this.config.allowOpsBypass && isOp;
+    }
+
+    public synchronized boolean canInteract(UUID playerUuid, String playerName, boolean isOp, String dimension, int x, int z) {
+        Optional<Claim> claimOpt = this.getClaimAt(dimension, x, z);
+        if (claimOpt.isEmpty()) {
+            return true;
+        }
+        Claim claim = claimOpt.get();
+        if (!claim.adminClaim && claim.isOwner(playerUuid)) {
+            return true;
+        }
+        if (claim.isTrusted(playerUuid) || claim.isTrustedName(playerName)
+                || claim.canInteract(playerUuid) || claim.canInteractName(playerName)) {
             return true;
         }
         return this.config.allowOpsBypass && isOp;
