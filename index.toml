@@ -430,7 +430,7 @@ hash = "b550f0f331ebd50bb7268c32520163653e24380f07217c4639e56a7940326d5e"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/check_join_notify.mcfunction"
-hash = "1a72c66cbedd78c2b7a9f13dc3a852fc34ed10bfae11462894bdbc3dbd7caa6c"
+hash = "ef345157b357190b6bc9fc714021750819b4fdab6161de06e19f6fe1468d3fa7"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/claim_monthly.mcfunction"
@@ -474,7 +474,7 @@ hash = "337432edea0a9836b64a175bf72880d1fa1f89b17417940459f43942d92fabc7"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/player_tick.mcfunction"
-hash = "b701a2951d7fa7c40ffed991ca1450132d1fc0d3ce862ce938bcd8c29d44841a"
+hash = "9cf1625297f18820a1cf28b0d79619cd494b8e168ad074b8c9b674841f74acac"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/reset_player_cycle.mcfunction"
@@ -486,7 +486,7 @@ hash = "fd952f317e9a41b2a3499bda3d827d79a267483f8ca1d09f0cdd261525781e16"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/unlock_m.mcfunction"
-hash = "b1c0b485162c13cf28d8c9a81cda532a556ce5184f84cdf524eaf3a085e69d96"
+hash = "189eedb3a8361a0d0357a0210da98c283a892109d1be08496d0b437878ca3628"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/unlock_monthly.mcfunction"
@@ -494,15 +494,15 @@ hash = "c97ef553e6e304a201e8e47b15c266b136ebec9aa74f4a1cbda8378ebe4802c3"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/unlock_w1.mcfunction"
-hash = "64b5fc0d2d7c576b719a9fdc998d6f3e044caf7d6cdc160f86d3a2f169f7ca6a"
+hash = "01bfb602fdec8885b864dc317c3ad51be921f7ffd59d96056daaac41cb9bdb81"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/unlock_w2.mcfunction"
-hash = "17a54e7572d3d40d66a756222b57b40f4172b3ee2b080032a7eaccc1b267abeb"
+hash = "6c13871e6985480f72f8dfd9f53dcff71820ebc4a5531014311fd3fd337584db"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/unlock_w3.mcfunction"
-hash = "b2a656d7d48fe31d72256ada6b6735017b7db72ab294cf5325c482e61d2146ef"
+hash = "9519f820ece96f0bad364a2537c68feb4501eb6fa3231174ae7026db9802e6ac"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/unlock_weekly_2.mcfunction"
