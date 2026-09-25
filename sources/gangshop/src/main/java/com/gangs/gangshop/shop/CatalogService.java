@@ -87,7 +87,7 @@ public class CatalogService {
     private static final Set<String> VANILLA_VEGETATION_GROUND_IDS = new HashSet<String>(Arrays.asList("minecraft:grass_block", "minecraft:dirt", "minecraft:coarse_dirt", "minecraft:rooted_dirt", "minecraft:podzol", "minecraft:mycelium", "minecraft:mud", "minecraft:muddy_mangrove_roots", "minecraft:moss_block", "minecraft:moss_carpet"));
     private static final Set<String> VANILLA_VEGETATION_IDS = new HashSet<String>(Arrays.asList("minecraft:azalea", "minecraft:flowering_azalea", "minecraft:carrot", "minecraft:carrots", "minecraft:carved_pumpkin", "minecraft:glow_berries", "minecraft:hanging_roots", "minecraft:lily_of_the_valley", "minecraft:pitcher_pod", "minecraft:potato", "minecraft:potatoes", "minecraft:pumpkin", "minecraft:pumpkin_stem", "minecraft:attached_pumpkin_stem", "minecraft:sugar_cane", "minecraft:sweet_berries", "minecraft:sweet_berry_bush"));
     private static final Set<String> LETS_DO_NAMESPACES = new HashSet<String>(Arrays.asList("bakery", "beachparty", "bloomingnature", "brewery", "candlelight", "doapi", "farm_and_charm", "furniture", "herbalbrews", "meadow", "vinery", "wildernature"));
-    private static final Set<String> SHOP_EXCLUDED_NAMESPACES = new HashSet<String>(Arrays.asList("advancednetherite", "alexscaves", "alexsmobs", "bosses_of_mass_destruction", "creeperoverhaul", "crittersandcompanions", "endermanoverhaul", "ftbquests", "galosphere", "gangshats", "gobber2", "lootr", "moonlight", "mythicmetals", "paladins", "runes", "spell_engine", "spellbladenext", "universal_graves", "waystones"));
+    private static final Set<String> SHOP_EXCLUDED_NAMESPACES = new HashSet<String>(Arrays.asList("advancednetherite", "alexscaves", "alexsmobs", "bosses_of_mass_destruction", "creeperoverhaul", "crittersandcompanions", "endermanoverhaul", "ftbquests", "gangshats", "gobber2", "lootr", "moonlight", "mythicmetals", "paladins", "runes", "spell_engine", "spellbladenext", "universal_graves", "waystones"));
     private static final Set<String> CAMPING_BAG_IDS = new HashSet<String>(Arrays.asList("enderbag", "enderpack", "goodybag", "sheepbag", "wanderer_bag", "large_backpack", "small_backpack", "wanderer_backpack"));
     private static final Map<String, Long> MINERAL_PRICE_BY_ID = new HashMap<String, Long>();
     private final Map<ShopCategory, List<ShopEntry>> byCategory = new LinkedHashMap<ShopCategory, List<ShopEntry>>();
@@ -325,7 +325,7 @@ public class CatalogService {
         String key = id.toString();
         String path = id.getPath().toLowerCase();
         String namespace = id.getNamespace().toLowerCase();
-        if (namespace.equals("a_man_with_plushies") || namespace.equals("alexscaves") || namespace.equals("galosphere")) {
+        if (namespace.equals("a_man_with_plushies") || namespace.equals("alexscaves")) {
             return true;
         }
         if (path.contains("cocktail") || (path.contains("wine") && !key.equals("vinery:wine_bottle")) || path.contains("grapejuice") || path.contains("beer") || path.contains("cider") || path.contains("tea") || path.contains("netherite") || path.contains("baguette") || path.contains("bun") || path.contains("bread") || path.contains("cheese_block") || path.contains("tart") || path.contains("cake") || path.contains("dumpling") || path.contains("roasted") || path.contains("pork") || path.contains("beef") || path.contains("jam") || path.contains("stuffed") || path.contains("salad") || path.contains("whiskey") || path.contains("pie") || path.contains("chicken")) {

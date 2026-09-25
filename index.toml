@@ -6,7 +6,7 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "8f5b9c39356025dc9968c4a9d96b01837e4c9df6106c20c11a90b47f9622cd65"
+hash = "73a947888670d931a232eef4695d094986aee93142c8269981b2fe61b882f892"
 
 [[files]]
 file = "README.md"
@@ -91,10 +91,6 @@ hash = "cb58fb4ac232b6b76b371bf0332372954348b525879f9bc3c2a094bdafb5c744"
 [[files]]
 file = "artifacts/ftb-ultimine-fabric-2001.1.8.jar"
 hash = "c2f53d4de42bbfd5d921f94b89e4665ff913add75a226426096429d7e0751f7f"
-
-[[files]]
-file = "artifacts/galospheretrimming-1.20.1-1.0.0-quilt.jar"
-hash = "8ff9839fcd75c9af252e23e5ce6026283b96f4fe984b81f4eb5add12ae85b632"
 
 [[files]]
 file = "artifacts/gangsales-1.0.0.jar"
@@ -186,7 +182,7 @@ hash = "31d4df80138b8b061158c1df69b732f9e1f7add9845fbc83f658c343120e8c78"
 
 [[files]]
 file = "artifacts/gangshop-1.0.7.jar"
-hash = "b7507041c7ae09bdd01526f87e06e3a7c5175abf46af5cea2c773c170bbba3d2"
+hash = "bb035dd85bf451b9e9b2f727e7803f8ac91e7b4fdbda9f5df138acb08ee03243"
 
 [[files]]
 file = "artifacts/goldclaim-1.0.16.jar"
@@ -422,7 +418,7 @@ hash = "9a56a52709708672bff693f17843a8e0dd1d8d4de490514ddd9be15c6b9b033f"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs/loot_tables/kits/non_curse_book.json"
-hash = "a22d1ee2db67d39a0d8c22c827a70e58c1b2ab96db04225468d71102ce93c6f3"
+hash = "a3edf3a5316ca853129cdafb30708e7d0930db9e525ed74fa22f9661715d07d3"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs/loot_tables/kits/weekly_1.json"
@@ -593,10 +589,6 @@ file = "index.html"
 hash = "18ac75558728bc0a11f6cf09e6db01cbf04fd079a4872d9b1cfac0599f8c036f"
 
 [[files]]
-file = "kubejs/server_scripts/disable_galosphere_sparkles.js"
-hash = "d570f1a83ab2aeaae349fdec7c4930611c7625bfa9f6702f4949d354639686b2"
-
-[[files]]
 file = "mods/.gitkeep"
 hash = "337d0493968221383db93fdaf60298ecd585e466952852720affa4817f0f72fb"
 
@@ -693,11 +685,6 @@ metafile = true
 [[files]]
 file = "mods/FoxFriend-fabric-1.18.2-1.21.1-6.0.3.pw.toml"
 hash = "e0b67f8f1870d4dae8ec9f6536520194a039841b2482df418838157a84eb8584"
-metafile = true
-
-[[files]]
-file = "mods/Galosphere-1.20.1-1.5.2-Fabric.pw.toml"
-hash = "ccb92c29c6f29391bcfa82fbac42f6d6a2e2c50b03bbdbbfad8c109c5bd90492"
 metafile = true
 
 [[files]]
@@ -1296,11 +1283,6 @@ hash = "2ba74627329119476e6f4346ad5d4944d23466933336e16a2775ac7b1e61e1fc"
 metafile = true
 
 [[files]]
-file = "mods/galospheretrimming-1.20.1-1.0.0-quilt.pw.toml"
-hash = "2b8826fbd667a9cdc6d72ae85808542cb46345f657a6e9e3cdd4d1742415a49a"
-metafile = true
-
-[[files]]
 file = "mods/gangsales-direct.pw.toml"
 hash = "36ae4161ddfb9500f48978ec86431b2eebbfa83b39fa1e194cd16de6e246e1c2"
 metafile = true
@@ -1317,7 +1299,7 @@ metafile = true
 
 [[files]]
 file = "mods/gangshop-direct.pw.toml"
-hash = "e4361b355780031a189842e464fdb83f3ed16c6f63a3e5d1f10f5443151a8218"
+hash = "104d4cdd0365aa34c40e43660f82d6d377f4757b77de725e0cb9cd50e024d31c"
 metafile = true
 
 [[files]]
@@ -1332,7 +1314,7 @@ metafile = true
 
 [[files]]
 file = "mods/goldclaim-direct.pw.toml"
-hash = "8b3340e0c2ca3fc0be064180ec6ca6b1c310e16e13aede89fbe51c5aeed869e9"
+hash = "c904a747eb74c6f95af2a0407bc1da11cc4c0f3c0cdd828e05d112c359967e5d"
 metafile = true
 
 [[files]]
@@ -1532,7 +1514,7 @@ metafile = true
 
 [[files]]
 file = "mods/multiworld-direct.pw.toml"
-hash = "d1026d230763759d7ffd874d57f7365271d5565477e8ee88d4f8b68b8ac1dfd9"
+hash = "19f17401755452de68a5876078d2c05422a1f698ab0f165e78826141eb7a866c"
 metafile = true
 
 [[files]]

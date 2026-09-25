@@ -1,8 +1,0 @@
-name = "Galosphere Trimming 1.20.1 1.0.0"
-filename = "galospheretrimming-1.20.1-1.0.0-quilt.jar"
-side = "both"
-
-[download]
-url = "https://raw.githubusercontent.com/moelotusdead6-spec/the-gangs-modpack/main/artifacts/galospheretrimming-1.20.1-1.0.0-quilt.jar"
-hash-format = "sha256"
-hash = "8ff9839fcd75c9af252e23e5ce6026283b96f4fe984b81f4eb5add12ae85b632"
