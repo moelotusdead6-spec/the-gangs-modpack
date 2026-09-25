@@ -1,0 +1,7 @@
+[worldGen]
+frequency = 0
+spawnInVillages = false
+forceSpawnInVillages = false
+
+[restrictions]
+generatedWaystonesUnbreakable = true

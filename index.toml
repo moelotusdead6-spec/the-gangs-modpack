@@ -414,7 +414,7 @@ hash = "0d256d9e5705c27dd59c45df8f080c428744963197f3c94672f1452e54cdc17a"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs/loot_tables/kits/monthly.json"
-hash = "9a56a52709708672bff693f17843a8e0dd1d8d4de490514ddd9be15c6b9b033f"
+hash = "73486495a9b611b7da88173301952145ab10040c0ff796b6a915ef2a5f84b175"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs/loot_tables/kits/non_curse_book.json"
@@ -585,8 +585,16 @@ file = "config/skieskits/menu.json"
 hash = "4f4f427c325702d5f55f93dd96ddee4831fd23814d088dd1f24e1bf540637246"
 
 [[files]]
+file = "config/waystones-common.toml"
+hash = "b2568259d2839b90a20167be62e9581625ebe1df05ffe385a087ec358f7b0aba"
+
+[[files]]
 file = "index.html"
 hash = "18ac75558728bc0a11f6cf09e6db01cbf04fd079a4872d9b1cfac0599f8c036f"
+
+[[files]]
+file = "kubejs/server_scripts/waystones_recipes.js"
+hash = "e6c78de64bde68b9db2e9971a9eff3e621af9d8fa81b12ff298c4bb37d602a05"
 
 [[files]]
 file = "mods/.gitkeep"

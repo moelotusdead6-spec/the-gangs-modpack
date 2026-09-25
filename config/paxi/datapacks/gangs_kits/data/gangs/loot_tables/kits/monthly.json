@@ -455,6 +455,15 @@
         {"type": "minecraft:item", "name": "wildernature:bunny_stalker_banner"},
         {"type": "minecraft:item", "name": "wildernature:cod_catcher_banner"}
       ]
+    },
+    {
+      "rolls": 1,
+      "conditions": [
+        {"condition": "minecraft:random_chance", "chance": 0.15}
+      ],
+      "entries": [
+        {"type": "minecraft:item", "name": "waystones:waystone"}
+      ]
     }
   ]
 }
