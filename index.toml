@@ -6,7 +6,7 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "15b82dcb472e60efe2c72a5a485a5a050f515e178882ec909603df4bdf0895e8"
+hash = "8f5b9c39356025dc9968c4a9d96b01837e4c9df6106c20c11a90b47f9622cd65"
 
 [[files]]
 file = "README.md"
@@ -38,7 +38,7 @@ hash = "ad9f6b3459224b5d88774263bd564215f7084c1f7503d15e0bb2c54aafc41582"
 
 [[files]]
 file = "artifacts/Multiworld-Fabric-1.20.1.jar"
-hash = "d3fc5e454ee2c777a4ce85d28a4328890df4c86a6a1087446bc2babf33abfb7b"
+hash = "de3d8a33d891051f6dd6fa736ca607c49b7e91386a09390e2ac553bee803f1b5"
 
 [[files]]
 file = "artifacts/alexscaves-2.1.8.jar"
@@ -113,8 +113,8 @@ file = "artifacts/gangsboots-1.0.2.jar"
 hash = "e2d4e36f156f890df43cdea606719c817ee9c3a7b808e92f0b2c005c0b850f6a"
 
 [[files]]
-file = "artifacts/gangsboots-1.0.3.jar"
-hash = "1eed11700e997f4767544737174baa8cd33bcf1a06056bfeae1f3a12da3c384a"
+file = "artifacts/gangsboots-1.0.4.jar"
+hash = "87b4092f94dbaaaa6e8dcf3941745365a6266773341bfff26b253108daaa1b06"
 
 [[files]]
 file = "artifacts/gangsboots-ATTRIBUTION.txt"
@@ -187,6 +187,10 @@ hash = "31d4df80138b8b061158c1df69b732f9e1f7add9845fbc83f658c343120e8c78"
 [[files]]
 file = "artifacts/gangshop-1.0.7.jar"
 hash = "b7507041c7ae09bdd01526f87e06e3a7c5175abf46af5cea2c773c170bbba3d2"
+
+[[files]]
+file = "artifacts/goldclaim-1.0.16.jar"
+hash = "ba33fb9c21d8cd52108464751ed76f102baf68b42b2d6fa51debbe3c4c6bdb54"
 
 [[files]]
 file = "artifacts/goldclaim-1.0.2.jar"
@@ -362,7 +366,7 @@ hash = "50c6339098e14d361090d31d7e570b87c2e9521125bb3fe6f5c3aa87088f7c62"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_hub/data/gangs/dimension/hub.json"
-hash = "a81febddacf78089439d3fc852535990e0dbf6be3ffeb898e5ef383fe9870f97"
+hash = "22f4c4836a1430c79eccbd20659c66ece94c04bcf1d9097702347705d2a6e3be"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_hub/data/gangs/dimension_type/hub.json"
@@ -373,12 +377,20 @@ file = "config/paxi/datapacks/gangs_hub/data/gangs/worldgen/biome/hub_void.json"
 hash = "2cc3fd307518505da5e330711f262592de558e8adb8bddac316f2ae06304602a"
 
 [[files]]
+file = "config/paxi/datapacks/gangs_hub/data/gangs_hub/functions/assign_ranks.mcfunction"
+hash = "5d9b45bf837a4e504c9c3b2f3dc2c221b42ea76dc7463c9219baef10cb15f5f7"
+
+[[files]]
 file = "config/paxi/datapacks/gangs_hub/data/gangs_hub/functions/init.mcfunction"
-hash = "cc2c3db5b2cc134afca14bd06a5227200c8d86203806bb5f24eabf3bf282a1bb"
+hash = "056b3f77bfd7d43911107b327530b4d042c555971fc5e7737c54c974b84ab30b"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_hub/data/gangs_hub/functions/load.mcfunction"
-hash = "85e300291ddb4ddae3046e7a66eec10e31bfe30d5f90b0f10e39f1569a5ee390"
+hash = "274a5638a441f3347890a4393dda86ede85a49d15c6b37ae9da9c972c196a480"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_hub/data/gangs_hub/functions/setup_ranks.mcfunction"
+hash = "90f5cc203807df1994da94d4e73bcd51740721018f30edc25f8a0508fccde58a"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_hub/data/minecraft/tags/functions/load.json"
@@ -434,19 +446,19 @@ hash = "ef345157b357190b6bc9fc714021750819b4fdab6161de06e19f6fe1468d3fa7"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/claim_monthly.mcfunction"
-hash = "89cb3b0479f7a7e1de8033ec08f23f1c3a48068864a61e145f5324dd44bde0d3"
+hash = "d2cdd9b882dcd286a0074a9de728c46e367c3f227aa93486ab4b74ace5dfd063"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/claim_weekly_1.mcfunction"
-hash = "a493177c6c85d9ce916e72116a924bad0296736858d26fffc901298843aa2389"
+hash = "282043c6d218dcd8d69dbad2bcda0c317c096d49fd4a2fc194762a453ee84573"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/claim_weekly_2.mcfunction"
-hash = "6cbf7d89e209a69e904bb9dc5b318487271cdd0ac2717d062242cc3f2bf2ee7e"
+hash = "4945edc73630fbccb91f71527fd6cf3b44600227fb0d4fe1ed6c84bbfb297cc7"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/claim_weekly_3.mcfunction"
-hash = "de21524f9966d02f49a31d6a9061a47caf1cc024a4f9e3fe525dcf22bdea6548"
+hash = "cdb9328af7284045de231fd1941213705b015850e3ccea06e2131c4c1a9f31d1"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/count_occupied_slots.mcfunction"
@@ -454,19 +466,19 @@ hash = "dff84a09cf561889823a1ef8aab5115c28b8f63d5242f8c42e5988f0d376cd7a"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/do_claim_m.mcfunction"
-hash = "94fad3a104d0b8279a3e76193db2302694ac6857ecd029c42614ab175fdfcf59"
+hash = "6626740948b2b82022667432d63663a1efb708c4471f0a4d3ba75d75665f5c95"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/do_claim_w1.mcfunction"
-hash = "142d191e39eee200b117de59c2a2674026143316e52a0b99d3d5f1cb88d7ac98"
+hash = "0b04500b0900c7df3aa24f5038db6a88c1ae3866a9a3835b07a15738bf39df63"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/do_claim_w2.mcfunction"
-hash = "b7e37b5071f733f3a9a1d033c03837820b77307177d176c18d53b993022d4fa7"
+hash = "a30e5f7908c4f4971425fee9c389ff77dff9fcb273dfa589d39829541809fa5c"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/do_claim_w3.mcfunction"
-hash = "8062d78296dbb7fe03ec90e0359464a3bde4b2610856df76210b00385d727916"
+hash = "6896e84d1d47aad710b72ecec835944bbac05ac0220c7cccf2d148edf19bf685"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/init_player.mcfunction"
@@ -478,7 +490,7 @@ hash = "9cf1625297f18820a1cf28b0d79619cd494b8e168ad074b8c9b674841f74acac"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/reset_player_cycle.mcfunction"
-hash = "e81fc6ec6a0c0a0e19a5b19f8c66d9fab9fbfb995185c9488ff924bf562398be"
+hash = "160d0cff7936cac6e43c710a3d7ca57e03d3f42821499a9ce33cc0516f6d73ec"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/tick.mcfunction"
@@ -486,7 +498,7 @@ hash = "fd952f317e9a41b2a3499bda3d827d79a267483f8ca1d09f0cdd261525781e16"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/unlock_m.mcfunction"
-hash = "189eedb3a8361a0d0357a0210da98c283a892109d1be08496d0b437878ca3628"
+hash = "0c01effe430294bef3b879a7fecf21240e14c4ed9a6142628b8dd971e776688f"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/unlock_monthly.mcfunction"
@@ -494,15 +506,15 @@ hash = "c97ef553e6e304a201e8e47b15c266b136ebec9aa74f4a1cbda8378ebe4802c3"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/unlock_w1.mcfunction"
-hash = "01bfb602fdec8885b864dc317c3ad51be921f7ffd59d96056daaac41cb9bdb81"
+hash = "2566e49535dca36a6824e2b1eb378bfd8e373d47e5007fdb133ba8441ec48880"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/unlock_w2.mcfunction"
-hash = "6c13871e6985480f72f8dfd9f53dcff71820ebc4a5531014311fd3fd337584db"
+hash = "0a24ac14933abace15341ea349000ba5b2ab407d40d71d14b99b700415481ddc"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/unlock_w3.mcfunction"
-hash = "9519f820ece96f0bad364a2537c68feb4501eb6fa3231174ae7026db9802e6ac"
+hash = "f9085b4e88eae7138de1dd605a7c22613eb9ec8ac3671f493f12e888b502c95e"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/unlock_weekly_2.mcfunction"
@@ -558,19 +570,19 @@ hash = "e5e0c404117a39c26029361d154455d7a8974230ac6453ef8726af51d9a39f6d"
 
 [[files]]
 file = "config/skieskits/kits/1_weekly_1.json"
-hash = "90538be58fb107c6f9ab6c9a0927578055a91fbac69168f84236ca6f4e8dad1f"
+hash = "9e5596510d530f8fcc05b19556880553f7c7ebc5cd2ef5b7153a7306999fae85"
 
 [[files]]
 file = "config/skieskits/kits/2_weekly_2.json"
-hash = "9a0a83152d29b71dfd93cc33b04e0f29cc8678e13448c2accb4e7d37771a6a96"
+hash = "9ee4bd0a459b20571b86b41b3b08a7a1d07a2e04036a6301b2e88c0d6651270d"
 
 [[files]]
 file = "config/skieskits/kits/3_weekly_3.json"
-hash = "5d7950cd0b67a5d2201a3da394161750009c8d84bcdc8a4dae0c1a118ecd650e"
+hash = "207c439bf6cb394788122bdf89e6aeb0d2c3a1a1fea1bfc953379a542d4dc009"
 
 [[files]]
 file = "config/skieskits/kits/4_monthly.json"
-hash = "04a4af2f0b701a5ec4cdef479d42516335c9cedad9f7d661e187ff16cfe654af"
+hash = "60f81c39843ca2acec346d513ab49bb46e5c4bef93e313dc2bd404a110066668"
 
 [[files]]
 file = "config/skieskits/menu.json"
@@ -1295,7 +1307,7 @@ metafile = true
 
 [[files]]
 file = "mods/gangsboots-direct.pw.toml"
-hash = "cf66d98c74237ce833c8fb2bdd6eb8c36389844e7c84162508573a322a78df04"
+hash = "177e913a76502af68b28cd713764308d7ea260ff8b74df860e63b4318bc0a39d"
 metafile = true
 
 [[files]]
@@ -1320,7 +1332,7 @@ metafile = true
 
 [[files]]
 file = "mods/goldclaim-direct.pw.toml"
-hash = "84b4b16d187bbb0a08853138f2887d084a11fbe6047ed77418c2509a0b39e906"
+hash = "8b3340e0c2ca3fc0be064180ec6ca6b1c310e16e13aede89fbe51c5aeed869e9"
 metafile = true
 
 [[files]]
@@ -1520,7 +1532,7 @@ metafile = true
 
 [[files]]
 file = "mods/multiworld-direct.pw.toml"
-hash = "fd26f9fd269cabbe89b7cf19f886ce9769497374e502fe1dd6c121c22bb52022"
+hash = "d1026d230763759d7ffd874d57f7365271d5565477e8ee88d4f8b68b8ac1dfd9"
 metafile = true
 
 [[files]]
@@ -1811,6 +1823,11 @@ metafile = true
 [[files]]
 file = "mods/wizards-direct.pw.toml"
 hash = "f0336933418ba1f4e6b279376d39e66dba21e9421ea07a3545afdfd4b7d985a8"
+metafile = true
+
+[[files]]
+file = "mods/worldedit.pw.toml"
+hash = "74436bf4531aa8256d69a4ed0876e7a848eee1dd36757b330e1e190686d86a81"
 metafile = true
 
 [[files]]

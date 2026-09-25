@@ -114,11 +114,13 @@ import java.nio.file.Path;
 import java.nio.file.attribute.FileAttribute;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
@@ -203,6 +205,7 @@ implements ModInitializer {
     private static final Logger LOGGER = LoggerFactory.getLogger((String)"GoldClaim");
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final Predicate<ServerCommandSource> PUBLIC_COMMAND = source -> true;
+    private static final String OVERWORLD_DIMENSION = "minecraft:overworld";
     private static GoldClaimMod INSTANCE;
     private GoldClaimConfig config;
     private ClaimManager claimManager;
@@ -210,18 +213,41 @@ implements ModInitializer {
     private ClaimPortalRegistry portalRegistry;
     private final Path lastWildLocationsPath = Path.of("config", "goldclaim", "last-wild-locations.json");
     private final Path playerHomesPath = Path.of("config", "goldclaim", "player-homes.json");
+    private final Path rswResetStatePath = Path.of("config", "goldclaim", "rsw-reset.json");
     private final Map<UUID, SavedLocation> lastWildLocations = new HashMap<UUID, SavedLocation>();
     private final Map<UUID, Map<String, SavedHome>> playerHomes = new HashMap<UUID, Map<String, SavedHome>>();
     private final Map<UUID, VisualizationSession> visualizationSessions = new HashMap<UUID, VisualizationSession>();
     private final Map<UUID, String> lastClaimNotificationByPlayer = new HashMap<UUID, String>();
     private final Map<UUID, Integer> pendingHubTeleports = new HashMap<UUID, Integer>();
+    private final Set<UUID> playersInPvp = new HashSet<UUID>();
     private static final long TELEPORT_REQUEST_TIMEOUT_MS = 60000L;
+    private static final String PVP_DIMENSION = "multiworld:pvp";
+    private static final String RSW_DIMENSION = "multiworld:rsw";
+    private static final boolean RSW_RESET_ENABLED = false;
+    private static final long RSW_RESET_INTERVAL_MS = 24L * 60L * 60L * 1000L;
+    private long nextRswResetAtMs;
+    private int worldMaintenanceTicks;
+    private int playerMaintenanceTicks;
+    private boolean initializeTestingWorlds;
     private final Map<UUID, TeleportRequest> pendingTeleportRequestsByTarget = new HashMap<UUID, TeleportRequest>();
     private final Map<UUID, UUID> pendingTeleportRequestTargetByRequester = new HashMap<UUID, UUID>();
     private static final TextColor HUB_TITLE_COLOR;
 
     public static boolean isHubWorld(ServerWorld world) {
         return INSTANCE != null && GoldClaimMod.INSTANCE.config != null && GoldClaimMod.INSTANCE.config.portalHubDimension.equals(world.getRegistryKey().getValue().toString());
+    }
+
+    public static boolean isTestingWorld(ServerWorld world) {
+        String dimensionId = world.getRegistryKey().getValue().toString();
+        return PVP_DIMENSION.equals(dimensionId) || RSW_DIMENSION.equals(dimensionId);
+    }
+
+    public static boolean isPvpWorld(ServerWorld world) {
+        return PVP_DIMENSION.equals(world.getRegistryKey().getValue().toString());
+    }
+
+    public static boolean shouldKeepInventoryOnDeath(ServerPlayerEntity player) {
+        return GoldClaimMod.isPvpWorld(player.getServerWorld());
     }
 
     public static boolean shouldFreezeHubFallingBlocks(ServerWorld world) {
@@ -250,10 +276,12 @@ implements ModInitializer {
         this.portalRegistry = new ClaimPortalRegistry(Path.of("config", "goldclaim", "claim-portals.json"), this.config);
         this.loadLastWildLocations();
         this.loadPlayerHomes();
+        this.loadRswResetState();
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
             this.portalRegistry.syncToServer(server);
             this.forcePublicCommandPermissions(server);
             this.runGangsFixesLoad(server);
+            this.initializeTestingWorlds = true;
         });
         ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, resourceManager, success) -> {
             if (success) {
@@ -352,6 +380,13 @@ implements ModInitializer {
                 return true;
             }
             String dimensionId = world.getRegistryKey().getValue().toString();
+            if (PVP_DIMENSION.equals(dimensionId)) {
+                if (player instanceof ServerPlayerEntity) {
+                    ServerPlayerEntity serverPlayer = (ServerPlayerEntity)player;
+                    this.deny(serverPlayer, "Blocks cannot be broken in PVP.");
+                }
+                return false;
+            }
             if (this.portalRegistry.isProtectedBase(dimensionId, pos.getX(), pos.getY(), pos.getZ())) {
                 if (player instanceof ServerPlayerEntity) {
                     ServerPlayerEntity serverPlayer = (ServerPlayerEntity)player;
@@ -412,6 +447,10 @@ implements ModInitializer {
                         .then(CommandManager.argument("player", StringArgumentType.word())
                             .suggests(this::suggestOnlinePlayerNames)
                             .executes(ctx -> this.trustPlayer(ctx.getSource(), StringArgumentType.getString(ctx, "player"), true))))
+                    .then(CommandManager.literal("manager")
+                        .then(CommandManager.argument("player", StringArgumentType.word())
+                            .suggests(this::suggestOnlinePlayerNames)
+                            .executes(ctx -> this.trustManager(ctx.getSource(), StringArgumentType.getString(ctx, "player")))))
                     .then(CommandManager.argument("player", StringArgumentType.word())
                         .suggests(this::suggestOnlinePlayerNames)
                         .executes(ctx -> this.trustPlayer(ctx.getSource(), StringArgumentType.getString(ctx, "player")))))
@@ -420,6 +459,10 @@ implements ModInitializer {
                         .then(CommandManager.argument("player", StringArgumentType.word())
                             .suggests(this::suggestOnlinePlayerNames)
                             .executes(ctx -> this.untrustPlayer(ctx.getSource(), StringArgumentType.getString(ctx, "player"), true))))
+                    .then(CommandManager.literal("manager")
+                        .then(CommandManager.argument("player", StringArgumentType.word())
+                            .suggests(this::suggestOnlinePlayerNames)
+                            .executes(ctx -> this.untrustManager(ctx.getSource(), StringArgumentType.getString(ctx, "player")))))
                     .then(CommandManager.argument("player", StringArgumentType.word())
                         .suggests(this::suggestOnlinePlayerNames)
                         .executes(ctx -> this.untrustPlayer(ctx.getSource(), StringArgumentType.getString(ctx, "player"))))));
@@ -430,6 +473,8 @@ implements ModInitializer {
             dispatcher.register((LiteralArgumentBuilder)((LiteralArgumentBuilder)((LiteralArgumentBuilder)((LiteralArgumentBuilder)((LiteralArgumentBuilder)((LiteralArgumentBuilder)CommandManager.literal((String)"gcportal").then(CommandManager.literal((String)"help").executes(ctx -> this.sendPortalHelp((ServerCommandSource)ctx.getSource())))).then(CommandManager.literal((String)"add").then(CommandManager.argument((String)"id", (ArgumentType)StringArgumentType.word()).executes(ctx -> this.addClaimPortal((ServerCommandSource)ctx.getSource(), StringArgumentType.getString((CommandContext)ctx, (String)"id")))))).then(CommandManager.literal((String)"addhub").then(CommandManager.argument((String)"id", (ArgumentType)StringArgumentType.word()).executes(ctx -> this.addHubPortal((ServerCommandSource)ctx.getSource(), StringArgumentType.getString((CommandContext)ctx, (String)"id")))))).then(CommandManager.literal((String)"remove").then(CommandManager.argument((String)"id", (ArgumentType)StringArgumentType.word()).executes(ctx -> this.removeClaimPortal((ServerCommandSource)ctx.getSource(), StringArgumentType.getString((CommandContext)ctx, (String)"id")))))).then(CommandManager.literal((String)"delete").then(CommandManager.argument((String)"id", (ArgumentType)StringArgumentType.word()).executes(ctx -> this.removeClaimPortal((ServerCommandSource)ctx.getSource(), StringArgumentType.getString((CommandContext)ctx, (String)"id")))))).then(CommandManager.literal((String)"list").executes(ctx -> this.listClaimPortals((ServerCommandSource)ctx.getSource()))));
             dispatcher.register((LiteralArgumentBuilder)this.publicCommand("hub").executes(ctx -> this.teleportToHub((ServerCommandSource)ctx.getSource())));
             dispatcher.register((LiteralArgumentBuilder)this.publicCommand("wild").executes(ctx -> this.teleportToWild((ServerCommandSource)ctx.getSource())));
+            dispatcher.register((LiteralArgumentBuilder)this.publicCommand("pvp").executes(ctx -> this.teleportToTestingWorld((ServerCommandSource)ctx.getSource(), PVP_DIMENSION, "PVP", true)));
+            dispatcher.register((LiteralArgumentBuilder)CommandManager.literal("rsw").requires(source -> source.hasPermissionLevel(2)).executes(ctx -> this.teleportToTestingWorld((ServerCommandSource)ctx.getSource(), RSW_DIMENSION, "RSW", false)));
             dispatcher.register((LiteralArgumentBuilder)this.publicCommand("rtp").executes(ctx -> this.randomTeleport((ServerCommandSource)ctx.getSource())));
             dispatcher.register((LiteralArgumentBuilder)this.publicCommand("randomteleport").executes(ctx -> this.randomTeleport((ServerCommandSource)ctx.getSource())));
             dispatcher.register((LiteralArgumentBuilder)((LiteralArgumentBuilder)this.publicCommand("sethome").executes(ctx -> this.sendSetHomeUsage((ServerCommandSource)ctx.getSource()))).then(CommandManager.argument((String)"name", (ArgumentType)StringArgumentType.greedyString()).executes(ctx -> this.setHome((ServerCommandSource)ctx.getSource(), StringArgumentType.getString((CommandContext)ctx, (String)"name")))));
@@ -440,7 +485,6 @@ implements ModInitializer {
             dispatcher.register((LiteralArgumentBuilder)((LiteralArgumentBuilder)CommandManager.literal((String)"tpahere").executes(ctx -> this.sendTpaHereUsage((ServerCommandSource)ctx.getSource()))).then(CommandManager.argument((String)"player", (ArgumentType)StringArgumentType.word()).executes(ctx -> this.requestTeleportPlayerHere((ServerCommandSource)ctx.getSource(), StringArgumentType.getString((CommandContext)ctx, (String)"player")))));
             dispatcher.register((LiteralArgumentBuilder)CommandManager.literal((String)"tpaccept").executes(ctx -> this.acceptTeleportRequest((ServerCommandSource)ctx.getSource())));
             dispatcher.register((LiteralArgumentBuilder)CommandManager.literal((String)"tpdecline").executes(ctx -> this.declineTeleportRequest((ServerCommandSource)ctx.getSource())));
-            dispatcher.register((LiteralArgumentBuilder)CommandManager.literal((String)"tps").executes(ctx -> this.teleportToHub((ServerCommandSource)ctx.getSource())));
             dispatcher.register((LiteralArgumentBuilder)CommandManager.literal((String)"servertps").executes(ctx -> this.showTps((ServerCommandSource)ctx.getSource())));
             dispatcher.register((LiteralArgumentBuilder)this.publicCommand("feed").executes(ctx -> this.feedPlayer((ServerCommandSource)ctx.getSource())));
         });
@@ -452,7 +496,7 @@ implements ModInitializer {
 
     private void forcePublicCommandPermissions(MinecraftServer server) {
         HashMap<String, String> commandStatus = new HashMap<String, String>();
-        for (String commandName : List.of("hub", "wild", "rtp", "randomteleport", "sethome", "delhome", "home", "phome", "tpa", "tpahere", "tpaccept", "tpdecline", "tps", "servertps", "feed")) {
+        for (String commandName : List.of("hub", "wild", "pvp", "rtp", "randomteleport", "sethome", "delhome", "home", "phome", "tpa", "tpahere", "tpaccept", "tpdecline", "servertps", "feed")) {
             CommandNode node = server.getCommandManager().getDispatcher().getRoot().getChild(commandName);
             if (node != null) {
                 this.forcePublicCommandTree(node);
@@ -464,7 +508,7 @@ implements ModInitializer {
         for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
             server.getCommandManager().sendCommandTree(player);
         }
-        LOGGER.info("Command permissions: /hub={}, /wild={}, /rtp={}, /randomteleport={}, /sethome={}, /delhome={}, /home={}, /phome={}, /tpa={}, /tpahere={}, /tpaccept={}, /tpdecline={}, /tps={}, /servertps={}, /feed={} (server-side override active)", new Object[]{commandStatus.get("hub"), commandStatus.get("wild"), commandStatus.get("rtp"), commandStatus.get("randomteleport"), commandStatus.get("sethome"), commandStatus.get("delhome"), commandStatus.get("home"), commandStatus.get("phome"), commandStatus.get("tpa"), commandStatus.get("tpahere"), commandStatus.get("tpaccept"), commandStatus.get("tpdecline"), commandStatus.get("tps"), commandStatus.get("servertps"), commandStatus.get("feed")});
+        LOGGER.info("Command permissions: /hub={}, /wild={}, /pvp={}, /rtp={}, /randomteleport={}, /sethome={}, /delhome={}, /home={}, /phome={}, /tpa={}, /tpahere={}, /tpaccept={}, /tpdecline={}, /servertps={}, /feed={} (server-side override active)", new Object[]{commandStatus.get("hub"), commandStatus.get("wild"), commandStatus.get("pvp"), commandStatus.get("rtp"), commandStatus.get("randomteleport"), commandStatus.get("sethome"), commandStatus.get("delhome"), commandStatus.get("home"), commandStatus.get("phome"), commandStatus.get("tpa"), commandStatus.get("tpahere"), commandStatus.get("tpaccept"), commandStatus.get("tpdecline"), commandStatus.get("servertps"), commandStatus.get("feed")});
     }
 
     private void forcePublicCommandTree(CommandNode node) {
@@ -481,7 +525,20 @@ implements ModInitializer {
             this.selectionManager.clear(oldPlayer.getUuid());
             this.visualizationSessions.remove(oldPlayer.getUuid());
             this.pendingHubTeleports.remove(oldPlayer.getUuid());
-            this.teleportToHub(newPlayer, false);
+            if (!alive && GoldClaimMod.isPvpWorld(oldPlayer.getServerWorld())) {
+                newPlayer.getInventory().clone(oldPlayer.getInventory());
+                newPlayer.experienceLevel = oldPlayer.experienceLevel;
+                newPlayer.totalExperience = oldPlayer.totalExperience;
+                newPlayer.experienceProgress = oldPlayer.experienceProgress;
+                newPlayer.sendAbilitiesUpdate();
+                this.teleportToHub(newPlayer, false);
+                return;
+            }
+            // Only fall back to the hub on death when the player has no bed/anchor spawn point set;
+            // otherwise let vanilla respawn them at their set spawn point.
+            if (!alive && newPlayer.getSpawnPointPosition() == null) {
+                this.teleportToHub(newPlayer, false);
+            }
         });
         ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> server.execute(() -> {
             ServerPlayerEntity player = handler.getPlayer();
@@ -535,6 +592,7 @@ implements ModInitializer {
             {"goldclaim.command.delhome", "true"},
             {"goldclaim.command.rtp", "true"},
             {"goldclaim.command.randomteleport", "true"},
+            {"goldclaim.command.pvp", "true"},
             {"universal_graves.list", "true"},
             {"gangshats.command.hat", "true"},
             {"gangshats.command.nick", "true"},
@@ -646,12 +704,25 @@ implements ModInitializer {
 
     private void registerTickHandlers() {
         ServerTickEvents.END_SERVER_TICK.register(server -> {
-            ServerScoreboard scoreboard = server.getScoreboard();
-            ScoreboardObjective objective = scoreboard.getNullableObjective("gangs_time");
-            if (objective == null) {
-                objective = scoreboard.addObjective("gangs_time", ScoreboardCriterion.DUMMY, Text.literal("Gangs Time"), ScoreboardCriterion.RenderType.INTEGER);
+            if (this.initializeTestingWorlds) {
+                this.initializeTestingWorlds = false;
+                this.ensureTestingWorlds(server);
             }
-            scoreboard.getPlayerScore("#epoch", objective).setScore((int)(System.currentTimeMillis() / 1000L));
+            if (++this.worldMaintenanceTicks >= 1200) {
+                this.worldMaintenanceTicks = 0;
+                this.maintainTestingWorlds(server);
+            }
+            boolean runPlayerMaintenance = false;
+            if (++this.playerMaintenanceTicks >= 20) {
+                this.playerMaintenanceTicks = 0;
+                runPlayerMaintenance = true;
+                ServerScoreboard scoreboard = server.getScoreboard();
+                ScoreboardObjective objective = scoreboard.getNullableObjective("gangs_time");
+                if (objective == null) {
+                    objective = scoreboard.addObjective("gangs_time", ScoreboardCriterion.DUMMY, Text.literal("Gangs Time"), ScoreboardCriterion.RenderType.INTEGER);
+                }
+                scoreboard.getPlayerScore("#epoch", objective).setScore((int)(System.currentTimeMillis() / 1000L));
+            }
 
             ServerPlayerEntity player;
             if (!this.pendingTeleportRequestsByTarget.isEmpty()) {
@@ -707,15 +778,167 @@ implements ModInitializer {
                     iterator.remove();
                 }
             }
-            for (ServerPlayerEntity player2 : server.getPlayerManager().getPlayerList()) {
-                this.updateClaimEntryNotification(player2);
+            if (runPlayerMaintenance) {
+                for (ServerPlayerEntity player2 : server.getPlayerManager().getPlayerList()) {
+                    String dimensionId = player2.getServerWorld().getRegistryKey().getValue().toString();
+                    if (PVP_DIMENSION.equals(dimensionId)) {
+                        if (this.playersInPvp.add(player2.getUuid())) {
+                            this.disablePvpFlight(player2);
+                        }
+                    } else if (RSW_DIMENSION.equals(dimensionId) && !player2.hasPermissionLevel(2)) {
+                        player2.sendMessage(Text.literal("RSW is currently admin-only."), false);
+                        this.teleportToHub(player2, false, false);
+                        continue;
+                    } else {
+                        this.playersInPvp.remove(player2.getUuid());
+                    }
+                    this.updateClaimEntryNotification(player2);
+                }
             }
         });
     }
 
+    private void ensureTestingWorlds(MinecraftServer server) {
+        this.createMultiworldIfMissing(server, PVP_DIMENSION, "VOID");
+        this.createMultiworldIfMissing(server, RSW_DIMENSION, "NORMAL");
+        this.applyWorldBorder(server, PVP_DIMENSION, 1000.0);
+        this.applyWorldBorder(server, RSW_DIMENSION, 5000.0);
+        this.applyPvpWorldRules(server);
+        if (RSW_RESET_ENABLED && this.nextRswResetAtMs <= 0L) {
+            this.nextRswResetAtMs = System.currentTimeMillis() + RSW_RESET_INTERVAL_MS;
+            this.saveRswResetState();
+        }
+    }
+
+    private void applyPvpWorldRules(MinecraftServer server) {
+        ServerWorld pvpWorld = this.getWorld(server, PVP_DIMENSION);
+        if (pvpWorld == null) {
+            return;
+        }
+        pvpWorld.setTimeOfDay(6000L);
+        for (ServerPlayerEntity player : pvpWorld.getPlayers()) {
+            this.disablePvpFlight(player);
+        }
+    }
+
+    private void disablePvpFlight(ServerPlayerEntity player) {
+        if (player.getAbilities().creativeMode) {
+            return;
+        }
+        boolean changed = player.getAbilities().flying;
+        player.getAbilities().flying = false;
+        if (changed) {
+            player.sendAbilitiesUpdate();
+        }
+    }
+
+    private void maintainTestingWorlds(MinecraftServer server) {
+        this.ensureTestingWorlds(server);
+        if (!RSW_RESET_ENABLED || System.currentTimeMillis() < this.nextRswResetAtMs) {
+            return;
+        }
+        ServerWorld rswWorld = this.getWorld(server, RSW_DIMENSION);
+        if (rswWorld != null) {
+            for (ServerPlayerEntity player : new ArrayList<>(rswWorld.getPlayers())) {
+                this.teleportToHub(player, false, false);
+            }
+        }
+        ServerCommandSource console = server.getCommandSource().withLevel(4).withSilent();
+        server.getCommandManager().executeWithPrefix(console, "mw delete rsw");
+        server.getCommandManager().executeWithPrefix(console, "mw delete rsw");
+        this.createMultiworldIfMissing(server, RSW_DIMENSION, "NORMAL");
+        if (this.getWorld(server, RSW_DIMENSION) == null) {
+            LOGGER.error("RSW rotation failed; the world was not recreated. It will be retried in 60 seconds.");
+            return;
+        }
+        this.applyWorldBorder(server, RSW_DIMENSION, 5000.0);
+        this.nextRswResetAtMs = System.currentTimeMillis() + RSW_RESET_INTERVAL_MS;
+        this.saveRswResetState();
+        server.getPlayerManager().broadcast(Text.literal("RSW has reset with a fresh world."), false);
+    }
+
+    private void createMultiworldIfMissing(MinecraftServer server, String dimensionId, String generatorName) {
+        if (this.getWorld(server, dimensionId) != null) {
+            return;
+        }
+        try {
+            Class<?> createCommandClass = Class.forName("me.isaiah.multiworld.command.CreateCommand");
+            Class<?> multiworldClass = Class.forName("me.isaiah.multiworld.MultiworldMod");
+            Object generator = this.invokeStatic(createCommandClass, "get_chunk_gen", server, generatorName);
+            if (generator == null) {
+                throw new IllegalStateException("Unknown Multiworld generator: " + generatorName);
+            }
+            long seed = ThreadLocalRandom.current().nextLong();
+            ServerWorld world = (ServerWorld)this.invokeStatic(multiworldClass, "create_world", dimensionId,
+                new Identifier("minecraft", "overworld"), generator, net.minecraft.world.Difficulty.NORMAL, seed);
+            this.invokeStatic(createCommandClass, "make_config", world, "NORMAL", seed,
+                "VOID".equals(generatorName) ? generatorName : null);
+        }
+        catch (ReflectiveOperationException | RuntimeException e) {
+            LOGGER.error("Could not create {} with Multiworld generator {}.", dimensionId, generatorName, e);
+        }
+        if (this.getWorld(server, dimensionId) == null) {
+            LOGGER.error("Multiworld creation returned without loading {}.", dimensionId);
+        }
+    }
+
+    private Object invokeStatic(Class<?> owner, String methodName, Object... arguments) throws ReflectiveOperationException {
+        for (Method method : owner.getMethods()) {
+            if (method.getName().equals(methodName) && method.getParameterCount() == arguments.length) {
+                return method.invoke(null, arguments);
+            }
+        }
+        throw new NoSuchMethodException(owner.getName() + "." + methodName);
+    }
+
+    private void applyWorldBorder(MinecraftServer server, String dimensionId, double size) {
+        ServerWorld world = this.getWorld(server, dimensionId);
+        if (world == null) {
+            return;
+        }
+        world.getWorldBorder().setCenter(0.0, 0.0);
+        world.getWorldBorder().setSize(size);
+        world.getWorldBorder().setWarningBlocks(0);
+    }
+
+    private ServerWorld getWorld(MinecraftServer server, String dimensionId) {
+        Identifier id = Identifier.tryParse(dimensionId);
+        if (id == null) {
+            return null;
+        }
+        RegistryKey<World> key = RegistryKey.of(RegistryKeys.WORLD, id);
+        return server.getWorld(key);
+    }
+
+    private void loadRswResetState() {
+        if (Files.exists(this.rswResetStatePath)) {
+            try (BufferedReader reader = Files.newBufferedReader(this.rswResetStatePath)) {
+                JsonObject state = JsonParser.parseReader(reader).getAsJsonObject();
+                this.nextRswResetAtMs = state.get("nextResetAtMs").getAsLong();
+            }
+            catch (Exception e) {
+                LOGGER.warn("Could not read RSW reset state; a new 24-hour cycle will begin.", e);
+            }
+        }
+    }
+
+    private void saveRswResetState() {
+        try {
+            Files.createDirectories(this.rswResetStatePath.getParent());
+            JsonObject state = new JsonObject();
+            state.addProperty("nextResetAtMs", this.nextRswResetAtMs);
+            try (BufferedWriter writer = Files.newBufferedWriter(this.rswResetStatePath)) {
+                GSON.toJson(state, writer);
+            }
+        }
+        catch (IOException e) {
+            LOGGER.error("Could not save RSW reset state.", e);
+        }
+    }
+
     private void rememberWildLocation(ServerPlayerEntity player) {
         String dimension = player.getWorld().getRegistryKey().getValue().toString();
-        if (this.config.portalHubDimension.equals(dimension)) {
+        if (!OVERWORLD_DIMENSION.equals(dimension)) {
             return;
         }
         this.rememberWildLocationFromPosition(player.getUuid(), dimension, player.getX(), player.getY(), player.getZ(), player.getYaw(), player.getPitch());
@@ -846,7 +1069,7 @@ implements ModInitializer {
 
     private int sendHelp(ServerCommandSource source) {
         source.sendFeedback(() -> Text.literal((String)("Claim tool: hold a gold shovel, right-click 2 corners to claim (minimum " + this.config.minimumClaimWidth + "x" + this.config.minimumClaimDepth + ", max " + this.config.maxClaimBlocksPerPlayerPerDimension + " blocks per dimension).")), false);
-        source.sendFeedback(() -> Text.literal((String)"Commands: /claim info, /claim visualize, /claim expand <amount>, /claim list, /claim trust <player|uuid>, /claim trust interact <player|uuid>, /claim untrust <player|uuid>, /claim untrust interact <player|uuid>, /claim unclaim"), false);
+        source.sendFeedback(() -> Text.literal((String)"Commands: /claim info, /claim visualize, /claim expand <amount>, /claim list, /claim trust <player|uuid>, /claim trust interact <player|uuid>, /claim trust manager <player|uuid>, /claim untrust <player|uuid>, /claim untrust interact <player|uuid>, /claim untrust manager <player|uuid>, /claim unclaim"), false);
         source.sendFeedback(() -> Text.literal((String)"Homes: /sethome <name>, /home <name>, /home list, /delhome <name>, /home public <name>, /home private <name>, /phome <name>, /phome list (up to 10 per player)"), false);
         source.sendFeedback(() -> Text.literal((String)"Admin: /claim admin help"), false);
         return 1;
@@ -1654,7 +1877,7 @@ implements ModInitializer {
         Identifier targetId;
         this.pendingHubTeleports.remove(player.getUuid());
         SavedLocation savedLocation = this.lastWildLocations.get(player.getUuid());
-        Identifier class_29602 = targetId = savedLocation == null ? Identifier.tryParse((String)this.config.wildDimension) : Identifier.tryParse((String)savedLocation.worldId);
+        targetId = Identifier.tryParse((String)OVERWORLD_DIMENSION);
         if (targetId == null) {
             player.sendMessage((Text)Text.literal((String)"Invalid wild destination dimension."));
             return false;
@@ -1662,19 +1885,10 @@ implements ModInitializer {
         RegistryKey targetKey = RegistryKey.of((RegistryKey)RegistryKeys.WORLD, (Identifier)targetId);
         ServerWorld targetWorld = player.getServer().getWorld(targetKey);
         if (targetWorld == null) {
-            targetId = Identifier.tryParse((String)this.config.wildDimension);
-            if (targetId == null) {
-                player.sendMessage((Text)Text.literal((String)("Invalid wild fallback dimension: " + this.config.wildDimension)));
-                return false;
-            }
-            targetKey = RegistryKey.of((RegistryKey)RegistryKeys.WORLD, (Identifier)targetId);
-            targetWorld = player.getServer().getWorld(targetKey);
-            if (targetWorld == null) {
-                player.sendMessage((Text)Text.literal((String)("Wild world is not loaded: " + this.config.wildDimension)));
-                return false;
-            }
+            player.sendMessage((Text)Text.literal((String)("Wild world is not loaded: " + OVERWORLD_DIMENSION)));
+            return false;
         }
-        if (savedLocation != null && targetWorld.getRegistryKey().getValue().toString().equals(savedLocation.worldId)) {
+        if (savedLocation != null && OVERWORLD_DIMENSION.equals(savedLocation.worldId)) {
             this.loadDestinationArea(targetWorld, savedLocation.x, savedLocation.z);
             player.teleport(targetWorld, savedLocation.x, savedLocation.y, savedLocation.z, savedLocation.yaw, savedLocation.pitch);
             if (showTitle) {
@@ -1689,6 +1903,31 @@ implements ModInitializer {
             this.sendHubWildTitle(player, "The Wild");
         }
         return true;
+    }
+
+    private int teleportToTestingWorld(ServerCommandSource source, String dimensionId, String label, boolean voidWorld) {
+        ServerPlayerEntity player;
+        try {
+            player = source.getPlayerOrThrow();
+        }
+        catch (Exception e) {
+            source.sendError(Text.literal("Only players can run this command."));
+            return 0;
+        }
+        ServerWorld targetWorld = this.getWorld(player.getServer(), dimensionId);
+        if (targetWorld == null) {
+            source.sendError(Text.literal(label + " is not loaded."));
+            return 0;
+        }
+        BlockPos spawn = targetWorld.getSpawnPos();
+        double x = spawn.getX() + 0.5;
+        double y = voidWorld ? 68.0 : spawn.getY();
+        double z = spawn.getZ() + 0.5;
+        this.loadDestinationArea(targetWorld, x, z);
+        player.teleport(targetWorld, x, y, z, targetWorld.getSpawnAngle(), 0.0f);
+        this.sendHubWildTitle(player, label);
+        source.sendFeedback(() -> Text.literal("Teleported to " + label + "."), false);
+        return 1;
     }
 
     private int randomTeleport(ServerCommandSource source) {
@@ -2120,6 +2359,76 @@ implements ModInitializer {
         return 1;
     }
 
+    private int trustManager(ServerCommandSource source, String targetName) {
+        ServerPlayerEntity player;
+        try {
+            player = source.getPlayerOrThrow();
+        }
+        catch (Exception e) {
+            source.sendError((Text)Text.literal((String)"Only players can run this command."));
+            return 0;
+        }
+        Optional<GameProfile> profileOpt = this.resolveTargetProfile(source, targetName);
+        if (profileOpt.isEmpty()) {
+            source.sendError((Text)Text.literal((String)("Unknown player: " + targetName + ". Use exact name or UUID.")));
+            return 0;
+        }
+        ClaimManager.TrustResult managed = this.claimManager.managePlayerAt(player.getUuid(), profileOpt.get().getId(), profileOpt.get().getName(), player.getWorld().getRegistryKey().getValue().toString(), player.getBlockX(), player.getBlockZ(), this.config.allowOpsBypass, player.hasPermissionLevel(2));
+        if (!managed.success()) {
+            if (managed.error() == ClaimManager.TrustError.NOT_FOUND) {
+                source.sendError((Text)Text.literal((String)"No claim at your location."));
+            } else {
+                if (managed.error() == ClaimManager.TrustError.ALREADY_TRUSTED) {
+                    source.sendFeedback(() -> Text.literal((String)(((GameProfile)profileOpt.get()).getName() + " is already a manager of this claim.")), false);
+                    return 1;
+                }
+                source.sendError((Text)Text.literal((String)"Stand in your claim, as its owner, to appoint managers there."));
+            }
+            return 0;
+        }
+        source.sendFeedback(() -> Text.literal((String)(((GameProfile)profileOpt.get()).getName() + " is now a manager of this claim and has full control over it.")), false);
+        ServerPlayerEntity targetPlayer = source.getServer().getPlayerManager().getPlayer(profileOpt.get().getId());
+        if (targetPlayer != null && !targetPlayer.getUuid().equals(player.getUuid())) {
+            targetPlayer.sendMessage((Text)Text.literal((String)("You were made a manager of a claim by " + player.getName().getString() + ". You now have full control over it.")));
+        }
+        return 1;
+    }
+
+    private int untrustManager(ServerCommandSource source, String targetName) {
+        ServerPlayerEntity player;
+        try {
+            player = source.getPlayerOrThrow();
+        }
+        catch (Exception e) {
+            source.sendError((Text)Text.literal((String)"Only players can run this command."));
+            return 0;
+        }
+        Optional<GameProfile> profileOpt = this.resolveTargetProfile(source, targetName);
+        if (profileOpt.isEmpty()) {
+            source.sendError((Text)Text.literal((String)("Unknown player: " + targetName + ". Use exact name or UUID.")));
+            return 0;
+        }
+        ClaimManager.TrustResult unmanaged = this.claimManager.unmanagePlayerAt(player.getUuid(), profileOpt.get().getId(), profileOpt.get().getName(), player.getWorld().getRegistryKey().getValue().toString(), player.getBlockX(), player.getBlockZ(), this.config.allowOpsBypass, player.hasPermissionLevel(2));
+        if (!unmanaged.success()) {
+            if (unmanaged.error() == ClaimManager.TrustError.NOT_FOUND) {
+                source.sendError((Text)Text.literal((String)"No claim at your location."));
+            } else {
+                if (unmanaged.error() == ClaimManager.TrustError.NOT_TRUSTED) {
+                    source.sendFeedback(() -> Text.literal((String)(((GameProfile)profileOpt.get()).getName() + " is not a manager of this claim.")), false);
+                    return 1;
+                }
+                source.sendError((Text)Text.literal((String)"Stand in your claim, as its owner, to remove managers there."));
+            }
+            return 0;
+        }
+        source.sendFeedback(() -> Text.literal((String)(((GameProfile)profileOpt.get()).getName() + " is no longer a manager of this claim.")), false);
+        ServerPlayerEntity targetPlayer = source.getServer().getPlayerManager().getPlayer(profileOpt.get().getId());
+        if (targetPlayer != null && !targetPlayer.getUuid().equals(player.getUuid())) {
+            targetPlayer.sendMessage((Text)Text.literal((String)("You are no longer a manager of a claim owned by " + player.getName().getString() + ".")));
+        }
+        return 1;
+    }
+
     private int untrustPlayer(ServerCommandSource source, String targetName) {
         return this.untrustPlayer(source, targetName, false);
     }
@@ -2159,29 +2468,7 @@ implements ModInitializer {
         return 1;
     }
 
-    /*
-     * Exception decompiling
-     */
     private Optional<GameProfile> resolveTargetProfile(ServerCommandSource source, String input) {
-        /*
-         * This method has failed to decompile.  When submitting a bug report, please provide this stack trace, and (if you hold appropriate legal rights) the relevant class file.
-         *
-         * org.benf.cfr.reader.util.ConfusedCFRException: Tried to end blocks [4[TRYBLOCK]], but top level block is 14[UNCONDITIONALDOLOOP]
-         *     at org.benf.cfr.reader.bytecode.analysis.opgraph.Op04StructuredStatement.processEndingBlocks(Op04StructuredStatement.java:435)
-         *     at org.benf.cfr.reader.bytecode.analysis.opgraph.Op04StructuredStatement.buildNestedBlocks(Op04StructuredStatement.java:484)
-         *     at org.benf.cfr.reader.bytecode.analysis.opgraph.Op03SimpleStatement.createInitialStructuredBlock(Op03SimpleStatement.java:736)
-         *     at org.benf.cfr.reader.bytecode.CodeAnalyser.getAnalysisInner(CodeAnalyser.java:850)
-         *     at org.benf.cfr.reader.bytecode.CodeAnalyser.getAnalysisOrWrapFail(CodeAnalyser.java:278)
-         *     at org.benf.cfr.reader.bytecode.CodeAnalyser.getAnalysis(CodeAnalyser.java:201)
-         *     at org.benf.cfr.reader.entities.attributes.AttributeCode.analyse(AttributeCode.java:94)
-         *     at org.benf.cfr.reader.entities.Method.analyse(Method.java:531)
-         *     at org.benf.cfr.reader.entities.ClassFile.analyseMid(ClassFile.java:1055)
-         *     at org.benf.cfr.reader.entities.ClassFile.analyseTop(ClassFile.java:942)
-         *     at org.benf.cfr.reader.Driver.doJarVersionTypes(Driver.java:257)
-         *     at org.benf.cfr.reader.Driver.doJar(Driver.java:139)
-         *     at org.benf.cfr.reader.CfrDriverImpl.analyse(CfrDriverImpl.java:76)
-         *     at org.benf.cfr.reader.Main.main(Main.java:54)
-         */
         try {
             ServerPlayerEntity player = source.getServer().getPlayerManager().getPlayer(UUID.fromString(input));
             if (player != null) {

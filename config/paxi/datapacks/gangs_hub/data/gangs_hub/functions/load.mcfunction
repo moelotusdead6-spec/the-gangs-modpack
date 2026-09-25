@@ -1,2 +1,7 @@
 schedule function gangs_hub:init 20t replace
-execute in gangs:hub as @e[type=minecraft:text_display,tag=gangs_hub_commands] run data modify entity @s text set value '{"color":"white","text":"Useful Commands:\\n/hub /wild /rtp /shop /claim /tpa /tpahere /gs"}'
+function gangs_hub:setup_ranks
+function gangs_hub:assign_ranks
+execute in gangs:hub as @e[type=minecraft:text_display,tag=gangs_hub_commands] run data modify entity @s text set value '{"text":"Travel & Homes\\n/hub | /wild | /rtp\\n/sethome <name> | /home <name>\\n/home list | /phome <name> | /phome list\\n/tpa <player> | /tpahere <player>\\n/tpaccept | /tpdecline","color":"aqua"}'
+execute in gangs:hub as @e[type=minecraft:text_display,tag=gangs_hub_shop_pricing_advice] run data modify entity @s text set value '{"text":"Claims\\nGold shovel: right-click 2 corners\\n/claim info | /claim list | /claim visualize\\n/claim trust <player>\\n/claim trust interact <player>\\n/claim untrust <player>\\n/claim untrust interact <player>\\n/claim unclaim","color":"gold"}'
+execute in gangs:hub unless entity @e[type=minecraft:text_display,tag=gangs_hub_kits_utilities] run summon minecraft:text_display 0 62 32 {Tags:["gangs_hub_kits_utilities"],text:'{"text":"Kits & Utilities\\n/kits\\n/gs | /gs mine | /gs history\\n/gs add <amount> <price>\\n/ec | /feed\\n/hat | /hats | /nickname <name>","color":"light_purple"}',text_opacity:191b,billboard:"center",background:0,shadow:0b}
+execute in gangs:hub as @e[type=minecraft:text_display,tag=gangs_hub_kits_utilities] run data modify entity @s text set value '{"text":"Kits & Utilities\\n/kits\\n/gs | /gs mine | /gs history\\n/gs add <amount> <price>\\n/ec | /feed\\n/hat | /hats | /nickname <name>","color":"light_purple"}'

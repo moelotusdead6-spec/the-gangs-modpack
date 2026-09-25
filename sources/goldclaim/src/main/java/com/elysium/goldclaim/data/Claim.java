@@ -21,6 +21,8 @@ public class Claim {
     public Set<String> trustedPlayerNames = new HashSet<String>();
     public Set<String> interactPlayers = new HashSet<String>();
     public Set<String> interactPlayerNames = new HashSet<String>();
+    public Set<String> managerPlayers = new HashSet<String>();
+    public Set<String> managerPlayerNames = new HashSet<String>();
 
     public Claim() {
     }
@@ -134,6 +136,43 @@ public class Claim {
             return;
         }
         this.interactPlayerNames.remove(playerName.toLowerCase(Locale.ROOT));
+    }
+
+    public boolean isManager(UUID playerUuid) {
+        return this.managerPlayers.contains(playerUuid.toString());
+    }
+
+    public boolean isManagerName(String playerName) {
+        if (playerName == null || playerName.isBlank()) {
+            return false;
+        }
+        return this.managerPlayerNames.contains(playerName.toLowerCase(Locale.ROOT));
+    }
+
+    public void addManager(UUID playerUuid) {
+        this.managerPlayers.add(playerUuid.toString());
+    }
+
+    public void addManagerName(String playerName) {
+        if (playerName == null || playerName.isBlank()) {
+            return;
+        }
+        this.managerPlayerNames.add(playerName.toLowerCase(Locale.ROOT));
+    }
+
+    public void removeManager(UUID playerUuid) {
+        this.managerPlayers.remove(playerUuid.toString());
+    }
+
+    public void removeManagerName(String playerName) {
+        if (playerName == null || playerName.isBlank()) {
+            return;
+        }
+        this.managerPlayerNames.remove(playerName.toLowerCase(Locale.ROOT));
+    }
+
+    public boolean hasFullControl(UUID playerUuid) {
+        return !this.adminClaim && (this.isOwner(playerUuid) || this.isManager(playerUuid));
     }
 
     public int width() {

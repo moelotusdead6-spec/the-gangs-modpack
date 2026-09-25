@@ -92,7 +92,7 @@ public class ClaimManager {
         if (claim.adminClaim && !isOp) {
             return ExpandResult.fail(ExpandError.NOT_OWNER);
         }
-        if (!(claim.adminClaim || claim.isOwner(actorUuid) || allowOpBypass && isOp)) {
+        if (!(claim.adminClaim || claim.hasFullControl(actorUuid) || allowOpBypass && isOp)) {
             return ExpandResult.fail(ExpandError.NOT_OWNER);
         }
         int newMinX = claim.minX;
@@ -159,7 +159,7 @@ public class ClaimManager {
         if (claim.adminClaim) {
             return false;
         }
-        if (!(claim.isOwner(ownerUuid) || allowOpBypass && isOp)) {
+        if (!(claim.hasFullControl(ownerUuid) || allowOpBypass && isOp)) {
             return false;
         }
         boolean removed = this.claims.remove(claim);
@@ -179,7 +179,7 @@ public class ClaimManager {
             return TrustResult.fail(TrustError.NOT_FOUND);
         }
         Claim claim = claimOpt.get();
-        if (claim.adminClaim ? !isOp : !claim.isOwner(actorUuid) && (!allowOpBypass || !isOp)) {
+        if (claim.adminClaim ? !isOp : !claim.hasFullControl(actorUuid) && (!allowOpBypass || !isOp)) {
             return TrustResult.fail(TrustError.NOT_ALLOWED);
         }
         boolean alreadyTrusted = interactOnly ? claim.canInteract(targetUuid) : claim.isTrusted(targetUuid);
@@ -215,7 +215,7 @@ public class ClaimManager {
             return TrustResult.fail(TrustError.NOT_FOUND);
         }
         Claim claim = claimOpt.get();
-        if (claim.adminClaim ? !isOp : !claim.isOwner(actorUuid) && (!allowOpBypass || !isOp)) {
+        if (claim.adminClaim ? !isOp : !claim.hasFullControl(actorUuid) && (!allowOpBypass || !isOp)) {
             return TrustResult.fail(TrustError.NOT_ALLOWED);
         }
         boolean trusted = interactOnly ? claim.canInteract(targetUuid) || claim.canInteractName(targetName) : claim.isTrusted(targetUuid) || claim.isTrustedName(targetName);
@@ -230,7 +230,51 @@ public class ClaimManager {
             claim.removeTrustedName(targetName);
             claim.removeInteract(targetUuid);
             claim.removeInteractName(targetName);
+            claim.removeManager(targetUuid);
+            claim.removeManagerName(targetName);
         }
+        this.save();
+        return TrustResult.ok();
+    }
+
+    public synchronized TrustResult managePlayerAt(UUID actorUuid, UUID targetUuid, String targetName, String dimension, int x, int z, boolean allowOpBypass, boolean isOp) {
+        Optional<Claim> claimOpt = this.getClaimAt(dimension, x, z);
+        if (claimOpt.isEmpty()) {
+            return TrustResult.fail(TrustError.NOT_FOUND);
+        }
+        Claim claim = claimOpt.get();
+        if (claim.adminClaim ? !isOp : !claim.isOwner(actorUuid) && (!allowOpBypass || !isOp)) {
+            return TrustResult.fail(TrustError.NOT_ALLOWED);
+        }
+        if (claim.isManager(targetUuid)) {
+            if (!claim.isManagerName(targetName)) {
+                claim.addManagerName(targetName);
+                this.save();
+            }
+            return TrustResult.fail(TrustError.ALREADY_TRUSTED);
+        }
+        claim.addManager(targetUuid);
+        claim.addManagerName(targetName);
+        claim.addTrusted(targetUuid);
+        claim.addTrustedName(targetName);
+        this.save();
+        return TrustResult.ok();
+    }
+
+    public synchronized TrustResult unmanagePlayerAt(UUID actorUuid, UUID targetUuid, String targetName, String dimension, int x, int z, boolean allowOpBypass, boolean isOp) {
+        Optional<Claim> claimOpt = this.getClaimAt(dimension, x, z);
+        if (claimOpt.isEmpty()) {
+            return TrustResult.fail(TrustError.NOT_FOUND);
+        }
+        Claim claim = claimOpt.get();
+        if (claim.adminClaim ? !isOp : !claim.isOwner(actorUuid) && (!allowOpBypass || !isOp)) {
+            return TrustResult.fail(TrustError.NOT_ALLOWED);
+        }
+        if (!(claim.isManager(targetUuid) || claim.isManagerName(targetName))) {
+            return TrustResult.fail(TrustError.NOT_TRUSTED);
+        }
+        claim.removeManager(targetUuid);
+        claim.removeManagerName(targetName);
         this.save();
         return TrustResult.ok();
     }
