@@ -549,6 +549,138 @@ file = "config/paxi/datapacks/gangs_kits/data/mythicmetals/recipes/crafting/spon
 hash = "9b31344fef965932e2581275d770450c91b9ea99db3cb233f6ab7fd5284e4337"
 
 [[files]]
+file = "config/paxi/datapacks/gangs_kits/data/waystones/recipes/attuned_shard.json"
+hash = "4a4cad51bfe3ff8fd4064e607a6aa587ae714a738185f4c117096009032c3063"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/waystones/recipes/black_sharestone.json"
+hash = "51b0d9470d173ddeb84c9b490b4b69ca1b6783b0930878cd43d8a1509e6dbc08"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/waystones/recipes/blackstone_waystone.json"
+hash = "c704096d7e0cbab81638e201e3377d257e370394a2ba92383db74917e5386236"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/waystones/recipes/blue_sharestone.json"
+hash = "4396409b5acdf5b99ac00c25cc1f24d39cd0761d6a79da93205b47fd9b98a45b"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/waystones/recipes/bound_scroll.json"
+hash = "1932a330c49a7a69da8fbf2d5beaf784e19c5ba3df79f7facb7fd94eea539480"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/waystones/recipes/brown_sharestone.json"
+hash = "ec4d7deedfb1de34c19f3f6b46f0b8f6cf28bfba4cb620617ff37f483410fad6"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/waystones/recipes/clear_sharestone.json"
+hash = "8cdb3aabd0378891d5f8490a18a709d9a80866501e4a1a19957e17af4ec30e1f"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/waystones/recipes/crumbling_attuned_shard.json"
+hash = "408ae1735c8e135f5718de3d88c970ae7e5f54a5b7d5db13c6ab0e7291846f45"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/waystones/recipes/cyan_sharestone.json"
+hash = "36f58f237d3b284711972be35cf6aa4db8d72c5c39b50bba3ce94495df7a235d"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/waystones/recipes/deepslate_waystone.json"
+hash = "378d138228ebe24d3f42c73c8b3b061f17f6037141a7cdeec36460e9d040822c"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/waystones/recipes/end_stone_waystone.json"
+hash = "84f03c1dcd3c8ddf9786ef1f7e1d321177b49812d5d2ac545fa593b1e55a2949"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/waystones/recipes/gray_sharestone.json"
+hash = "f6c66b5c8d16f0b1d01e40bbff0b486af627c1ab2be88d383c5b38f1d1e72685"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/waystones/recipes/green_sharestone.json"
+hash = "7a3bc763b1c22324938c7565979dd6c653ac59411f6fd33f33ad80f38448a5f4"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/waystones/recipes/light_blue_sharestone.json"
+hash = "f81519d4448f2628275901f352efa8bf3a67e2488d93a7fc06988641b76ad8f7"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/waystones/recipes/light_gray_sharestone.json"
+hash = "0e2a19c0a6a0b1ef25e713a1bd9817d6871ebb82e5b5d81e9c2f1f320e9dd010"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/waystones/recipes/lime_sharestone.json"
+hash = "4523cb0c08723d0c9f20992c8d35f14ff21bf9f7f34e08ec3c5e2505ba8dcca2"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/waystones/recipes/magenta_sharestone.json"
+hash = "bfcfd5e968f157cc370317c0502fa5f60ef1678a4cf51f57c288c292f14b94d8"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/waystones/recipes/mossy_waystone.json"
+hash = "a9632c45a3837ee666d1c1274816c16c26015c3a41cdefbd6641922b5077b39b"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/waystones/recipes/mossy_waystone_convert.json"
+hash = "a9632c45a3837ee666d1c1274816c16c26015c3a41cdefbd6641922b5077b39b"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/waystones/recipes/orange_sharestone.json"
+hash = "bbc8ec0f3b8bace7286ad5f2a9941bfff05faaa33150ca9dd778c99d56e36c1d"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/waystones/recipes/pink_sharestone.json"
+hash = "0a0241969ef5b9f5c17e44cb06cada61ee308c57c1d52c57bc42f5dde9bc4b9b"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/waystones/recipes/portstone.json"
+hash = "cbcdf8a81364dca197736d2b60df32d3245bbffb7fa953ff31c916eef8bc28a6"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/waystones/recipes/purple_sharestone.json"
+hash = "636213033e6ebc2c716fc7e7ca2a9390feff11bd0bb92a6a7b88f8f99746a727"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/waystones/recipes/red_sharestone.json"
+hash = "ba900c2c4e7719add54850728f9bf196dafa17e1857868d551de45eb3814c7ed"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/waystones/recipes/return_scroll.json"
+hash = "f16f0c02686d9bbffeea905eba89cee314e2cb01d920a41c960a5114c907d3ca"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/waystones/recipes/sandy_waystone.json"
+hash = "657876f30be7b6a5962cabd66a61e6c0c66b543d1f4696956a1b3275cab2a4f7"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/waystones/recipes/sharestone.json"
+hash = "8cdb3aabd0378891d5f8490a18a709d9a80866501e4a1a19957e17af4ec30e1f"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/waystones/recipes/warp_dust.json"
+hash = "d0318412fdedadcb7a9eb74a30717efb4b180c4c01ba4abf0c4f58a4d622b819"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/waystones/recipes/warp_plate.json"
+hash = "b8ff118ed2fa83698ae40e66970863bfa1ea4aaece2daa6b482224b64ca75dc8"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/waystones/recipes/warp_scroll.json"
+hash = "58164b82fd0facc535f558d87a12a7d1c233bc587139be56d11562990ff58b77"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/waystones/recipes/waystone.json"
+hash = "95c95ab11e4c8bf9fe4ea54a0b585e48678f905c66537d5793377f07d17f655b"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/waystones/recipes/white_sharestone.json"
+hash = "fea7126647eefeb3a936e031ab6d1cdb1783e1f2cca34422eb9f06e9809389ed"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/waystones/recipes/yellow_sharestone.json"
+hash = "3004ad1bd55c7357b01af19e6a374ba45c5883ad1769760898c54fdcdc9654d9"
+
+[[files]]
 file = "config/paxi/datapacks/gangs_kits/pack.mcmeta"
 hash = "16e65284c5a6a75cf4cb94ab24c020946f5d1aa68b1687c2e7fc53002d63b9e4"
 
@@ -591,10 +723,6 @@ hash = "b2568259d2839b90a20167be62e9581625ebe1df05ffe385a087ec358f7b0aba"
 [[files]]
 file = "index.html"
 hash = "18ac75558728bc0a11f6cf09e6db01cbf04fd079a4872d9b1cfac0599f8c036f"
-
-[[files]]
-file = "kubejs/server_scripts/waystones_recipes.js"
-hash = "e6c78de64bde68b9db2e9971a9eff3e621af9d8fa81b12ff298c4bb37d602a05"
 
 [[files]]
 file = "mods/.gitkeep"
@@ -1376,11 +1504,6 @@ hash = "4f33d4e71a1db5cc186c793f1c8259fed9f2244e608d8a77fc9c60f20858f680"
 metafile = true
 
 [[files]]
-file = "mods/kubejs-fabric-2001.6.5-build.26.pw.toml"
-hash = "f0669f68f425dcf0a258a92d271ed7cba146616d21a5166f224d36f38d8c48e5"
-metafile = true
-
-[[files]]
 file = "mods/ledger.pw.toml"
 hash = "56094cd33726792df84e8991bf1e9e3d69383a65793d47aab66bf2cac3f9acfb"
 metafile = true
@@ -1633,11 +1756,6 @@ metafile = true
 [[files]]
 file = "mods/respawnablepets-1.20-1.pw.toml"
 hash = "67f7ca2125f580b8d53051ff4c6a81e0cd105228565aa6691131a70361e3ccb6"
-metafile = true
-
-[[files]]
-file = "mods/rhino-fabric-2001.2.3-build.10.pw.toml"
-hash = "d878d4fbdc2f3c4d77c7b8af0e14510f0cbe4bbf4c024b0d3b55f255f6683937"
 metafile = true
 
 [[files]]
