@@ -6,7 +6,7 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "73a947888670d931a232eef4695d094986aee93142c8269981b2fe61b882f892"
+hash = "32caceb3b79f0f3c4695cc14df42824d8f8d84491284fb92a6509b91a5c6871f"
 
 [[files]]
 file = "README.md"
@@ -62,7 +62,11 @@ hash = "5618696e3af9f62da8a13c87f33ef899688664fb4486cdc954d328469affef59"
 
 [[files]]
 file = "artifacts/biolith-ATTRIBUTION.txt"
-hash = "c972350d73e6c427284ea43c0cc220a6ce7f85e79002ac772370734439747522"
+hash = "ae92381bf1b698ad7bacc10ba605e0acaa586ddabe0b905a633ff88f5fde79e3"
+
+[[files]]
+file = "artifacts/biolith-fabric-1.0.1-beta.1-endfix.jar"
+hash = "eea2f3816d6d6d39e1e1d0ababcaa77b54dba3ba15e00958574df513efe80d92"
 
 [[files]]
 file = "artifacts/biolith-fabric-1.0.1-beta.1.jar"
@@ -414,7 +418,7 @@ hash = "0d256d9e5705c27dd59c45df8f080c428744963197f3c94672f1452e54cdc17a"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs/loot_tables/kits/monthly.json"
-hash = "73486495a9b611b7da88173301952145ab10040c0ff796b6a915ef2a5f84b175"
+hash = "090d08ce78fba7effc2761a70f707628ab4d76e1e8d403900d42508439d5e9a2"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs/loot_tables/kits/non_curse_book.json"
@@ -722,7 +726,7 @@ hash = "b2568259d2839b90a20167be62e9581625ebe1df05ffe385a087ec358f7b0aba"
 
 [[files]]
 file = "index.html"
-hash = "6a9d0f397df12e166e96e0aeb237c8647b2922d4445028f740dcc29063b6a438"
+hash = "437939e020a3b0adf3f979d525d90e045d70d72101bb9efc8986fd0595f8a913"
 
 [[files]]
 file = "mods/.gitkeep"
@@ -1180,12 +1184,7 @@ metafile = true
 
 [[files]]
 file = "mods/biolith-direct.pw.toml"
-hash = "ed7e4ff6709e2b9529c6edbac2bc52f9524d81ecb907f1991ffb5e03dd9f74b1"
-metafile = true
-
-[[files]]
-file = "mods/biolith-fabric-1.0.1-beta.1.pw.toml"
-hash = "518a90e01ccc539132c527d84ce4b76ad5b564342ddb698751f9881ef0096557"
+hash = "312a52949b010562a6aa401b3834de49dc3e9189adf9862116aeab516cb1f644"
 metafile = true
 
 [[files]]

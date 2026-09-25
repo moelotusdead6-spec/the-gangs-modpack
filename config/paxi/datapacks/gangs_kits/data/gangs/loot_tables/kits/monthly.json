@@ -76,7 +76,6 @@
         {"type": "minecraft:item", "name": "simplyswords:stars_edge"},
         {"type": "minecraft:item", "name": "simplyswords:stormbringer"},
         {"type": "minecraft:item", "name": "simplyswords:storms_edge"},
-        {"type": "minecraft:item", "name": "simplyswords:stormscale"},
         {"type": "minecraft:item", "name": "simplyswords:sunfire"},
         {"type": "minecraft:item", "name": "simplyswords:sword_on_a_stick"},
         {"type": "minecraft:item", "name": "simplyswords:tempest"},

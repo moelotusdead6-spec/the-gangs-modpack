@@ -1,9 +1,0 @@
-name = "biolith-fabric-1.0.1-beta.1"
-filename = "biolith-fabric-1.0.1-beta.1.jar"
-side = "both"
-
-[download]
-url = "https://mediafilez.forgecdn.net/files/8255/538/biolith-fabric-1.0.1-beta.1.jar"
-hash-format = "sha1"
-hash = "c3901ad0e492046fa91589c560ab2150ee06ff84"
-

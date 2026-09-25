@@ -20,6 +20,8 @@
 
 `artifacts/alexscaves-2.1.8.jar` is the custom Fabric build used by this pack. Its corresponding source archive is at `sources/alexscaves-fabric-2.1.8-source.zip`. The upstream Alex's Caves project is LGPL-3.0-only; the source archive and this notice are published with the modified binary to provide the required source access and license notice.
 
+`artifacts/biolith-fabric-1.0.1-beta.1-endfix.jar` keeps Biolith installed on both sides and falls back to the selected End biome when its search tree is uninitialized. Its modified LGPL-3.0 source is at `sources/biolith-fabric-1.0.1-beta.1-endfix-source.zip`, with attribution in `artifacts/biolith-ATTRIBUTION.txt`.
+
 The following user-supplied third-party jars are mirrored here for direct packwiz delivery: Adaptive Tooltips 1.3.0, Archers 1.3.0+1.20.1, AzureLib 2.0.41, Exposure 1.9.20, Extra RPG Attributes 1.3.2, Joy of Painting fabric-1.20.1-2.0.0, RangedWeaponAPI 1.1.4+1.20.1, Spellblades and Such 2.4.0+1.20.1, and Wizards 1.4.1+1.20.1.
 
 Other third-party mods remain downloaded from their official Modrinth or CurseForge metadata. This directory must not contain unapproved third-party binary mirrors.

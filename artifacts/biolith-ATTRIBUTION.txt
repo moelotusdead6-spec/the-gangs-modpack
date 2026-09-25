@@ -1,6 +1,9 @@
-This mod is redistributed unmodified from:
+This mod is based on:
 "Biolith" by TerraformersMC, gniftygnome
 Source: https://github.com/TerraformersMC/Biolith
 License: LGPL-3.0
 
-This binary is unmodified. Official source is linked above per LGPL-3.0.
+The End biome lookup in VanillaCompat is patched to fall back to the selected
+biome when the End search tree has not been initialized. Complete modified
+source, based on upstream tag 1.0.1-beta.1, is available at
+sources/biolith-fabric-1.0.1-beta.1-endfix-source.zip.
