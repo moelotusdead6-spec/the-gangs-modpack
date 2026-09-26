@@ -6,7 +6,7 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "32caceb3b79f0f3c4695cc14df42824d8f8d84491284fb92a6509b91a5c6871f"
+hash = "93e50b4374e45add829ca9a45bedee7d4b8fbfbc833d626a1da907577518d21d"
 
 [[files]]
 file = "README.md"
@@ -117,6 +117,10 @@ file = "artifacts/gangsboots-1.0.4.jar"
 hash = "87b4092f94dbaaaa6e8dcf3941745365a6266773341bfff26b253108daaa1b06"
 
 [[files]]
+file = "artifacts/gangsboots-1.0.5.jar"
+hash = "3eaae29797d10280338b814ebe2e6d2af4c783399edacbe51c3d2c569d28d8b7"
+
+[[files]]
 file = "artifacts/gangsboots-ATTRIBUTION.txt"
 hash = "de9756c83bd304ecf034a143a4de5be22cd89e6167fdcfdc29088379cad7ad8e"
 
@@ -191,6 +195,10 @@ hash = "bb035dd85bf451b9e9b2f727e7803f8ac91e7b4fdbda9f5df138acb08ee03243"
 [[files]]
 file = "artifacts/goldclaim-1.0.16.jar"
 hash = "ba33fb9c21d8cd52108464751ed76f102baf68b42b2d6fa51debbe3c4c6bdb54"
+
+[[files]]
+file = "artifacts/goldclaim-1.0.17.jar"
+hash = "8247137edbbc5c1b20c0fa550a26c734ef955fe6493c5ef1710f55bd3a9d9d5d"
 
 [[files]]
 file = "artifacts/goldclaim-1.0.2.jar"
@@ -386,7 +394,7 @@ hash = "056b3f77bfd7d43911107b327530b4d042c555971fc5e7737c54c974b84ab30b"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_hub/data/gangs_hub/functions/load.mcfunction"
-hash = "274a5638a441f3347890a4393dda86ede85a49d15c6b37ae9da9c972c196a480"
+hash = "101da3161ca4fecddc32bba54c9454534a7ee60c45f7ff429b0d0401c267f962"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_hub/data/gangs_hub/functions/setup_ranks.mcfunction"
@@ -1424,7 +1432,7 @@ metafile = true
 
 [[files]]
 file = "mods/gangsboots-direct.pw.toml"
-hash = "177e913a76502af68b28cd713764308d7ea260ff8b74df860e63b4318bc0a39d"
+hash = "7e240955bb5eed620af53e58af5e2af101642124d488db5b09c4c5e2ea8d0eda"
 metafile = true
 
 [[files]]
@@ -1449,7 +1457,7 @@ metafile = true
 
 [[files]]
 file = "mods/goldclaim-direct.pw.toml"
-hash = "c904a747eb74c6f95af2a0407bc1da11cc4c0f3c0cdd828e05d112c359967e5d"
+hash = "3e3f73268d3b99ddb8ea43519a5ef8f9a39aea3f534b11b1b23a3c19dab81293"
 metafile = true
 
 [[files]]
@@ -2003,3 +2011,7 @@ hash = "82af5abbe6640f78c76628f8827de0e6c6ee921a368fcb57bf0db692f9479eb8"
 [[files]]
 file = "sources/gangsales/src/main/resources/fabric.mod.json"
 hash = "e23e7f25b3ec0c0406ab2385cfa590d05dd3e65b8324bf68ea438f07630da0ff"
+
+[[files]]
+file = "sources/packwiz-prelaunch/PackwizPrelaunch.java"
+hash = "c7d3810c86f4fdf7e913f94e765d38a171b06e28f1f186a12187d519d6f22229"
