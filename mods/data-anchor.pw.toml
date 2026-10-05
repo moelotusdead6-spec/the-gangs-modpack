@@ -1,0 +1,13 @@
+name = "Data Anchor"
+filename = "Data_Anchor-fabric-1.20.1-1.0.0.23.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/z2XEADmE/versions/PnfBedfn/Data_Anchor-fabric-1.20.1-1.0.0.23.jar"
+hash-format = "sha512"
+hash = "a924dd206c1998ce6f1d43c4238683d3260c0585545952d3a45d0ca5b9328935e962eb29b61c42189c40f898b77b186bab5311bf0b310eaa9741d44310c6d308"
+
+[update]
+[update.modrinth]
+mod-id = "z2XEADmE"
+version = "PnfBedfn"

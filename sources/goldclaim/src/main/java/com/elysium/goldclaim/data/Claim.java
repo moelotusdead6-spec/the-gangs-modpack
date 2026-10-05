@@ -23,6 +23,27 @@ public class Claim {
     public Set<String> interactPlayerNames = new HashSet<String>();
     public Set<String> managerPlayers = new HashSet<String>();
     public Set<String> managerPlayerNames = new HashSet<String>();
+    public boolean trustAll;
+    public boolean interactAll;
+    public boolean managerAll;
+
+    public enum TrustLevel {
+        FULL, INTERACT, MANAGER
+    }
+
+    public void setPublicTrust(TrustLevel level, boolean enabled) {
+        switch (level) {
+            case FULL -> {
+                this.trustAll = enabled;
+                if (!enabled) {
+                    this.interactAll = false;
+                    this.managerAll = false;
+                }
+            }
+            case INTERACT -> this.interactAll = enabled;
+            case MANAGER -> this.managerAll = enabled;
+        }
+    }
 
     public Claim() {
     }
@@ -73,25 +94,25 @@ public class Claim {
     }
 
     public boolean isTrusted(UUID playerUuid) {
-        return this.trustedPlayers.contains(playerUuid.toString());
+        return this.trustAll || this.managerAll || this.trustedPlayers.contains(playerUuid.toString());
     }
 
     public boolean isTrustedName(String playerName) {
         if (playerName == null || playerName.isBlank()) {
             return false;
         }
-        return this.trustedPlayerNames.contains(playerName.toLowerCase(Locale.ROOT));
+        return this.trustAll || this.managerAll || this.trustedPlayerNames.contains(playerName.toLowerCase(Locale.ROOT));
     }
 
     public boolean canInteract(UUID playerUuid) {
-        return this.interactPlayers.contains(playerUuid.toString());
+        return this.interactAll || this.interactPlayers.contains(playerUuid.toString());
     }
 
     public boolean canInteractName(String playerName) {
         if (playerName == null || playerName.isBlank()) {
             return false;
         }
-        return this.interactPlayerNames.contains(playerName.toLowerCase(Locale.ROOT));
+        return this.interactAll || this.interactPlayerNames.contains(playerName.toLowerCase(Locale.ROOT));
     }
 
     public void addTrusted(UUID playerUuid) {
@@ -139,14 +160,14 @@ public class Claim {
     }
 
     public boolean isManager(UUID playerUuid) {
-        return this.managerPlayers.contains(playerUuid.toString());
+        return this.managerAll || this.managerPlayers.contains(playerUuid.toString());
     }
 
     public boolean isManagerName(String playerName) {
         if (playerName == null || playerName.isBlank()) {
             return false;
         }
-        return this.managerPlayerNames.contains(playerName.toLowerCase(Locale.ROOT));
+        return this.managerAll || this.managerPlayerNames.contains(playerName.toLowerCase(Locale.ROOT));
     }
 
     public void addManager(UUID playerUuid) {

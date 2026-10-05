@@ -2,10 +2,7 @@ package com.thegangs.gangshats;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 import com.mojang.brigadier.CommandDispatcher;
@@ -14,13 +11,11 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
@@ -38,9 +33,6 @@ import net.minecraft.text.Text;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.network.PacketByteBuf;
 
 public class GangsHats implements ModInitializer {
@@ -51,24 +43,15 @@ public class GangsHats implements ModInitializer {
 	private static final String VOUCHER_REWARD_TAG = "gangshats_reward_id";
 	private static final Identifier TEMPEST_ID = new Identifier("simplyswords", "tempest");
 	private static final String NICK_PERMISSION = "gangshats.command.nick";
-	private static final Map<UUID, Integer> BOUNCEPAD_COOLDOWNS = new HashMap<>();
-	private static final int PET_SYNC_INTERVAL = 40;
-	private static int petSyncTicks;
-
 	@Override
 	public void onInitialize() {
 		CosmeticItems.init();
-		PetEntities.register();
-		Bouncepads.register();
 		CommandRegistrationCallback.EVENT.register(GangsHats::registerCommands);
-		ServerTickEvents.END_SERVER_TICK.register(GangsHats::tickPets);
 		ServerLifecycleEvents.SERVER_STARTED.register(GangsHats::removeLegacyPets);
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
 			removeLegacyPets(server);
 			sendSelections(handler.player);
-			PetService.reconcile(handler.player);
 		});
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> PetService.despawn(handler.player));
 		UseItemCallback.EVENT.register((player, world, hand) -> {
 			ItemStack stack = player.getStackInHand(hand);
 			if (world.isClient || !(player instanceof ServerPlayerEntity serverPlayer)) {
@@ -113,7 +96,7 @@ public class GangsHats implements ModInitializer {
 
 	private static void sendSelections(ServerPlayerEntity player) {
 		CosmeticUnlockState state = CosmeticUnlockState.get(player.getServer());
-		for (String slot : new String[] {"hat", "halo", "back", "weapon", "pet"}) {
+		for (String slot : new String[] {"halo", "weapon"}) {
 			String rewardId = state.selected(player.getUuid(), slot);
 			if (rewardId == null) {
 				continue;
@@ -183,14 +166,9 @@ public class GangsHats implements ModInitializer {
 		dispatcher.register(CommandManager.literal("hats")
 				.executes(context -> equipHat(context.getSource().getPlayer())));
 		dispatcher.register(CommandManager.literal("cosmetics")
-				.executes(context -> openCosmetics(context.getSource(), false)));
+				.executes(context -> openCosmetics(context.getSource())));
 		dispatcher.register(CommandManager.literal("clearcosmetics")
 				.executes(context -> clearCosmetics(context.getSource())));
-		dispatcher.register(CommandManager.literal("pets")
-				.executes(context -> openCosmetics(context.getSource(), true)));
-		dispatcher.register(CommandManager.literal("pet")
-				.then(CommandManager.literal("recall")
-						.executes(context -> recallPet(context.getSource()))));
 		dispatcher.register(CommandManager.literal("cosmetickey")
 				.requires(source -> source.hasPermissionLevel(2))
 				.then(CommandManager.argument("player", EntityArgumentType.player())
@@ -203,15 +181,6 @@ public class GangsHats implements ModInitializer {
 		dispatcher.register(CommandManager.literal("cosmetickeyinternal")
 				.then(CommandManager.argument("player", EntityArgumentType.player())
 						.executes(context -> giveCosmeticKey(EntityArgumentType.getPlayer(context, "player")))));
-		dispatcher.register(CommandManager.literal("bouncepad")
-				.requires(source -> source.hasPermissionLevel(2))
-				.then(CommandManager.literal("place")
-						.then(CommandManager.argument("color", StringArgumentType.word())
-							.suggests((context, builder) -> CommandSource.suggestMatching(
-								new String[] {"red", "orange", "yellow", "green", "blue", "cyan", "purple", "white"}, builder))
-							.executes(context -> placeBouncepad(context.getSource(), StringArgumentType.getString(context, "color")))))
-				.then(CommandManager.literal("remove")
-						.executes(context -> removeBouncepad(context.getSource()))));
 		// Alias for Essential Commands' /nickname; re-dispatched at runtime so registration order between mods doesn't matter.
 		dispatcher.register(CommandManager.literal("nick")
 				.requires(source -> hasPermission(source, NICK_PERMISSION))
@@ -244,23 +213,13 @@ public class GangsHats implements ModInitializer {
 		}
 	}
 
-	private static int openCosmetics(ServerCommandSource source, boolean petsOnly) {
+	private static int openCosmetics(ServerCommandSource source) {
 		ServerPlayerEntity player = source.getPlayer();
 		if (player == null) {
 			source.sendError(Text.literal("Only players can open the cosmetics menu."));
 			return 0;
 		}
-		CosmeticsGui.open(player, petsOnly);
-		return 1;
-	}
-
-	private static int recallPet(ServerCommandSource source) {
-		ServerPlayerEntity player = source.getPlayer();
-		if (player == null) {
-			source.sendError(Text.literal("Only players can recall a pet."));
-			return 0;
-		}
-		CosmeticsGui.recall(player);
+		CosmeticsGui.open(player);
 		return 1;
 	}
 
@@ -317,7 +276,6 @@ public class GangsHats implements ModInitializer {
 			state.clear(player.getUuid(), slot);
 			sendSelection(player, slot, "");
 		}
-		PetService.despawn(player);
 	}
 
 	private static int clearCosmetics(ServerCommandSource source) {
@@ -336,79 +294,9 @@ public class GangsHats implements ModInitializer {
 		if (!player.giveItemStack(key)) {
 			player.dropItem(key, false);
 		}
-		player.sendMessage(Text.literal("You received a Cosmetic & Pet Key."), false);
+		player.sendMessage(Text.literal("You received a Cosmetic Key."), false);
 		return 1;
 	}
 
 
-	private static void tickPets(MinecraftServer server) {
-		petSyncTicks++;
-		boolean syncPets = petSyncTicks >= PET_SYNC_INTERVAL;
-		if (syncPets) {
-			petSyncTicks = 0;
-		}
-		for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
-			if (syncPets) {
-				PetService.reconcile(player);
-			}
-			int cooldown = BOUNCEPAD_COOLDOWNS.getOrDefault(player.getUuid(), 0);
-			if (cooldown > 0) {
-				BOUNCEPAD_COOLDOWNS.put(player.getUuid(), cooldown - 1);
-			}
-			if (cooldown == 0 && player.isOnGround() && player.getVelocity().y > 0.0D
-					&& Bouncepads.is(player.getWorld().getBlockState(player.getBlockPos().down()).getBlock())) {
-				Vec3d horizontal = new Vec3d(player.getVelocity().x, 0.0D, player.getVelocity().z);
-				if (horizontal.lengthSquared() < 0.0001D) {
-					horizontal = player.getRotationVector().multiply(1.0D, 0.0D, 1.0D);
-				}
-				horizontal = horizontal.normalize().multiply(1.15D);
-				player.setVelocity(horizontal.x, 1.0D, horizontal.z);
-				player.velocityDirty = true;
-				BOUNCEPAD_COOLDOWNS.put(player.getUuid(), 8);
-			}
-		}
-	}
-
-	private static int removeBouncepad(ServerCommandSource source) {
-		ServerPlayerEntity player = source.getPlayer();
-		if (player == null) {
-			source.sendError(Text.literal("Only players can remove bouncepads."));
-			return 0;
-		}
-		if (!(player.raycast(8.0D, 1.0F, false) instanceof BlockHitResult hit)) {
-			source.sendError(Text.literal("Look at a bouncepad first."));
-			return 0;
-		}
-		BlockPos target = hit.getBlockPos();
-		if (!Bouncepads.is(player.getWorld().getBlockState(target).getBlock())) {
-			source.sendError(Text.literal("That block is not a bouncepad."));
-			return 0;
-		}
-		player.getWorld().breakBlock(target, false, player);
-		source.sendFeedback(() -> Text.literal("Removed bouncepad."), true);
-		return 1;
-	}
-
-	private static int placeBouncepad(ServerCommandSource source, String color) {
-		ServerPlayerEntity player = source.getPlayer();
-		if (player == null) {
-			source.sendError(Text.literal("Only players can place bouncepads."));
-			return 0;
-		}
-		String[] colors = {"red", "orange", "yellow", "green", "blue", "cyan", "purple", "white"};
-		boolean valid = false;
-		for (String allowed : colors) {
-			if (allowed.equals(color)) {
-				valid = true;
-				break;
-			}
-		}
-		if (!valid) {
-			source.sendError(Text.literal("Unknown bouncepad color."));
-			return 0;
-		}
-		player.getWorld().setBlockState(player.getBlockPos().down(), Bouncepads.get(color).getDefaultState());
-		source.sendFeedback(() -> Text.literal("Placed an admin bouncepad: " + color), true);
-		return 1;
-	}
 }

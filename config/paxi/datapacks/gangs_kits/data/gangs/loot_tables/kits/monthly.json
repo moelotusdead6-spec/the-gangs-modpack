@@ -106,7 +106,6 @@
     {
       "rolls": 1,
       "entries": [
-        {"type": "minecraft:item", "name": "betterarcheology:fossil_snout"},
         {"type": "minecraft:item", "name": "betterarcheology:creeper_fossil"},
         {"type": "minecraft:item", "name": "betterarcheology:villager_fossil"},
         {"type": "minecraft:item", "name": "betterarcheology:chicken_fossil"},

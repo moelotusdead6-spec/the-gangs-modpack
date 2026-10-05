@@ -30,36 +30,23 @@ public final class CosmeticsGui {
 	private CosmeticsGui() {
 	}
 
-	public static void open(ServerPlayerEntity player, boolean petsOnly) {
+	public static void open(ServerPlayerEntity player) {
 		if (player == null) {
 			return;
 		}
 		player.openHandledScreen(new SimpleNamedScreenHandlerFactory(
-				(syncId, inventory, ignored) -> new MenuHandler(syncId, inventory, player, petsOnly),
-				Text.literal(petsOnly ? "Pets" : "Cosmetics")));
-	}
-
-	public static void recall(ServerPlayerEntity player) {
-		if (player == null) {
-			return;
-		}
-		CosmeticUnlockState state = CosmeticUnlockState.get(player.getServer());
-		boolean hadPet = state.selected(player.getUuid(), "pet") != null;
-		state.clear(player.getUuid(), "pet");
-		PetService.despawn(player);
-		player.sendMessage(Text.literal(hadPet ? "Pet dismissed." : "No active pet to dismiss."), false);
+				(syncId, inventory, ignored) -> new MenuHandler(syncId, inventory, player),
+				Text.literal("Cosmetics")));
 	}
 
 	private static final class MenuHandler extends ScreenHandler {
 		private final ServerPlayerEntity player;
-		private final boolean petsOnly;
 		private final SimpleInventory menu = new SimpleInventory(SIZE);
 		private final List<Item> entries = new ArrayList<>();
 
-		private MenuHandler(int syncId, PlayerInventory playerInventory, ServerPlayerEntity player, boolean petsOnly) {
+		private MenuHandler(int syncId, PlayerInventory playerInventory, ServerPlayerEntity player) {
 			super(ScreenHandlerType.GENERIC_9X6, syncId);
 			this.player = player;
-			this.petsOnly = petsOnly;
 			populate();
 			for (int row = 0; row < 6; row++) {
 				for (int column = 0; column < 9; column++) {
@@ -78,13 +65,7 @@ public final class CosmeticsGui {
 
 		private void populate() {
 			CosmeticUnlockState state = CosmeticUnlockState.get(player.getServer());
-			for (Item item : CosmeticItems.all()) {
-				String path = net.minecraft.registry.Registries.ITEM.getId(item).getPath();
-				if (petsOnly != path.startsWith("pet_")) {
-					continue;
-				}
-				entries.add(item);
-			}
+			entries.addAll(CosmeticItems.all());
 			for (int index = 0; index < Math.min(entries.size(), CONTENT_SLOTS.length); index++) {
 				Item item = entries.get(index);
 				String id = net.minecraft.registry.Registries.ITEM.getId(item).toString();
@@ -94,7 +75,7 @@ public final class CosmeticsGui {
 						.formatted(unlocked ? Formatting.GREEN : Formatting.DARK_GRAY));
 				menu.setStack(CONTENT_SLOTS[index], display);
 			}
-			menu.setStack(4, named(Items.BARRIER, petsOnly ? "Dismiss Pet" : "Clear Cosmetics"));
+			menu.setStack(4, named(Items.BARRIER, "Clear Cosmetics"));
 			menu.setStack(49, named(Items.BOOK, entries.size() + " catalog item(s)"));
 		}
 
@@ -104,12 +85,8 @@ public final class CosmeticsGui {
 				return;
 			}
 			if (slotIndex == 4) {
-				if (petsOnly) {
-					CosmeticsGui.recall(serverPlayer);
-				} else {
-					GangsHats.clearCosmetics(serverPlayer);
-					serverPlayer.sendMessage(Text.literal("Cosmetics cleared."), false);
-				}
+				GangsHats.clearCosmetics(serverPlayer);
+				serverPlayer.sendMessage(Text.literal("Cosmetics cleared."), false);
 				serverPlayer.closeHandledScreen();
 				return;
 			}
@@ -134,13 +111,9 @@ public final class CosmeticsGui {
 				return;
 			}
 			String path = net.minecraft.registry.Registries.ITEM.getId(item).getPath();
-			String slot = path.startsWith("pet_") ? "pet" : path.startsWith("hat_") ? "hat"
-					: path.startsWith("halo_") ? "halo" : path.startsWith("wing_") ? "back" : "weapon";
+			String slot = path.startsWith("halo_") ? "halo" : "weapon";
 			state.select(serverPlayer.getUuid(), slot, id);
 			GangsHats.sendSelection(serverPlayer, slot, id);
-			if (slot.equals("pet")) {
-				PetService.spawn(serverPlayer, id);
-			}
 			serverPlayer.sendMessage(Text.literal("Selected cosmetic: ").append(item.getName()), false);
 		}
 

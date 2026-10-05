@@ -6,11 +6,11 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "93e50b4374e45add829ca9a45bedee7d4b8fbfbc833d626a1da907577518d21d"
+hash = "973f18773286f7d0742d3e975b0be063b5801afb6a81880d887c55d96eb20ae4"
 
 [[files]]
 file = "README.md"
-hash = "bfddbad21c64826aabbe1a8cea7ad4d4ff487b6cbd3cd1a2d912835a36199ce4"
+hash = "8491b8d72066cf770cec7cb046061e8217f2cd92e8052f4d0e769c79ab8d5d57"
 
 [[files]]
 file = "artifacts/AdaptiveTooltips-1.3.0-fabric-1.20.2.jar"
@@ -121,6 +121,10 @@ file = "artifacts/gangsboots-1.0.5.jar"
 hash = "3eaae29797d10280338b814ebe2e6d2af4c783399edacbe51c3d2c569d28d8b7"
 
 [[files]]
+file = "artifacts/gangsboots-1.0.6.jar"
+hash = "b8064097166e71459d87cb90361433ca254e0d0777dd1b833c4df8ec0b99a2b7"
+
+[[files]]
 file = "artifacts/gangsboots-ATTRIBUTION.txt"
 hash = "de9756c83bd304ecf034a143a4de5be22cd89e6167fdcfdc29088379cad7ad8e"
 
@@ -161,6 +165,10 @@ file = "artifacts/gangshats-1.0.8.jar"
 hash = "d02403ef66ba50dc30ec0eb09b0db0f646345b5daddbf294e94f6847a728c8f4"
 
 [[files]]
+file = "artifacts/gangshats-1.0.9.jar"
+hash = "66244c7dde684846b7fbdf61aa12704d174e90143753b9388a3168aebec9571a"
+
+[[files]]
 file = "artifacts/gangshop-1.0.0.jar"
 hash = "ac1dd4608293defe70ac6cd68f60a20269d4db2f47ff32a613183e1eb0e4067f"
 
@@ -199,6 +207,10 @@ hash = "ba33fb9c21d8cd52108464751ed76f102baf68b42b2d6fa51debbe3c4c6bdb54"
 [[files]]
 file = "artifacts/goldclaim-1.0.17.jar"
 hash = "8247137edbbc5c1b20c0fa550a26c734ef955fe6493c5ef1710f55bd3a9d9d5d"
+
+[[files]]
+file = "artifacts/goldclaim-1.0.18.jar"
+hash = "fcfb016c463f4f50ac111a366498f2c611abc2c4c581734a417151031e6deaa4"
 
 [[files]]
 file = "artifacts/goldclaim-1.0.2.jar"
@@ -345,6 +357,10 @@ file = "config/fancymenu/options.txt"
 hash = "39c8fbcb59e108ea11a928e491fd605aced9d318c93ee343df83fe9aa45ddfd4"
 
 [[files]]
+file = "config/global_packs.toml"
+hash = "a152608c3a93212b8ff2484c067a715c373b0f382f8b21dcbffaef43e976d46e"
+
+[[files]]
 file = "config/options.txt"
 hash = "62d6d92168703d9761ed7581479d0586c284c5f94136e05d32f3c5a6b67b7078"
 
@@ -426,7 +442,7 @@ hash = "0d256d9e5705c27dd59c45df8f080c428744963197f3c94672f1452e54cdc17a"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs/loot_tables/kits/monthly.json"
-hash = "090d08ce78fba7effc2761a70f707628ab4d76e1e8d403900d42508439d5e9a2"
+hash = "1075fb880ef71c8025d9b9a9593d57891f51f3515314723fd1c597ac56243659"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs/loot_tables/kits/non_curse_book.json"
@@ -443,10 +459,6 @@ hash = "a6003cc9e926f9d980dac5419e034e5d47910e636e1f18b56832d59e6563f4a5"
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs/loot_tables/kits/weekly_3.json"
 hash = "a6003cc9e926f9d980dac5419e034e5d47910e636e1f18b56832d59e6563f4a5"
-
-[[files]]
-file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/bouncepad_tick.mcfunction"
-hash = "b550f0f331ebd50bb7268c32520163653e24380f07217c4639e56a7940326d5e"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/check_join_notify.mcfunction"
@@ -502,7 +514,7 @@ hash = "160d0cff7936cac6e43c710a3d7ca57e03d3f42821499a9ce33cc0516f6d73ec"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/tick.mcfunction"
-hash = "fd952f317e9a41b2a3499bda3d827d79a267483f8ca1d09f0cdd261525781e16"
+hash = "42454ba3ececf7455f10b8aa0f88984684f25f31feac2270b6bc6bd7d255930c"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/unlock_m.mcfunction"
@@ -542,7 +554,7 @@ hash = "3cbf8ce6ea206c72230f9876c62bc96f5bb878653607f6e83f759bacf612b898"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/minecraft/tags/functions/tick.json"
-hash = "a151ee8ebb443b6919b411a62caa6d4f057910f18a3f96501bd22d33e7a85096"
+hash = "0602d62d481607d9a06a7f520a43c0888bc27c1927f5664c766e440ab6273f26"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/mythicmetals/recipes/crafting/banglum_nuke_core.json"
@@ -710,19 +722,19 @@ hash = "e5e0c404117a39c26029361d154455d7a8974230ac6453ef8726af51d9a39f6d"
 
 [[files]]
 file = "config/skieskits/kits/1_weekly_1.json"
-hash = "9e5596510d530f8fcc05b19556880553f7c7ebc5cd2ef5b7153a7306999fae85"
+hash = "2b429f19a6960512771d87e18f834ab8edfb356f5a62f9d5b8a67fe0c60bc35b"
 
 [[files]]
 file = "config/skieskits/kits/2_weekly_2.json"
-hash = "9ee4bd0a459b20571b86b41b3b08a7a1d07a2e04036a6301b2e88c0d6651270d"
+hash = "fcd1dce88057b2540590d318d2d39a304029b882dcacd6ef22c6fd3ffe540927"
 
 [[files]]
 file = "config/skieskits/kits/3_weekly_3.json"
-hash = "207c439bf6cb394788122bdf89e6aeb0d2c3a1a1fea1bfc953379a542d4dc009"
+hash = "ae8f4a3b65da2b6f433bfd8b471bb69c603862d59238f78b35730462ae9f0d67"
 
 [[files]]
 file = "config/skieskits/kits/4_monthly.json"
-hash = "60f81c39843ca2acec346d513ab49bb46e5c4bef93e313dc2bd404a110066668"
+hash = "af264807b96d897a48c8d210a60394e7b0c480d41ab22bccb90fe5a0f8954c76"
 
 [[files]]
 file = "config/skieskits/menu.json"
@@ -898,11 +910,6 @@ metafile = true
 [[files]]
 file = "mods/MoogsVoyagerStructures-1.20-5.0.8.pw.toml"
 hash = "47f3353a72d6d0cfe7365f6730d573921caf00a4533b14899fc591b024e87aab"
-metafile = true
-
-[[files]]
-file = "mods/Multiworld-Fabric-1.20.1.pw.toml"
-hash = "d9af2ad0a5669ce32aa583b57ff1330eed1c8566c46a3fa7893d79b71237d0f2"
 metafile = true
 
 [[files]]
@@ -1141,6 +1148,11 @@ hash = "e6d70bcc8e03ade0ba9d988e53e34e0eee969fd658f3878cf69dc875f3e6d0f6"
 metafile = true
 
 [[files]]
+file = "mods/attributefix.pw.toml"
+hash = "6954afeb8bcf18a71cf02dad3ce414cae8940876602fc1239696b9282a554618"
+metafile = true
+
+[[files]]
 file = "mods/auditory-0.0.6-1.20.1.pw.toml"
 hash = "5e48a085c46a8ec021e082d19cb11889945ee02fe8b04199fef7bacee366eb3b"
 metafile = true
@@ -1231,6 +1243,11 @@ hash = "f5e33457fe4882a48f940633afa0d1c2d66042a907bc67bcb9cfc9d6b5669cd6"
 metafile = true
 
 [[files]]
+file = "mods/cinematic-respawn.pw.toml"
+hash = "b7aa079ec6972c0c4065fb3ec58e94855474e8a9b11d91f020d382eb78b05c95"
+metafile = true
+
+[[files]]
 file = "mods/cloth-config-11.1.136-fabric.pw.toml"
 hash = "05acd939f866a4eb75d20894fa57abee8bddba46ad4d310775c6531a89cada4f"
 metafile = true
@@ -1281,6 +1298,11 @@ hash = "ed98ba18dd0b98f077d956fa0308929c170e16d416e0f75e0decda5af1a90e21"
 metafile = true
 
 [[files]]
+file = "mods/data-anchor.pw.toml"
+hash = "995635c67d62fd8147b5a51901b8f34b65cf2eeedcabd0cbc6d7dfdc0aef544e"
+metafile = true
+
+[[files]]
 file = "mods/deeperdarker-fabric-1.20-1.3.3-plus-b.pw.toml"
 hash = "a6f6b4edd383d78c43ec5feb0278680e967a848d16acca266c19ba10a2b35a3e"
 metafile = true
@@ -1298,6 +1320,11 @@ metafile = true
 [[files]]
 file = "mods/endermanoverhaul-fabric-1.20.1-1.0.4.pw.toml"
 hash = "37b2b6337a44efe0a1de75538236b2667ed06270658e8bdc0d14818fc180ec47"
+metafile = true
+
+[[files]]
+file = "mods/enhanced-celestials.pw.toml"
+hash = "ce52bbcb7eedb076cac9ebed5ad8b2f6dd6fe735309f2d70702f880ee68b184c"
 metafile = true
 
 [[files]]
@@ -1432,12 +1459,12 @@ metafile = true
 
 [[files]]
 file = "mods/gangsboots-direct.pw.toml"
-hash = "7e240955bb5eed620af53e58af5e2af101642124d488db5b09c4c5e2ea8d0eda"
+hash = "e1c56ec55e1ebe6a38b7fe3f50f0c3306ba23254be2f24e15a0dc2adcf8ef1a4"
 metafile = true
 
 [[files]]
 file = "mods/gangshats-direct.pw.toml"
-hash = "d0d8831e20d426f0b9aeee3cc75644b4e047d6ba707ac6893a3cf9317011aee5"
+hash = "180a476c94fa0ff1b778162341766326a43e48f24f56d21e50cce7762ad5a4e0"
 metafile = true
 
 [[files]]
@@ -1457,7 +1484,7 @@ metafile = true
 
 [[files]]
 file = "mods/goldclaim-direct.pw.toml"
-hash = "3e3f73268d3b99ddb8ea43519a5ef8f9a39aea3f534b11b1b23a3c19dab81293"
+hash = "e74cd384e8af618ec5e54debc1aaee6bad4cd8f8c592d66b9e1f36b1a36c88c0"
 metafile = true
 
 [[files]]
@@ -1616,6 +1643,11 @@ hash = "8e8e4072cdde1eb487a49a2f8363cc807635f946eda82cb45cbfa0528ab05d7a"
 metafile = true
 
 [[files]]
+file = "mods/mariums-soulslike-weaponry.pw.toml"
+hash = "71fde49bfaffcc2d9f544e063bb33435248f8d36ddcac6c43a073821117bda0c"
+metafile = true
+
+[[files]]
 file = "mods/melody_fabric_1.0.4_MC_1.20.1-1.20.4.pw.toml"
 hash = "013be10104d10e5880ca36d6404a52502edf933da980107041cbd38203eb8d13"
 metafile = true
@@ -1737,7 +1769,7 @@ metafile = true
 
 [[files]]
 file = "mods/ranged-weapon-api-direct.pw.toml"
-hash = "7c24e461957096845dee0b848f61d877531d5d371737d0e148b372024267e5f8"
+hash = "121a2911e64b44d43d9e5e248e5985854f26b725416d15bedc9861262d0261aa"
 metafile = true
 
 [[files]]
@@ -1762,7 +1794,7 @@ metafile = true
 
 [[files]]
 file = "mods/respawnablepets-1.20-1.pw.toml"
-hash = "67f7ca2125f580b8d53051ff4c6a81e0cd105228565aa6691131a70361e3ccb6"
+hash = "424477b62352a086c7dace52dbd1b73aca379f83e6a1947b7c6b21ef5499c6a9"
 metafile = true
 
 [[files]]
@@ -1958,6 +1990,11 @@ metafile = true
 [[files]]
 file = "mods/zoomify-2.15.2_1.20.1.pw.toml"
 hash = "e103459b0deda63fb66ffb484dbb49d4bf81eb8b6ebcdb7ece81ecbaa8fd76b1"
+metafile = true
+
+[[files]]
+file = "resourcepacks/shrimps-immersive-interfaces.pw.toml"
+hash = "3c99b8d0353ac9f5534502e8ffea5dfdde0d2460e34ba3038c915c978eb5077e"
 metafile = true
 
 [[files]]

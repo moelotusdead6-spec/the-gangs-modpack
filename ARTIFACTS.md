@@ -1,10 +1,10 @@
 # Published Artifacts
 
-`artifacts/goldclaim-1.0.17.jar` is the server-only GoldClaim build used by this pack. It supplies hub protection, dimension routing, and PVP/RSW world lifecycle management; clients do not download it.
+`artifacts/goldclaim-1.0.18.jar` is the server-only GoldClaim build used by this pack. It supplies hub protection, dimension routing, PVP-only inventory/XP preservation, daily RSW rotation, automatic kit eligibility and reward delivery, and public claim trust; clients do not download it.
 
-`artifacts/gangsboots-1.0.5.jar` is a first-party Gangs Boots build. Its required CC-BY 4.0 attribution is in `artifacts/gangsboots-ATTRIBUTION.txt`.
+`artifacts/gangsboots-1.0.6.jar` is a first-party Gangs Boots build with one 1.25% chance per filled chest container. Its required CC-BY 4.0 attribution is in `artifacts/gangsboots-ATTRIBUTION.txt`.
 
-`artifacts/gangshats-1.0.0.jar` is a first-party Gangs Hats build. Its source is maintained in `sources/gangshats`; it provides the Fabric-native cosmetic, pet, and bouncepad features.
+`artifacts/gangshats-1.0.9.jar` is a first-party Gangs Hats build. Its source is maintained in `sources/gangshats`; it provides halo and sword cosmetics and wearable-item commands.
 
 `artifacts/polymer-bundled-0.5.20+1.20.1.jar` is the user-supplied official Polymer bundle used on both client and server for server-driven resources.
 

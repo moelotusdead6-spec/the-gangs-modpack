@@ -17,6 +17,7 @@ public final class CosmeticUnlockState extends PersistentState {
 
 	public static CosmeticUnlockState fromNbt(NbtCompound nbt) {
 		CosmeticUnlockState state = new CosmeticUnlockState();
+		boolean removedCosmetic = false;
 		NbtList players = nbt.getList("Players", NbtCompound.COMPOUND_TYPE);
 		for (int index = 0; index < players.size(); index++) {
 			NbtCompound playerNbt = players.getCompound(index);
@@ -24,17 +25,34 @@ public final class CosmeticUnlockState extends PersistentState {
 			Set<String> rewards = new HashSet<>();
 			NbtList rewardList = playerNbt.getList("Rewards", NbtCompound.STRING_TYPE);
 			for (int rewardIndex = 0; rewardIndex < rewardList.size(); rewardIndex++) {
-				rewards.add(rewardList.getString(rewardIndex));
+				String reward = rewardList.getString(rewardIndex);
+				if (!isRemovedCosmetic(reward)) {
+					rewards.add(reward);
+				} else {
+					removedCosmetic = true;
+				}
 			}
 			state.unlocked.put(playerId, rewards);
 			NbtCompound selectedNbt = playerNbt.getCompound("Selected");
 			Map<String, String> selectedRewards = new HashMap<>();
 			for (String slot : selectedNbt.getKeys()) {
-				selectedRewards.put(slot, selectedNbt.getString(slot));
+				if (!slot.equals("hat") && !slot.equals("pet") && !slot.equals("back")) {
+					selectedRewards.put(slot, selectedNbt.getString(slot));
+				} else {
+					removedCosmetic = true;
+				}
 			}
 			state.selected.put(playerId, selectedRewards);
 		}
+		if (removedCosmetic) {
+			state.markDirty();
+		}
 		return state;
+	}
+
+	private static boolean isRemovedCosmetic(String rewardId) {
+		return rewardId.startsWith("gangshats:hat_") || rewardId.startsWith("gangshats:pet_")
+				|| rewardId.startsWith("gangshats:wing_");
 	}
 
 	public boolean unlock(UUID playerId, String rewardId) {

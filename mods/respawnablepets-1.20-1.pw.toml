@@ -3,6 +3,6 @@ filename = "respawnablepets-1.20-1.jar"
 side = "client"
 
 [download]
-url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/respawnablepets-1.20-1.jar"
+url = "https://cdn.modrinth.com/data/gbFe1FWa/versions/Q5VMPADX/respawnablepets-1.20-1.jar"
 hash-format = "sha256"
-hash = "041D498494436A995F42AA983D2DD561797823C83A20AC2A9F390ACE0C50E6B8"
+hash = "041d498494436a995f42aa983d2dd561797823c83a20ac2a9f390ace0c5071de"

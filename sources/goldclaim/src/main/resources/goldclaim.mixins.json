@@ -8,6 +8,7 @@
     "LeavesBlockMixin",
     "FallingBlockMixin",
     "ServerPlayerEntityMixin",
+    "RecipeManagerMixin",
     "ServerWorldMixin",
     "AbstractBlockStateMixin",
     "CoralDryingMixin",

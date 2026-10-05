@@ -11,9 +11,7 @@ Fabric 1.20.1 companion mod for The Gangs Modpack.
 - `/hat` never drops items.
 - Direct helmet-slot insertion is handled by Server Hats in the pack, with `config/serverhats.json` set to allow all non-helmet items.
 
-## Rendering
+## Cosmetics
 
-- Vanilla placeable block items render around the player head at a compact block scale.
-- Modded block items render through their item models to avoid incompatibilities with placed-block renderers.
-- Non-placeable items render above the player head like a crown.
-- Plushie namespaces are forced into crown rendering even when the items are placeable.
+- Cosmetic keys unlock halos and swords; custom hats, wings, and pets are not included.
+- `/cosmetics` opens the cosmetic selection menu and `/clearcosmetics` clears active selections.

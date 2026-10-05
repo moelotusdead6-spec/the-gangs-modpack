@@ -210,10 +210,12 @@ implements ModInitializer {
     private GoldClaimConfig config;
     private ClaimManager claimManager;
     private SelectionManager selectionManager;
+    private final KitService kitService = new KitService();
+    private final RswResetService rswResetService = new RswResetService();
+    private final Map<UUID, String> playerBorderWorlds = new HashMap<>();
     private ClaimPortalRegistry portalRegistry;
     private final Path lastWildLocationsPath = Path.of("config", "goldclaim", "last-wild-locations.json");
     private final Path playerHomesPath = Path.of("config", "goldclaim", "player-homes.json");
-    private final Path rswResetStatePath = Path.of("config", "goldclaim", "rsw-reset.json");
     private final Map<UUID, SavedLocation> lastWildLocations = new HashMap<UUID, SavedLocation>();
     private final Map<UUID, Map<String, SavedHome>> playerHomes = new HashMap<UUID, Map<String, SavedHome>>();
     private final Map<UUID, VisualizationSession> visualizationSessions = new HashMap<UUID, VisualizationSession>();
@@ -223,9 +225,6 @@ implements ModInitializer {
     private static final long TELEPORT_REQUEST_TIMEOUT_MS = 60000L;
     private static final String PVP_DIMENSION = "multiworld:pvp";
     private static final String RSW_DIMENSION = "multiworld:rsw";
-    private static final boolean RSW_RESET_ENABLED = false;
-    private static final long RSW_RESET_INTERVAL_MS = 24L * 60L * 60L * 1000L;
-    private long nextRswResetAtMs;
     private int worldMaintenanceTicks;
     private int playerMaintenanceTicks;
     private boolean initializeTestingWorlds;
@@ -276,8 +275,9 @@ implements ModInitializer {
         this.portalRegistry = new ClaimPortalRegistry(Path.of("config", "goldclaim", "claim-portals.json"), this.config);
         this.loadLastWildLocations();
         this.loadPlayerHomes();
-        this.loadRswResetState();
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+            this.rswResetService.initialize(System.currentTimeMillis());
+            this.kitService.initialize(server);
             this.portalRegistry.syncToServer(server);
             this.forcePublicCommandPermissions(server);
             this.runGangsFixesLoad(server);
@@ -286,6 +286,7 @@ implements ModInitializer {
         ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, resourceManager, success) -> {
             if (success) {
                 server.execute(() -> {
+                    this.kitService.initialize(server);
                     this.forcePublicCommandPermissions(server);
                     this.runGangsFixesLoad(server);
                 });
@@ -296,10 +297,38 @@ implements ModInitializer {
             this.savePlayerHomes();
         });
         this.registerEvents();
+        this.registerPvpGraveProtection();
         this.registerCommands();
         this.registerDisconnectCleanup();
         this.registerTickHandlers();
         this.registerJoinHandler();
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private void registerPvpGraveProtection() {
+        try {
+            Class<?> listenerType = Class.forName("eu.pb4.graves.event.PlayerGraveCreationEvent");
+            Class<?> resultType = Class.forName("eu.pb4.graves.event.PlayerGraveCreationEvent$CreationResult");
+            Object allow = resultType.getField("ALLOW").get(null);
+            Object block = resultType.getField("BLOCK_SILENT").get(null);
+            Object listener = java.lang.reflect.Proxy.newProxyInstance(listenerType.getClassLoader(), new Class<?>[]{listenerType}, (proxy, method, arguments) -> {
+                if (method.getName().equals("shouldCreate")) {
+                    return arguments[0] instanceof ServerPlayerEntity player && shouldKeepInventoryOnDeath(player) ? block : allow;
+                }
+                return switch (method.getName()) {
+                    case "toString" -> "GoldClaim PVP grave protection";
+                    case "hashCode" -> System.identityHashCode(proxy);
+                    case "equals" -> proxy == arguments[0];
+                    default -> throw new UnsupportedOperationException(method.getName());
+                };
+            });
+            ((net.fabricmc.fabric.api.event.Event)listenerType.getField("EVENT").get(null)).register(listener);
+            LOGGER.info("Universal Graves inventory capture disabled only in {}.", PVP_DIMENSION);
+        } catch (ClassNotFoundException absent) {
+            LOGGER.info("Universal Graves is not installed; vanilla PVP inventory protection remains active.");
+        } catch (ReflectiveOperationException failure) {
+            throw new IllegalStateException("Could not register PVP grave protection", failure);
+        }
     }
 
     private void registerEvents() {
@@ -441,13 +470,21 @@ implements ModInitializer {
 
     private void registerCommands() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+            dispatcher.register(CommandManager.literal("gangskit")
+                .then(CommandManager.literal("weekly_1").executes(ctx -> this.kitService.claim(ctx.getSource(), 0)))
+                .then(CommandManager.literal("weekly_2").executes(ctx -> this.kitService.claim(ctx.getSource(), 1)))
+                .then(CommandManager.literal("weekly_3").executes(ctx -> this.kitService.claim(ctx.getSource(), 2)))
+                .then(CommandManager.literal("monthly").executes(ctx -> this.kitService.claim(ctx.getSource(), 3))));
             dispatcher.register(CommandManager.literal("claim")
                 .then(CommandManager.literal("trust")
+                    .then(CommandManager.literal("all").executes(ctx -> this.setPublicTrust(ctx.getSource(), Claim.TrustLevel.FULL, true)))
                     .then(CommandManager.literal("interact")
+                        .then(CommandManager.literal("all").executes(ctx -> this.setPublicTrust(ctx.getSource(), Claim.TrustLevel.INTERACT, true)))
                         .then(CommandManager.argument("player", StringArgumentType.word())
                             .suggests(this::suggestOnlinePlayerNames)
                             .executes(ctx -> this.trustPlayer(ctx.getSource(), StringArgumentType.getString(ctx, "player"), true))))
                     .then(CommandManager.literal("manager")
+                        .then(CommandManager.literal("all").executes(ctx -> this.setPublicTrust(ctx.getSource(), Claim.TrustLevel.MANAGER, true)))
                         .then(CommandManager.argument("player", StringArgumentType.word())
                             .suggests(this::suggestOnlinePlayerNames)
                             .executes(ctx -> this.trustManager(ctx.getSource(), StringArgumentType.getString(ctx, "player")))))
@@ -455,11 +492,14 @@ implements ModInitializer {
                         .suggests(this::suggestOnlinePlayerNames)
                         .executes(ctx -> this.trustPlayer(ctx.getSource(), StringArgumentType.getString(ctx, "player")))))
                 .then(CommandManager.literal("untrust")
+                    .then(CommandManager.literal("all").executes(ctx -> this.setPublicTrust(ctx.getSource(), Claim.TrustLevel.FULL, false)))
                     .then(CommandManager.literal("interact")
+                        .then(CommandManager.literal("all").executes(ctx -> this.setPublicTrust(ctx.getSource(), Claim.TrustLevel.INTERACT, false)))
                         .then(CommandManager.argument("player", StringArgumentType.word())
                             .suggests(this::suggestOnlinePlayerNames)
                             .executes(ctx -> this.untrustPlayer(ctx.getSource(), StringArgumentType.getString(ctx, "player"), true))))
                     .then(CommandManager.literal("manager")
+                        .then(CommandManager.literal("all").executes(ctx -> this.setPublicTrust(ctx.getSource(), Claim.TrustLevel.MANAGER, false)))
                         .then(CommandManager.argument("player", StringArgumentType.word())
                             .suggests(this::suggestOnlinePlayerNames)
                             .executes(ctx -> this.untrustManager(ctx.getSource(), StringArgumentType.getString(ctx, "player")))))
@@ -628,6 +668,7 @@ implements ModInitializer {
     private void registerJoinHandler() {
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> server.execute(() -> {
             ServerPlayerEntity player = handler.getPlayer();
+            this.kitService.join(player);
             if (this.isFirstJoin(player, server)) {
                 this.giveFirstJoinTools(player);
             }
@@ -713,6 +754,10 @@ implements ModInitializer {
                 this.worldMaintenanceTicks = 0;
                 this.maintainTestingWorlds(server);
             }
+            this.rswResetService.tick(server, this.getWorld(server, RSW_DIMENSION),
+                playerToEvacuate -> this.teleportToHub(playerToEvacuate, false, false),
+                (activeServer, seed) -> this.createMultiworld(activeServer, RSW_DIMENSION, "NORMAL", seed),
+                readyWorld -> this.applyWorldBorder(server, RSW_DIMENSION, 10000.0));
             boolean runPlayerMaintenance = false;
             if (++this.playerMaintenanceTicks >= 20) {
                 this.playerMaintenanceTicks = 0;
@@ -723,6 +768,7 @@ implements ModInitializer {
                     objective = scoreboard.addObjective("gangs_time", ScoreboardCriterion.DUMMY, Text.literal("Gangs Time"), ScoreboardCriterion.RenderType.INTEGER);
                 }
                 scoreboard.getPlayerScore("#epoch", objective).setScore((int)(System.currentTimeMillis() / 1000L));
+                this.kitService.tick(server);
             }
 
             ServerPlayerEntity player;
@@ -782,6 +828,13 @@ implements ModInitializer {
             if (runPlayerMaintenance) {
                 for (ServerPlayerEntity player2 : server.getPlayerManager().getPlayerList()) {
                     String dimensionId = player2.getServerWorld().getRegistryKey().getValue().toString();
+                    if (!dimensionId.equals(this.playerBorderWorlds.put(player2.getUuid(), dimensionId))) {
+                        this.syncPlayerBorder(player2);
+                    }
+                    if (RSW_DIMENSION.equals(dimensionId) && this.rswResetService.isClosed()) {
+                        this.teleportToHub(player2, false, false);
+                        continue;
+                    }
                     if (PVP_DIMENSION.equals(dimensionId)) {
                         if (this.playersInPvp.add(player2.getUuid())) {
                             this.disablePvpFlight(player2);
@@ -801,14 +854,12 @@ implements ModInitializer {
 
     private void ensureTestingWorlds(MinecraftServer server) {
         this.createMultiworldIfMissing(server, PVP_DIMENSION, "VOID");
-        this.createMultiworldIfMissing(server, RSW_DIMENSION, "NORMAL");
-        this.applyWorldBorder(server, PVP_DIMENSION, 1000.0);
-        this.applyWorldBorder(server, RSW_DIMENSION, 5000.0);
-        this.applyPvpWorldRules(server);
-        if (RSW_RESET_ENABLED && this.nextRswResetAtMs <= 0L) {
-            this.nextRswResetAtMs = System.currentTimeMillis() + RSW_RESET_INTERVAL_MS;
-            this.saveRswResetState();
+        if (!this.rswResetService.isClosed()) {
+            this.createMultiworldIfMissing(server, RSW_DIMENSION, "NORMAL");
         }
+        this.applyWorldBorder(server, PVP_DIMENSION, 1000.0);
+        this.applyWorldBorder(server, RSW_DIMENSION, 10000.0);
+        this.applyPvpWorldRules(server);
     }
 
     private void applyPvpWorldRules(MinecraftServer server) {
@@ -835,33 +886,16 @@ implements ModInitializer {
 
     private void maintainTestingWorlds(MinecraftServer server) {
         this.ensureTestingWorlds(server);
-        if (!RSW_RESET_ENABLED || System.currentTimeMillis() < this.nextRswResetAtMs) {
-            return;
-        }
-        ServerWorld rswWorld = this.getWorld(server, RSW_DIMENSION);
-        if (rswWorld != null) {
-            for (ServerPlayerEntity player : new ArrayList<>(rswWorld.getPlayers())) {
-                this.teleportToHub(player, false, false);
-            }
-        }
-        ServerCommandSource console = server.getCommandSource().withLevel(4).withSilent();
-        server.getCommandManager().executeWithPrefix(console, "mw delete rsw");
-        server.getCommandManager().executeWithPrefix(console, "mw delete rsw");
-        this.createMultiworldIfMissing(server, RSW_DIMENSION, "NORMAL");
-        if (this.getWorld(server, RSW_DIMENSION) == null) {
-            LOGGER.error("RSW rotation failed; the world was not recreated. It will be retried in 60 seconds.");
-            return;
-        }
-        this.applyWorldBorder(server, RSW_DIMENSION, 5000.0);
-        this.nextRswResetAtMs = System.currentTimeMillis() + RSW_RESET_INTERVAL_MS;
-        this.saveRswResetState();
-        server.getPlayerManager().broadcast(Text.literal("RSW has reset with a fresh world."), false);
     }
 
     private void createMultiworldIfMissing(MinecraftServer server, String dimensionId, String generatorName) {
         if (this.getWorld(server, dimensionId) != null) {
             return;
         }
+        this.createMultiworld(server, dimensionId, generatorName, ThreadLocalRandom.current().nextLong());
+    }
+
+    private void createMultiworld(MinecraftServer server, String dimensionId, String generatorName, long seed) {
         try {
             Class<?> createCommandClass = Class.forName("me.isaiah.multiworld.command.CreateCommand");
             Class<?> multiworldClass = Class.forName("me.isaiah.multiworld.MultiworldMod");
@@ -869,7 +903,6 @@ implements ModInitializer {
             if (generator == null) {
                 throw new IllegalStateException("Unknown Multiworld generator: " + generatorName);
             }
-            long seed = ThreadLocalRandom.current().nextLong();
             ServerWorld world = (ServerWorld)this.invokeStatic(multiworldClass, "create_world", dimensionId,
                 new Identifier("minecraft", "overworld"), generator, net.minecraft.world.Difficulty.NORMAL, seed);
             this.invokeStatic(createCommandClass, "make_config", world, "NORMAL", seed,
@@ -899,7 +932,15 @@ implements ModInitializer {
         }
         world.getWorldBorder().setCenter(0.0, 0.0);
         world.getWorldBorder().setSize(size);
-        world.getWorldBorder().setWarningBlocks(0);
+        world.getWorldBorder().setWarningBlocks(RSW_DIMENSION.equals(dimensionId) ? 50 : 0);
+        world.getWorldBorder().setWarningTime(15);
+        for (ServerPlayerEntity player : world.getPlayers()) {
+            this.syncPlayerBorder(player);
+        }
+    }
+
+    private void syncPlayerBorder(ServerPlayerEntity player) {
+        player.networkHandler.sendPacket(new net.minecraft.network.packet.s2c.play.WorldBorderInitializeS2CPacket(player.getServerWorld().getWorldBorder()));
     }
 
     private ServerWorld getWorld(MinecraftServer server, String dimensionId) {
@@ -909,32 +950,6 @@ implements ModInitializer {
         }
         RegistryKey<World> key = RegistryKey.of(RegistryKeys.WORLD, id);
         return server.getWorld(key);
-    }
-
-    private void loadRswResetState() {
-        if (Files.exists(this.rswResetStatePath)) {
-            try (BufferedReader reader = Files.newBufferedReader(this.rswResetStatePath)) {
-                JsonObject state = JsonParser.parseReader(reader).getAsJsonObject();
-                this.nextRswResetAtMs = state.get("nextResetAtMs").getAsLong();
-            }
-            catch (Exception e) {
-                LOGGER.warn("Could not read RSW reset state; a new 24-hour cycle will begin.", e);
-            }
-        }
-    }
-
-    private void saveRswResetState() {
-        try {
-            Files.createDirectories(this.rswResetStatePath.getParent());
-            JsonObject state = new JsonObject();
-            state.addProperty("nextResetAtMs", this.nextRswResetAtMs);
-            try (BufferedWriter writer = Files.newBufferedWriter(this.rswResetStatePath)) {
-                GSON.toJson(state, writer);
-            }
-        }
-        catch (IOException e) {
-            LOGGER.error("Could not save RSW reset state.", e);
-        }
     }
 
     private void rememberWildLocation(ServerPlayerEntity player) {
@@ -1707,6 +1722,7 @@ implements ModInitializer {
         }
         Claim claim = claimOpt.get();
         String ownerLabel = this.getClaimOwnerLabel(claim);
+        source.sendFeedback(() -> Text.literal("Public trust: regular=" + claim.trustAll + ", interact=" + claim.interactAll + ", manager=" + claim.managerAll), false);
         source.sendFeedback(() -> Text.literal((String)("Claim owner: " + ownerLabel + " | Type: " + (claim.adminClaim ? "admin" : "player") + " | Size: " + claim.width() + "x" + claim.depth() + " | Dimension: " + this.getClaimDimensionLabel(claim.dimension) + " | Corners: [" + claim.minX + "," + claim.minZ + "] -> [" + claim.maxX + "," + claim.maxZ + "]")), false);
         this.showClaimOutline(player, claim);
         return 1;
@@ -1907,6 +1923,10 @@ implements ModInitializer {
     }
 
     private int teleportToTestingWorld(ServerCommandSource source, String dimensionId, String label, boolean voidWorld) {
+        if (RSW_DIMENSION.equals(dimensionId) && this.rswResetService.isClosed()) {
+            source.sendError(Text.literal("RSW is resetting and is temporarily closed."));
+            return 0;
+        }
         ServerPlayerEntity player;
         try {
             player = source.getPlayerOrThrow();
@@ -1926,6 +1946,7 @@ implements ModInitializer {
         double z = spawn.getZ() + 0.5;
         this.loadDestinationArea(targetWorld, x, z);
         player.teleport(targetWorld, x, y, z, targetWorld.getSpawnAngle(), 0.0f);
+        this.syncPlayerBorder(player);
         this.sendHubWildTitle(player, label);
         source.sendFeedback(() -> Text.literal("Teleported to " + label + "."), false);
         return 1;
@@ -2317,6 +2338,26 @@ implements ModInitializer {
         ServerPlayerEntity targetPlayer = source.getServer().getPlayerManager().getPlayer(profileOpt.get().getId());
         if (targetPlayer != null && !targetPlayer.getUuid().equals(player.getUuid())) {
             targetPlayer.sendMessage((Text)Text.literal((String)("You were untrusted in an admin claim by " + player.getName().getString() + ".")));
+        }
+        return 1;
+    }
+
+    private int setPublicTrust(ServerCommandSource source, Claim.TrustLevel level, boolean enabled) {
+        ServerPlayerEntity player;
+        try {
+            player = source.getPlayerOrThrow();
+        } catch (Exception failure) {
+            source.sendError(Text.literal("Only players can run this command."));
+            return 0;
+        }
+        ClaimManager.TrustResult result = this.claimManager.setPublicTrustAt(player.getUuid(), player.getWorld().getRegistryKey().getValue().toString(), player.getBlockX(), player.getBlockZ(), level, enabled);
+        if (!result.success()) {
+            source.sendError(Text.literal(result.error() == ClaimManager.TrustError.NOT_FOUND ? "No claim at your location." : "You cannot change public trust here. Public manager access can only be changed by the claim owner."));
+            return 0;
+        }
+        source.sendFeedback(() -> Text.literal("Public " + level.name().toLowerCase(java.util.Locale.ROOT) + " trust " + (enabled ? "enabled for all current and future players." : "disabled. Explicit player trust remains unchanged.")), false);
+        if (enabled && level == Claim.TrustLevel.MANAGER) {
+            source.sendFeedback(() -> Text.literal("Everyone can now manage, expand, or remove this claim."), false);
         }
         return 1;
     }

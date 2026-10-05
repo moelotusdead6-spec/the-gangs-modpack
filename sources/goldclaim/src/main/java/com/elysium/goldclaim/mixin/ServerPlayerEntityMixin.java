@@ -7,6 +7,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PlayerEntity.class)
 public abstract class ServerPlayerEntityMixin {
@@ -15,6 +16,14 @@ public abstract class ServerPlayerEntityMixin {
         Object player = this;
         if (player instanceof ServerPlayerEntity serverPlayer && GoldClaimMod.shouldKeepInventoryOnDeath(serverPlayer)) {
             callbackInfo.cancel();
+        }
+    }
+
+    @Inject(method = "getXpToDrop", at = @At("HEAD"), cancellable = true)
+    private void goldclaim$keepPvpExperience(CallbackInfoReturnable<Integer> callbackInfo) {
+        Object player = this;
+        if (player instanceof ServerPlayerEntity serverPlayer && GoldClaimMod.shouldKeepInventoryOnDeath(serverPlayer)) {
+            callbackInfo.setReturnValue(0);
         }
     }
 }

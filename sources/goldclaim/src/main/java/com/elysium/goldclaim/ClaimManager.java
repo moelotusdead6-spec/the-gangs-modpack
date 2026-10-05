@@ -182,7 +182,7 @@ public class ClaimManager {
         if (claim.adminClaim ? !isOp : !claim.hasFullControl(actorUuid) && (!allowOpBypass || !isOp)) {
             return TrustResult.fail(TrustError.NOT_ALLOWED);
         }
-        boolean alreadyTrusted = interactOnly ? claim.canInteract(targetUuid) : claim.isTrusted(targetUuid);
+        boolean alreadyTrusted = interactOnly ? claim.interactPlayers.contains(targetUuid.toString()) : claim.trustedPlayers.contains(targetUuid.toString());
         if (alreadyTrusted) {
             if (interactOnly ? !claim.canInteractName(targetName) : !claim.isTrustedName(targetName)) {
                 if (interactOnly) {
@@ -246,7 +246,7 @@ public class ClaimManager {
         if (claim.adminClaim ? !isOp : !claim.isOwner(actorUuid) && (!allowOpBypass || !isOp)) {
             return TrustResult.fail(TrustError.NOT_ALLOWED);
         }
-        if (claim.isManager(targetUuid)) {
+        if (claim.managerPlayers.contains(targetUuid.toString())) {
             if (!claim.isManagerName(targetName)) {
                 claim.addManagerName(targetName);
                 this.save();
@@ -275,6 +275,22 @@ public class ClaimManager {
         }
         claim.removeManager(targetUuid);
         claim.removeManagerName(targetName);
+        this.save();
+        return TrustResult.ok();
+    }
+
+    public synchronized TrustResult setPublicTrustAt(UUID actorUuid, String dimension, int x, int z, Claim.TrustLevel level, boolean enabled) {
+        Optional<Claim> claimOpt = this.getClaimAt(dimension, x, z);
+        if (claimOpt.isEmpty()) {
+            return TrustResult.fail(TrustError.NOT_FOUND);
+        }
+        Claim claim = claimOpt.get();
+        boolean ownerRequired = level == Claim.TrustLevel.MANAGER
+            || level == Claim.TrustLevel.FULL && !enabled && claim.managerAll;
+        if (claim.adminClaim || (ownerRequired ? !claim.isOwner(actorUuid) : !claim.hasFullControl(actorUuid))) {
+            return TrustResult.fail(TrustError.NOT_ALLOWED);
+        }
+        claim.setPublicTrust(level, enabled);
         this.save();
         return TrustResult.ok();
     }
