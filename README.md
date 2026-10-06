@@ -12,7 +12,7 @@ This modpack is built around friendship, discovery, and those “you had to be t
 
 ## Pack requirements and resource packs
 
-Version 0.1.49 requires Minecraft 1.20.1, Java 17 or newer, and Fabric Loader
+Version 0.1.50 requires Minecraft 1.20.1, Java 17 or newer, and Fabric Loader
 0.19.3 or newer.
 
 The pack includes AttributeFix, CorgiLib, Data Anchor, Enhanced Celestials,
@@ -33,7 +33,18 @@ Mod-provided built-in packs and server-sent packs are not affected by this
 folder setting. Shader packs are also separate and are not forced.
 
 Previously published ZIP archives are historical snapshots and do not contain
-these latest policies; use the 0.1.49 all-in-one ZIP or current packwiz manifest.
+these latest policies; use the 0.1.50 all-in-one ZIP or current packwiz manifest.
+
+### Version 0.1.50
+
+This release includes GoldClaim 1.0.25 for exact remembered RSW positions and
+Gang Shop 1.0.8 for catalog filtering and food categorization. Farmer's Delight
+crates, bales and feast foods, plus Nether's Delight raw stuffed hoglin, are
+categorized as food unless denied by the price config. Ancient debris,
+Chipped ancient-debris variants, selected Hybrid Aquatic utility/pearl items,
+and the Alex's Caves and Alloy Forgery namespaces are excluded from the shop.
+Both updated mods are server-only and bundled in the ZIP's `server-update`
+folder, not the Prism client mods folder.
 
 ## Gameplay update and server checks
 
@@ -86,14 +97,17 @@ countdowns survive restarts. A duplicate request, active reset/recovery, or
 already-earlier daily reset is rejected without postponing the current reset.
 After completion the normal 05:00 EST daily schedule resumes.
 
-`/rsw` returns to your last safe position in the current RSW, including its
+`/rsw` returns to your exact last position in the current RSW, including its
 orientation. Locations are captured when leaving, disconnecting, respawning,
 or stopping the server. Running `/rsw` inside RSW keeps your current position.
 Every successful automatic or manual reset clears all return positions,
 including offline players' saved positions. Evacuated players remain in the
 hub; their next `/rsw` tries safe ground at 0,0. If that column is unsafe,
 it uses the nearest safe surface by horizontal distance without modifying
-terrain. Invalid/unsafe remembered positions use the same entry search.
+terrain. Remembered positions do not use the random-teleport ground/air check:
+leaving while airborne or on partial blocks still returns to that exact position.
+If terrain has changed, the saved position is still used; positions outside the
+current world border or build limits report an error instead of redirecting to 0,0.
 The search is bounded by `rswEntrySearchRadius` in `config/goldclaim.json`
 (default 256 blocks, supported range 0-512); if no safe landing is found,
 the command reports an error rather than sending the player into danger.
@@ -135,10 +149,10 @@ RSW reset duration still need these in-game checks.
 
 ### Installing and checking this server policy update
 
-GoldClaim 1.0.24 and the current packwiz manifest contain these policies;
+GoldClaim 1.0.25 and the current packwiz manifest contain these policies;
 existing ZIP releases do not receive changes retroactively. With the server
 stopped, back up worlds/player data and configs, replace the old GoldClaim jar
-with `artifacts/goldclaim-1.0.24.jar` (do not leave two GoldClaim versions
+with `artifacts/goldclaim-1.0.25.jar` (do not leave two GoldClaim versions
 installed), and apply the updated configs/datapack. Keep any unrelated custom
 Gobber settings when applying its two flight/gliding settings. No client mod
 update is required for the server guards.
@@ -153,8 +167,9 @@ On the full server, check:
 - A non-operator cannot use `/rsw reset`; an operator starts the 15-minute
   countdown, with warnings at the normal thresholds.
 - Restart during that countdown and verify its original deadline survives.
-- Leave RSW through a command/portal, reconnect, and return to the same safe
-  location. After a reset, both online and previously offline players start
+- Leave RSW through a command/portal, reconnect, and return to the exact same
+  location, including airborne or partial-block positions. After a reset,
+  both online and previously offline players start
   at the origin or its nearest safe surface, not old coordinates.
 - Existing bins in player/ender inventories, nested storage, item entities,
   and loaded chunks disappear. Crafting, `/give`, `/item`, `/setblock`,

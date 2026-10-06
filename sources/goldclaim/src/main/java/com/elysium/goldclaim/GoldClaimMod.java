@@ -2044,17 +2044,15 @@ implements ModInitializer {
         RswResetService.Location saved = this.rswResetService.location(player.getUuid());
         if (saved != null) {
             BlockPos feet = BlockPos.ofFloored(saved.x(), saved.y(), saved.z());
-            if (world.getWorldBorder().contains(feet) && world.isInBuildLimit(feet)) {
-                this.loadDestinationArea(world, saved.x(), saved.z());
+            if (!world.getWorldBorder().contains(feet) || !world.isInBuildLimit(feet)) {
+                source.sendError(Text.literal("Your saved RSW position is outside the world's current limits. Please notify an operator."));
+                return 0;
             }
-            if (world.getWorldBorder().contains(feet) && world.isInBuildLimit(feet)
-                    && this.isSafeRandomTeleportDestination(world, feet)) {
-                player.teleport(world, saved.x(), saved.y(), saved.z(), saved.yaw(), saved.pitch());
-                this.syncPlayerBorder(player);
-                this.sendHubWildTitle(player, "RSW");
-                return 1;
-            }
-            player.sendMessage(Text.literal("[RSW] Your previous position is no longer safe; returning to 0,0."), false);
+            this.loadDestinationArea(world, saved.x(), saved.z());
+            player.teleport(world, saved.x(), saved.y(), saved.z(), saved.yaw(), saved.pitch());
+            this.syncPlayerBorder(player);
+            this.sendHubWildTitle(player, "RSW");
+            return 1;
         }
         return this.rswEntrySearch.request(source, player, world, this.config.rswEntrySearchRadius);
     }

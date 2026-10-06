@@ -102,6 +102,42 @@ public class RswResetServiceTest {
     }
 
     @Test
+    public void latestFractionalPositionSurvivesRestartAndPendingReset() throws Exception {
+        RswResetService service = new RswResetService(journal());
+        service.initialize(NOW);
+        UUID player = UUID.randomUUID();
+        service.remember(player, new RswResetService.Location(0.5, 70, 0.5, 0, 0));
+        var lastPosition = new RswResetService.Location(
+            -638.25, -30.925, -583.75, 68.4f, 12.6f);
+        service.remember(player, lastPosition);
+        assertEquals(lastPosition, service.location(player));
+        service.requestManualReset(NOW);
+        assertEquals(lastPosition, service.location(player));
+        RswResetService restarted = new RswResetService(journal());
+        restarted.initialize(NOW + 180000L);
+        assertEquals(lastPosition, restarted.location(player));
+        assertEquals(0, restarted.generation());
+        assertNull(restarted.location(UUID.randomUUID()));
+    }
+
+    @Test
+    public void firstExitAfterResetRemembersTheNewWorldPosition() throws Exception {
+        RswResetService.State state = new RswResetService.State();
+        UUID player = UUID.randomUUID();
+        state.locations.put(player, new RswResetService.Location(500, 80, -500, 90, 0));
+        Files.writeString(journal(), GSON.toJson(RswResetService.completedState(state, NOW)));
+        RswResetService service = new RswResetService(journal());
+        service.initialize(NOW);
+        assertNull(service.location(player));
+        var newPosition = new RswResetService.Location(20.25, 70.5, -40.75, -90, 30);
+        service.remember(player, newPosition);
+        RswResetService restarted = new RswResetService(journal());
+        restarted.initialize(NOW + 60000L);
+        assertEquals(1, restarted.generation());
+        assertEquals(newPosition, restarted.location(player));
+    }
+
+    @Test
     public void evacuationCannotResaveAnOldGenerationPosition() throws Exception {
         RswResetService.State state = new RswResetService.State();
         state.phase = "UNLOADING";

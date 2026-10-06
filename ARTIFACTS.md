@@ -1,6 +1,6 @@
 # Published Artifacts
 
-`artifacts/goldclaim-1.0.24.jar` is the server-only GoldClaim build used by this pack. It supplies hub protection, dimension routing, PVP-only inventory/XP preservation, a fixed noon clock and clear weather, recipient-specific time synchronization, operator-only PVP block breaking, public PVP placement and terrain-safe combat explosions, public RSW access with border-inset RTP, daily RSW rotation, operator-triggered persisted 15-minute resets, generation-bound RSW return positions with nearest-safe-origin entry, server-side furniture bin removal, Gobber Dragon armor creative-flight suppression, automatic kit eligibility and reward delivery, and public claim trust; clients do not download it.
+`artifacts/goldclaim-1.0.25.jar` is the server-only GoldClaim build used by this pack. It supplies hub protection, dimension routing, PVP-only inventory/XP preservation, a fixed noon clock and clear weather, recipient-specific time synchronization, operator-only PVP block breaking, public PVP placement and terrain-safe combat explosions, public RSW access with border-inset RTP, daily RSW rotation, operator-triggered persisted 15-minute resets, generation-bound exact RSW return positions (including airborne/partial-block positions) with nearest-safe-origin entry after resets, server-side furniture bin removal, Gobber Dragon armor creative-flight suppression, automatic kit eligibility and reward delivery, and public claim trust; clients do not download it.
 
 `artifacts/gangsboots-1.0.7.jar` is a first-party Gangs Boots build with one 2.5% chance per player's first personal Lootr chest loot generation. Reopening saved personal loot does not reroll; shared or automated container fills do not roll. Its required CC-BY 4.0 attribution is in `artifacts/gangsboots-ATTRIBUTION.txt`.
 
@@ -10,7 +10,7 @@
 
 `artifacts/rankbadges-1.0.1.jar` is a first-party Rank Badges build. Its source is maintained in `sources/rankbadges`.
 
-`artifacts/gangshop-1.0.3.jar` is the server-only first-party Gang Shop build. It provides the shared Gang Bucks wallet and the server shop GUI.
+`artifacts/gangshop-1.0.8.jar` is the server-only first-party Gang Shop build. It provides the shared Gang Bucks wallet and the server shop GUI, including the updated catalog exclusions and Farmer's Delight/Nether's Delight food categorization.
 
 `artifacts/gangsales-1.0.0.jar` is the server-only first-party GangSales build. Its source is maintained in `sources/gangsales`; it requires Gang Shop and uses its Gang Bucks wallet for player-to-player sales.
 
