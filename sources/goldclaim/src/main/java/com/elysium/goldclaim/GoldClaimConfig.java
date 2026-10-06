@@ -51,6 +51,7 @@ public class GoldClaimConfig {
     public boolean freezeHubFluids = true;
     public boolean preserveUnsupportedHubBlocks = true;
     public String wildDimension = "minecraft:overworld";
+    public int rswEntrySearchRadius = 256;
     public boolean hubFullyInvulnerable = true;
     public boolean preventHubFire = true;
     public boolean hubKeepInventoryWhilePresent = false;

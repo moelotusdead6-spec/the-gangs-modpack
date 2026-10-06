@@ -212,6 +212,10 @@ implements ModInitializer {
     private SelectionManager selectionManager;
     private final KitService kitService = new KitService();
     private final RswResetService rswResetService = new RswResetService();
+    private final RswEntrySearch rswEntrySearch = new RswEntrySearch(
+        this.rswResetService, this::isSafeRandomTeleportDestination, this::completeRswEntry);
+    private ServerWorld configuredPvpDaylightWorld;
+    private ServerWorld configuredPvpWeatherWorld;
     private final Map<UUID, String> playerBorderWorlds = new HashMap<>();
     private ClaimPortalRegistry portalRegistry;
     private final Path lastWildLocationsPath = Path.of("config", "goldclaim", "last-wild-locations.json");
@@ -268,6 +272,7 @@ implements ModInitializer {
 
     public void onInitialize() {
         INSTANCE = this;
+        BannedContent.register();
         this.config = GoldClaimConfig.load();
         Path claimsPath = Path.of("config", "goldclaim", "claims.json");
         this.claimManager = new ClaimManager(claimsPath, this.config);
@@ -293,6 +298,9 @@ implements ModInitializer {
             }
         });
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
+            for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
+                rememberRswLocation(player);
+            }
             this.saveLastWildLocations();
             this.savePlayerHomes();
         });
@@ -376,6 +384,9 @@ implements ModInitializer {
                 this.handleClaimSelection(serverPlayer, dimension, pos);
                 return ActionResult.SUCCESS;
             }
+            if (PVP_DIMENSION.equals(dimension)) {
+                return ActionResult.PASS;
+            }
             if (this.isUniversalGraveOwner(serverPlayer, world, pos)) {
                 return ActionResult.PASS;
             }
@@ -410,9 +421,12 @@ implements ModInitializer {
             }
             String dimensionId = world.getRegistryKey().getValue().toString();
             if (PVP_DIMENSION.equals(dimensionId)) {
+                if (player.hasPermissionLevel(2)) {
+                    return true;
+                }
                 if (player instanceof ServerPlayerEntity) {
                     ServerPlayerEntity serverPlayer = (ServerPlayerEntity)player;
-                    this.deny(serverPlayer, "Blocks cannot be broken in PVP.");
+                    this.deny(serverPlayer, "Only operators can break blocks in PVP.");
                 }
                 return false;
             }
@@ -437,6 +451,9 @@ implements ModInitializer {
             ServerPlayerEntity serverPlayer = (ServerPlayerEntity)player;
             BlockPos pos = entity.getBlockPos();
             String dimension = world.getRegistryKey().getValue().toString();
+            if (PVP_DIMENSION.equals(dimension)) {
+                return ActionResult.PASS;
+            }
             if (!this.claimManager.canModify(serverPlayer.getUuid(), serverPlayer.getGameProfile().getName(), serverPlayer.hasPermissionLevel(2), dimension, pos.getX(), pos.getZ())) {
                 this.deny(serverPlayer, "You cannot use entities in this claim.");
                 return ActionResult.FAIL;
@@ -449,6 +466,9 @@ implements ModInitializer {
             }
             ServerPlayerEntity serverPlayer = (ServerPlayerEntity)player;
             String dimension = world.getRegistryKey().getValue().toString();
+            if (PVP_DIMENSION.equals(dimension)) {
+                return ActionResult.PASS;
+            }
             if (entity instanceof ServerPlayerEntity) {
                 if (dimension.equals(this.config.portalHubDimension)) {
                     this.deny(serverPlayer, "PvP is disabled in the hub.");
@@ -514,7 +534,10 @@ implements ModInitializer {
             dispatcher.register((LiteralArgumentBuilder)this.publicCommand("hub").executes(ctx -> this.teleportToHub((ServerCommandSource)ctx.getSource())));
             dispatcher.register((LiteralArgumentBuilder)this.publicCommand("wild").executes(ctx -> this.teleportToWild((ServerCommandSource)ctx.getSource())));
             dispatcher.register((LiteralArgumentBuilder)this.publicCommand("pvp").executes(ctx -> this.teleportToTestingWorld((ServerCommandSource)ctx.getSource(), PVP_DIMENSION, "PVP", true)));
-            dispatcher.register((LiteralArgumentBuilder)CommandManager.literal("rsw").requires(source -> source.hasPermissionLevel(2)).executes(ctx -> this.teleportToTestingWorld((ServerCommandSource)ctx.getSource(), RSW_DIMENSION, "RSW", false)));
+            dispatcher.register(this.publicCommand("rsw")
+                .executes(ctx -> this.teleportToRsw(ctx.getSource()))
+                .then(CommandManager.literal("reset").requires(source -> source.hasPermissionLevel(2))
+                    .executes(ctx -> this.requestRswReset(ctx.getSource()))));
             dispatcher.register((LiteralArgumentBuilder)this.publicCommand("rtp").executes(ctx -> this.randomTeleport((ServerCommandSource)ctx.getSource())));
             dispatcher.register((LiteralArgumentBuilder)this.publicCommand("randomteleport").executes(ctx -> this.randomTeleport((ServerCommandSource)ctx.getSource())));
             dispatcher.register((LiteralArgumentBuilder)((LiteralArgumentBuilder)this.publicCommand("sethome").executes(ctx -> this.sendSetHomeUsage((ServerCommandSource)ctx.getSource()))).then(CommandManager.argument((String)"name", (ArgumentType)StringArgumentType.greedyString()).executes(ctx -> this.setHome((ServerCommandSource)ctx.getSource(), StringArgumentType.getString((CommandContext)ctx, (String)"name")))));
@@ -563,6 +586,7 @@ implements ModInitializer {
 
     private void registerDisconnectCleanup() {
         ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
+            rememberRswLocation(oldPlayer);
             this.selectionManager.clear(oldPlayer.getUuid());
             this.visualizationSessions.remove(oldPlayer.getUuid());
             this.pendingHubTeleports.remove(oldPlayer.getUuid());
@@ -584,6 +608,7 @@ implements ModInitializer {
         ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> server.execute(() -> {
             ServerPlayerEntity player = handler.getPlayer();
             if (player != null) {
+                rememberRswLocation(player);
                 this.pendingHubTeleports.remove(player.getUuid());
                 this.clearTeleportRequestsForPlayer(player, server);
                 this.rememberWildLocation(player);
@@ -758,6 +783,7 @@ implements ModInitializer {
                 playerToEvacuate -> this.teleportToHub(playerToEvacuate, false, false),
                 (activeServer, seed) -> this.createMultiworld(activeServer, RSW_DIMENSION, "NORMAL", seed),
                 readyWorld -> this.applyWorldBorder(server, RSW_DIMENSION, 10000.0));
+            this.rswEntrySearch.tick();
             boolean runPlayerMaintenance = false;
             if (++this.playerMaintenanceTicks >= 20) {
                 this.playerMaintenanceTicks = 0;
@@ -839,10 +865,6 @@ implements ModInitializer {
                         if (this.playersInPvp.add(player2.getUuid())) {
                             this.disablePvpFlight(player2);
                         }
-                    } else if (RSW_DIMENSION.equals(dimensionId) && !player2.hasPermissionLevel(2)) {
-                        player2.sendMessage(Text.literal("RSW is currently admin-only."), false);
-                        this.teleportToHub(player2, false, false);
-                        continue;
                     } else {
                         this.playersInPvp.remove(player2.getUuid());
                     }
@@ -867,7 +889,20 @@ implements ModInitializer {
         if (pvpWorld == null) {
             return;
         }
-        pvpWorld.setTimeOfDay(6000L);
+        if (pvpWorld.getGameRules() == server.getOverworld().getGameRules()) {
+            LOGGER.error("PVP shares overworld gamerules; refusing to freeze other dimensions' weather and daylight.");
+            return;
+        }
+        if (this.configuredPvpDaylightWorld != pvpWorld) {
+            pvpWorld.setTimeOfDay(6000L);
+            pvpWorld.getGameRules().get(GameRules.DO_DAYLIGHT_CYCLE).set(false, server);
+            this.configuredPvpDaylightWorld = pvpWorld;
+        }
+        if (this.configuredPvpWeatherWorld != pvpWorld) {
+            pvpWorld.getGameRules().get(GameRules.DO_WEATHER_CYCLE).set(false, server);
+            pvpWorld.setWeather(0, 0, false, false);
+            this.configuredPvpWeatherWorld = pvpWorld;
+        }
         for (ServerPlayerEntity player : pvpWorld.getPlayers()) {
             this.disablePvpFlight(player);
         }
@@ -1952,6 +1987,94 @@ implements ModInitializer {
         return 1;
     }
 
+    public static void rememberRswLocation(ServerPlayerEntity player) {
+        if (INSTANCE == null || !RSW_DIMENSION.equals(player.getServerWorld().getRegistryKey().getValue().toString())) {
+            return;
+        }
+        try {
+            INSTANCE.rswResetService.remember(player.getUuid(), new RswResetService.Location(
+                player.getX(), player.getY(), player.getZ(), player.getYaw(), player.getPitch()));
+        } catch (IOException | IllegalArgumentException failure) {
+            LOGGER.error("Could not persist RSW return location for {}", player.getUuid(), failure);
+            player.sendMessage(Text.literal("[RSW] Your return location could not be saved. Please notify an operator."), false);
+        }
+    }
+
+    private int requestRswReset(ServerCommandSource source) {
+        if (!source.hasPermissionLevel(2)) {
+            source.sendError(Text.literal("Only server operators can reset RSW."));
+            return 0;
+        }
+        try {
+            var result = this.rswResetService.requestManualReset(System.currentTimeMillis());
+            if (result == RswResetService.ManualResetResult.ALREADY_PENDING) {
+                long seconds = Math.max(0, (this.rswResetService.resetAt() - System.currentTimeMillis() + 999) / 1000);
+                source.sendError(Text.literal("RSW already has an earlier or manual reset pending in "
+                    + seconds + " seconds. Its countdown was not changed."));
+                return 0;
+            }
+            LOGGER.info("Manual RSW reset requested by {}; deadline={}", source.getName(), this.rswResetService.resetAt());
+            source.getServer().getPlayerManager().broadcast(Text.literal(
+                "[RSW] RSW will reset in 15:00 (operator request). Reset may take up to 15 minutes (estimate)."), false);
+            source.sendFeedback(() -> Text.literal("RSW reset scheduled; the normal 15-minute countdown has started."), true);
+            return 1;
+        } catch (IOException | IllegalStateException failure) {
+            LOGGER.error("Manual RSW reset request failed for {}", source.getName(), failure);
+            source.sendError(Text.literal("Could not schedule RSW reset: " + failure.getMessage()));
+            return 0;
+        }
+    }
+
+    private int teleportToRsw(ServerCommandSource source) throws com.mojang.brigadier.exceptions.CommandSyntaxException {
+        if (this.rswResetService.isClosed()) {
+            source.sendError(Text.literal("RSW is resetting or awaiting recovery and is temporarily closed."));
+            return 0;
+        }
+        ServerPlayerEntity player = source.getPlayerOrThrow();
+        ServerWorld world = this.getWorld(source.getServer(), RSW_DIMENSION);
+        if (world == null) {
+            source.sendError(Text.literal("RSW is not loaded."));
+            return 0;
+        }
+        if (player.getServerWorld() == world) {
+            rememberRswLocation(player);
+            source.sendFeedback(() -> Text.literal("You are already at your current RSW location."), false);
+            return 1;
+        }
+        RswResetService.Location saved = this.rswResetService.location(player.getUuid());
+        if (saved != null) {
+            BlockPos feet = BlockPos.ofFloored(saved.x(), saved.y(), saved.z());
+            if (world.getWorldBorder().contains(feet) && world.isInBuildLimit(feet)) {
+                this.loadDestinationArea(world, saved.x(), saved.z());
+            }
+            if (world.getWorldBorder().contains(feet) && world.isInBuildLimit(feet)
+                    && this.isSafeRandomTeleportDestination(world, feet)) {
+                player.teleport(world, saved.x(), saved.y(), saved.z(), saved.yaw(), saved.pitch());
+                this.syncPlayerBorder(player);
+                this.sendHubWildTitle(player, "RSW");
+                return 1;
+            }
+            player.sendMessage(Text.literal("[RSW] Your previous position is no longer safe; returning to 0,0."), false);
+        }
+        return this.rswEntrySearch.request(source, player, world, this.config.rswEntrySearchRadius);
+    }
+
+    private void completeRswEntry(RswEntrySearch.Entry entry) {
+        BlockPos origin = entry.landing;
+        ServerWorld world = entry.world;
+        ServerPlayerEntity player = entry.player;
+        double x = origin.getX() + 0.5;
+        double z = origin.getZ() + 0.5;
+        this.loadDestinationArea(world, x, z);
+        player.teleport(world, x, origin.getY(), z, world.getSpawnAngle(), 0.0f);
+        this.syncPlayerBorder(player);
+        this.sendHubWildTitle(player, "RSW");
+        if (origin.getX() != 0 || origin.getZ() != 0) {
+            entry.source.sendFeedback(() -> Text.literal("RSW 0,0 is unsafe; landed on the nearest safe ground at "
+                + origin.getX() + ", " + origin.getZ() + "."), false);
+        }
+    }
+
     private int randomTeleport(ServerCommandSource source) {
         ServerPlayerEntity player;
         try {
@@ -1964,31 +2087,55 @@ implements ModInitializer {
         if (!this.randomTeleport(player)) {
             return 0;
         }
-        source.sendFeedback(() -> Text.literal((String)"Randomly teleported in the overworld."), false);
+        String label = RSW_DIMENSION.equals(player.getServerWorld().getRegistryKey().getValue().toString()) ? "RSW" : "the overworld";
+        source.sendFeedback(() -> Text.literal("Randomly teleported in " + label + "."), false);
         return 1;
     }
 
+    static int minimumRtpCoordinate(double borderEdge, int margin) {
+        return (int)Math.ceil(borderEdge + margin - 0.5);
+    }
+
+    static int maximumRtpCoordinate(double borderEdge, int margin) {
+        return (int)Math.floor(borderEdge - margin - 0.5);
+    }
+
     private boolean randomTeleport(ServerPlayerEntity player) {
-        Identifier targetId = Identifier.tryParse((String)this.config.wildDimension);
+        boolean inRsw = RSW_DIMENSION.equals(player.getServerWorld().getRegistryKey().getValue().toString());
+        if (inRsw && this.rswResetService.isClosed()) {
+            player.sendMessage(Text.literal("RSW is resetting; random teleport is temporarily unavailable."), false);
+            return false;
+        }
+        String dimensionId = inRsw ? RSW_DIMENSION : this.config.wildDimension;
+        Identifier targetId = Identifier.tryParse(dimensionId);
         if (targetId == null) {
-            player.sendMessage((Text)Text.literal((String)("Invalid random teleport dimension: " + this.config.wildDimension)));
+            player.sendMessage(Text.literal("Invalid random teleport dimension: " + dimensionId));
             return false;
         }
         RegistryKey targetKey = RegistryKey.of((RegistryKey)RegistryKeys.WORLD, (Identifier)targetId);
         ServerWorld targetWorld = player.getServer().getWorld(targetKey);
         if (targetWorld == null) {
-            player.sendMessage((Text)Text.literal((String)("Random teleport world is not loaded: " + this.config.wildDimension)));
+            player.sendMessage(Text.literal("Random teleport world is not loaded: " + dimensionId));
             return false;
         }
         BlockPos spawn = targetWorld.getSpawnPos();
         ThreadLocalRandom random = ThreadLocalRandom.current();
         int radius = Math.max(1, this.config.randomTeleportRadius);
         int attempts = Math.max(1, this.config.randomTeleportAttempts);
+        var border = targetWorld.getWorldBorder();
+        int minX = minimumRtpCoordinate(border.getBoundWest(), 250);
+        int maxX = maximumRtpCoordinate(border.getBoundEast(), 250);
+        int minZ = minimumRtpCoordinate(border.getBoundNorth(), 250);
+        int maxZ = maximumRtpCoordinate(border.getBoundSouth(), 250);
+        if (inRsw && (minX > maxX || minZ > maxZ)) {
+            player.sendMessage(Text.literal("RSW's border is too small for safe random teleport."), false);
+            return false;
+        }
         for (int attempt = 0; attempt < attempts; ++attempt) {
             double angle = random.nextDouble(Math.PI * 2.0);
             double distance = Math.sqrt(random.nextDouble()) * (double)radius;
-            int x = spawn.getX() + (int)Math.round(Math.cos(angle) * distance);
-            int z = spawn.getZ() + (int)Math.round(Math.sin(angle) * distance);
+            int x = inRsw ? random.nextInt(minX, maxX + 1) : spawn.getX() + (int)Math.round(Math.cos(angle) * distance);
+            int z = inRsw ? random.nextInt(minZ, maxZ + 1) : spawn.getZ() + (int)Math.round(Math.sin(angle) * distance);
             targetWorld.getChunk(Math.floorDiv(x, 16), Math.floorDiv(z, 16));
             int y = targetWorld.getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, x, z);
             BlockPos feetPos = new BlockPos(x, y, z);
@@ -1997,6 +2144,7 @@ implements ModInitializer {
             }
             this.pendingHubTeleports.remove(player.getUuid());
             player.teleport(targetWorld, (double)x + 0.5, (double)y, (double)z + 0.5, player.getYaw(), player.getPitch());
+            this.syncPlayerBorder(player);
             return true;
         }
         player.sendMessage((Text)Text.literal((String)"Could not find a safe random teleport location. Try again."));

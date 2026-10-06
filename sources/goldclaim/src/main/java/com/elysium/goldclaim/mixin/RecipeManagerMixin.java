@@ -1,5 +1,6 @@
 package com.elysium.goldclaim.mixin;
 
+import com.elysium.goldclaim.BannedContent;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import java.util.HashMap;
@@ -16,8 +17,8 @@ public abstract class RecipeManagerMixin {
     @ModifyVariable(method = "apply(Ljava/util/Map;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)V", at = @At("HEAD"), argsOnly = true)
     private Map<Identifier, JsonElement> goldclaim$removePlushieRecipes(Map<Identifier, JsonElement> recipes) {
         Map<Identifier, JsonElement> allowed = new HashMap<>(recipes);
-        allowed.entrySet().removeIf(entry -> isPlushieRecipe(entry.getValue()));
-        LoggerFactory.getLogger("GoldClaim").info("Removed {} plushie recipes; player plushie crafting remains enabled.", recipes.size() - allowed.size());
+        allowed.entrySet().removeIf(entry -> isPlushieRecipe(entry.getValue()) || BannedContent.isBannedRecipe(entry.getValue()));
+        LoggerFactory.getLogger("GoldClaim").info("Removed {} plushie/bin recipes; player plushie crafting remains enabled.", recipes.size() - allowed.size());
         return allowed;
     }
 

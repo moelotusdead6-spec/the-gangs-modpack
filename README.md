@@ -12,7 +12,7 @@ This modpack is built around friendship, discovery, and those “you had to be t
 
 ## Pack requirements and resource packs
 
-Version 0.1.48 requires Minecraft 1.20.1, Java 17 or newer, and Fabric Loader
+Version 0.1.49 requires Minecraft 1.20.1, Java 17 or newer, and Fabric Loader
 0.19.3 or newer.
 
 The pack includes AttributeFix, CorgiLib, Data Anchor, Enhanced Celestials,
@@ -32,26 +32,80 @@ be disabled through the resource-pack selection screen. The existing
 Mod-provided built-in packs and server-sent packs are not affected by this
 folder setting. Shader packs are also separate and are not forced.
 
-The previously published 0.1.46 ZIP archives are historical snapshots and do
-not contain these changes; use the 0.1.48 all-in-one ZIP or current packwiz manifest.
+Previously published ZIP archives are historical snapshots and do not contain
+these latest policies; use the 0.1.49 all-in-one ZIP or current packwiz manifest.
 
 ## Gameplay update and server checks
 
-Boots of Swiftness now have one 1.25% chance per filled chest container.
+Boots of Swiftness have one independent 2.5% chance per player's first personal
+Lootr chest loot generation. Reopening saved personal loot does not reroll.
+Shared or automated chest fills do not roll. Already-generated loot is unchanged.
 On the server, plushie and plush-box recipes are removed except for the player
 plushie. Existing items, loot, shops and kit rewards remain available.
+The Let's Do Furniture bin (`furniture:bin`) is separately banned server-wide:
+its recipes and drops are removed, item commands are rejected, and bin stacks
+cannot be acquired or refilled, including through creative inventory packets.
+Existing bins disappear when inventory/container data or chunks load, including
+nested container items; placed bins are removed without drops. Other furniture
+is unchanged. This is server-only enforcement: clients may still display the
+bin in creative menus or recipe viewers, but cannot use it on the server.
+Offline player files and unloaded regions are not rewritten.
+
+Gobber's unlimited Dragon armor flight is disabled. End armor gliding,
+other armor perks, creative/spectator flight, and fueled Gang Boots flight
+are unchanged. `config/gobber2/general.json5` sets `enableDragonFlying` false
+and retains `enableGlidingEndArmor`; GoldClaim also disables the armor's
+flight grant even if an existing server config still enables it. Existing
+Gangs Boots enforcement clears stale survival flight without bypassing fuel.
 PVP deaths retain inventory and XP, skip Universal Graves capture, and respawn
-at the hub. Death rules in other dimensions are unchanged.
+at the hub. Death rules in other dimensions are unchanged. PVP's world clock
+always reports noon (6000 ticks), independently of later stored-time writes.
+Its daylight cycle is disabled without repeating time commands or time resets;
+other dimensions keep their normal clocks.
+Existing outbound time updates to PVP players are normalized to frozen noon,
+without adding time broadcasts. PVP weather is set clear once and its weather
+cycle is disabled, so rain and thunderstorms cannot darken or flash the arena
+sky. These settings affect only PVP.
+
+In PVP, only operators can break blocks, while all players can place blocks and
+use combat items. Explosions, including TNT, respawn anchors and end crystals,
+still damage entities and apply knockback but do not destroy blocks or create
+blast fires. Explosive items still consume themselves normally. These rules
+also protect player-placed blocks, so operators must clean up arena building.
+Other dimensions retain their existing claim and explosion rules.
 
 RSW has a visible border centered at 0,0 with edges at +/-5000 and a 50-block
 warning distance. It resets daily at 05:00 fixed EST (10:00 UTC, without a DST
 adjustment), with warnings at 15, 10, 5, 4, 3, 2 and 1 minutes. RSW closes during
 replacement, evacuates players, archives the unloaded save and creates a new
 seed. A missed deadline is handled once after startup. The reset-duration
-message is a 15-minute estimate, not a measured guarantee. RSW access remains
-admin-only, unchanged by this update.
+message is a 15-minute estimate, not a measured guarantee. `/rsw` is public.
+Operators (permission level 2+) and the console can run `/rsw reset` to start
+the same 15-minute warning countdown and normal reset/recovery flow. Manual
+countdowns survive restarts. A duplicate request, active reset/recovery, or
+already-earlier daily reset is rejected without postponing the current reset.
+After completion the normal 05:00 EST daily schedule resumes.
 
-Reset state is saved in `config/goldclaim/rsw-reset.json`. Recoverable old saves
+`/rsw` returns to your last safe position in the current RSW, including its
+orientation. Locations are captured when leaving, disconnecting, respawning,
+or stopping the server. Running `/rsw` inside RSW keeps your current position.
+Every successful automatic or manual reset clears all return positions,
+including offline players' saved positions. Evacuated players remain in the
+hub; their next `/rsw` tries safe ground at 0,0. If that column is unsafe,
+it uses the nearest safe surface by horizontal distance without modifying
+terrain. Invalid/unsafe remembered positions use the same entry search.
+The search is bounded by `rswEntrySearchRadius` in `config/goldclaim.json`
+(default 256 blocks, supported range 0-512); if no safe landing is found,
+the command reports an error rather than sending the player into danger.
+Unloaded terrain is prepared asynchronously, with a bounded number of
+columns checked per tick. Pending entry is cancelled on reset, death, logout,
+or changing worlds rather than teleporting into an obsolete generation.
+Using `/rtp` in RSW stays in RSW, at least 250 blocks inside its actual border;
+using it in the wild stays in the configured wild world. RSW RTP is unavailable
+during a reset rather than redirecting players to another world.
+
+Reset state, manual deadlines and current-generation return positions are saved
+atomically in `config/goldclaim/rsw-reset.json`. Recoverable old saves
 are kept under `<level-name>/dimensions/multiworld/rsw-reset-backups/`; monitor
 disk space and retain or remove old backups according to your backup policy.
 Do not delete the reset journal or move an active dimension while the server
@@ -78,3 +132,32 @@ a normal-world death, player-plushie crafting, `/kits` and one monthly claim,
 the RSW border, and public trust using a second player. Builds and focused
 policy tests are checked before release; live death/reward behavior and actual
 RSW reset duration still need these in-game checks.
+
+### Installing and checking this server policy update
+
+GoldClaim 1.0.24 and the current packwiz manifest contain these policies;
+existing ZIP releases do not receive changes retroactively. With the server
+stopped, back up worlds/player data and configs, replace the old GoldClaim jar
+with `artifacts/goldclaim-1.0.24.jar` (do not leave two GoldClaim versions
+installed), and apply the updated configs/datapack. Keep any unrelated custom
+Gobber settings when applying its two flight/gliding settings. No client mod
+update is required for the server guards.
+
+Focused Gradle tests and an isolated Minecraft/Fabric fixture verify the
+runtime item/block/recipe guards, loaded-chunk cleanup, Gobber armor flight
+suppression, retained gliding and Gang Boots flight/fuel, public `/rsw`,
+operator-only reset, remembered positions, a complete accelerated reset,
+and post-reset entry. The live server is not started or modified by these tests.
+On the full server, check:
+
+- A non-operator cannot use `/rsw reset`; an operator starts the 15-minute
+  countdown, with warnings at the normal thresholds.
+- Restart during that countdown and verify its original deadline survives.
+- Leave RSW through a command/portal, reconnect, and return to the same safe
+  location. After a reset, both online and previously offline players start
+  at the origin or its nearest safe surface, not old coordinates.
+- Existing bins in player/ender inventories, nested storage, item entities,
+  and loaded chunks disappear. Crafting, `/give`, `/item`, `/setblock`,
+  creative packets, structures and loot cannot create usable bins.
+- Full Gobber Dragon armor provides no creative flight. End gliding and
+  Gang Boots still work, and flying with Gang Boots consumes durability.

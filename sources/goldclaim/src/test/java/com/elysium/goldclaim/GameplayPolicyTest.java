@@ -8,6 +8,22 @@ import static org.junit.Assert.*;
 
 public class GameplayPolicyTest {
     @Test
+    public void rswRandomTeleportKeepsBlockCentersInsideTheBorderInset() {
+        for (double center : new double[]{0.0, 125.25, -987.75}) {
+            double west = center - 5000.0;
+            double east = center + 5000.0;
+            int minimum = GoldClaimMod.minimumRtpCoordinate(west, 250);
+            int maximum = GoldClaimMod.maximumRtpCoordinate(east, 250);
+            assertTrue(minimum + 0.5 >= west + 250);
+            assertTrue(maximum + 0.5 <= east - 250);
+            assertTrue(minimum <= maximum);
+        }
+        assertEquals(-4750, GoldClaimMod.minimumRtpCoordinate(-5000, 250));
+        assertEquals(4749, GoldClaimMod.maximumRtpCoordinate(5000, 250));
+        assertTrue(GoldClaimMod.minimumRtpCoordinate(-200, 250) > GoldClaimMod.maximumRtpCoordinate(200, 250));
+    }
+
+    @Test
     public void resetRecoveryRejectsUnknownPhasesAndUnsafeBackupPaths() {
         RswResetService.State state = new RswResetService.State();
         RswResetService.validate(state);

@@ -1,8 +1,8 @@
 # Published Artifacts
 
-`artifacts/goldclaim-1.0.18.jar` is the server-only GoldClaim build used by this pack. It supplies hub protection, dimension routing, PVP-only inventory/XP preservation, daily RSW rotation, automatic kit eligibility and reward delivery, and public claim trust; clients do not download it.
+`artifacts/goldclaim-1.0.24.jar` is the server-only GoldClaim build used by this pack. It supplies hub protection, dimension routing, PVP-only inventory/XP preservation, a fixed noon clock and clear weather, recipient-specific time synchronization, operator-only PVP block breaking, public PVP placement and terrain-safe combat explosions, public RSW access with border-inset RTP, daily RSW rotation, operator-triggered persisted 15-minute resets, generation-bound RSW return positions with nearest-safe-origin entry, server-side furniture bin removal, Gobber Dragon armor creative-flight suppression, automatic kit eligibility and reward delivery, and public claim trust; clients do not download it.
 
-`artifacts/gangsboots-1.0.6.jar` is a first-party Gangs Boots build with one 1.25% chance per filled chest container. Its required CC-BY 4.0 attribution is in `artifacts/gangsboots-ATTRIBUTION.txt`.
+`artifacts/gangsboots-1.0.7.jar` is a first-party Gangs Boots build with one 2.5% chance per player's first personal Lootr chest loot generation. Reopening saved personal loot does not reroll; shared or automated container fills do not roll. Its required CC-BY 4.0 attribution is in `artifacts/gangsboots-ATTRIBUTION.txt`.
 
 `artifacts/gangshats-1.0.9.jar` is a first-party Gangs Hats build. Its source is maintained in `sources/gangshats`; it provides halo and sword cosmetics and wearable-item commands.
 

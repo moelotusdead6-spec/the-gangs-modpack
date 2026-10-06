@@ -8,6 +8,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.BiConsumer;
@@ -24,7 +27,7 @@ import org.slf4j.LoggerFactory;
 final class RswResetService {
     private static final Logger LOGGER = LoggerFactory.getLogger("GoldClaim/RSW");
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    private static final Path JOURNAL = Path.of("config", "goldclaim", "rsw-reset.json");
+    private final Path journal;
     private static final Path CONFIG = Path.of("config", "multiworld", "worlds", "multiworld", "rsw.yml");
     private State state = new State();
     private ServerWorld unloadingWorld;
@@ -34,8 +37,16 @@ final class RswResetService {
     private long retryAt;
     private boolean delayAnnounced;
 
+    RswResetService() {
+        this(Path.of("config", "goldclaim", "rsw-reset.json"));
+    }
+
+    RswResetService(Path journal) {
+        this.journal = journal;
+    }
+
     static final class State {
-        int schemaVersion = 2;
+        int schemaVersion = 3;
         long nextResetAtMs;
         long startedAtMs;
         long seed;
@@ -43,12 +54,24 @@ final class RswResetService {
         String phase = "IDLE";
         String backup;
         int warningMask;
+        boolean manualReset;
+        long generation;
+        Map<UUID, Location> locations = new HashMap<>();
     }
+
+    record Location(double x, double y, double z, float yaw, float pitch) {
+        boolean isFinite() {
+            return Double.isFinite(x) && Double.isFinite(y) && Double.isFinite(z)
+                && Float.isFinite(yaw) && Float.isFinite(pitch);
+        }
+    }
+
+    enum ManualResetResult { SCHEDULED, ALREADY_PENDING }
 
     void initialize(long now) {
         try {
-            if (Files.exists(JOURNAL)) {
-                try (var reader = Files.newBufferedReader(JOURNAL)) {
+            if (Files.exists(this.journal)) {
+                try (var reader = Files.newBufferedReader(this.journal)) {
                     State loaded = GSON.fromJson(reader, State.class);
                     if (loaded == null || loaded.phase == null) {
                         throw new IOException("Invalid RSW reset journal");
@@ -59,7 +82,7 @@ final class RswResetService {
             validate(this.state);
             if (this.state.nextResetAtMs <= 0) {
                 this.state.nextResetAtMs = RswSchedule.nextReset(now);
-            } else if (this.state.phase.equals("IDLE")) {
+            } else if (this.state.phase.equals("IDLE") && !this.state.manualReset) {
                 long scheduled = RswSchedule.nextReset(this.state.nextResetAtMs - 1);
                 if (scheduled != this.state.nextResetAtMs) {
                     this.state.nextResetAtMs = this.state.nextResetAtMs <= now
@@ -67,6 +90,7 @@ final class RswResetService {
                 }
             }
             this.lastRemaining = this.state.nextResetAtMs - now;
+            this.state.schemaVersion = 3;
             this.save();
             this.initialized = true;
         } catch (IOException | RuntimeException failure) {
@@ -78,12 +102,80 @@ final class RswResetService {
         return !this.initialized || !this.state.phase.equals("IDLE");
     }
 
+    ManualResetResult requestManualReset(long now) throws IOException {
+        if (this.isClosed()) {
+            throw new IllegalStateException("RSW is closed for reset or recovery; a new reset cannot be scheduled.");
+        }
+        long deadline = now + 900000L;
+        if (this.state.manualReset || this.state.nextResetAtMs <= deadline) {
+            return ManualResetResult.ALREADY_PENDING;
+        }
+        State requested = this.copyState();
+        requested.nextResetAtMs = deadline;
+        requested.manualReset = true;
+        requested.warningMask = 1;
+        this.save(requested);
+        this.state = requested;
+        this.lastRemaining = deadline - now;
+        return ManualResetResult.SCHEDULED;
+    }
+
+    long resetAt() {
+        return this.state.nextResetAtMs;
+    }
+
+    long generation() {
+        return this.state.generation;
+    }
+
+    Location location(UUID player) {
+        return this.isClosed() ? null : this.state.locations.get(player);
+    }
+
+    void remember(UUID player, Location location) throws IOException {
+        if (this.isClosed()) {
+            return;
+        }
+        if (!location.isFinite()) {
+            throw new IllegalArgumentException("Non-finite RSW return position for " + player);
+        }
+        if (location.equals(this.state.locations.get(player))) {
+            return;
+        }
+        State updated = this.copyState();
+        updated.locations.put(player, location);
+        this.save(updated);
+        this.state = updated;
+    }
+
+    private State copyState() {
+        return GSON.fromJson(GSON.toJson(this.state), State.class);
+    }
+
+    static State completedState(State current, long now) {
+        State completed = GSON.fromJson(GSON.toJson(current), State.class);
+        completed.nextResetAtMs = RswSchedule.nextReset(now);
+        completed.phase = "IDLE";
+        completed.warningMask = 0;
+        completed.manualReset = false;
+        completed.generation++;
+        completed.locations.clear();
+        return completed;
+    }
+
     static void validate(State state) {
         if (!java.util.Set.of("IDLE", "UNLOADING", "ARCHIVING", "CREATING").contains(state.phase)) {
             throw new IllegalArgumentException("Unknown RSW reset phase: " + state.phase);
         }
         if (!state.phase.equals("IDLE") && (state.backup == null || !state.backup.matches("reset-[0-9]+"))) {
             throw new IllegalArgumentException("Invalid RSW backup location");
+        }
+        if (state.locations == null || state.locations.entrySet().stream()
+                .anyMatch(entry -> entry.getKey() == null || entry.getValue() == null || !entry.getValue().isFinite())) {
+            throw new IllegalArgumentException("Invalid RSW return locations");
+        }
+        if (state.manualReset && state.nextResetAtMs <= 0) {
+            throw new IllegalArgumentException("Manual RSW reset is missing its deadline");
         }
     }
 
@@ -197,10 +289,7 @@ final class RswResetService {
                     throw new IOException("Persisted Multiworld seed does not match the new RSW seed");
                 }
                 ready.accept(world);
-                State completed = GSON.fromJson(GSON.toJson(this.state), State.class);
-                completed.nextResetAtMs = RswSchedule.nextReset(now);
-                completed.phase = "IDLE";
-                completed.warningMask = 0;
+                State completed = completedState(this.state, now);
                 this.save(completed);
                 this.state = completed;
                 this.lastRemaining = this.state.nextResetAtMs - now;
@@ -252,13 +341,13 @@ final class RswResetService {
     }
 
     private void save(State persisted) throws IOException {
-        Files.createDirectories(JOURNAL.getParent());
-        Path temporary = JOURNAL.resolveSibling("rsw-reset.json.tmp");
+        Files.createDirectories(this.journal.getParent());
+        Path temporary = this.journal.resolveSibling(this.journal.getFileName() + ".tmp");
         Files.writeString(temporary, GSON.toJson(persisted));
         try {
-            Files.move(temporary, JOURNAL, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+            Files.move(temporary, this.journal, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
         } catch (java.nio.file.AtomicMoveNotSupportedException unsupported) {
-            Files.move(temporary, JOURNAL, StandardCopyOption.REPLACE_EXISTING);
+            Files.move(temporary, this.journal, StandardCopyOption.REPLACE_EXISTING);
         }
     }
 

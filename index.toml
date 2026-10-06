@@ -6,11 +6,11 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "973f18773286f7d0742d3e975b0be063b5801afb6a81880d887c55d96eb20ae4"
+hash = "86e5f54346688afae2ed45bf4297ee24d94b330cbe083c0dd2f1526e9595c8e8"
 
 [[files]]
 file = "README.md"
-hash = "8491b8d72066cf770cec7cb046061e8217f2cd92e8052f4d0e769c79ab8d5d57"
+hash = "9fccf32db9832595cf0d040bad4ea1cb2997fb39eb3a9153792da2644cccceff"
 
 [[files]]
 file = "artifacts/AdaptiveTooltips-1.3.0-fabric-1.20.2.jar"
@@ -125,6 +125,10 @@ file = "artifacts/gangsboots-1.0.6.jar"
 hash = "b8064097166e71459d87cb90361433ca254e0d0777dd1b833c4df8ec0b99a2b7"
 
 [[files]]
+file = "artifacts/gangsboots-1.0.7.jar"
+hash = "5c262cb28a905ae55f48235d54e4eca263f3761ebcccfdda22b30dfbf34d5ef0"
+
+[[files]]
 file = "artifacts/gangsboots-ATTRIBUTION.txt"
 hash = "de9756c83bd304ecf034a143a4de5be22cd89e6167fdcfdc29088379cad7ad8e"
 
@@ -215,6 +219,10 @@ hash = "fcfb016c463f4f50ac111a366498f2c611abc2c4c581734a417151031e6deaa4"
 [[files]]
 file = "artifacts/goldclaim-1.0.2.jar"
 hash = "1ee3a61ce3bf20224bfbe8c86eca9697ab49820b870245e1e37b386f8a7329fa"
+
+[[files]]
+file = "artifacts/goldclaim-1.0.24.jar"
+hash = "702dce69e16b6d763a98bf5ecb8919417f90b404b605d8c16f38cedaf08d51f5"
 
 [[files]]
 file = "artifacts/goldclaim-1.0.3.jar"
@@ -361,12 +369,20 @@ file = "config/global_packs.toml"
 hash = "a152608c3a93212b8ff2484c067a715c373b0f382f8b21dcbffaef43e976d46e"
 
 [[files]]
+file = "config/gobber2/general.json5"
+hash = "877558b854693871a88b3013abacfdf8085bf5d7e8fc063b1d85f9fa0ef332f1"
+
+[[files]]
 file = "config/options.txt"
 hash = "62d6d92168703d9761ed7581479d0586c284c5f94136e05d32f3c5a6b67b7078"
 
 [[files]]
 file = "config/paxi/datapack_load_order.json"
 hash = "d0aaf3172f34275479f0669aa5b0a94b85788ae638f3062b948ec49d31c38293"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/furniture/loot_tables/blocks/bin.json"
+hash = "7b20c9c7fadd0630564ee31853a5b2a39a25b99493cc239fa002434b0443f849"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_fixes/data/gangs_fixes/functions/load.mcfunction"
@@ -746,7 +762,7 @@ hash = "b2568259d2839b90a20167be62e9581625ebe1df05ffe385a087ec358f7b0aba"
 
 [[files]]
 file = "index.html"
-hash = "437939e020a3b0adf3f979d525d90e045d70d72101bb9efc8986fd0595f8a913"
+hash = "0516c05751376ad62183593ab000a224f87e5e15c4ba7a6121dff3ec749b66f2"
 
 [[files]]
 file = "mods/.gitkeep"
@@ -1459,7 +1475,7 @@ metafile = true
 
 [[files]]
 file = "mods/gangsboots-direct.pw.toml"
-hash = "e1c56ec55e1ebe6a38b7fe3f50f0c3306ba23254be2f24e15a0dc2adcf8ef1a4"
+hash = "8ef6fe3054aafa2f6fca92a82dd67c9371930ace16ee3b3bcce7d12abf0d98ec"
 metafile = true
 
 [[files]]
@@ -1484,7 +1500,7 @@ metafile = true
 
 [[files]]
 file = "mods/goldclaim-direct.pw.toml"
-hash = "e74cd384e8af618ec5e54debc1aaee6bad4cd8f8c592d66b9e1f36b1a36c88c0"
+hash = "b4827f522d1c092907bbe3cbd96f8214ebfa701a5ef7a80d74685f8e93441910"
 metafile = true
 
 [[files]]
