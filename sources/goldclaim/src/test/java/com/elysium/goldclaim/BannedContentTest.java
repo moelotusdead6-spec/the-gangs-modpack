@@ -16,8 +16,11 @@ public class BannedContentTest {
     }
 
     @Test
-    public void onlyTheExactFurnitureBinIsBanned() {
+    public void onlyTheExactRestrictedItemsAreBanned() {
         assertTrue(BannedContent.isBanned(new Identifier("furniture:bin")));
+        assertTrue(BannedContent.isBanned(new Identifier(BannedContent.INCEPTION_UPGRADE)));
+        assertFalse(BannedContent.isBanned(new Identifier("sophisticatedbackpacks:backpack")));
+        assertFalse(BannedContent.isBanned(new Identifier("sophisticatedbackpacks:stack_upgrade_tier_4")));
         assertFalse(BannedContent.isBanned(new Identifier("furniture:trash_bag")));
         assertFalse(BannedContent.isBanned(new Identifier("furniture:oak_cabinet")));
         assertFalse(BannedContent.isBanned(new Identifier("another_furniture:bin")));
@@ -33,6 +36,11 @@ public class BannedContentTest {
         assertFalse(BannedContent.isBannedRecipe(JsonParser.parseString("{\"result\":{\"item\":\"furniture:trash_bag\"}}")));
         assertFalse(BannedContent.isBannedRecipe(JsonParser.parseString("{\"result\":{\"count\":2}}")));
         assertFalse(BannedContent.isBannedRecipe(JsonParser.parseString("{}")));
+        for (String result : new String[]{"\"" + BannedContent.INCEPTION_UPGRADE + "\"",
+                "{\"item\":\"" + BannedContent.INCEPTION_UPGRADE + "\"}",
+                "{\"id\":\"" + BannedContent.INCEPTION_UPGRADE + "\"}"}) {
+            assertTrue(BannedContent.isBannedRecipe(JsonParser.parseString("{\"result\":" + result + "}")));
+        }
     }
 
     @Test
@@ -77,5 +85,26 @@ public class BannedContentTest {
         metadata.putString("id", "furniture:bin");
         assertEquals(0, BannedContent.sanitize(metadata));
         assertEquals("furniture:bin", metadata.getString("id"));
+    }
+
+    @Test
+    public void installedInceptionIsRemovedWithoutDeletingBackpackContents() {
+        NbtCompound contents = new NbtCompound();
+        NbtList upgrades = new NbtList();
+        upgrades.add(stack(BannedContent.INCEPTION_UPGRADE));
+        upgrades.add(stack("sophisticatedbackpacks:stack_upgrade_tier_4"));
+        NbtList inventory = new NbtList();
+        NbtCompound backpack = stack("sophisticatedbackpacks:diamond_backpack");
+        backpack.putString("contentsUuid", "preserve-backpack-reference");
+        inventory.add(backpack);
+        inventory.add(stack("minecraft:diamond"));
+        contents.put("upgrades", upgrades);
+        contents.put("inventory", inventory);
+        assertEquals(1, BannedContent.sanitize(contents));
+        assertEquals(1, upgrades.size());
+        assertEquals("sophisticatedbackpacks:stack_upgrade_tier_4", upgrades.getCompound(0).getString("id"));
+        assertEquals(2, inventory.size());
+        assertEquals("preserve-backpack-reference", inventory.getCompound(0).getString("contentsUuid"));
+        assertEquals(0, BannedContent.sanitize(contents));
     }
 }

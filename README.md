@@ -12,7 +12,7 @@ This modpack is built around friendship, discovery, and those “you had to be t
 
 ## Pack requirements and resource packs
 
-Version 0.1.50 requires Minecraft 1.20.1, Java 17 or newer, and Fabric Loader
+Version 0.1.51 requires Minecraft 1.20.1, Java 17 or newer, and Fabric Loader
 0.19.3 or newer.
 
 The pack includes AttributeFix, CorgiLib, Data Anchor, Enhanced Celestials,
@@ -24,16 +24,79 @@ and Immersive Interfaces are delivered from official Modrinth downloads, pinned
 to the supplied versions except for this compatibility downgrade, and verified
 by hash.
 
-Immersive Interfaces installs into `resourcepacks/`. Global Packs is configured
-in `config/global_packs.toml` to automatically enable and require every resource
-pack in that folder, including packs added there in future. These packs cannot
-be disabled through the resource-pack selection screen. The existing
-`global_packs/required_resources/` location remains required as well.
-Mod-provided built-in packs and server-sent packs are not affected by this
-folder setting. Shader packs are also separate and are not forced.
+Immersive Interfaces installs into `resourcepacks/`. Global Packs no longer
+requires resource packs, so players can disable them through Options > Resource
+Packs. The resource-pack defaults update enables installed file/folder packs
+once; subsequent launches remember each player's choices rather than forcing
+them back on. It copies legacy `global_packs/required_resources/` packs into
+the normal `resourcepacks/` folder so they remain available without being locked.
+Datapack requirements are unchanged. Mod-provided built-in packs retain their
+existing selection; shader packs and server-sent packs are separate.
 
-Previously published ZIP archives are historical snapshots and do not contain
-these latest policies; use the 0.1.50 all-in-one ZIP or current packwiz manifest.
+For an existing client, close Minecraft and run the update package's
+`Install-ResourcePackDefaults.ps1 -Target Client -GameDirectory <minecraft-folder>`.
+This preserves unrelated options and seeds the actual game-root `options.txt`,
+not just the supplied `config/options.txt` template. Do not overwrite an existing
+game-root `options.txt` with the template. The installer records completion so
+running it again does not re-enable packs a player has disabled.
+
+For the server, run the same installer with `-Target Server` during your later
+scheduled stop, then restart normally. It unlocks only the Global Packs resource
+selection and clears `require-resource-pack` if present in `server.properties`;
+it preserves datapack settings and unrelated server properties. Applying this
+update does not require changing mods, worlds, player data or the reset journal.
+A server restart alone cannot update players' local resource-pack selection;
+each client must also apply the client update and relaunch Minecraft.
+
+Previously published ZIP archives are historical snapshots. The original 0.1.50
+all-in-one ZIP still locks resource packs. Version 0.1.51 includes unlocked
+resource packs, actual game-root options seeded once for new instances, and
+client/server update installers. Older clients should close Minecraft and run
+`client-update/Install-ClientUpdate.ps1 -GameDirectory <minecraft-folder>`.
+
+### Version 0.1.51
+
+Nature's Compass and Explorer's Compass are removed from both client and server.
+Existing installations must remove their jars; importing the new Prism ZIP
+creates an instance without them. Compass2Map and vanilla compasses remain.
+
+GoldClaim 1.0.27 bans `sophisticatedbackpacks:inception_upgrade`, not backpacks
+or other upgrades. Its recipe is disabled in Sophisticated Core and the supplied
+datapack; server guards also reject commands and empty newly created, refilled,
+saved and nested banned stacks, including loot and creative acquisition.
+Installed Inception upgrades become empty when their upgrade inventory loads,
+so they cannot activate nesting. Backpack inventory items, stored child
+backpacks and UUID references are preserved. Remove any nested child backpacks
+before updating if you want immediate access to them after nesting is disabled.
+Offline player files and unloaded backpack storage are not rewritten.
+
+Saro's actual player plushie (`sarosplayerplushiemod:plushie`) is craftable again.
+The old exception used an incorrect item ID. All other plushie and plush-box
+recipes remain removed; non-crafting availability of other plushies is unchanged.
+
+RSW behavior is unchanged and verified: first entry after each reset needs safe
+ground; same-generation remembered returns do not need a safe-block check.
+Focused tests cover location persistence, resets and nearest-origin searching.
+
+The server policy defaults retain `view-distance=6` and `simulation-distance=6`.
+With the server stopped, run the supplied installer:
+`powershell.exe -NoProfile -ExecutionPolicy Bypass -File server-update/Install-ServerUpdate.ps1 -GameDirectory <server-folder>`.
+It backs up affected files, removes both compass
+jars and old GoldClaim jars, installs 1.0.27, updates GoldClaim filename pins in
+`start.bat`, merges only the Inception/config/resource-pack/distance policy
+settings, and preserves worlds, player data, claims, homes and the RSW journal.
+It does not start the server. Keep the backup until in-game checks pass.
+
+The source installers are maintained in `scripts/`. The isolated runtime smoke
+test uses synthetic restricted items and the real Saro mod to verify mixed-in
+item creation, refills, NBT loads, nested storage, command rejection and recipe
+filtering without starting the live server:
+`gradlew.bat runPolicySmoke -PsmokePlushieJar=<path-to-Saro-jar>` from
+`sources/goldclaim`. First copy your already accepted Minecraft `eula.txt` into
+`tmp/goldclaim-policy-smoke/`. The task configures a loopback-only temporary
+server with an ephemeral port and stops itself. A successful run writes
+`tmp/goldclaim-policy-smoke/policy-smoke-passed.txt`; an old result is cleared
+before each run.
 
 ### Version 0.1.50
 
@@ -61,6 +124,10 @@ nested container items; placed bins are removed without drops. Other furniture
 is unchanged. This is server-only enforcement: clients may still display the
 bin in creative menus or recipe viewers, but cannot use it on the server.
 Offline player files and unloaded regions are not rewritten.
+GoldClaim 1.0.26 fixes a watchdog crash during player joins: placed-bin cleanup
+is deferred until the end of a world tick, processes at most four chunks per
+world per tick, and does not propagate block updates into neighboring chunks.
+Unloaded chunks are removed from the cleanup queue. The bin ban remains enforced.
 
 Gobber's unlimited Dragon armor flight is disabled. End armor gliding,
 other armor perks, creative/spectator flight, and fueled Gang Boots flight
@@ -149,10 +216,10 @@ RSW reset duration still need these in-game checks.
 
 ### Installing and checking this server policy update
 
-GoldClaim 1.0.25 and the current packwiz manifest contain these policies;
+GoldClaim 1.0.27 and the current packwiz manifest contain these policies;
 existing ZIP releases do not receive changes retroactively. With the server
 stopped, back up worlds/player data and configs, replace the old GoldClaim jar
-with `artifacts/goldclaim-1.0.25.jar` (do not leave two GoldClaim versions
+with `artifacts/goldclaim-1.0.27.jar` (do not leave two GoldClaim versions
 installed), and apply the updated configs/datapack. Keep any unrelated custom
 Gobber settings when applying its two flight/gliding settings. No client mod
 update is required for the server guards.

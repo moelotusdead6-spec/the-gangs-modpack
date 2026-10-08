@@ -11,6 +11,8 @@ sources/*/.gradle/
 sources/*/build/
 sources/*/bin/
 tmp/
+scripts/
+artifacts/goldclaim-1.0.26.jar
 artifacts/*.bak*
 artifacts/gangsboots-1.0.3.jar
 artifacts/goldclaim-1.0.9.jar

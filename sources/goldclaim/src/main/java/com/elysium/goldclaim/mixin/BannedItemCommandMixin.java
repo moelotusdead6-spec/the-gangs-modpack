@@ -23,7 +23,8 @@ public abstract class BannedItemCommandMixin {
                                            CallbackInfoReturnable<ItemStack> cir) throws CommandSyntaxException {
         if (BannedContent.isBanned(Registries.ITEM.getId(this.getItem()))) {
             BannedContent.report("item command rejected");
-            throw new SimpleCommandExceptionType(Text.literal("The furniture bin is disabled on this server.")).create();
+            throw new SimpleCommandExceptionType(Text.literal(
+                Registries.ITEM.getId(this.getItem()) + " is disabled on this server.")).create();
         }
     }
 }

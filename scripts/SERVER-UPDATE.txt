@@ -1,0 +1,39 @@
+The Gangs Modpack v0.1.51 - server update
+
+STOP THE SERVER and keep a world backup before applying this update.
+Run PowerShell:
+  powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Install-ServerUpdate.ps1 -GameDirectory "C:\path\to\server"
+
+The installer backs up touched files and installs GoldClaim 1.0.27.
+It removes Nature's Compass, Explorer's Compass and older GoldClaim jars;
+patches GoldClaim version pins in start.bat; disables the Inception recipe;
+unlocks resource packs; and retains view-distance=6 / simulation-distance=6.
+Other settings, worlds, player data, claims, homes, kit data and the RSW
+reset journal are preserved. The installer DOES NOT start the server.
+
+Do not overwrite live configs with the full config folder: it is supplied
+for new installations/reference. The installer merges only this update's
+policy changes. Keep other custom mod settings.
+For a server without start.bat, update any launcher jar-version pins manually.
+Keep only one GoldClaim jar installed.
+
+Inception upgrades cannot be crafted or acquired, including commands, loot
+and creative packets. Existing upgrades load empty, including installed
+upgrade slots. Other upgrades, backpack items, child-backpack items and
+stored contents are preserved; disabled nesting no longer exposes child
+inventories through the parent backpack. Remove child backpacks beforehand
+if you want immediate access to their contents after the update.
+
+Only sarosplayerplushiemod:plushie has its crafting recipe restored.
+All other plushie/plush-box recipes remain disabled.
+/rsw remains unchanged: safe ground for first entry in each generation,
+exact saved positions without a safe-block check for remembered returns.
+
+Clients: close Minecraft and run client-update\Install-ClientUpdate.ps1
+against the actual game root to remove both compass jars and apply unlocked
+resource-pack defaults once. New Prism imports already have these defaults.
+Do not copy the entire client mods folder to the server.
+
+Start the server yourself. Check Saro crafting, rejected Inception /give and
+crafting, loaded backpack upgrades/contents, other plushie recipes, and RSW
+first-entry/return behavior in-game before discarding backups.

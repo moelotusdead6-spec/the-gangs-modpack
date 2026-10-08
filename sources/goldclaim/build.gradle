@@ -22,6 +22,63 @@ dependencies {
 	compileOnly "net.luckperms:api:5.4"
 	testImplementation 'junit:junit:4.13.2'
 	testRuntimeOnly "net.luckperms:api:5.4"
+	if (project.hasProperty('smokePlushieJar')) {
+		modRuntimeOnly files(project.property('smokePlushieJar'))
+	}
+}
+
+sourceSets {
+	testmod {
+		compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+		runtimeClasspath += output + compileClasspath + sourceSets.main.runtimeClasspath
+	}
+}
+
+loom {
+	mods {
+		goldclaim { sourceSet sourceSets.main }
+		goldclaim_policy_smoke { sourceSet sourceSets.testmod }
+	}
+	runs {
+		policySmoke {
+			server()
+			name 'Isolated GoldClaim policy smoke test'
+			source sourceSets.testmod
+			runDir '../../tmp/goldclaim-policy-smoke'
+			programArg 'nogui'
+		}
+	}
+}
+
+tasks.named('runPolicySmoke') {
+	doFirst {
+		def directory = file('../../tmp/goldclaim-policy-smoke')
+		def eula = new File(directory, 'eula.txt')
+		if (!eula.exists() || !(eula.text =~ /(?m)^eula=true\s*$/).find()) {
+			throw new GradleException('Copy your accepted Minecraft eula.txt into tmp/goldclaim-policy-smoke before running the fixture.')
+		}
+		new File(directory, 'server.properties').text = '''server-ip=127.0.0.1
+server-port=0
+online-mode=false
+enable-query=false
+enable-rcon=false
+level-name=smoke-world
+level-type=minecraft:flat
+generate-structures=false
+view-distance=2
+simulation-distance=2
+max-tick-time=60000
+generator-settings={"layers":[{"block":"minecraft:bedrock","height":1},{"block":"minecraft:dirt","height":2},{"block":"minecraft:grass_block","height":1}],"biome":"minecraft:plains"}
+'''
+		def result = new File(directory, 'policy-smoke-passed.txt')
+		if (result.exists() && !result.delete()) {
+			throw new GradleException('Cannot clear the previous policy smoke-test result.')
+		}
+		copy {
+			from '../../config/randomcollections/config.json'
+			into new File(directory, 'config/randomcollections')
+		}
+	}
 }
 
 processResources {

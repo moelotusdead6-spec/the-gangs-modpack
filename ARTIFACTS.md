@@ -1,5 +1,9 @@
 # Published Artifacts
 
+`artifacts/goldclaim-1.0.27.jar` is the current server-only build. It retains the 1.0.26 chunk-cleanup hotfix, bans the exact `sophisticatedbackpacks:inception_upgrade` item through recipes, commands, item construction/refills and saved/nested item loading, and corrects the crafting exception to the actual `sarosplayerplushiemod:plushie` output. Existing installed Inception upgrades load as empty stacks and are not activated; backpack contents and UUID references remain intact. RSW first-entry safety and exact same-generation returns are unchanged.
+
+`artifacts/goldclaim-1.0.26.jar` is the server-only watchdog hotfix. It retains the 1.0.25 policies below while deferring placed-bin cleanup out of chunk-load callbacks, limiting cleanup to four chunks per world tick, and suppressing neighbor propagation. Use this build instead of 1.0.25 on the server.
+
 `artifacts/goldclaim-1.0.25.jar` is the server-only GoldClaim build used by this pack. It supplies hub protection, dimension routing, PVP-only inventory/XP preservation, a fixed noon clock and clear weather, recipient-specific time synchronization, operator-only PVP block breaking, public PVP placement and terrain-safe combat explosions, public RSW access with border-inset RTP, daily RSW rotation, operator-triggered persisted 15-minute resets, generation-bound exact RSW return positions (including airborne/partial-block positions) with nearest-safe-origin entry after resets, server-side furniture bin removal, Gobber Dragon armor creative-flight suppression, automatic kit eligibility and reward delivery, and public claim trust; clients do not download it.
 
 `artifacts/gangsboots-1.0.7.jar` is a first-party Gangs Boots build with one 2.5% chance per player's first personal Lootr chest loot generation. Reopening saved personal loot does not reroll; shared or automated container fills do not roll. Its required CC-BY 4.0 attribution is in `artifacts/gangsboots-ATTRIBUTION.txt`.
