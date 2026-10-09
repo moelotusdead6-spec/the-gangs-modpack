@@ -17,7 +17,8 @@ import java.util.UUID;
 
 public class RankBadgesMod implements ModInitializer {
     private static final String OWNER_TEAM = "rankbadges_owner";
-    private static final String MOD_TEAM = "rankbadges_mod";
+    // Shared with GoldClaim so every moderator gets the same [MOD] label.
+    private static final String MOD_TEAM = "mod";
     private static final String PLAYER_TEAM = "rankbadges_player";
 
     @Override
@@ -85,7 +86,7 @@ public class RankBadgesMod implements ModInitializer {
 
     private enum Rank {
         OWNER(Text.literal("[owner] ").formatted(Formatting.BLUE), Formatting.BLUE),
-        MOD(Text.literal("[mod] ").formatted(Formatting.GREEN), Formatting.GREEN),
+        MOD(Text.literal("[MOD] ").formatted(Formatting.GREEN, Formatting.BOLD), Formatting.GREEN),
         PLAYER(Text.literal("[player] ").formatted(Formatting.WHITE), Formatting.WHITE);
 
         private final Text prefix;

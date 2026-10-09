@@ -49,6 +49,14 @@ try {
     Copy-Entry 'README.md' (Join-Path $repo 'README.md')
     Copy-Entry 'server-update/README.txt' (Join-Path $PSScriptRoot 'SERVER-UPDATE.txt')
     Copy-Entry 'server-update/mods/goldclaim-1.0.27.jar' (Join-Path $repo 'artifacts\goldclaim-1.0.27.jar')
+    Copy-Entry 'server-update/mods/soulsbackpackscompat-1.0.0.jar' (Join-Path $repo 'artifacts\soulsbackpackscompat-1.0.0.jar')
+    Copy-Entry 'minecraft/mods/soulsbackpackscompat-1.0.0.jar' (Join-Path $repo 'artifacts\soulsbackpackscompat-1.0.0.jar')
+    foreach ($entry in @($zip.Entries | Where-Object {
+            $_.FullName -match '^minecraft/mods/rankbadges-.*\.jar$'
+        })) {
+        $entry.Delete()
+    }
+    Copy-Entry 'minecraft/mods/rankbadges-1.0.2.jar' (Join-Path $repo 'artifacts\rankbadges-1.0.2.jar')
     Copy-Entry 'server-update/Install-ServerUpdate.ps1' (Join-Path $PSScriptRoot 'Install-ServerUpdate.ps1')
     Copy-Entry 'server-update/server-settings.properties' (Join-Path $PSScriptRoot 'server-settings.properties')
     foreach ($prefix in @('client-update/', 'server-update/')) {
@@ -56,7 +64,7 @@ try {
     }
     Copy-Entry 'client-update/Install-ClientUpdate.ps1' (Join-Path $PSScriptRoot 'Install-ClientUpdate.ps1')
     $instance = Read-Entry 'instance.cfg'
-    $instance = [regex]::Replace($instance, '(?m)^name=[^\r\n]*', 'name=The Gangs Modpack v0.1.51')
+    $instance = [regex]::Replace($instance, '(?m)^name=[^\r\n]*', 'name=The Gangs Modpack v0.1.52')
     Write-Entry 'instance.cfg' ($utf8.GetBytes($instance))
     $options = [IO.File]::ReadAllText((Join-Path $repo 'config\options.txt'))
     $match = [regex]::Match($options, '(?m)^resourcePacks:(.*)\r?$')
@@ -84,6 +92,10 @@ try {
     if ($goldclaim.Count -ne 1 -or $goldclaim[0].Name -ne 'goldclaim-1.0.27.jar') {
         throw 'Wrong or duplicate GoldClaim server-update jar.'
     }
+    foreach ($name in @('server-update/mods/soulsbackpackscompat-1.0.0.jar',
+            'minecraft/mods/soulsbackpackscompat-1.0.0.jar')) {
+        if (-not $zip.GetEntry($name)) { throw "Required compatibility mod missing: $name" }
+    }
     if (@($zip.Entries | Where-Object { $_.FullName -match '^minecraft/mods/goldclaim-' }).Count) {
         throw 'Server-only GoldClaim is present in the client mods folder.'
     }
@@ -107,6 +119,6 @@ try {
     }
     $options = Read-Entry 'minecraft/options.txt'
     if ($options -notmatch '"file/immersive-interfaces.zip"') { throw 'Immersive Interfaces is not enabled by default.' }
-    Write-Output "Verified $($zip.Entries.Count) ZIP entries; both search compass mods absent, server-only GoldClaim 1.0.27 matches."
+    Write-Output "Verified $($zip.Entries.Count) ZIP entries; both search compass mods absent, GoldClaim and backpack compatibility jars match."
 } finally { $zip.Dispose() }
 Get-FileHash -LiteralPath $output -Algorithm SHA256

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "soulsbackpackscompat",
+  "version": "${version}",
+  "name": "Soulslike Backpacks Compatibility",
+  "description": "Prevents Soulslike Weaponry's item ability hook from crashing on Sophisticated Backpacks.",
+  "authors": [
+    "The Gangs"
+  ],
+  "license": "MIT",
+  "environment": "*",
+  "mixins": [
+    "soulsbackpackscompat.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.15.11",
+    "minecraft": "~1.20.1",
+    "soulsweapons": "1.4.9-1.20.1-fabric",
+    "sophisticatedbackpacks": "*"
+  }
+}

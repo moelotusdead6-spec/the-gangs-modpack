@@ -1,0 +1,8 @@
+name = "Soulslike Backpacks Compatibility"
+filename = "soulsbackpackscompat-1.0.0.jar"
+side = "both"
+
+[download]
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/soulsbackpackscompat-1.0.0.jar"
+hash-format = "sha256"
+hash = "0be60921c3e655883afa95332a7d628881659446a8228b5f194c5e3ead633125"

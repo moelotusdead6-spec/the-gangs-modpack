@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "com.gangs.soulsbackpackscompat.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "BackpackItemMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -12,7 +12,7 @@ This modpack is built around friendship, discovery, and those “you had to be t
 
 ## Pack requirements and resource packs
 
-Version 0.1.51 requires Minecraft 1.20.1, Java 17 or newer, and Fabric Loader
+Version 0.1.52 requires Minecraft 1.20.1, Java 17 or newer, and Fabric Loader
 0.19.3 or newer.
 
 The pack includes AttributeFix, CorgiLib, Data Anchor, Enhanced Celestials,
@@ -53,6 +53,20 @@ all-in-one ZIP still locks resource packs. Version 0.1.51 includes unlocked
 resource packs, actual game-root options seeded once for new instances, and
 client/server update installers. Older clients should close Minecraft and run
 `client-update/Install-ClientUpdate.ps1 -GameDirectory <minecraft-folder>`.
+
+The v0.1.52 all-in-one release includes the Soulslike Backpacks Compatibility
+mod in both the client and server update folders. Stop the server, run
+`server-update/Install-ServerUpdate.ps1 -GameDirectory <server-folder>`, and
+restart it; the installer backs up the affected files and installs the mod
+before the restart.
+
+### Version 0.1.52
+
+Soulslike Backpacks Compatibility prevents a client or server crash when a
+Sophisticated Backpack is equipped, opened or carried in player inventory.
+Marium's Soulslike Weaponry 1.4.9 remains pinned for compatibility with the
+pack's combat mods; the compatibility mod supplies the empty ability list that
+its inventory hook expects from backpack items.
 
 ### Version 0.1.51
 
