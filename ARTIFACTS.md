@@ -14,7 +14,7 @@
 
 `artifacts/rankbadges-1.0.2.jar` is a first-party Rank Badges build. Its source is maintained in `sources/rankbadges`.
 
-`artifacts/soulsbackpackscompat-1.0.0.jar` is a both-sides compatibility mod that prevents Marium's Soulslike Weaponry 1.4.9 from receiving a null ability list when ticking Sophisticated Backpack items. Its source is maintained in `sources/soulsbackpackscompat`.
+`artifacts/soulsbackpackscompat-1.0.0.jar` is a both-sides compatibility mod that prevents Marium's Soulslike Weaponry 1.4.9 from receiving a null ability list when ticking the shared Sophisticated Backpack item class. The observed trigger was a replacement Netherite Backpack; backpack contents, upgrades and NBT are not modified. Its source is maintained in `sources/soulsbackpackscompat`.
 
 `artifacts/gangshop-1.0.8.jar` is the server-only first-party Gang Shop build. It provides the shared Gang Bucks wallet and the server shop GUI, including the updated catalog exclusions and Farmer's Delight/Nether's Delight food categorization.
 

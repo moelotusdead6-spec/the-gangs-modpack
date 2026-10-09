@@ -64,7 +64,7 @@ try {
     }
     Copy-Entry 'client-update/Install-ClientUpdate.ps1' (Join-Path $PSScriptRoot 'Install-ClientUpdate.ps1')
     $instance = Read-Entry 'instance.cfg'
-    $instance = [regex]::Replace($instance, '(?m)^name=[^\r\n]*', 'name=The Gangs Modpack v0.1.52')
+    $instance = [regex]::Replace($instance, '(?m)^name=[^\r\n]*', 'name=The Gangs Modpack v0.1.53')
     Write-Entry 'instance.cfg' ($utf8.GetBytes($instance))
     $options = [IO.File]::ReadAllText((Join-Path $repo 'config\options.txt'))
     $match = [regex]::Match($options, '(?m)^resourcePacks:(.*)\r?$')

@@ -52,7 +52,7 @@ foreach ($line in [IO.File]::ReadAllLines((Join-Path $PSScriptRoot 'server-setti
         $properties = $properties.TrimEnd("`r", "`n") + "`r`n" + $line + "`r`n"
     }
 }
-$backup = Join-Path $game ('backups\policy-v0.1.52-' + (Get-Date -Format 'yyyyMMdd-HHmmss-ffff'))
+$backup = Join-Path $game ('backups\policy-v0.1.53-' + (Get-Date -Format 'yyyyMMdd-HHmmss-ffff'))
 New-Item -ItemType Directory -Path $backup | Out-Null
 function Backup-File([string]$Path) {
     if (Test-Path -LiteralPath $Path -PathType Leaf) {

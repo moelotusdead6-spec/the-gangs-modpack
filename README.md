@@ -12,7 +12,7 @@ This modpack is built around friendship, discovery, and those “you had to be t
 
 ## Pack requirements and resource packs
 
-Version 0.1.52 requires Minecraft 1.20.1, Java 17 or newer, and Fabric Loader
+Version 0.1.53 requires Minecraft 1.20.1, Java 17 or newer, and Fabric Loader
 0.19.3 or newer.
 
 The pack includes AttributeFix, CorgiLib, Data Anchor, Enhanced Celestials,
@@ -54,11 +54,19 @@ resource packs, actual game-root options seeded once for new instances, and
 client/server update installers. Older clients should close Minecraft and run
 `client-update/Install-ClientUpdate.ps1 -GameDirectory <minecraft-folder>`.
 
-The v0.1.52 all-in-one release includes the Soulslike Backpacks Compatibility
-mod in both the client and server update folders. Stop the server, run
-`server-update/Install-ServerUpdate.ps1 -GameDirectory <server-folder>`, and
-restart it; the installer backs up the affected files and installs the mod
-before the restart.
+The v0.1.53 all-in-one release includes Soulslike Backpacks Compatibility in
+the client mods and server update folders. The server JAR may be staged in the
+server's `mods/` folder while it is running and loads on the next normal
+restart. Clients must also install the update and relaunch because the reported
+crashes occurred in the client inventory tick.
+
+### Version 0.1.53
+
+The observed trigger was Xander's replacement
+`sophisticatedbackpacks:netherite_backpack`; Xander's other backpacks continue
+to work. All Sophisticated Backpack tiers share the same item class, so
+Soulslike Backpacks Compatibility guards that shared class against a null
+ability list without changing backpack contents, upgrades or NBT.
 
 ### Version 0.1.52
 

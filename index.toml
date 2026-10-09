@@ -6,11 +6,11 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "0db31fbacdea7eddf0c84993eb31affd919aa62dbd9a73b85e4ad46ab79ed0ec"
+hash = "a92dc5c90fc68273c414c90cae3558ae439dc9577fc18ece617745ce793d84d0"
 
 [[files]]
 file = "README.md"
-hash = "c1afbb138f2ed813d2792123e4bd8ee55793bb205d1f4d3ce00d39b77b392dfd"
+hash = "4831882e67be6520aa630e270700080638fed02bce0a84c1ca28bd4229a7d025"
 
 [[files]]
 file = "artifacts/AdaptiveTooltips-1.3.0-fabric-1.20.2.jar"
@@ -790,7 +790,7 @@ hash = "b2568259d2839b90a20167be62e9581625ebe1df05ffe385a087ec358f7b0aba"
 
 [[files]]
 file = "index.html"
-hash = "4c9ca0a065b0ee918a4f00f44469a6e5da18d8f35d9f44c82ee8e7c6170bb1f8"
+hash = "f8328d8eeeb4b1c27d524be9aaa95edeb363c0bbd95985e0e1e5ce4bd5f90d7b"
 
 [[files]]
 file = "mods/.gitkeep"
