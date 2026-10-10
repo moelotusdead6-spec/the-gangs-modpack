@@ -52,6 +52,13 @@ try {
     Copy-Entry 'server-update/mods/soulsbackpackscompat-1.0.0.jar' (Join-Path $repo 'artifacts\soulsbackpackscompat-1.0.0.jar')
     Copy-Entry 'minecraft/mods/soulsbackpackscompat-1.0.0.jar' (Join-Path $repo 'artifacts\soulsbackpackscompat-1.0.0.jar')
     foreach ($entry in @($zip.Entries | Where-Object {
+            $_.FullName -match '^(minecraft|server-update)/mods/(gangshats|gangscosmetics)-.*\.jar$'
+        })) {
+        $entry.Delete()
+    }
+    Copy-Entry 'minecraft/mods/gangscosmetics-2.0.0.jar' (Join-Path $repo 'artifacts\gangscosmetics-2.0.0.jar')
+    Copy-Entry 'server-update/mods/gangscosmetics-2.0.0.jar' (Join-Path $repo 'artifacts\gangscosmetics-2.0.0.jar')
+    foreach ($entry in @($zip.Entries | Where-Object {
             $_.FullName -match '^minecraft/mods/rankbadges-.*\.jar$'
         })) {
         $entry.Delete()
@@ -64,7 +71,7 @@ try {
     }
     Copy-Entry 'client-update/Install-ClientUpdate.ps1' (Join-Path $PSScriptRoot 'Install-ClientUpdate.ps1')
     $instance = Read-Entry 'instance.cfg'
-    $instance = [regex]::Replace($instance, '(?m)^name=[^\r\n]*', 'name=The Gangs Modpack v0.1.53')
+    $instance = [regex]::Replace($instance, '(?m)^name=[^\r\n]*', 'name=The Gangs Modpack v1.1.0')
     Write-Entry 'instance.cfg' ($utf8.GetBytes($instance))
     $options = [IO.File]::ReadAllText((Join-Path $repo 'config\options.txt'))
     $match = [regex]::Match($options, '(?m)^resourcePacks:(.*)\r?$')
@@ -79,7 +86,7 @@ try {
     $line = 'resourcePacks:' + (ConvertTo-Json -InputObject @($selected) -Compress)
     $options = $options.Substring(0, $match.Index) + $line + $options.Substring($match.Index + $match.Length)
     Write-Entry 'minecraft/options.txt' ($utf8.GetBytes($options))
-    $record = [ordered]@{ appliedAt = 'release-v0.1.51'; enabledPacks = @($selected) }
+    $record = [ordered]@{ appliedAt = 'release-v1.1.0'; enabledPacks = @($selected) }
     Write-Entry 'minecraft/config/resource-pack-defaults-applied-v1.json' ($utf8.GetBytes((ConvertTo-Json $record)))
 } finally { $zip.Dispose() }
 
@@ -96,6 +103,21 @@ try {
             'minecraft/mods/soulsbackpackscompat-1.0.0.jar')) {
         if (-not $zip.GetEntry($name)) { throw "Required compatibility mod missing: $name" }
     }
+    foreach ($name in @('server-update/mods/gangscosmetics-2.0.0.jar',
+            'minecraft/mods/gangscosmetics-2.0.0.jar')) {
+        $entry = $zip.GetEntry($name)
+        if (-not $entry) { throw "Required cosmetics mod missing: $name" }
+        $hash = [Security.Cryptography.SHA256]::Create()
+        $stream = $entry.Open()
+        try { $actual = [BitConverter]::ToString($hash.ComputeHash($stream)).Replace('-', '') }
+        finally { $stream.Dispose(); $hash.Dispose() }
+        if ($actual -ne (Get-FileHash (Join-Path $repo 'artifacts\gangscosmetics-2.0.0.jar') -Algorithm SHA256).Hash) {
+            throw "Packaged Gangs Cosmetics does not match the built artifact: $name"
+        }
+    }
+    if (@($zip.Entries | Where-Object {
+            $_.FullName -match '^(minecraft|server-update)/mods/gangshats-.*\.jar$'
+        }).Count) { throw 'Legacy Gangs Hats remains in the ZIP.' }
     if (@($zip.Entries | Where-Object { $_.FullName -match '^minecraft/mods/goldclaim-' }).Count) {
         throw 'Server-only GoldClaim is present in the client mods folder.'
     }

@@ -6,7 +6,7 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "15432cdfb75eda8febd152210f2303eadba3d37e17d8cbff63bba66e4e639e5d"
+hash = "7e1f4984abe7f95491352070195d89d5720ee9d8a64b2e14881254bf478bca78"
 
 [[files]]
 file = "README.md"
@@ -131,6 +131,10 @@ hash = "5c262cb28a905ae55f48235d54e4eca263f3761ebcccfdda22b30dfbf34d5ef0"
 [[files]]
 file = "artifacts/gangsboots-ATTRIBUTION.txt"
 hash = "de9756c83bd304ecf034a143a4de5be22cd89e6167fdcfdc29088379cad7ad8e"
+
+[[files]]
+file = "artifacts/gangscosmetics-2.0.0.jar"
+hash = "b2dd2bd8dc08551a879e2e9e6e2df5e70a14749968e0054718db3cef36584a56"
 
 [[files]]
 file = "artifacts/gangshats-1.0.0.jar"
@@ -387,6 +391,10 @@ hash = "fac102f637be60d94ad6c8fb3df57d0a75fcb907b31be83b59b31c81680b1bd2"
 [[files]]
 file = "config/fancymenu/options.txt"
 hash = "39c8fbcb59e108ea11a928e491fd605aced9d318c93ee343df83fe9aa45ddfd4"
+
+[[files]]
+file = "config/gangscosmetics.json"
+hash = "8dd654f8835d50a42fbd2383f61f13dc0ae3e860233de73384a1c64c5bf3820c"
 
 [[files]]
 file = "config/global_packs.toml"
@@ -1501,8 +1509,8 @@ hash = "8ef6fe3054aafa2f6fca92a82dd67c9371930ace16ee3b3bcce7d12abf0d98ec"
 metafile = true
 
 [[files]]
-file = "mods/gangshats-direct.pw.toml"
-hash = "180a476c94fa0ff1b778162341766326a43e48f24f56d21e50cce7762ad5a4e0"
+file = "mods/gangscosmetics-direct.pw.toml"
+hash = "5c4527d7bf6e25e70874f4dba42e9e9c032b849fc5e9a4fc62f207d2cf4ffcb4"
 metafile = true
 
 [[files]]

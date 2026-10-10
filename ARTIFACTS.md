@@ -10,7 +10,7 @@
 
 `artifacts/gangsboots-1.0.7.jar` is a first-party Gangs Boots build with one 2.5% chance per player's first personal Lootr chest loot generation. Reopening saved personal loot does not reroll; shared or automated container fills do not roll. Its required CC-BY 4.0 attribution is in `artifacts/gangsboots-ATTRIBUTION.txt`.
 
-`artifacts/gangshats-1.0.9.jar` is a first-party Gangs Hats build. Its source is maintained in `sources/gangshats`; it provides halo and sword cosmetics and wearable-item commands.
+`artifacts/gangscosmetics-2.0.0.jar` is the first public Gangs Cosmetics build. It replaces Gangs Hats with a server-authoritative MoreCosmetics wardrobe, bundled immutable models, persistent selections, tradeable keys/vouchers, and GoldClaim kit rewards. Weekly kit claims award one key and monthly claims award three. Players receive ownership rather than physical wearable items; duplicate key rolls create a voucher.
 
 `artifacts/polymer-bundled-0.5.20+1.20.1.jar` is the user-supplied official Polymer bundle used on both client and server for server-driven resources.
 

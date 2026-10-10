@@ -1,8 +1,0 @@
-name = "Gangs Hats"
-filename = "gangshats-1.0.9.jar"
-side = "both"
-
-[download]
-url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/gangshats-1.0.9.jar"
-hash-format = "sha256"
-hash = "66244c7dde684846b7fbdf61aa12704d174e90143753b9388a3168aebec9571a"

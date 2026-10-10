@@ -1,10 +1,11 @@
-The Gangs Modpack v0.1.53 - server update
+The Gangs Modpack v1.1.0 - server update
 
 STOP THE SERVER and keep a world backup before applying this update.
 Run PowerShell:
   powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Install-ServerUpdate.ps1 -GameDirectory "C:\path\to\server"
 
-The installer backs up touched files and installs GoldClaim 1.0.28.
+The installer backs up touched files and installs GoldClaim 1.0.28 and
+Gangs Cosmetics 2.0.0 with public access and all ownership initially locked.
 It removes Nature's Compass, Explorer's Compass and older GoldClaim jars;
 patches GoldClaim version pins in start.bat; disables the Inception recipe;
 unlocks resource packs; and retains view-distance=6 / simulation-distance=6.
@@ -16,6 +17,7 @@ for new installations/reference. The installer merges only this update's
 policy changes. Keep other custom mod settings.
 For a server without start.bat, update any launcher jar-version pins manually.
 Keep only one GoldClaim jar installed.
+Keep only one Gangs Cosmetics jar installed; remove every Gangs Hats jar.
 
 /trash is available to all players as an alias of Essential Commands'
 /wastebin handler. Place unwanted items in the bin and close it to dispose
