@@ -134,7 +134,7 @@ hash = "de9756c83bd304ecf034a143a4de5be22cd89e6167fdcfdc29088379cad7ad8e"
 
 [[files]]
 file = "artifacts/gangscosmetics-2.0.0.jar"
-hash = "b2dd2bd8dc08551a879e2e9e6e2df5e70a14749968e0054718db3cef36584a56"
+hash = "e8b31c547f364fd41de6fa7aabf6187ef9d5d42c40b973f8c478e95b531aacc4"
 
 [[files]]
 file = "artifacts/gangshats-1.0.0.jar"
@@ -1510,7 +1510,7 @@ metafile = true
 
 [[files]]
 file = "mods/gangscosmetics-direct.pw.toml"
-hash = "5c4527d7bf6e25e70874f4dba42e9e9c032b849fc5e9a4fc62f207d2cf4ffcb4"
+hash = "39d5378b9872361dda7976d0cae1bec1e12bf08c627eb4de6f099ff329b130a2"
 metafile = true
 
 [[files]]
