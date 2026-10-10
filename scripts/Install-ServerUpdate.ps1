@@ -14,7 +14,7 @@ $propertiesPath = Join-Path $game 'server.properties'
 $corePath = Join-Path $game 'config\sophisticatedcore-common.toml'
 $startPath = Join-Path $game 'start.bat'
 foreach ($path in @($propertiesPath, $corePath, (Join-Path $game 'config\global_packs.toml'),
-        (Join-Path $PSScriptRoot 'mods\goldclaim-1.0.27.jar'),
+        (Join-Path $PSScriptRoot 'mods\goldclaim-1.0.28.jar'),
         (Join-Path $PSScriptRoot 'mods\soulsbackpackscompat-1.0.0.jar'),
         (Join-Path $PSScriptRoot 'server-settings.properties'),
         (Join-Path $PSScriptRoot 'Install-ResourcePackDefaults.ps1'),
@@ -67,7 +67,7 @@ foreach ($path in @($propertiesPath, $corePath, $startPath, (Join-Path $game 'co
 }
 if (Test-Path -LiteralPath $startPath) {
     $start = [IO.File]::ReadAllText($startPath)
-    $start = [regex]::Replace($start, 'goldclaim-\d+\.\d+\.\d+\.jar', 'goldclaim-1.0.27.jar')
+    $start = [regex]::Replace($start, 'goldclaim-\d+\.\d+\.\d+\.jar', 'goldclaim-1.0.28.jar')
     [IO.File]::WriteAllText($startPath, $start, $utf8)
 }
 $mods = Join-Path $game 'mods'
@@ -78,7 +78,7 @@ foreach ($file in $removed) {
     Backup-File $file.FullName
     Remove-Item -LiteralPath $file.FullName
 }
-Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'mods\goldclaim-1.0.27.jar') -Destination $mods
+Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'mods\goldclaim-1.0.28.jar') -Destination $mods
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'mods\soulsbackpackscompat-1.0.0.jar') -Destination $mods
 [IO.File]::WriteAllText($corePath, $updatedCore, $utf8)
 [IO.File]::WriteAllText($propertiesPath, $properties, $utf8)
@@ -88,8 +88,8 @@ Backup-File $destination
 New-Item -ItemType Directory -Path ([IO.Path]::GetDirectoryName($destination)) -Force | Out-Null
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot $relative) -Destination $destination
 & (Join-Path $PSScriptRoot 'Install-ResourcePackDefaults.ps1') -Target Server -GameDirectory $game
-if ((Get-FileHash (Join-Path $mods 'goldclaim-1.0.27.jar')).Hash -ne
-        (Get-FileHash (Join-Path $PSScriptRoot 'mods\goldclaim-1.0.27.jar')).Hash) {
+if ((Get-FileHash (Join-Path $mods 'goldclaim-1.0.28.jar')).Hash -ne
+        (Get-FileHash (Join-Path $PSScriptRoot 'mods\goldclaim-1.0.28.jar')).Hash) {
     throw 'Installed GoldClaim hash does not match the supplied update.'
 }
 if ((Get-FileHash (Join-Path $mods 'soulsbackpackscompat-1.0.0.jar')).Hash -ne
@@ -98,7 +98,7 @@ if ((Get-FileHash (Join-Path $mods 'soulsbackpackscompat-1.0.0.jar')).Hash -ne
 }
 if (@(Get-ChildItem -LiteralPath $mods -File | Where-Object {
         $_.Name -match '^(NaturesCompass-.*\.jar|ExplorersCompass-.*\.jar|goldclaim-.*\.jar(?:\.pending)?|soulsbackpackscompat-.*\.jar(?:\.pending)?)$' -and
-                $_.Name -notin @('goldclaim-1.0.27.jar', 'soulsbackpackscompat-1.0.0.jar')
+                $_.Name -notin @('goldclaim-1.0.28.jar', 'soulsbackpackscompat-1.0.0.jar')
         }).Count) { throw 'Old or removed mod jars remain installed.' }
 Write-Output "Server policy update installed. Backup: $backup"
 Write-Output 'Restart the server now to load the compatibility mod. Worlds, player data, claims, homes, kit data and the RSW journal were not changed. Server remains stopped.'

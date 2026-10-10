@@ -6,11 +6,11 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "a92dc5c90fc68273c414c90cae3558ae439dc9577fc18ece617745ce793d84d0"
+hash = "15432cdfb75eda8febd152210f2303eadba3d37e17d8cbff63bba66e4e639e5d"
 
 [[files]]
 file = "README.md"
-hash = "4831882e67be6520aa630e270700080638fed02bce0a84c1ca28bd4229a7d025"
+hash = "a09140088b60f99ad0c1d2e14fd8d85f2b6b885957a954856b1cbc5ecc772688"
 
 [[files]]
 file = "artifacts/AdaptiveTooltips-1.3.0-fabric-1.20.2.jar"
@@ -235,6 +235,10 @@ hash = "67d786ba4dd3efddad2af093d4b66a6ac2aa1e18919c87b4fa55a38148613b78"
 [[files]]
 file = "artifacts/goldclaim-1.0.27.jar"
 hash = "cf8ea9e669540f2b4b34569585c8b87023509aeed794b587d124084b07189985"
+
+[[files]]
+file = "artifacts/goldclaim-1.0.28.jar"
+hash = "37a7a367cf4753550dd1a6172564ce06358b761601793a7326a359fa128a14bb"
 
 [[files]]
 file = "artifacts/goldclaim-1.0.3.jar"
@@ -1518,7 +1522,7 @@ metafile = true
 
 [[files]]
 file = "mods/goldclaim-direct.pw.toml"
-hash = "ca02c765039519545a68757249fb3742b3f35b44b11da63cdbbb29df1c4681f9"
+hash = "c4e70000f3d1b278e366c15632e8d77c48ee0030408f201f73d3b2ae5e408363"
 metafile = true
 
 [[files]]

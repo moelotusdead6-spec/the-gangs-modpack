@@ -1,6 +1,8 @@
 # Published Artifacts
 
-`artifacts/goldclaim-1.0.27.jar` is the current server-only build. It retains the 1.0.26 chunk-cleanup hotfix, bans the exact `sophisticatedbackpacks:inception_upgrade` item through recipes, commands, item construction/refills and saved/nested item loading, and corrects the crafting exception to the actual `sarosplayerplushiemod:plushie` output. Existing installed Inception upgrades load as empty stacks and are not activated; backpack contents and UUID references remain intact. RSW first-entry safety and exact same-generation returns are unchanged.
+`artifacts/goldclaim-1.0.28.jar` is the current server-only build. It retains all 1.0.27 policies and adds public `/trash` by invoking Essential Commands' existing `/wastebin` handler with the original command source. It does not elevate players or change `/wastebin` permissions. Essential Commands must have `/wastebin` enabled; a missing handler produces an explicit command error.
+
+`artifacts/goldclaim-1.0.27.jar` is the previous server-only build. It retains the 1.0.26 chunk-cleanup hotfix, bans the exact `sophisticatedbackpacks:inception_upgrade` item through recipes, commands, item construction/refills and saved/nested item loading, and corrects the crafting exception to the actual `sarosplayerplushiemod:plushie` output. Existing installed Inception upgrades load as empty stacks and are not activated; backpack contents and UUID references remain intact. RSW first-entry safety and exact same-generation returns are unchanged.
 
 `artifacts/goldclaim-1.0.26.jar` is the server-only watchdog hotfix. It retains the 1.0.25 policies below while deferring placed-bin cleanup out of chunk-load callbacks, limiting cleanup to four chunks per world tick, and suppressing neighbor propagation. Use this build instead of 1.0.25 on the server.
 

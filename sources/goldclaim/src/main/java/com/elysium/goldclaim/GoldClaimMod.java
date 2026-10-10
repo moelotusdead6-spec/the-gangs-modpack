@@ -490,6 +490,7 @@ implements ModInitializer {
 
     private void registerCommands() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+            TrashCommand.register(dispatcher);
             dispatcher.register(CommandManager.literal("gangskit")
                 .then(CommandManager.literal("weekly_1").executes(ctx -> this.kitService.claim(ctx.getSource(), 0)))
                 .then(CommandManager.literal("weekly_2").executes(ctx -> this.kitService.claim(ctx.getSource(), 1)))

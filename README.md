@@ -62,6 +62,15 @@ crashes occurred in the client inventory tick.
 
 ### Version 0.1.53
 
+GoldClaim 1.0.28 adds public `/trash`, using Essential Commands' existing
+`/wastebin` handler without OP or additional player permissions. Place unwanted
+items in the bin; closing it permanently discards those items. The original
+`/wastebin` permissions and all other commands remain unchanged. Essential
+Commands must be installed on the server with `/wastebin` enabled; otherwise
+`/trash` reports that the bin is unavailable. This is server-only and needs no
+new client mod. The revised ZIP includes the new JAR in `server-update/`;
+the live server is not changed by downloading or rebuilding this release.
+
 The observed trigger was Xander's replacement
 `sophisticatedbackpacks:netherite_backpack`; Xander's other backpacks continue
 to work. All Sophisticated Backpack tiers share the same item class, so
