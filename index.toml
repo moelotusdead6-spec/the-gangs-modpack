@@ -10,7 +10,7 @@ hash = "15432cdfb75eda8febd152210f2303eadba3d37e17d8cbff63bba66e4e639e5d"
 
 [[files]]
 file = "README.md"
-hash = "b64638b534ad623b368c3d7a719c15444f1eaff98a6b8f6cdd52f90cda1513ad"
+hash = "c77ef91d0c2493239203426a957256113c1d188e95bb0637076e1b2571a087c1"
 
 [[files]]
 file = "artifacts/AdaptiveTooltips-1.3.0-fabric-1.20.2.jar"

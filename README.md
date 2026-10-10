@@ -14,6 +14,5 @@ This modpack is built around friendship, discovery, and those “you had to be t
 
 - **Requirements:** Minecraft 1.20.1, Java 17+, and Fabric Loader 0.19.3+.
 - **Download:** [Latest release](https://github.com/moelotusdead6-spec/the-gangs-modpack/releases/latest). Import the all-in-one ZIP into Prism Launcher.
-- **Updating:** Close Minecraft and use the included client-update installer. Server owners: stop the server, back up first, and follow the included server-update instructions. Do not copy client mods onto the server.
+- **Updating:** Close Minecraft and use the included client-update installer. Do not copy client mods onto the server.
 - **Resource packs:** Enable or disable them in Options > Resource Packs.
-- **Trash:** Use `/trash` to dispose of unwanted items. Items left in the bin are permanently deleted when you close it.
