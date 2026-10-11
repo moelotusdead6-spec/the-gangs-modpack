@@ -22,7 +22,7 @@ public final class PackwizPrelaunch {
                 bootstrapJar.toString(),
                 "-g",
                 "-s",
-                "both",
+                "client",
                 PACKWIZ_URL)
                 .directory(minecraftDir.toFile())
                 .inheritIO()

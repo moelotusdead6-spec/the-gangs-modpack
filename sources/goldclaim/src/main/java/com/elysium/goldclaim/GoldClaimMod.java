@@ -138,6 +138,9 @@ import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.SpawnGroup;
+import net.minecraft.entity.mob.Monster;
+import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.util.TypedActionResult;
@@ -193,6 +196,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.GameRules;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.group.Group;
@@ -280,6 +284,8 @@ implements ModInitializer {
         this.portalRegistry = new ClaimPortalRegistry(Path.of("config", "goldclaim", "claim-portals.json"), this.config);
         this.loadLastWildLocations();
         this.loadPlayerHomes();
+        ServerWorldEvents.LOAD.register((server, world) ->
+            applyRswFireRule(world.getRegistryKey().getValue().toString(), world.getGameRules(), server));
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
             this.rswResetService.initialize(System.currentTimeMillis());
             this.kitService.initialize(server);
@@ -476,7 +482,9 @@ implements ModInitializer {
                 }
                 return ActionResult.PASS;
             }
-            if (!this.config.protectEntityInteractions) {
+            boolean tamedPet = entity instanceof TameableEntity pet && pet.isTamed();
+            if (!this.config.protectEntityInteractions
+                    || !tamedPet && (entity instanceof Monster || entity.getType().getSpawnGroup() == SpawnGroup.MONSTER)) {
                 return ActionResult.PASS;
             }
             BlockPos pos = entity.getBlockPos();
@@ -783,7 +791,10 @@ implements ModInitializer {
             this.rswResetService.tick(server, this.getWorld(server, RSW_DIMENSION),
                 playerToEvacuate -> this.teleportToHub(playerToEvacuate, false, false),
                 (activeServer, seed) -> this.createMultiworld(activeServer, RSW_DIMENSION, "NORMAL", seed),
-                readyWorld -> this.applyWorldBorder(server, RSW_DIMENSION, 10000.0));
+                readyWorld -> {
+                    applyRswFireRule(RSW_DIMENSION, readyWorld.getGameRules(), server);
+                    this.applyWorldBorder(server, RSW_DIMENSION, 10000.0);
+                });
             this.rswEntrySearch.tick();
             boolean runPlayerMaintenance = false;
             if (++this.playerMaintenanceTicks >= 20) {
@@ -882,7 +893,17 @@ implements ModInitializer {
         }
         this.applyWorldBorder(server, PVP_DIMENSION, 1000.0);
         this.applyWorldBorder(server, RSW_DIMENSION, 10000.0);
+        ServerWorld rswWorld = this.getWorld(server, RSW_DIMENSION);
+        if (rswWorld != null) {
+            applyRswFireRule(RSW_DIMENSION, rswWorld.getGameRules(), server);
+        }
         this.applyPvpWorldRules(server);
+    }
+
+    static void applyRswFireRule(String dimensionId, GameRules rules, MinecraftServer server) {
+        if (RSW_DIMENSION.equals(dimensionId)) {
+            rules.get(GameRules.DO_FIRE_TICK).set(false, server);
+        }
     }
 
     private void applyPvpWorldRules(MinecraftServer server) {

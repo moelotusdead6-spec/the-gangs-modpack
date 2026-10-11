@@ -1,0 +1,29 @@
+The Gangs Modpack v1.1.2 - automatic client updates
+
+EXISTING PLAYERS: Close Minecraft. Extract this ZIP somewhere outside your
+instance, then run this ONE-TIME setup against the existing Prism game root
+(the folder containing mods, config and options.txt):
+  powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Install-ClientUpdate.ps1 -GameDirectory "C:\path\to\Prism\instances\The Gangs\minecraft"
+
+This preserves your saved keybindings, video/audio settings, resource-pack
+choices, servers.dat and other personal config. It backs up replaced files
+and enables Prism's client-only Packwiz pre-launch update hook.
+
+FUTURE UPDATES: Keep this same Prism instance and press Play normally.
+Packwiz updates managed pack files; personal options.txt and servers.dat are
+not managed or replaced. An update failure blocks launch and is shown in
+Prism's log, rather than silently launching a mismatched client.
+Internet access is required for update checks. Do not reimport each release.
+
+NEW PLAYERS: Import the all-in-one ZIP into Prism once. Automatic updates are
+already enabled. Default Options 18.0.6 supplies starting options/keybindings
+and the public server gangs-adventure.playit.plus only when the corresponding
+saved files are missing. Existing files always take precedence.
+
+Default Options is not cloud backup and does not migrate separate instances.
+If you intentionally create a new instance, copy your old options.txt,
+servers.dat and any personal mod configs before first launch. Do not delete
+the old instance until you have verified your settings.
+
+Do not copy the full config folder over an existing instance. Do not use
+/defaultoptions saveall as a personal backup command.

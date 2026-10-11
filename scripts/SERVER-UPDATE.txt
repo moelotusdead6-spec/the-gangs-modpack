@@ -1,11 +1,11 @@
-The Gangs Modpack v1.1.0 - server update
+The Gangs Modpack v1.1.2 - server update
 
 STOP THE SERVER and keep a world backup before applying this update.
 Run PowerShell:
   powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Install-ServerUpdate.ps1 -GameDirectory "C:\path\to\server"
 
-The installer backs up touched files and installs GoldClaim 1.0.28 and
-Gangs Cosmetics 2.0.0 with public access and all ownership initially locked.
+The installer backs up touched files and installs GoldClaim 1.0.31 and
+Gangs Cosmetics 2.0.2 with public access and all ownership initially locked.
 It removes Nature's Compass, Explorer's Compass and older GoldClaim jars;
 patches GoldClaim version pins in start.bat; disables the Inception recipe;
 unlocks resource packs; and retains view-distance=6 / simulation-distance=6.
@@ -19,10 +19,15 @@ For a server without start.bat, update any launcher jar-version pins manually.
 Keep only one GoldClaim jar installed.
 Keep only one Gangs Cosmetics jar installed; remove every Gangs Hats jar.
 
-/trash is available to all players as an alias of Essential Commands'
-/wastebin handler. Place unwanted items in the bin and close it to dispose
-of them permanently. Essential Commands must be installed with /wastebin
-enabled; /wastebin's own permissions and all other commands are unchanged.
+Players can attack vanilla and modded hostile mobs in claims without trust.
+This uses Minecraft's Monster interface or MONSTER spawn group, not a mob
+name allowlist. Tamed pets stay protected, including modded monster-category
+pets. Animals, villagers, decorations, inventory access, entity interaction
+and block protections remain unchanged.
+
+/trash is available to all players as a native 27-slot disposable container.
+Place unwanted items in the bin and close it to dispose of them permanently.
+It does not depend on Essential Commands' /wastebin registration or settings.
 
 Inception upgrades cannot be crafted or acquired, including commands, loot
 and creative packets. Existing upgrades load empty, including installed
@@ -33,14 +38,20 @@ if you want immediate access to their contents after the update.
 
 Only sarosplayerplushiemod:plushie has its crafting recipe restored.
 All other plushie/plush-box recipes remain disabled.
-/rsw remains unchanged: safe ground for first entry in each generation,
-exact saved positions without a safe-block check for remembered returns.
+/rsw fire spread is disabled when its dimension loads, after each daily/manual
+reset, and during world maintenance. This also disables natural fire burnout;
+existing fires are not removed and other fire damage is not disabled.
+First-entry safety and exact saved return positions remain unchanged.
 
 Clients: close Minecraft and run client-update\Install-ClientUpdate.ps1
-against the actual game root to remove both compass jars and apply unlocked
-resource-pack defaults once. New Prism imports already have these defaults.
+against the actual Prism game root once to enable automatic client-only updates.
+Options, keybindings, resource-pack choices and servers.dat are preserved.
+After setup, keep that instance and press Play; do not import a new instance
+for every release. Default Options supplies missing first-run defaults only.
 Do not copy the entire client mods folder to the server.
 
 Start the server yourself. Check Saro crafting, rejected Inception /give and
 crafting, loaded backpack upgrades/contents, other plushie recipes, and RSW
-first-entry/return behavior in-game before discarding backups.
+first-entry/return behavior in-game before discarding backups. Verify that
+untrusted visitors can fight hostile mobs but cannot hit pets or animals,
+open claim inventories or break claim blocks.

@@ -3,7 +3,7 @@
   "id": "soulsbackpackscompat",
   "version": "${version}",
   "name": "Soulslike Backpacks Compatibility",
-  "description": "Prevents Soulslike Weaponry's item ability hook from crashing on Sophisticated Backpacks.",
+  "description": "Repairs missing Soulslike Weaponry item ability lists without changing existing abilities or backpack data.",
   "authors": [
     "The Gangs"
   ],

@@ -3,19 +3,24 @@ param(
     [Parameter(Mandatory = $true)]
     [string]$BaselineZip,
     [Parameter(Mandatory = $true)]
-    [string]$OutputZip
+    [string]$OutputZip,
+    [string]$DefaultOptionsJar
 )
 
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 Add-Type -AssemblyName System.IO.Compression
 $repo = [IO.Directory]::GetParent($PSScriptRoot).FullName
+if (-not $DefaultOptionsJar) {
+    $DefaultOptionsJar = Join-Path $repo 'tmp\defaultoptions-fabric-1.20.1-18.0.6.jar'
+}
 $baseline = (Resolve-Path -LiteralPath $BaselineZip).Path
 $output = [IO.Path]::GetFullPath($OutputZip)
 if (Test-Path -LiteralPath $output) { throw "Refusing to overwrite existing release: $output" }
 Copy-Item -LiteralPath $baseline -Destination $output
 $zip = [IO.Compression.ZipFile]::Open($output, [IO.Compression.ZipArchiveMode]::Update)
 $utf8 = [Text.UTF8Encoding]::new($false)
+. (Join-Path $PSScriptRoot 'Get-PrismAutoUpdateConfig.ps1')
 function Write-Entry([string]$Name, [byte[]]$Bytes) {
     $existing = $zip.GetEntry($Name)
     if ($existing) { $existing.Delete() }
@@ -33,9 +38,18 @@ function Read-Entry([string]$Name) {
     try { return $reader.ReadToEnd() } finally { $reader.Dispose() }
 }
 try {
+    if ((Get-FileHash -LiteralPath $DefaultOptionsJar -Algorithm SHA512).Hash.ToLowerInvariant() -ne
+            '43767e00bcc6bf3abf90e2036f7a97b5b9fa37671ddc78b60e28a375e46c7a5e96de6765ec3af1cd556553cad40264ad395881ea98f1b458cd7fbe1a7b92c5c9') {
+        throw 'Default Options must match the official Modrinth 18.0.6 Fabric release.'
+    }
     foreach ($entry in @($zip.Entries)) {
         if ($entry.FullName -match '(?i)(?:^|/)(?:NaturesCompass-|ExplorersCompass-).*\.jar$' -or
-                $entry.FullName -match '^server-update/mods/goldclaim-.*\.jar$') {
+                $entry.FullName -match '^server-update/mods/goldclaim-.*\.jar$' -or
+                $entry.FullName -match '^(minecraft|client-update|server-update)/mods/(soulsbackpackscompat|defaultoptions)-.*\.jar$' -or
+                $entry.FullName -in @('minecraft/options.txt', 'minecraft/servers.dat',
+                    'minecraft/servers.dat_old', 'minecraft/defaultoptions.journal.json',
+                    'minecraft/config/resource-pack-defaults-applied-v1.json',
+                    'packwiz-prelaunch.jar', 'packwiz-prelaunch.bat', 'packwiz-prelaunch.sh')) {
             $entry.Delete()
         }
     }
@@ -43,21 +57,25 @@ try {
         $config = Join-Path $repo 'config'
         foreach ($file in Get-ChildItem -LiteralPath $config -Recurse -File) {
             $relative = $file.FullName.Substring($config.Length + 1).Replace('\', '/')
+            if ($prefix -eq 'server-update/config/' -and $relative.StartsWith('defaultoptions/')) { continue }
             Copy-Entry ($prefix + $relative) $file.FullName
         }
     }
     Copy-Entry 'README.md' (Join-Path $repo 'README.md')
+    Copy-Entry 'docs/updates/README.md' (Join-Path $repo 'docs\updates\README.md')
     Copy-Entry 'server-update/README.txt' (Join-Path $PSScriptRoot 'SERVER-UPDATE.txt')
-    Copy-Entry 'server-update/mods/goldclaim-1.0.28.jar' (Join-Path $repo 'artifacts\goldclaim-1.0.28.jar')
-    Copy-Entry 'server-update/mods/soulsbackpackscompat-1.0.0.jar' (Join-Path $repo 'artifacts\soulsbackpackscompat-1.0.0.jar')
-    Copy-Entry 'minecraft/mods/soulsbackpackscompat-1.0.0.jar' (Join-Path $repo 'artifacts\soulsbackpackscompat-1.0.0.jar')
+    Copy-Entry 'server-update/mods/goldclaim-1.0.31.jar' (Join-Path $repo 'artifacts\goldclaim-1.0.31.jar')
+    Copy-Entry 'server-update/mods/soulsbackpackscompat-1.1.0.jar' (Join-Path $repo 'artifacts\soulsbackpackscompat-1.1.0.jar')
+    Copy-Entry 'minecraft/mods/soulsbackpackscompat-1.1.0.jar' (Join-Path $repo 'artifacts\soulsbackpackscompat-1.1.0.jar')
+    Copy-Entry 'client-update/mods/soulsbackpackscompat-1.1.0.jar' (Join-Path $repo 'artifacts\soulsbackpackscompat-1.1.0.jar')
     foreach ($entry in @($zip.Entries | Where-Object {
-            $_.FullName -match '^(minecraft|server-update)/mods/(gangshats|gangscosmetics)-.*\.jar$'
+            $_.FullName -match '^(minecraft|client-update|server-update)/mods/(gangshats|gangscosmetics)-.*\.jar$'
         })) {
         $entry.Delete()
     }
-    Copy-Entry 'minecraft/mods/gangscosmetics-2.0.0.jar' (Join-Path $repo 'artifacts\gangscosmetics-2.0.0.jar')
-    Copy-Entry 'server-update/mods/gangscosmetics-2.0.0.jar' (Join-Path $repo 'artifacts\gangscosmetics-2.0.0.jar')
+    Copy-Entry 'minecraft/mods/gangscosmetics-2.0.2.jar' (Join-Path $repo 'artifacts\gangscosmetics-2.0.2.jar')
+    Copy-Entry 'server-update/mods/gangscosmetics-2.0.2.jar' (Join-Path $repo 'artifacts\gangscosmetics-2.0.2.jar')
+    Copy-Entry 'client-update/mods/gangscosmetics-2.0.2.jar' (Join-Path $repo 'artifacts\gangscosmetics-2.0.2.jar')
     foreach ($entry in @($zip.Entries | Where-Object {
             $_.FullName -match '^minecraft/mods/rankbadges-.*\.jar$'
         })) {
@@ -70,24 +88,34 @@ try {
         Copy-Entry ($prefix + 'Install-ResourcePackDefaults.ps1') (Join-Path $PSScriptRoot 'Install-ResourcePackDefaults.ps1')
     }
     Copy-Entry 'client-update/Install-ClientUpdate.ps1' (Join-Path $PSScriptRoot 'Install-ClientUpdate.ps1')
+    Copy-Entry 'client-update/Get-PrismAutoUpdateConfig.ps1' (Join-Path $PSScriptRoot 'Get-PrismAutoUpdateConfig.ps1')
+    Copy-Entry 'client-update/README.txt' (Join-Path $PSScriptRoot 'CLIENT-UPDATE.txt')
+    foreach ($prefix in @('minecraft/', 'client-update/')) {
+        Copy-Entry ($prefix + 'mods/defaultoptions-fabric-1.20.1-18.0.6.jar') $DefaultOptionsJar
+        foreach ($name in @('options.txt', 'keybindings.txt', 'servers.dat')) {
+            Copy-Entry ($prefix + 'config/defaultoptions/' + $name) (Join-Path $repo ('config\defaultoptions\' + $name))
+        }
+    }
     $instance = Read-Entry 'instance.cfg'
-    $instance = [regex]::Replace($instance, '(?m)^name=[^\r\n]*', 'name=The Gangs Modpack v1.1.0')
+    $instance = [regex]::Replace($instance, '(?m)^name=[^\r\n]*', 'name=The Gangs Modpack v1.1.2')
+    $instance = Get-PrismAutoUpdateConfig $instance
     Write-Entry 'instance.cfg' ($utf8.GetBytes($instance))
-    $options = [IO.File]::ReadAllText((Join-Path $repo 'config\options.txt'))
+    $options = [IO.File]::ReadAllText((Join-Path $repo 'config\defaultoptions\options.txt'))
     $match = [regex]::Match($options, '(?m)^resourcePacks:(.*)\r?$')
     if (-not $match.Success) { throw 'Client options template has no resourcePacks selection.' }
-    $selected = @($match.Groups[1].Value.Trim() | ConvertFrom-Json)
+    $parsed = ConvertFrom-Json -InputObject $match.Groups[1].Value.Trim()
+    $selected = @($parsed)
+    foreach ($id in $selected) {
+        if ($id -isnot [string]) { throw 'Resource-pack defaults must be strings.' }
+    }
     foreach ($entry in $zip.Entries | Where-Object {
             $_.FullName -match '^minecraft/resourcepacks/[^/]+\.zip$'
         } | Sort-Object FullName) {
         $id = 'file/' + [IO.Path]::GetFileName($entry.FullName)
-        if ($id -notin $selected) { $selected += $id }
+        if ($id -notin $selected) {
+            throw "Missing resource-pack default $id. Run Build-ClientDefaults.ps1 against this baseline first."
+        }
     }
-    $line = 'resourcePacks:' + (ConvertTo-Json -InputObject @($selected) -Compress)
-    $options = $options.Substring(0, $match.Index) + $line + $options.Substring($match.Index + $match.Length)
-    Write-Entry 'minecraft/options.txt' ($utf8.GetBytes($options))
-    $record = [ordered]@{ appliedAt = 'release-v1.1.0'; enabledPacks = @($selected) }
-    Write-Entry 'minecraft/config/resource-pack-defaults-applied-v1.json' ($utf8.GetBytes((ConvertTo-Json $record)))
 } finally { $zip.Dispose() }
 
 $zip = [IO.Compression.ZipFile]::OpenRead($output)
@@ -96,27 +124,40 @@ try {
         throw 'Removed compass mod remains in the ZIP.'
     }
     $goldclaim = @($zip.Entries | Where-Object { $_.FullName -match '^server-update/mods/goldclaim-.*\.jar$' })
-    if ($goldclaim.Count -ne 1 -or $goldclaim[0].Name -ne 'goldclaim-1.0.28.jar') {
+    if ($goldclaim.Count -ne 1 -or $goldclaim[0].Name -ne 'goldclaim-1.0.31.jar') {
         throw 'Wrong or duplicate GoldClaim server-update jar.'
     }
-    foreach ($name in @('server-update/mods/soulsbackpackscompat-1.0.0.jar',
-            'minecraft/mods/soulsbackpackscompat-1.0.0.jar')) {
-        if (-not $zip.GetEntry($name)) { throw "Required compatibility mod missing: $name" }
+    foreach ($name in @('server-update/mods/soulsbackpackscompat-1.1.0.jar',
+            'minecraft/mods/soulsbackpackscompat-1.1.0.jar',
+            'client-update/mods/soulsbackpackscompat-1.1.0.jar')) {
+        $entry = $zip.GetEntry($name)
+        if (-not $entry) { throw "Required compatibility mod missing: $name" }
+        $hash = [Security.Cryptography.SHA256]::Create()
+        $stream = $entry.Open()
+        try { $actual = [BitConverter]::ToString($hash.ComputeHash($stream)).Replace('-', '') }
+        finally { $stream.Dispose(); $hash.Dispose() }
+        if ($actual -ne (Get-FileHash (Join-Path $repo 'artifacts\soulsbackpackscompat-1.1.0.jar') -Algorithm SHA256).Hash) {
+            throw "Packaged compatibility mod does not match the built artifact: $name"
+        }
     }
-    foreach ($name in @('server-update/mods/gangscosmetics-2.0.0.jar',
-            'minecraft/mods/gangscosmetics-2.0.0.jar')) {
+    if (@($zip.Entries | Where-Object {
+            $_.FullName -match '^(minecraft|client-update|server-update)/mods/soulsbackpackscompat-.*\.jar$'
+        }).Count -ne 3) { throw 'Duplicate or outdated compatibility mod remains in the ZIP.' }
+    foreach ($name in @('server-update/mods/gangscosmetics-2.0.2.jar',
+            'minecraft/mods/gangscosmetics-2.0.2.jar',
+            'client-update/mods/gangscosmetics-2.0.2.jar')) {
         $entry = $zip.GetEntry($name)
         if (-not $entry) { throw "Required cosmetics mod missing: $name" }
         $hash = [Security.Cryptography.SHA256]::Create()
         $stream = $entry.Open()
         try { $actual = [BitConverter]::ToString($hash.ComputeHash($stream)).Replace('-', '') }
         finally { $stream.Dispose(); $hash.Dispose() }
-        if ($actual -ne (Get-FileHash (Join-Path $repo 'artifacts\gangscosmetics-2.0.0.jar') -Algorithm SHA256).Hash) {
+        if ($actual -ne (Get-FileHash (Join-Path $repo 'artifacts\gangscosmetics-2.0.2.jar') -Algorithm SHA256).Hash) {
             throw "Packaged Gangs Cosmetics does not match the built artifact: $name"
         }
     }
     if (@($zip.Entries | Where-Object {
-            $_.FullName -match '^(minecraft|server-update)/mods/gangshats-.*\.jar$'
+            $_.FullName -match '^(minecraft|client-update|server-update)/mods/gangshats-.*\.jar$'
         }).Count) { throw 'Legacy Gangs Hats remains in the ZIP.' }
     if (@($zip.Entries | Where-Object { $_.FullName -match '^minecraft/mods/goldclaim-' }).Count) {
         throw 'Server-only GoldClaim is present in the client mods folder.'
@@ -125,7 +166,7 @@ try {
     $stream = $goldclaim[0].Open()
     try { $actual = [BitConverter]::ToString($hash.ComputeHash($stream)).Replace('-', '') }
     finally { $stream.Dispose(); $hash.Dispose() }
-    if ($actual -ne (Get-FileHash (Join-Path $repo 'artifacts\goldclaim-1.0.28.jar') -Algorithm SHA256).Hash) {
+    if ($actual -ne (Get-FileHash (Join-Path $repo 'artifacts\goldclaim-1.0.31.jar') -Algorithm SHA256).Hash) {
         throw 'Packaged GoldClaim does not match the built artifact.'
     }
     foreach ($name in @('minecraft/config/global_packs.toml', 'config/global_packs.toml',
@@ -135,11 +176,34 @@ try {
             throw "Resource packs are still locked: $name"
         }
     }
-    foreach ($name in @('minecraft/options.txt', 'minecraft/config/resource-pack-defaults-applied-v1.json',
+    foreach ($name in @('minecraft/config/defaultoptions/options.txt', 'minecraft/config/defaultoptions/keybindings.txt',
+            'minecraft/config/defaultoptions/servers.dat', 'packwiz-installer-bootstrap.jar',
             'client-update/Install-ClientUpdate.ps1', 'server-update/Install-ServerUpdate.ps1')) {
         if (-not $zip.GetEntry($name)) { throw "Required release entry missing: $name" }
     }
-    $options = Read-Entry 'minecraft/options.txt'
+    if ($zip.GetEntry('minecraft/options.txt') -or $zip.GetEntry('minecraft/servers.dat')) {
+        throw 'Personal options or server list must not be shipped at the game root.'
+    }
+    $defaultsMods = @($zip.Entries | Where-Object {
+        $_.FullName -match '^(minecraft|client-update|server-update)/mods/defaultoptions-.*\.jar$'
+    })
+    if ($defaultsMods.Count -ne 2 -or $zip.GetEntry('server-update/mods/defaultoptions-fabric-1.20.1-18.0.6.jar')) {
+        throw 'Default Options must be included exactly once per client payload and never on the server.'
+    }
+    foreach ($entry in $defaultsMods) {
+        $hash = [Security.Cryptography.SHA512]::Create()
+        $stream = $entry.Open()
+        try { $actual = [BitConverter]::ToString($hash.ComputeHash($stream)).Replace('-', '') }
+        finally { $stream.Dispose(); $hash.Dispose() }
+        if ($actual -ne (Get-FileHash $DefaultOptionsJar -Algorithm SHA512).Hash) {
+            throw "Packaged Default Options hash mismatch: $($entry.FullName)"
+        }
+    }
+    $instance = Read-Entry 'instance.cfg'
+    if ($instance -notmatch ' -s client ' -or $instance -notmatch 'PreLaunchCommandIgnoreExitCode=false') {
+        throw 'Automatic updates must be client-only and fail visibly.'
+    }
+    $options = Read-Entry 'minecraft/config/defaultoptions/options.txt'
     if ($options -notmatch '"file/immersive-interfaces.zip"') { throw 'Immersive Interfaces is not enabled by default.' }
     Write-Output "Verified $($zip.Entries.Count) ZIP entries; both search compass mods absent, GoldClaim and backpack compatibility jars match."
 } finally { $zip.Dispose() }

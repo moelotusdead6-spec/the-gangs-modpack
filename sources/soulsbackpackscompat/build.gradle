@@ -9,10 +9,55 @@ base {
 	archivesName = project.archives_base_name
 }
 
+repositories {
+	mavenCentral()
+}
+
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	testImplementation 'junit:junit:4.13.2'
+	if (project.hasProperty('smokeMods')) {
+		modRuntimeOnly fileTree(project.property('smokeMods')) { include '*.jar' }
+	}
+}
+
+sourceSets {
+	testmod {
+		compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+		runtimeClasspath += output + compileClasspath + sourceSets.main.runtimeClasspath
+	}
+}
+
+loom {
+	mods {
+		soulsbackpackscompat { sourceSet sourceSets.main }
+		soulsbackpackscompat_smoke { sourceSet sourceSets.testmod }
+	}
+	runs {
+		abilitySmoke {
+			server()
+			name 'Isolated Soulslike ability compatibility smoke test'
+			source sourceSets.testmod
+			runDir 'build/ability-smoke'
+			programArg 'nogui'
+		}
+	}
+}
+
+tasks.named('runAbilitySmoke') {
+	doFirst {
+		def result = file('build/ability-smoke/ability-smoke-passed.txt')
+		if (result.exists() && !result.delete()) {
+			throw new GradleException('Cannot clear the previous ability smoke-test result.')
+		}
+	}
+	doLast {
+		if (!file('build/ability-smoke/ability-smoke-passed.txt').exists()) {
+			throw new GradleException('The ability smoke test did not report success; inspect the game log.')
+		}
+	}
 }
 
 processResources {

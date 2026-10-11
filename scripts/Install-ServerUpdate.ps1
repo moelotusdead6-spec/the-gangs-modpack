@@ -7,16 +7,21 @@ param(
 $ErrorActionPreference = 'Stop'
 $game = (Resolve-Path -LiteralPath $GameDirectory).Path
 $utf8 = [Text.UTF8Encoding]::new($false)
-$running = @(Get-CimInstance Win32_Process -Filter "name='java.exe' OR name='javaw.exe'" |
-    Where-Object { $_.CommandLine -and $_.CommandLine.IndexOf($game, [StringComparison]::OrdinalIgnoreCase) -ge 0 })
-if ($running.Count) { throw 'A Java process references this server directory. Stop the server before installing.' }
+$running = @(Get-CimInstance Win32_Process |
+    Where-Object {
+        $_.ProcessId -ne $PID -and
+        $_.CommandLine -and
+        $_.CommandLine.IndexOf($game, [StringComparison]::OrdinalIgnoreCase) -ge 0 -and
+        ($_.Name -in @('java.exe', 'javaw.exe', 'cmd.exe', 'powershell.exe', 'pwsh.exe'))
+    })
+if ($running.Count) { throw 'A process references this server directory. Stop the server before installing.' }
 $propertiesPath = Join-Path $game 'server.properties'
 $corePath = Join-Path $game 'config\sophisticatedcore-common.toml'
 $startPath = Join-Path $game 'start.bat'
 foreach ($path in @($propertiesPath, $corePath, (Join-Path $game 'config\global_packs.toml'),
-        (Join-Path $PSScriptRoot 'mods\goldclaim-1.0.28.jar'),
-        (Join-Path $PSScriptRoot 'mods\soulsbackpackscompat-1.0.0.jar'),
-        (Join-Path $PSScriptRoot 'mods\gangscosmetics-2.0.0.jar'),
+        (Join-Path $PSScriptRoot 'mods\goldclaim-1.0.31.jar'),
+        (Join-Path $PSScriptRoot 'mods\soulsbackpackscompat-1.1.0.jar'),
+        (Join-Path $PSScriptRoot 'mods\gangscosmetics-2.0.2.jar'),
         (Join-Path $PSScriptRoot 'config\gangscosmetics.json'),
         (Join-Path $PSScriptRoot 'server-settings.properties'),
         (Join-Path $PSScriptRoot 'Install-ResourcePackDefaults.ps1'),
@@ -54,7 +59,7 @@ foreach ($line in [IO.File]::ReadAllLines((Join-Path $PSScriptRoot 'server-setti
         $properties = $properties.TrimEnd("`r", "`n") + "`r`n" + $line + "`r`n"
     }
 }
-$backup = Join-Path $game ('backups\policy-v1.1.0-' + (Get-Date -Format 'yyyyMMdd-HHmmss-ffff'))
+$backup = Join-Path $game ('backups\policy-v1.1.2-' + (Get-Date -Format 'yyyyMMdd-HHmmss-ffff'))
 New-Item -ItemType Directory -Path $backup | Out-Null
 function Backup-File([string]$Path) {
     if (Test-Path -LiteralPath $Path -PathType Leaf) {
@@ -69,7 +74,8 @@ foreach ($path in @($propertiesPath, $corePath, $startPath, (Join-Path $game 'co
 }
 if (Test-Path -LiteralPath $startPath) {
     $start = [IO.File]::ReadAllText($startPath)
-    $start = [regex]::Replace($start, 'goldclaim-\d+\.\d+\.\d+\.jar', 'goldclaim-1.0.28.jar')
+    $start = [regex]::Replace($start, 'goldclaim-\d+\.\d+\.\d+\.jar', 'goldclaim-1.0.31.jar')
+    $start = [regex]::Replace($start, 'gangscosmetics-\d+\.\d+\.\d+\.jar', 'gangscosmetics-2.0.2.jar')
     [IO.File]::WriteAllText($startPath, $start, $utf8)
 }
 $mods = Join-Path $game 'mods'
@@ -80,9 +86,9 @@ foreach ($file in $removed) {
     Backup-File $file.FullName
     Remove-Item -LiteralPath $file.FullName
 }
-Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'mods\goldclaim-1.0.28.jar') -Destination $mods
-Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'mods\soulsbackpackscompat-1.0.0.jar') -Destination $mods
-Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'mods\gangscosmetics-2.0.0.jar') -Destination $mods
+Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'mods\goldclaim-1.0.31.jar') -Destination $mods
+Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'mods\soulsbackpackscompat-1.1.0.jar') -Destination $mods
+Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'mods\gangscosmetics-2.0.2.jar') -Destination $mods
 Backup-File (Join-Path $game 'config\gangscosmetics.json')
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'config\gangscosmetics.json') -Destination (Join-Path $game 'config')
 [IO.File]::WriteAllText($corePath, $updatedCore, $utf8)
@@ -93,21 +99,21 @@ Backup-File $destination
 New-Item -ItemType Directory -Path ([IO.Path]::GetDirectoryName($destination)) -Force | Out-Null
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot $relative) -Destination $destination
 & (Join-Path $PSScriptRoot 'Install-ResourcePackDefaults.ps1') -Target Server -GameDirectory $game
-if ((Get-FileHash (Join-Path $mods 'goldclaim-1.0.28.jar')).Hash -ne
-        (Get-FileHash (Join-Path $PSScriptRoot 'mods\goldclaim-1.0.28.jar')).Hash) {
+if ((Get-FileHash (Join-Path $mods 'goldclaim-1.0.31.jar')).Hash -ne
+        (Get-FileHash (Join-Path $PSScriptRoot 'mods\goldclaim-1.0.31.jar')).Hash) {
     throw 'Installed GoldClaim hash does not match the supplied update.'
 }
-if ((Get-FileHash (Join-Path $mods 'soulsbackpackscompat-1.0.0.jar')).Hash -ne
-            (Get-FileHash (Join-Path $PSScriptRoot 'mods\soulsbackpackscompat-1.0.0.jar')).Hash) {
+if ((Get-FileHash (Join-Path $mods 'soulsbackpackscompat-1.1.0.jar')).Hash -ne
+            (Get-FileHash (Join-Path $PSScriptRoot 'mods\soulsbackpackscompat-1.1.0.jar')).Hash) {
         throw 'Installed Soulslike Backpacks Compatibility hash does not match the supplied update.'
 }
-if ((Get-FileHash (Join-Path $mods 'gangscosmetics-2.0.0.jar')).Hash -ne
-            (Get-FileHash (Join-Path $PSScriptRoot 'mods\gangscosmetics-2.0.0.jar')).Hash) {
+if ((Get-FileHash (Join-Path $mods 'gangscosmetics-2.0.2.jar')).Hash -ne
+            (Get-FileHash (Join-Path $PSScriptRoot 'mods\gangscosmetics-2.0.2.jar')).Hash) {
     throw 'Installed Gangs Cosmetics hash does not match the supplied update.'
 }
 if (@(Get-ChildItem -LiteralPath $mods -File | Where-Object {
         $_.Name -match '^(NaturesCompass-.*\.jar|ExplorersCompass-.*\.jar|goldclaim-.*\.jar(?:\.pending)?|soulsbackpackscompat-.*\.jar(?:\.pending)?|gangshats-.*\.jar(?:\.pending)?|gangscosmetics-.*\.jar(?:\.pending)?)$' -and
-                $_.Name -notin @('goldclaim-1.0.28.jar', 'soulsbackpackscompat-1.0.0.jar', 'gangscosmetics-2.0.0.jar')
+                $_.Name -notin @('goldclaim-1.0.31.jar', 'soulsbackpackscompat-1.1.0.jar', 'gangscosmetics-2.0.2.jar')
         }).Count) { throw 'Old or removed mod jars remain installed.' }
 Write-Output "Server policy update installed. Backup: $backup"
-Write-Output 'Restart the server now to load the compatibility mod. Worlds, player data, claims, homes, kit data and the RSW journal were not changed. Server remains stopped.'
+Write-Output 'Restart the server when ready. GoldClaim disables RSW fire spread on load and after each reset. Worlds, player data, claims, homes, kit data and the RSW journal were not changed. Server remains stopped.'

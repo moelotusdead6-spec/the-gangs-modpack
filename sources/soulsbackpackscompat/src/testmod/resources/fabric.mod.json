@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "soulsbackpackscompat_smoke",
+  "version": "1.0.0",
+  "name": "Soulslike ability compatibility smoke test",
+  "environment": "server",
+  "entrypoints": {
+    "server": ["com.gangs.soulsbackpackscompat.AbilitySmokeTest"]
+  },
+  "depends": {
+    "soulsbackpackscompat": "*",
+    "soulsweapons": "1.4.9-1.20.1-fabric",
+    "sophisticatedbackpacks": "*"
+  }
+}

@@ -1,6 +1,12 @@
 # Published Artifacts
 
-`artifacts/goldclaim-1.0.28.jar` is the current server-only build. It retains all 1.0.27 policies and adds public `/trash` by invoking Essential Commands' existing `/wastebin` handler with the original command source. It does not elevate players or change `/wastebin` permissions. Essential Commands must have `/wastebin` enabled; a missing handler produces an explicit command error.
+`artifacts/goldclaim-1.0.31.jar` is the current server-only build. It retains the 1.0.30 policies and disables `doFireTick` specifically in RSW when its dimension loads, after every reset, and during world maintenance. Other RSW gamerules, reset timing, saved positions and first-entry safety remain unchanged. The update is packaged for installation while the server is stopped, not applied to the live server.
+
+`artifacts/goldclaim-1.0.30.jar` is the previous server-only build. It retains all 1.0.29 policies and allows untrusted visitors to attack hostile mobs in claims. The exception covers vanilla and modded entities implementing Minecraft's `Monster` interface or registered in `SpawnGroup.MONSTER`; tamed pets remain protected even if their mod uses that spawn group. Passive entities, villagers, decorations, entity interactions, inventories and block permissions remain unchanged.
+
+`artifacts/goldclaim-1.0.29.jar` is the previous server-only build. It retains all 1.0.28 policies and implements public `/trash` as a native 27-slot disposable container. It no longer depends on Essential Commands' `/wastebin` registration order, command node, configuration or permissions.
+
+`artifacts/goldclaim-1.0.28.jar` is the previous server-only build. Its `/trash` alias attempted to invoke Essential Commands' `/wastebin` command node and was not activated on the live server before the 1.1.1 update.
 
 `artifacts/goldclaim-1.0.27.jar` is the previous server-only build. It retains the 1.0.26 chunk-cleanup hotfix, bans the exact `sophisticatedbackpacks:inception_upgrade` item through recipes, commands, item construction/refills and saved/nested item loading, and corrects the crafting exception to the actual `sarosplayerplushiemod:plushie` output. Existing installed Inception upgrades load as empty stacks and are not activated; backpack contents and UUID references remain intact. RSW first-entry safety and exact same-generation returns are unchanged.
 
@@ -10,13 +16,15 @@
 
 `artifacts/gangsboots-1.0.7.jar` is a first-party Gangs Boots build with one 2.5% chance per player's first personal Lootr chest loot generation. Reopening saved personal loot does not reroll; shared or automated container fills do not roll. Its required CC-BY 4.0 attribution is in `artifacts/gangsboots-ATTRIBUTION.txt`.
 
-`artifacts/gangscosmetics-2.0.0.jar` is the first public Gangs Cosmetics build. It replaces Gangs Hats with a server-authoritative MoreCosmetics wardrobe, bundled immutable models, persistent selections, tradeable keys/vouchers, and GoldClaim kit rewards. Weekly kit claims award one key and monthly claims award three. Players receive ownership rather than physical wearable items; duplicate key rolls create a voucher.
+`artifacts/gangscosmetics-2.0.2.jar` is the current Gangs Cosmetics build. It retains the server-authoritative MoreCosmetics wardrobe, bundled immutable models, persistent selections, tradeable keys/vouchers, and GoldClaim kit rewards from 2.0.0. It suppresses the custom nametag renderer for the local player so third-person view does not show a duplicate moving self-nameplate; other players' custom nametags remain unchanged. Weekly kit claims award one key and monthly claims award three. Players receive ownership rather than physical wearable items; duplicate key rolls create a voucher. Its source is maintained in the external `gangs-morecosmetics` project.
 
 `artifacts/polymer-bundled-0.5.20+1.20.1.jar` is the user-supplied official Polymer bundle used on both client and server for server-driven resources.
 
 `artifacts/rankbadges-1.0.2.jar` is a first-party Rank Badges build. Its source is maintained in `sources/rankbadges`.
 
-`artifacts/soulsbackpackscompat-1.0.0.jar` is a both-sides compatibility mod that prevents Marium's Soulslike Weaponry 1.4.9 from receiving a null ability list when ticking the shared Sophisticated Backpack item class. The observed trigger was a replacement Netherite Backpack; backpack contents, upgrades and NBT are not modified. Its source is maintained in `sources/soulsbackpackscompat`.
+`artifacts/soulsbackpackscompat-1.1.0.jar` is the current both-sides compatibility mod for Marium's Soulslike Weaponry 1.4.9 and Sophisticated Core 1.2.7.15.166. It retains the 1.0.1 null ability-list repair and adds a guard around Sophisticated Core's capped multiplication helper: zero or negative item max-stack values return zero instead of reaching division by zero. This covers Polymer's client-side `VirtualClientItem` reporting a zero max count while a backpack stack upgrade is active. Backpack contents, upgrades and NBT are not modified. Replace older compatibility jars on both client and server; do not install multiple versions. Its source is maintained in `sources/soulsbackpackscompat`.
+
+Compatibility validation: run `gradle test build` in `sources/soulsbackpackscompat`. For the real-mod smoke test, run `gradle runAbilitySmoke -PsmokeMods=<directory>` with the pack's Soulslike Weaponry, Sophisticated Backpacks/Core and their runtime dependencies (including extracted nested dependency jars). The isolated server-side fixture exits before creating a world and requires a fresh success marker, checking the zero-count guard, mutable per-item recovery, inventory ticking, existing weapon abilities and unchanged backpack NBT.
 
 `artifacts/gangshop-1.0.8.jar` is the server-only first-party Gang Shop build. It provides the shared Gang Bucks wallet and the server shop GUI, including the updated catalog exclusions and Farmer's Delight/Nether's Delight food categorization.
 

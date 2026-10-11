@@ -3,7 +3,8 @@
   "package": "com.gangs.soulsbackpackscompat.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "BackpackItemMixin"
+    "ItemAbilitiesMixin",
+    "MathHelperMixin"
   ],
   "injectors": {
     "defaultRequire": 1

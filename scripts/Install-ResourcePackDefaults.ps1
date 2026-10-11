@@ -65,6 +65,13 @@ if (Test-Path -LiteralPath $marker) {
 }
 
 $optionsPath = Join-Path $game 'options.txt'
+if (Test-Path -LiteralPath $optionsPath -PathType Leaf) {
+    if ($unlocked -ne $config) { Save-WithBackup $configPath $unlocked }
+    $record = [ordered]@{ appliedAt = (Get-Date).ToString('o'); preservedExistingOptions = $true }
+    [IO.File]::WriteAllText($marker, (ConvertTo-Json $record), $utf8)
+    Write-Output 'Resource packs unlocked. Existing options, keybindings and resource-pack choices were not changed.'
+    return
+}
 $options = ''
 if (Test-Path -LiteralPath $optionsPath) {
     $options = [IO.File]::ReadAllText($optionsPath)
