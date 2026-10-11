@@ -51,6 +51,26 @@ foreach ($relative in $personal.Keys) {
     Write-Fixture $path $personal[$relative]
     $hashes[$path] = (Get-FileHash -LiteralPath $path).Hash
 }
+function Get-CimInstance {
+    param([string]$ClassName)
+    [pscustomobject]@{ Name = 'prismlauncher.exe'; ProcessId = 1; CommandLine = '' }
+}
+foreach ($script in @('Install-ClientUpdate.ps1', 'Repair-PrismAutoUpdate.ps1')) {
+    $before = (Get-FileHash (Join-Path $instance 'instance.cfg')).Hash
+    try {
+        & (Join-Path $root ('client-update\' + $script)) -GameDirectory $game
+        throw 'Installer failed to reject an open Prism Launcher.'
+    } catch {
+        if ($_.Exception.Message -notmatch '^Close Prism Launcher and Minecraft') { throw }
+    }
+    Require ((Get-FileHash (Join-Path $instance 'instance.cfg')).Hash -ceq $before) 'Open-launcher rejection changed configuration.'
+    Assert-Preserved $hashes
+}
+# The disposable instance is not owned by the user's running Prism process.
+function Get-CimInstance {
+    param([string]$ClassName)
+    CimCmdlets\Get-CimInstance -ClassName $ClassName | Where-Object { $_.Name -ne 'prismlauncher.exe' }
+}
 foreach ($run in 1..2) {
     & (Join-Path $root 'client-update\Install-ClientUpdate.ps1') -GameDirectory $game
     Assert-Preserved $hashes
@@ -61,6 +81,9 @@ Require ([regex]::Matches($cfg, '(?m)^PreLaunchCommand=').Count -eq 1) 'Duplicat
 Require ($cfg -match 'name=Personal Instance') 'Personal instance name changed.'
 . (Join-Path $PSScriptRoot 'Get-PrismAutoUpdateConfig.ps1')
 Require ((Get-PrismAutoUpdateConfig $cfg) -ceq $cfg) 'Prism update configuration is not idempotent.'
+& (Join-Path $root 'client-update\Repair-PrismAutoUpdate.ps1') -GameDirectory $game
+Assert-Preserved $hashes
+Require ([IO.File]::ReadAllText((Join-Path $instance 'instance.cfg')) -ceq $cfg) 'Launcher-only repair changed an already corrected configuration.'
 
 $servers = [IO.File]::ReadAllBytes((Join-Path $game 'config\defaultoptions\servers.dat'))
 $reader = [IO.BinaryReader]::new([IO.MemoryStream]::new($servers))

@@ -89,6 +89,7 @@ try {
     }
     Copy-Entry 'client-update/Install-ClientUpdate.ps1' (Join-Path $PSScriptRoot 'Install-ClientUpdate.ps1')
     Copy-Entry 'client-update/Get-PrismAutoUpdateConfig.ps1' (Join-Path $PSScriptRoot 'Get-PrismAutoUpdateConfig.ps1')
+    Copy-Entry 'client-update/Repair-PrismAutoUpdate.ps1' (Join-Path $PSScriptRoot 'Repair-PrismAutoUpdate.ps1')
     Copy-Entry 'client-update/README.txt' (Join-Path $PSScriptRoot 'CLIENT-UPDATE.txt')
     foreach ($prefix in @('minecraft/', 'client-update/')) {
         Copy-Entry ($prefix + 'mods/defaultoptions-fabric-1.20.1-18.0.6.jar') $DefaultOptionsJar
@@ -203,6 +204,8 @@ try {
     if ($instance -notmatch ' -s client ' -or $instance -notmatch 'PreLaunchCommandIgnoreExitCode=false') {
         throw 'Automatic updates must be client-only and fail visibly.'
     }
+    $expectedCommand = 'PreLaunchCommand="\"$INST_JAVA\" -jar \"$INST_DIR/packwiz-installer-bootstrap.jar\" -g -s client https://moelotusdead6-spec.github.io/the-gangs-modpack/pack.toml"'
+    if (-not $instance.Contains($expectedCommand)) { throw 'Prism command quotes must survive Qt QSettings INI decoding.' }
     $options = Read-Entry 'minecraft/config/defaultoptions/options.txt'
     if ($options -notmatch '"file/immersive-interfaces.zip"') { throw 'Immersive Interfaces is not enabled by default.' }
     Write-Output "Verified $($zip.Entries.Count) ZIP entries; both search compass mods absent, GoldClaim and backpack compatibility jars match."

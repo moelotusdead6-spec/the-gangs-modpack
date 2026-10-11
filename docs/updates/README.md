@@ -7,11 +7,24 @@ New v1.1.2 imports have automatic client-only Packwiz updates enabled.
 The public ZIP is for new installations, not a replacement instance for
 every release.
 
-Existing players must close Minecraft and run the included
+Existing players must close Minecraft and Prism Launcher, then run the included
 `client-update/Install-ClientUpdate.ps1` against their existing Prism game
 directory once. Follow the ZIP's `client-update/README.txt` for the command.
 After setup, future normal client pack updates need no ZIP reimport or
 manual installer.
+
+The v1.1.2 download includes corrected Qt INI escaping. For an earlier
+test import, edit its Settings > Custom Commands and set
+the pre-launch command to:
+
+```text
+"$INST_JAVA" -jar "$INST_DIR/packwiz-installer-bootstrap.jar" -g -s client https://moelotusdead6-spec.github.io/the-gangs-modpack/pack.toml
+```
+
+Enter that text in Prism's UI, not directly into `instance.cfg`: Prism handles
+the required INI escaping when it saves. Alternatively, close Prism and run
+the included `client-update/Repair-PrismAutoUpdate.ps1` against the existing
+game directory. Neither method changes player settings.
 
 Internet access is required for update checks. Failed updates block launch
 and appear in Prism's log rather than silently launching a mismatched client.

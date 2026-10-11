@@ -1,9 +1,14 @@
 The Gangs Modpack v1.1.2 - automatic client updates
 
-EXISTING PLAYERS: Close Minecraft. Extract this ZIP somewhere outside your
+EXISTING PLAYERS: Close Minecraft and Prism Launcher. Extract this ZIP somewhere outside your
 instance, then run this ONE-TIME setup against the existing Prism game root
 (the folder containing mods, config and options.txt):
   powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Install-ClientUpdate.ps1 -GameDirectory "C:\path\to\Prism\instances\The Gangs\minecraft"
+
+EARLIER TEST IMPORTS: To repair the pre-launch command without reimporting,
+close Minecraft and Prism, then run the included repair:
+  powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Repair-PrismAutoUpdate.ps1 -GameDirectory "C:\path\to\your\existing\instance\minecraft"
+This changes only instance.cfg, with a backup. Reopen Prism afterwards.
 
 This preserves your saved keybindings, video/audio settings, resource-pack
 choices, servers.dat and other personal config. It backs up replaced files

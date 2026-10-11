@@ -9,10 +9,11 @@ $game = (Resolve-Path -LiteralPath $GameDirectory).Path
 $mods = Join-Path $game 'mods'
 if (-not (Test-Path -LiteralPath $mods -PathType Container)) { throw "Client mods folder not found: $mods" }
 $running = @(Get-CimInstance Win32_Process | Where-Object {
-    $_.ProcessId -ne $PID -and $_.Name -in @('java.exe', 'javaw.exe') -and
-        $_.CommandLine -and $_.CommandLine.IndexOf($game, [StringComparison]::OrdinalIgnoreCase) -ge 0
+    $_.Name -eq 'prismlauncher.exe' -or
+        ($_.ProcessId -ne $PID -and $_.Name -in @('java.exe', 'javaw.exe') -and
+        $_.CommandLine -and $_.CommandLine.IndexOf($game, [StringComparison]::OrdinalIgnoreCase) -ge 0)
 })
-if ($running.Count) { throw 'Minecraft is running in this instance. Close it before installing.' }
+if ($running.Count) { throw 'Close Prism Launcher and Minecraft before installing; Prism can overwrite external configuration edits while open.' }
 $instance = [IO.Directory]::GetParent($game).FullName
 $instanceConfig = Join-Path $instance 'instance.cfg'
 $bootstrap = Join-Path $instance 'packwiz-installer-bootstrap.jar'
