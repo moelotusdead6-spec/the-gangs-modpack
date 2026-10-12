@@ -26,6 +26,8 @@ tmp/
 scripts/
 docs/
 mods/*.jar
+packwiz-installer.jar
+packwiz.json
 artifacts/goldclaim-1.0.26.jar
 artifacts/*.bak*
 artifacts/

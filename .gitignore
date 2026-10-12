@@ -2,6 +2,9 @@ The-Gangs-Modpack-Prism-*.zip
 The-Gangs-Modpack-Server-Update-*.zip
 .vscode/
 tmp/
+mods/*.jar
+packwiz-installer.jar
+packwiz.json
 artifacts/*.bak*
 artifacts/gangs_hub_backup_*/
 sources/*/.gradle/
