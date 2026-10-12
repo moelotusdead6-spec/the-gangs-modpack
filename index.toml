@@ -14,7 +14,7 @@ hash = "10006af7661ff85f6385f56205d2cf7404faac415b0dc7a6a7c3abbad1c9bf00"
 
 [[files]]
 file = "config/EssentialCommands.properties"
-hash = "d87645d4a09789a27f785f33e6f3a8aa9e419a53cac5714c7647817b746bea92"
+hash = "4fa98d5b3df8897256e321b6937eab0e4dc382197c61d817f7cc86d0f3cbed1f"
 
 [[files]]
 file = "config/bcc.json"

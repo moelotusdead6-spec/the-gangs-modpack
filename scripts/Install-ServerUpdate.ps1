@@ -139,7 +139,7 @@ if (Test-Path -LiteralPath $ecDest -PathType Leaf) {
     Backup-File $ecDest
     $ecContent = [IO.File]::ReadAllText($ecDest)
     $pattern = '(?m)^rtp_enabled_worlds=.*$'
-    $replacement = 'rtp_enabled_worlds=["minecraft:overworld", "multiworld:rsw"]'
+    $replacement = 'rtp_enabled_worlds=[minecraft:overworld, multiworld:rsw]'
     if ([regex]::IsMatch($ecContent, $pattern)) {
         $ecContent = [regex]::Replace($ecContent, $pattern, $replacement)
     } else {
