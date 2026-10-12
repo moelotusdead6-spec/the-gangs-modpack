@@ -1,4 +1,4 @@
-The Gangs Modpack v1.1.2 - automatic client updates
+The Gangs Modpack v1.1.3 - automatic client updates
 
 EXISTING PLAYERS: Close Minecraft and Prism Launcher. Extract this ZIP somewhere outside your
 instance, then run this ONE-TIME setup against the existing Prism game root

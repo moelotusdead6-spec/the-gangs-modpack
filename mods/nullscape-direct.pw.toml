@@ -1,0 +1,8 @@
+name = "Nullscape"
+filename = "Nullscape_1.20.x_v1.2.8.jar"
+side = "both"
+
+[download]
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/Nullscape_1.20.x_v1.2.8.jar"
+hash-format = "sha256"
+hash = "32ccc5beb6ad0215e06082620903e1825a1b0df51777f3f31801b4a17e6ebcc5"

@@ -1,0 +1,8 @@
+name = "End's Phantasm"
+filename = "EndsPhantasm-1.20.1-1.4.jar"
+side = "both"
+
+[download]
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/EndsPhantasm-1.20.1-1.4.jar"
+hash-format = "sha256"
+hash = "6497b5c62b141de999c85c26ddf25ed1a4d096f6a818cf13786ef40426495291"

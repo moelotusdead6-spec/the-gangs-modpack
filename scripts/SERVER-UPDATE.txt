@@ -1,16 +1,20 @@
-The Gangs Modpack v1.1.2 - server update
+The Gangs Modpack v1.1.3 - server update
 
 STOP THE SERVER and keep a world backup before applying this update.
 Run PowerShell:
   powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Install-ServerUpdate.ps1 -GameDirectory "C:\path\to\server"
 
-The installer backs up touched files and installs GoldClaim 1.0.31 and
-Gangs Cosmetics 2.0.2 with public access and all ownership initially locked.
-It removes Nature's Compass, Explorer's Compass and older GoldClaim jars;
-patches GoldClaim version pins in start.bat; disables the Inception recipe;
-unlocks resource packs; and retains view-distance=6 / simulation-distance=6.
-Other settings, worlds, player data, claims, homes, kit data and the RSW
-reset journal are preserved. The installer DOES NOT start the server.
+The installer backs up touched files and installs GoldClaim 1.0.32,
+removes JEI, installs server-applicable mods (EndsPhantasm, Nullscape,
+Shield Overhaul, Necronomicon, Immersive Armors, Roughly Enough Items,
+bc_particle), and retains view-distance=6 / simulation-distance=6.
+RSW rotation now includes Overworld, Nether (with 1:1 coordinate scaling
+to protect players within the 5,000-block radius border), and The End.
+Portals in the wild Overworld can be lit but cannot be entered.
+Blood Moons are moved exclusively to RSW. /rtp is restricted to Wild
+Overworld and RSW Overworld. Other settings, worlds, player data, claims,
+homes, kit data and the RSW reset journal are preserved. The installer
+DOES NOT start the server.
 
 Do not overwrite live configs with the full config folder: it is supplied
 for new installations/reference. The installer merges only this update's

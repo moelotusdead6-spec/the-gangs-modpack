@@ -1,0 +1,8 @@
+name = "Necronomicon"
+filename = "Necronomicon-Fabric-1.6.0+1.20.1.jar"
+side = "both"
+
+[download]
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/Necronomicon-Fabric-1.6.0+1.20.1.jar"
+hash-format = "sha256"
+hash = "8239b393bfc5a7fd3209713745c88e6da13859cf3e64a36d175c7dc5a8519e60"

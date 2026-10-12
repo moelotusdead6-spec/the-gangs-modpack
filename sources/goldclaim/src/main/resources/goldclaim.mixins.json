@@ -20,7 +20,9 @@
     "AbstractBlockStateMixin",
     "CoralDryingMixin",
     "PairedBlockMixin",
-    "FireBlockMixin"
+    "FireBlockMixin",
+    "NetherPortalBlockMixin",
+    "EndPortalBlockMixin"
   ],
   "injectors": {
     "defaultRequire": 1

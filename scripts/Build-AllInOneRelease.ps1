@@ -46,6 +46,7 @@ try {
         if ($entry.FullName -match '(?i)(?:^|/)(?:NaturesCompass-|ExplorersCompass-).*\.jar$' -or
                 $entry.FullName -match '^server-update/mods/goldclaim-.*\.jar$' -or
                 $entry.FullName -match '^(minecraft|client-update|server-update)/mods/(soulsbackpackscompat|defaultoptions)-.*\.jar$' -or
+                $entry.FullName -match '^(minecraft|client-update|server-update)/mods/jei-.*\.jar$' -or
                 $entry.FullName -in @('minecraft/options.txt', 'minecraft/servers.dat',
                     'minecraft/servers.dat_old', 'minecraft/defaultoptions.journal.json',
                     'minecraft/config/resource-pack-defaults-applied-v1.json',
@@ -64,7 +65,20 @@ try {
     Copy-Entry 'README.md' (Join-Path $repo 'README.md')
     Copy-Entry 'docs/updates/README.md' (Join-Path $repo 'docs\updates\README.md')
     Copy-Entry 'server-update/README.txt' (Join-Path $PSScriptRoot 'SERVER-UPDATE.txt')
-    Copy-Entry 'server-update/mods/goldclaim-1.0.31.jar' (Join-Path $repo 'artifacts\goldclaim-1.0.31.jar')
+    Copy-Entry 'server-update/mods/goldclaim-1.0.32.jar' (Join-Path $repo 'artifacts\goldclaim-1.0.32.jar')
+    $newPackMods = @(
+        'EndsPhantasm-1.20.1-1.4.jar',
+        'Nullscape_1.20.x_v1.2.8.jar',
+        'RoughlyEnoughItems-12.1.785-fabric.jar',
+        'shield_overhaul-2.0.4.jar',
+        'Necronomicon-Fabric-1.6.0+1.20.1.jar',
+        'immersive_armors-1.7.2+1.20.1-fabric.jar',
+        'bc_particle-0.0.6-fabric-1.20.1.jar'
+    )
+    foreach ($mod in $newPackMods) {
+        Copy-Entry ("minecraft/mods/$mod") (Join-Path $repo "artifacts\$mod")
+        Copy-Entry ("server-update/mods/$mod") (Join-Path $repo "artifacts\$mod")
+    }
     Copy-Entry 'server-update/mods/soulsbackpackscompat-1.1.0.jar' (Join-Path $repo 'artifacts\soulsbackpackscompat-1.1.0.jar')
     Copy-Entry 'minecraft/mods/soulsbackpackscompat-1.1.0.jar' (Join-Path $repo 'artifacts\soulsbackpackscompat-1.1.0.jar')
     Copy-Entry 'client-update/mods/soulsbackpackscompat-1.1.0.jar' (Join-Path $repo 'artifacts\soulsbackpackscompat-1.1.0.jar')
@@ -98,7 +112,7 @@ try {
         }
     }
     $instance = Read-Entry 'instance.cfg'
-    $instance = [regex]::Replace($instance, '(?m)^name=[^\r\n]*', 'name=The Gangs Modpack v1.1.2')
+    $instance = [regex]::Replace($instance, '(?m)^name=[^\r\n]*', 'name=The Gangs Modpack v1.1.3')
     $instance = Get-PrismAutoUpdateConfig $instance
     Write-Entry 'instance.cfg' ($utf8.GetBytes($instance))
     $options = [IO.File]::ReadAllText((Join-Path $repo 'config\defaultoptions\options.txt'))
@@ -121,11 +135,11 @@ try {
 
 $zip = [IO.Compression.ZipFile]::OpenRead($output)
 try {
-    if (@($zip.Entries | Where-Object { $_.FullName -match '(?i)(NaturesCompass|ExplorersCompass).*\.jar$' }).Count) {
-        throw 'Removed compass mod remains in the ZIP.'
+    if (@($zip.Entries | Where-Object { $_.FullName -match '(?i)(NaturesCompass|ExplorersCompass|jei-).*\.jar$' }).Count) {
+        throw 'Removed mod remains in the ZIP.'
     }
     $goldclaim = @($zip.Entries | Where-Object { $_.FullName -match '^server-update/mods/goldclaim-.*\.jar$' })
-    if ($goldclaim.Count -ne 1 -or $goldclaim[0].Name -ne 'goldclaim-1.0.31.jar') {
+    if ($goldclaim.Count -ne 1 -or $goldclaim[0].Name -ne 'goldclaim-1.0.32.jar') {
         throw 'Wrong or duplicate GoldClaim server-update jar.'
     }
     foreach ($name in @('server-update/mods/soulsbackpackscompat-1.1.0.jar',
@@ -163,11 +177,14 @@ try {
     if (@($zip.Entries | Where-Object { $_.FullName -match '^minecraft/mods/goldclaim-' }).Count) {
         throw 'Server-only GoldClaim is present in the client mods folder.'
     }
+    if (-not $zip.GetEntry('minecraft/mods/RoughlyEnoughItems-12.1.785-fabric.jar')) {
+        throw 'Roughly Enough Items is missing from client mods.'
+    }
     $hash = [Security.Cryptography.SHA256]::Create()
     $stream = $goldclaim[0].Open()
     try { $actual = [BitConverter]::ToString($hash.ComputeHash($stream)).Replace('-', '') }
     finally { $stream.Dispose(); $hash.Dispose() }
-    if ($actual -ne (Get-FileHash (Join-Path $repo 'artifacts\goldclaim-1.0.31.jar') -Algorithm SHA256).Hash) {
+    if ($actual -ne (Get-FileHash (Join-Path $repo 'artifacts\goldclaim-1.0.32.jar') -Algorithm SHA256).Hash) {
         throw 'Packaged GoldClaim does not match the built artifact.'
     }
     foreach ($name in @('minecraft/config/global_packs.toml', 'config/global_packs.toml',

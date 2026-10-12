@@ -1,0 +1,8 @@
+name = "Roughly Enough Items"
+filename = "RoughlyEnoughItems-12.1.785-fabric.jar"
+side = "both"
+
+[download]
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/RoughlyEnoughItems-12.1.785-fabric.jar"
+hash-format = "sha256"
+hash = "15c266941018afbb84c0a213b8c5d22f85c47ba07904adcfa1500c6c7311ac00"

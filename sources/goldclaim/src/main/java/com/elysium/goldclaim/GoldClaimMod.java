@@ -196,6 +196,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.GameRules;
+import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
@@ -232,7 +233,10 @@ implements ModInitializer {
     private final Set<UUID> playersInPvp = new HashSet<UUID>();
     private static final long TELEPORT_REQUEST_TIMEOUT_MS = 60000L;
     private static final String PVP_DIMENSION = "multiworld:pvp";
-    private static final String RSW_DIMENSION = "multiworld:rsw";
+    public static final String RSW_DIMENSION = "multiworld:rsw";
+    public static final String RSW_NETHER_DIMENSION = "multiworld:rsw_nether";
+    public static final String RSW_THE_END_DIMENSION = "multiworld:rsw_the_end";
+    public static final List<String> RSW_DIMENSIONS = List.of(RSW_DIMENSION, RSW_NETHER_DIMENSION, RSW_THE_END_DIMENSION);
     private int worldMaintenanceTicks;
     private int playerMaintenanceTicks;
     private boolean initializeTestingWorlds;
@@ -244,13 +248,32 @@ implements ModInitializer {
         return INSTANCE != null && GoldClaimMod.INSTANCE.config != null && GoldClaimMod.INSTANCE.config.portalHubDimension.equals(world.getRegistryKey().getValue().toString());
     }
 
+    public static boolean isRswWorld(String dimensionId) {
+        return RSW_DIMENSIONS.contains(dimensionId);
+    }
+
+    public static boolean isRswWorld(ServerWorld world) {
+        return world != null && isRswWorld(world.getRegistryKey().getValue().toString());
+    }
+
     public static boolean isTestingWorld(ServerWorld world) {
         String dimensionId = world.getRegistryKey().getValue().toString();
-        return PVP_DIMENSION.equals(dimensionId) || RSW_DIMENSION.equals(dimensionId);
+        return PVP_DIMENSION.equals(dimensionId) || isRswWorld(dimensionId);
     }
 
     public static boolean isPvpWorld(ServerWorld world) {
         return PVP_DIMENSION.equals(world.getRegistryKey().getValue().toString());
+    }
+
+    private static final Map<UUID, Long> LAST_PORTAL_WARNING = new HashMap<>();
+
+    public static void notifyWildPortalDisabled(ServerPlayerEntity player, String portalType) {
+        long now = System.currentTimeMillis();
+        Long last = LAST_PORTAL_WARNING.get(player.getUuid());
+        if (last == null || now - last > 5000L) {
+            LAST_PORTAL_WARNING.put(player.getUuid(), now);
+            player.sendMessage(Text.literal("§c" + portalType + " portals do not activate in the wild Overworld. Access " + portalType + " via the Resetting World (RSW)!"), false);
+        }
     }
 
     public static boolean shouldKeepInventoryOnDeath(ServerPlayerEntity player) {
@@ -284,9 +307,15 @@ implements ModInitializer {
         this.portalRegistry = new ClaimPortalRegistry(Path.of("config", "goldclaim", "claim-portals.json"), this.config);
         this.loadLastWildLocations();
         this.loadPlayerHomes();
-        ServerWorldEvents.LOAD.register((server, world) ->
-            applyRswFireRule(world.getRegistryKey().getValue().toString(), world.getGameRules(), server));
+        ServerLifecycleEvents.SERVER_STARTING.register(this::ensureCustomGenerators);
+        ServerWorldEvents.LOAD.register((server, world) -> {
+            if (world.getRegistryKey() == World.NETHER) {
+                this.ensureCustomGenerators(server);
+            }
+            applyRswFireRule(world.getRegistryKey().getValue().toString(), world.getGameRules(), server);
+        });
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+            this.ensureCustomGenerators(server);
             this.rswResetService.initialize(System.currentTimeMillis());
             this.kitService.initialize(server);
             this.portalRegistry.syncToServer(server);
@@ -788,12 +817,21 @@ implements ModInitializer {
                 this.worldMaintenanceTicks = 0;
                 this.maintainTestingWorlds(server);
             }
-            this.rswResetService.tick(server, this.getWorld(server, RSW_DIMENSION),
+            this.rswResetService.tick(server,
                 playerToEvacuate -> this.teleportToHub(playerToEvacuate, false, false),
-                (activeServer, seed) -> this.createMultiworld(activeServer, RSW_DIMENSION, "NORMAL", seed),
-                readyWorld -> {
-                    applyRswFireRule(RSW_DIMENSION, readyWorld.getGameRules(), server);
-                    this.applyWorldBorder(server, RSW_DIMENSION, 10000.0);
+                (activeServer, seed) -> {
+                    this.createMultiworld(activeServer, RSW_DIMENSION, "NORMAL", seed);
+                    this.createMultiworld(activeServer, RSW_NETHER_DIMENSION, "gangs:rsw_nether", seed);
+                    this.createMultiworld(activeServer, RSW_THE_END_DIMENSION, "THE_END", seed);
+                },
+                activeServer -> {
+                    for (String rswDim : RSW_DIMENSIONS) {
+                        ServerWorld rswWorld = this.getWorld(activeServer, rswDim);
+                        if (rswWorld != null) {
+                            applyRswFireRule(rswDim, rswWorld.getGameRules(), activeServer);
+                        }
+                        this.applyWorldBorder(activeServer, rswDim, 10000.0);
+                    }
                 });
             this.rswEntrySearch.tick();
             boolean runPlayerMaintenance = false;
@@ -869,7 +907,7 @@ implements ModInitializer {
                     if (!dimensionId.equals(this.playerBorderWorlds.put(player2.getUuid(), dimensionId))) {
                         this.syncPlayerBorder(player2);
                     }
-                    if (RSW_DIMENSION.equals(dimensionId) && this.rswResetService.isClosed()) {
+                    if (isRswWorld(dimensionId) && this.rswResetService.isClosed()) {
                         this.teleportToHub(player2, false, false);
                         continue;
                     }
@@ -886,22 +924,46 @@ implements ModInitializer {
         });
     }
 
+    private void ensureCustomGenerators(MinecraftServer server) {
+        try {
+            Class<?> createCommandClass = Class.forName("me.isaiah.multiworld.command.CreateCommand");
+            ServerWorld nether = server.getWorld(World.NETHER);
+            if (nether != null) {
+                ChunkGenerator netherGen = nether.getChunkManager().getChunkGenerator();
+                Identifier rswNetherId = new Identifier("gangs", "rsw_nether");
+                for (Method m : createCommandClass.getMethods()) {
+                    if (m.getName().equals("registerCustomGenerator") && m.getParameterCount() == 2) {
+                        m.invoke(null, rswNetherId, netherGen);
+                        break;
+                    }
+                }
+            }
+        } catch (ReflectiveOperationException e) {
+            LOGGER.error("Failed to register custom RSW Nether generator", e);
+        }
+    }
+
     private void ensureTestingWorlds(MinecraftServer server) {
+        this.ensureCustomGenerators(server);
         this.createMultiworldIfMissing(server, PVP_DIMENSION, "VOID");
         if (!this.rswResetService.isClosed()) {
             this.createMultiworldIfMissing(server, RSW_DIMENSION, "NORMAL");
+            this.createMultiworldIfMissing(server, RSW_NETHER_DIMENSION, "gangs:rsw_nether");
+            this.createMultiworldIfMissing(server, RSW_THE_END_DIMENSION, "THE_END");
         }
         this.applyWorldBorder(server, PVP_DIMENSION, 1000.0);
-        this.applyWorldBorder(server, RSW_DIMENSION, 10000.0);
-        ServerWorld rswWorld = this.getWorld(server, RSW_DIMENSION);
-        if (rswWorld != null) {
-            applyRswFireRule(RSW_DIMENSION, rswWorld.getGameRules(), server);
+        for (String rswDim : RSW_DIMENSIONS) {
+            this.applyWorldBorder(server, rswDim, 10000.0);
+            ServerWorld rswWorld = this.getWorld(server, rswDim);
+            if (rswWorld != null) {
+                applyRswFireRule(rswDim, rswWorld.getGameRules(), server);
+            }
         }
         this.applyPvpWorldRules(server);
     }
 
     static void applyRswFireRule(String dimensionId, GameRules rules, MinecraftServer server) {
-        if (RSW_DIMENSION.equals(dimensionId)) {
+        if (isRswWorld(dimensionId)) {
             rules.get(GameRules.DO_FIRE_TICK).set(false, server);
         }
     }
@@ -956,13 +1018,18 @@ implements ModInitializer {
         try {
             Class<?> createCommandClass = Class.forName("me.isaiah.multiworld.command.CreateCommand");
             Class<?> multiworldClass = Class.forName("me.isaiah.multiworld.MultiworldMod");
+            this.ensureCustomGenerators(server);
             Object generator = this.invokeStatic(createCommandClass, "get_chunk_gen", server, generatorName);
             if (generator == null) {
                 throw new IllegalStateException("Unknown Multiworld generator: " + generatorName);
             }
+            Identifier dimTypeId = (Identifier) this.invokeStatic(createCommandClass, "get_dim_id", generatorName);
+            if (dimTypeId == null) {
+                dimTypeId = new Identifier("minecraft", "overworld");
+            }
             ServerWorld world = (ServerWorld)this.invokeStatic(multiworldClass, "create_world", dimensionId,
-                new Identifier("minecraft", "overworld"), generator, net.minecraft.world.Difficulty.NORMAL, seed);
-            this.invokeStatic(createCommandClass, "make_config", world, "NORMAL", seed,
+                dimTypeId, generator, net.minecraft.world.Difficulty.NORMAL, seed);
+            this.invokeStatic(createCommandClass, "make_config", world, generatorName, seed,
                 "VOID".equals(generatorName) ? generatorName : null);
         }
         catch (ReflectiveOperationException | RuntimeException e) {
@@ -989,7 +1056,7 @@ implements ModInitializer {
         }
         world.getWorldBorder().setCenter(0.0, 0.0);
         world.getWorldBorder().setSize(size);
-        world.getWorldBorder().setWarningBlocks(RSW_DIMENSION.equals(dimensionId) ? 50 : 0);
+        world.getWorldBorder().setWarningBlocks(isRswWorld(dimensionId) ? 50 : 0);
         world.getWorldBorder().setWarningTime(15);
         for (ServerPlayerEntity player : world.getPlayers()) {
             this.syncPlayerBorder(player);
@@ -1980,7 +2047,7 @@ implements ModInitializer {
     }
 
     private int teleportToTestingWorld(ServerCommandSource source, String dimensionId, String label, boolean voidWorld) {
-        if (RSW_DIMENSION.equals(dimensionId) && this.rswResetService.isClosed()) {
+        if (isRswWorld(dimensionId) && this.rswResetService.isClosed()) {
             source.sendError(Text.literal("RSW is resetting and is temporarily closed."));
             return 0;
         }
@@ -2121,7 +2188,13 @@ implements ModInitializer {
     }
 
     private boolean randomTeleport(ServerPlayerEntity player) {
-        boolean inRsw = RSW_DIMENSION.equals(player.getServerWorld().getRegistryKey().getValue().toString());
+        String currentDim = player.getServerWorld().getRegistryKey().getValue().toString();
+        boolean inRsw = RSW_DIMENSION.equals(currentDim);
+        boolean inWild = this.config.wildDimension.equals(currentDim);
+        if (!inRsw && !inWild) {
+            player.sendMessage(Text.literal("Random teleport is only allowed in the wild Overworld and RSW Overworld."), false);
+            return false;
+        }
         if (inRsw && this.rswResetService.isClosed()) {
             player.sendMessage(Text.literal("RSW is resetting; random teleport is temporarily unavailable."), false);
             return false;

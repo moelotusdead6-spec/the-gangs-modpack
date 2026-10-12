@@ -111,10 +111,10 @@ try {
 $server = Join-Path $root 'stopped-server'
 New-Item -ItemType Directory -Path (Join-Path $server 'mods') -Force | Out-Null
 Write-Fixture (Join-Path $server 'server.properties') "motd=Keep me`r`nview-distance=10`r`nsimulation-distance=8`r`nrequire-resource-pack=true`r`nserver-port=25588`r`n"
-Write-Fixture (Join-Path $server 'start.bat') 'java -jar goldclaim-1.0.30.jar'
+Write-Fixture (Join-Path $server 'start.bat') 'java -jar goldclaim-1.0.31.jar'
 Write-Fixture (Join-Path $server 'config\sophisticatedcore-common.toml') 'enabledItems = ["sophisticatedbackpacks:inception_upgrade|true", "other:item|true"]'
 Write-Fixture (Join-Path $server 'config\global_packs.toml') "[resourcepacks]`r`nrequired = [`"legacy.zip`"]`r`n"
-Write-Fixture (Join-Path $server 'mods\goldclaim-1.0.30.jar') 'old-fixture-jar'
+Write-Fixture (Join-Path $server 'mods\goldclaim-1.0.31.jar') 'old-fixture-jar'
 $hashes = @{}
 foreach ($relative in @('world\level.dat', 'world\playerdata\fixture.dat', 'config\goldclaim\claims.json',
         'config\goldclaim\rsw-reset.json', 'config\multiworld\worlds\multiworld\rsw.yml',
@@ -125,8 +125,8 @@ foreach ($relative in @('world\level.dat', 'world\playerdata\fixture.dat', 'conf
 }
 & (Join-Path $root 'server-update\Install-ServerUpdate.ps1') -GameDirectory $server
 Assert-Preserved $hashes
-Require (Test-Path -LiteralPath (Join-Path $server 'mods\goldclaim-1.0.31.jar')) 'New GoldClaim is missing.'
-Require (-not (Test-Path -LiteralPath (Join-Path $server 'mods\goldclaim-1.0.30.jar'))) 'Old GoldClaim remains.'
+Require (Test-Path -LiteralPath (Join-Path $server 'mods\goldclaim-1.0.32.jar')) 'New GoldClaim is missing.'
+Require (-not (Test-Path -LiteralPath (Join-Path $server 'mods\goldclaim-1.0.31.jar'))) 'Old GoldClaim remains.'
 $properties = [IO.File]::ReadAllText((Join-Path $server 'server.properties'))
 Require ($properties -match 'server-port=25588' -and $properties -match 'motd=Keep me') 'Unrelated server properties changed.'
 Require ($properties -match 'view-distance=6' -and $properties -match 'simulation-distance=6') 'Server policy was not applied.'

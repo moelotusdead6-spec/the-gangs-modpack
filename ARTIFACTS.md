@@ -1,6 +1,8 @@
 # Published Artifacts
 
-`artifacts/goldclaim-1.0.31.jar` is the current server-only build. It retains the 1.0.30 policies and disables `doFireTick` specifically in RSW when its dimension loads, after every reset, and during world maintenance. Other RSW gamerules, reset timing, saved positions and first-entry safety remain unchanged. The update is packaged for installation while the server is stopped, not applied to the live server.
+`artifacts/goldclaim-1.0.32.jar` is the current server-only build. It rotates the Resetting World (RSW) across three synchronized dimensions (`multiworld:rsw`, `multiworld:rsw_nether`, and `multiworld:rsw_the_end`) with matching seeds, 10,000-block diameter (5,000-block radius) world borders centered at (0, 0), and a 1:1 coordinate scale in the Nether. It disables entering Nether and End portals in the wild Overworld while allowing them to be lit, prevents `/rtp` in the End and Nether, disables `doFireTick` in RSW, and manages player evacuation, unloading, and multi-folder backups during resets. The update is packaged for installation while the server is stopped, not applied to the live server.
+
+`artifacts/goldclaim-1.0.31.jar` is the previous server-only build. It retains the 1.0.30 policies and disables `doFireTick` specifically in RSW when its dimension loads, after every reset, and during world maintenance. Other RSW gamerules, reset timing, saved positions and first-entry safety remain unchanged. The update is packaged for installation while the server is stopped, not applied to the live server.
 
 `artifacts/goldclaim-1.0.30.jar` is the previous server-only build. It retains all 1.0.29 policies and allows untrusted visitors to attack hostile mobs in claims. The exception covers vanilla and modded entities implementing Minecraft's `Monster` interface or registered in `SpawnGroup.MONSTER`; tamed pets remain protected even if their mod uses that spawn group. Passive entities, villagers, decorations, entity interactions, inventories and block permissions remain unchanged.
 
@@ -38,6 +40,6 @@ Compatibility validation: run `gradle test build` in `sources/soulsbackpackscomp
 
 `artifacts/biolith-fabric-1.0.1-beta.1-endfix.jar` keeps Biolith installed on both sides and falls back to the selected End biome when its search tree is uninitialized. Its modified LGPL-3.0 source is at `sources/biolith-fabric-1.0.1-beta.1-endfix-source.zip`, with attribution in `artifacts/biolith-ATTRIBUTION.txt`.
 
-The following user-supplied third-party jars are mirrored here for direct packwiz delivery: Adaptive Tooltips 1.3.0, Archers 1.3.0+1.20.1, AzureLib 2.0.41, Exposure 1.9.20, Extra RPG Attributes 1.3.2, Joy of Painting fabric-1.20.1-2.0.0, RangedWeaponAPI 1.1.4+1.20.1, Spellblades and Such 2.4.0+1.20.1, and Wizards 1.4.1+1.20.1.
+The following user-supplied third-party jars are mirrored here for direct packwiz delivery: Adaptive Tooltips 1.3.0, Archers 1.3.0+1.20.1, AzureLib 2.0.41, Better Combat Particles (bc_particle) 0.0.6, End's Phantasm 1.4, Exposure 1.9.20, Extra RPG Attributes 1.3.2, Immersive Armors 1.7.2+1.20.1, Joy of Painting fabric-1.20.1-2.0.0, Necronomicon 1.6.0+1.20.1, Nullscape 1.2.8, RangedWeaponAPI 1.1.4+1.20.1, Roughly Enough Items 12.1.785, Shield Overhaul 2.0.4, Spellblades and Such 2.4.0+1.20.1, and Wizards 1.4.1+1.20.1.
 
 Other third-party mods remain downloaded from their official Modrinth or CurseForge metadata. This directory must not contain unapproved third-party binary mirrors.

@@ -9,12 +9,17 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -28,9 +33,9 @@ final class RswResetService {
     private static final Logger LOGGER = LoggerFactory.getLogger("GoldClaim/RSW");
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private final Path journal;
-    private static final Path CONFIG = Path.of("config", "multiworld", "worlds", "multiworld", "rsw.yml");
+    static final List<String> RSW_SUB_DIMENSIONS = List.of("rsw", "rsw_nether", "rsw_the_end");
     private State state = new State();
-    private ServerWorld unloadingWorld;
+    private final Set<ServerWorld> unloadingWorlds = new HashSet<>();
     private CompletableFuture<Void> archive;
     private boolean initialized;
     private long lastRemaining = Long.MAX_VALUE;
@@ -179,8 +184,8 @@ final class RswResetService {
         }
     }
 
-    void tick(MinecraftServer server, ServerWorld world, Consumer<ServerPlayerEntity> evacuate,
-              BiConsumer<MinecraftServer, Long> create, Consumer<ServerWorld> ready) {
+    void tick(MinecraftServer server, Consumer<ServerPlayerEntity> evacuate,
+              BiConsumer<MinecraftServer, Long> create, Consumer<MinecraftServer> ready) {
         if (!this.initialized || System.currentTimeMillis() < this.retryAt) {
             return;
         }
@@ -208,7 +213,8 @@ final class RswResetService {
                     return;
                 }
                 this.state.startedAtMs = now;
-                this.state.previousSeed = world == null ? this.state.seed : world.getSeed();
+                ServerWorld mainWorld = server.getWorld(RegistryKey.of(RegistryKeys.WORLD, new Identifier("multiworld", "rsw")));
+                this.state.previousSeed = mainWorld == null ? this.state.seed : mainWorld.getSeed();
                 do {
                     this.state.seed = ThreadLocalRandom.current().nextLong();
                 } while (this.state.seed == this.state.previousSeed);
@@ -219,39 +225,54 @@ final class RswResetService {
                 broadcast(server, "RSW reset is starting. Players are returning to the hub; RSW is temporarily closed.");
             }
             if (this.state.phase.equals("UNLOADING") || this.state.phase.equals("ARCHIVING")) {
-                if (world != null) {
-                    this.evacuate(world, evacuate);
-                    if (this.unloadingWorld != world) {
-                        this.unload(server, world);
-                        this.unloadingWorld = world;
+                List<ServerWorld> loadedWorlds = new ArrayList<>();
+                for (String sub : RSW_SUB_DIMENSIONS) {
+                    ServerWorld w = server.getWorld(RegistryKey.of(RegistryKeys.WORLD, new Identifier("multiworld", sub)));
+                    if (w != null) {
+                        loadedWorlds.add(w);
+                    }
+                }
+                if (!loadedWorlds.isEmpty()) {
+                    for (ServerWorld w : loadedWorlds) {
+                        this.evacuate(w, evacuate);
+                        if (this.unloadingWorlds.add(w)) {
+                            this.unload(server, w);
+                        }
                     }
                     return;
                 }
-                if (this.unloadingWorld != null) {
-                    this.unloadingWorld.close();
-                    this.unloadingWorld = null;
+                for (ServerWorld w : this.unloadingWorlds) {
+                    try {
+                        w.close();
+                    } catch (Exception ignored) {}
                 }
+                this.unloadingWorlds.clear();
                 if (this.archive == null) {
                     this.state.phase = "ARCHIVING";
                     this.save();
-                    Path dimension = server.getSavePath(WorldSavePath.ROOT).resolve("dimensions/multiworld/rsw");
-                    Path backup = dimension.getParent().resolve("rsw-reset-backups").resolve(this.state.backup);
+                    Path root = server.getSavePath(WorldSavePath.ROOT);
+                    Path backup = root.resolve("dimensions/multiworld/rsw-reset-backups").resolve(this.state.backup);
                     this.archive = CompletableFuture.runAsync(() -> {
                         try {
                             Files.createDirectories(backup);
-                            if (Files.exists(dimension)) {
-                                Path target = backup.resolve("world");
-                                if (Files.exists(target)) {
-                                    target = backup.resolve("recovery-" + System.currentTimeMillis());
+                            for (String sub : RSW_SUB_DIMENSIONS) {
+                                Path dimension = root.resolve("dimensions/multiworld/" + sub);
+                                if (Files.exists(dimension)) {
+                                    Path target = backup.resolve("world").resolve(sub);
+                                    Files.createDirectories(target.getParent());
+                                    if (Files.exists(target)) {
+                                        target = backup.resolve("world").resolve(sub + "-recovery-" + System.currentTimeMillis());
+                                    }
+                                    Files.move(dimension, target);
                                 }
-                                Files.move(dimension, target);
-                            }
-                            if (Files.exists(CONFIG)) {
-                                Path target = backup.resolve("rsw.yml");
-                                if (!Files.exists(target)) {
-                                    Files.move(CONFIG, target);
-                                } else {
-                                    Files.move(CONFIG, backup.resolve("recovery-" + System.currentTimeMillis() + ".yml"));
+                                Path config = Path.of("config", "multiworld", "worlds", "multiworld", sub + ".yml");
+                                if (Files.exists(config)) {
+                                    Path target = backup.resolve(sub + ".yml");
+                                    if (!Files.exists(target)) {
+                                        Files.move(config, target);
+                                    } else {
+                                        Files.move(config, backup.resolve(sub + "-recovery-" + System.currentTimeMillis() + ".yml"));
+                                    }
                                 }
                             }
                         } catch (IOException failure) {
@@ -269,26 +290,44 @@ final class RswResetService {
                 this.save();
             }
             if (this.state.phase.equals("CREATING")) {
-                if (world != null && world.getSeed() != this.state.seed) {
+                boolean wrongSeed = false;
+                for (String sub : RSW_SUB_DIMENSIONS) {
+                    ServerWorld w = server.getWorld(RegistryKey.of(RegistryKeys.WORLD, new Identifier("multiworld", sub)));
+                    if (w != null && w.getSeed() != this.state.seed) {
+                        wrongSeed = true;
+                        break;
+                    }
+                }
+                if (wrongSeed) {
                     this.state.phase = "UNLOADING";
                     this.save();
                     return;
                 }
-                if (world == null) {
+                boolean allLoaded = true;
+                for (String sub : RSW_SUB_DIMENSIONS) {
+                    if (server.getWorld(RegistryKey.of(RegistryKeys.WORLD, new Identifier("multiworld", sub))) == null) {
+                        allLoaded = false;
+                        break;
+                    }
+                }
+                if (!allLoaded) {
                     create.accept(server, this.state.seed);
                     return;
                 }
-                if (!Files.exists(CONFIG)) {
-                    throw new IOException("Multiworld did not persist the new RSW configuration");
+                for (String sub : RSW_SUB_DIMENSIONS) {
+                    Path config = Path.of("config", "multiworld", "worlds", "multiworld", sub + ".yml");
+                    if (!Files.exists(config)) {
+                        throw new IOException("Multiworld did not persist configuration for " + sub);
+                    }
+                    Object configuration = Class.forName("me.isaiah.multiworld.config.FileConfiguration")
+                        .getConstructor(java.io.File.class).newInstance(config.toFile());
+                    long persistedSeed = ((Number)configuration.getClass().getMethod("getLong", String.class)
+                        .invoke(configuration, "seed")).longValue();
+                    if (persistedSeed != this.state.seed) {
+                        throw new IOException("Persisted Multiworld seed for " + sub + " does not match the new RSW seed");
+                    }
                 }
-                Object configuration = Class.forName("me.isaiah.multiworld.config.FileConfiguration")
-                    .getConstructor(java.io.File.class).newInstance(CONFIG.toFile());
-                long persistedSeed = ((Number)configuration.getClass().getMethod("getLong", String.class)
-                    .invoke(configuration, "seed")).longValue();
-                if (persistedSeed != this.state.seed) {
-                    throw new IOException("Persisted Multiworld seed does not match the new RSW seed");
-                }
-                ready.accept(world);
+                ready.accept(server);
                 State completed = completedState(this.state, now);
                 this.save(completed);
                 this.state = completed;
@@ -310,6 +349,16 @@ final class RswResetService {
         }
     }
 
+    void tick(MinecraftServer server, ServerWorld world, Consumer<ServerPlayerEntity> evacuate,
+              BiConsumer<MinecraftServer, Long> create, Consumer<ServerWorld> ready) {
+        this.tick(server, evacuate, create, s -> {
+            ServerWorld w = s.getWorld(RegistryKey.of(RegistryKeys.WORLD, new Identifier("multiworld", "rsw")));
+            if (w != null) {
+                ready.accept(w);
+            }
+        });
+    }
+
     private void evacuate(ServerWorld world, Consumer<ServerPlayerEntity> evacuate) {
         for (ServerPlayerEntity player : new ArrayList<>(world.getPlayers())) {
             evacuate.accept(player);
@@ -328,9 +377,9 @@ final class RswResetService {
         Method open = java.util.Arrays.stream(fantasyType.getMethods())
             .filter(method -> method.getName().equals("getOrOpenPersistentWorld") && method.getParameterCount() == 2)
             .findFirst().orElseThrow();
-        Object handle = open.invoke(fantasy, new Identifier("multiworld", "rsw"), null);
+        Object handle = open.invoke(fantasy, world.getRegistryKey().getValue(), null);
         if (handle.getClass().getMethod("asWorld").invoke(handle) != world) {
-            throw new IllegalStateException("Fantasy handle does not match the active RSW");
+            throw new IllegalStateException("Fantasy handle does not match the active " + world.getRegistryKey().getValue());
         }
         handle.getClass().getMethod("setTickWhenEmpty", boolean.class).invoke(handle, false);
         handle.getClass().getMethod("unload").invoke(handle);

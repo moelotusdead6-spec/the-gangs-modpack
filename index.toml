@@ -13,12 +13,16 @@ file = "README.md"
 hash = "10006af7661ff85f6385f56205d2cf7404faac415b0dc7a6a7c3abbad1c9bf00"
 
 [[files]]
+file = "config/EssentialCommands.properties"
+hash = "dd31d46981853061db8d439d8ad684e2689249aa3485f755ae3ee1f64c5d781a"
+
+[[files]]
 file = "config/bcc.json"
 hash = "d5fe406368e27abebf69930effee725fd4836e16178da9ebcfc944d08e869733"
 
 [[files]]
 file = "config/defaultoptions/keybindings.txt"
-hash = "aac568cafe5551337fd1304e19d4bb8772c2ebdff4c6811cc58ae5f660d6000e"
+hash = "3dcbb188d63bf42e2689f6857f4800e496b0388724033fe945ea107432c0e328"
 
 [[files]]
 file = "config/defaultoptions/options.txt"
@@ -86,15 +90,27 @@ hash = "9794ababce25204ea58d2095d2fd616f3e664c4d4e803814c670939da1a831d0"
 
 [[files]]
 file = "config/options.txt"
-hash = "587a9a87144c92096ad644a1addf4d8832d22d03fcd14226bce04965cb7cb45f"
+hash = "35b7cfda687dfab8ec9aef8a1fb8a13a8337535e390ad4085bdd9764a4b43d40"
 
 [[files]]
 file = "config/paxi/datapack_load_order.json"
 hash = "d0aaf3172f34275479f0669aa5b0a94b85788ae638f3062b948ec49d31c38293"
 
 [[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/enhancedcelestials/enhancedcelestials/lunar/event/blood_moon.json"
+hash = "981238034f776f41158c6091dfd59b03298f0ab677d21a89277472d063f8c924"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/enhancedcelestials/enhancedcelestials/lunar/event/super_blood_moon.json"
+hash = "78aef0257eda0027377687dda80adeb712860b8b4bd3384e69a64f7a196f320e"
+
+[[files]]
 file = "config/paxi/datapacks/gangs_fixes/data/furniture/loot_tables/blocks/bin.json"
 hash = "f2ef2d7bc8fa2d343b0a7dd834f0eb550f84937bc0ce41f37b2cbae81c945496"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/gangs/dimension_type/rsw_nether.json"
+hash = "e0ad1d374c53922cceef334b04197ecbb4b8b6ad77e1546f5a75704681ca1c68"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_fixes/data/gangs_fixes/functions/load.mcfunction"
@@ -111,6 +127,10 @@ hash = "0f7edeb2f48d171ebbc8de46a7159bc4a51efc5e2c94a6c1e8217c1bb22c6c8d"
 [[files]]
 file = "config/paxi/datapacks/gangs_fixes/data/minecraft/tags/functions/tick.json"
 hash = "ffd8304d6ca5e1ac6ed7684446b2a218ecf3b15316dfc250ee98a280dadb56d0"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/multiworld/enhancedcelestials/lunar/dimension_settings/rsw.json"
+hash = "0c3b21b3af3c5fb5e9397bfc0c33060a543a3f6b3fe7de91d018a7c8a241b3d3"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_fixes/pack.mcmeta"
@@ -909,6 +929,11 @@ hash = "542fac150babe88c3be7a6e52c4c528a4ae635e90a899fe868e8898ce6cd6098"
 metafile = true
 
 [[files]]
+file = "mods/bc-particle-direct.pw.toml"
+hash = "cec1da818f9c595e81d8dcf209d59a22cc803f6ee20ac5361e98a43af47821ea"
+metafile = true
+
+[[files]]
 file = "mods/beekeeperhut-fabric-mc1.20.1-2.0.1.pw.toml"
 hash = "067845387d8daf2b2a54311ef44a4124a0f7b0aaa7048e2cd3d813e838476bc4"
 metafile = true
@@ -1051,6 +1076,11 @@ metafile = true
 [[files]]
 file = "mods/endermanoverhaul-fabric-1.20.1-1.0.4.pw.toml"
 hash = "37b2b6337a44efe0a1de75538236b2667ed06270658e8bdc0d14818fc180ec47"
+metafile = true
+
+[[files]]
+file = "mods/endsphantasm-direct.pw.toml"
+hash = "a1a7cf73ac5e943fec998c563f5ebc07c57e486cc6d302a4aa3b4d6de248edb0"
 metafile = true
 
 [[files]]
@@ -1215,7 +1245,7 @@ metafile = true
 
 [[files]]
 file = "mods/goldclaim-direct.pw.toml"
-hash = "5465fd9bdd4957115922e787db73d83f5d9650a16038f4ab4136cb73b7a1d1ba"
+hash = "7e2f18a3ddfb0b71c7276195420f1ea4cfb3ce98b3997f0f7bdc902142c03536"
 metafile = true
 
 [[files]]
@@ -1239,6 +1269,11 @@ hash = "7b2969fd6ea974e9a61a22c431d513591a7c9e47bfe727e49ebe72c9e79ed154"
 metafile = true
 
 [[files]]
+file = "mods/immersive-armors-direct.pw.toml"
+hash = "8726baec714c1813358cd746f9a6bd6235b605b179077343e37295d876f84729"
+metafile = true
+
+[[files]]
 file = "mods/indium-1.0.36_mc1.20.1.pw.toml"
 hash = "87ff9e892ac602ae10cc678bfb8f4c618d8eac23308380850f6f762b06f7dd9a"
 metafile = true
@@ -1246,11 +1281,6 @@ metafile = true
 [[files]]
 file = "mods/iris-1.7.6+mc1.20.1.pw.toml"
 hash = "b608b7f64c763fc50b5151b2511b5cc3d43f6a47cf12fc770fd6ee41db1218a3"
-metafile = true
-
-[[files]]
-file = "mods/jei-1.20.1-fabric-15.21.0.138.pw.toml"
-hash = "220f84b36163a45294ba7b852749a1fc61c518e05b411ffd48e3eeccdf10f091"
 metafile = true
 
 [[files]]
@@ -1434,8 +1464,18 @@ hash = "41ae3340f6ff1b1500ff07322db78cf798228ff917ec2e690447e9081cae3a8a"
 metafile = true
 
 [[files]]
+file = "mods/necronomicon-direct.pw.toml"
+hash = "5119ed4c96d09ec60ebc6e0cdf140b1d5433d75d2fea9e4d1d66ac39fb6911e8"
+metafile = true
+
+[[files]]
 file = "mods/noisiumed-fabric-3.0.6_mc1.20-1.20.1.pw.toml"
 hash = "a27b1d5d813bd7e269c372b75f6cd7152640df427619eff58d5541e3b2b538d1"
+metafile = true
+
+[[files]]
+file = "mods/nullscape-direct.pw.toml"
+hash = "a9816ef465eca5f3d23b4ce5e51dc95777ef2ae28541293b81ae51d69c98390e"
 metafile = true
 
 [[files]]
@@ -1529,6 +1569,11 @@ hash = "c00686a7cb652494d43d57a2ae36331ec37a9cf04b05ee6ef95b8f204374d151"
 metafile = true
 
 [[files]]
+file = "mods/roughly-enough-items-direct.pw.toml"
+hash = "a8565665319b5440803eb875b32dc844555f84985a6ccaa354d72e39bfd03be9"
+metafile = true
+
+[[files]]
 file = "mods/runes-0.9.13_1.20.1.pw.toml"
 hash = "1cc6df431bab87fc6d6edceadb61a36c8476dbbccbb69e706cafca2939f660c1"
 metafile = true
@@ -1546,6 +1591,11 @@ metafile = true
 [[files]]
 file = "mods/servercore-fabric-1.5.2+1.20.1.pw.toml"
 hash = "2e191c5df3d9a95ce73197693e930d5f5362b45a3202193d2adc62c746147f1c"
+metafile = true
+
+[[files]]
+file = "mods/shield-overhaul-direct.pw.toml"
+hash = "036fd759ff541d8106d34d65fff3e4f64d05960ab0a38518af49215f67bc830f"
 metafile = true
 
 [[files]]

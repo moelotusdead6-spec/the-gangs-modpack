@@ -3,7 +3,7 @@
 ## Keep one Prism instance
 
 Keep the same Prism instance and press Play for normal client pack updates.
-New v1.1.2 imports have automatic client-only Packwiz updates enabled.
+New v1.1.3 imports have automatic client-only Packwiz updates enabled.
 The public ZIP is for new installations, not a replacement instance for
 every release.
 
@@ -57,7 +57,13 @@ instructions and stopped-server installer. Apply it only after stopping the
 server and making a world backup, then start the server yourself.
 Publishing the pack does not install or restart the live server.
 
-GoldClaim 1.0.31 disables `doFireTick` in RSW on dimension load, after resets,
-and during world maintenance. This prevents spread and natural fire burnout;
-it does not remove existing fire or disable direct fire damage.
+GoldClaim 1.0.32 coordinates Resetting World (RSW) rotation across three
+synchronized dimensions (`multiworld:rsw`, `multiworld:rsw_nether`, and
+`multiworld:rsw_the_end`) with matching seeds and 10,000-block diameter
+(5,000-block radius) borders centered at (0, 0). The Nether dimension uses a
+1:1 coordinate scale to match the Overworld, ensuring portal exits stay
+within the 5,000-block world border. Nether and End portals in the wild
+Overworld may be lit but cannot be entered. Blood Moons are isolated
+exclusively to RSW. `/rtp` is restricted to Wild Overworld and RSW Overworld.
+GoldClaim also disables `doFireTick` across RSW dimensions.
 RSW reset timing, first-entry safety and saved return positions are unchanged.

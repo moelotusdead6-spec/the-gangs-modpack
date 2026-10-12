@@ -1,0 +1,8 @@
+name = "Immersive Armors"
+filename = "immersive_armors-1.7.2+1.20.1-fabric.jar"
+side = "both"
+
+[download]
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/immersive_armors-1.7.2+1.20.1-fabric.jar"
+hash-format = "sha256"
+hash = "5bfdddc80a91337997e411163c7e67188dda17a18860418efe67625d9fefd6b6"

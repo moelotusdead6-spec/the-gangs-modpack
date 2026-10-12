@@ -63,7 +63,8 @@ hash = "$hash"
 "@
     }
     $hashes = @{}
-    foreach ($relative in @('options.txt', 'servers.dat', 'servers.dat_old', 'config\personal-mod.json')) {
+    foreach ($relative in @('options.txt', 'servers.dat', 'servers.dat_old', 'config\personal-mod.json',
+            'mods\player-added-client-mod.jar')) {
         $path = Join-Path $game $relative
         Write-Fixture $path "personal-$relative"
         $hashes[$path] = (Get-FileHash $path).Hash
@@ -122,6 +123,6 @@ hash = "$hash"
         Require (Test-Path -LiteralPath (Join-Path $game 'mods\client-fixture.jar')) 'Client mod was not installed.'
         Require (-not (Test-Path -LiteralPath (Join-Path $game 'mods\server-fixture.jar'))) 'Automatic client update installed a server-only mod.'
     }
-    Write-Output 'PASS: two real headless Packwiz updates; managed defaults updated, personal options/server lists stayed byte-identical, root preference exclusions worked, and server-only mods were skipped.'
+    Write-Output 'PASS: two real headless Packwiz updates; managed defaults updated, personal options/server lists and player-added mod jars stayed byte-identical, root preference exclusions worked, and server-only mods were skipped.'
 } finally { $listener.Stop(); $listener.Close() }
 Remove-Item -LiteralPath $root -Recurse

@@ -11,12 +11,14 @@ public class GameplayPolicyTest {
     @Test
     public void rswFireSpreadIsDisabledForEveryGenerationWithoutChangingOtherRules() {
         for (int generation = 0; generation < 3; generation++) {
-            GameRules rules = new GameRules();
-            GoldClaimMod.applyRswFireRule("multiworld:rsw", rules, null);
-            assertFalse(rules.getBoolean(GameRules.DO_FIRE_TICK));
-            assertTrue(rules.getBoolean(GameRules.DO_DAYLIGHT_CYCLE));
-            assertTrue(rules.getBoolean(GameRules.DO_WEATHER_CYCLE));
-            assertFalse(rules.getBoolean(GameRules.KEEP_INVENTORY));
+            for (String rswDim : new String[]{"multiworld:rsw", "multiworld:rsw_nether", "multiworld:rsw_the_end"}) {
+                GameRules rules = new GameRules();
+                GoldClaimMod.applyRswFireRule(rswDim, rules, null);
+                assertFalse(rules.getBoolean(GameRules.DO_FIRE_TICK));
+                assertTrue(rules.getBoolean(GameRules.DO_DAYLIGHT_CYCLE));
+                assertTrue(rules.getBoolean(GameRules.DO_WEATHER_CYCLE));
+                assertFalse(rules.getBoolean(GameRules.KEEP_INVENTORY));
+            }
         }
         for (String dimension : new String[]{"minecraft:overworld", "minecraft:the_nether", "multiworld:pvp"}) {
             GameRules rules = new GameRules();

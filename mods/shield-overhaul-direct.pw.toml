@@ -1,0 +1,8 @@
+name = "Shield Overhaul"
+filename = "shield_overhaul-2.0.4.jar"
+side = "both"
+
+[download]
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/shield_overhaul-2.0.4.jar"
+hash-format = "sha256"
+hash = "5178899ab9c54f9fc2838ebb2f5c71492b1cc4927ad6b7204e5ed7e19a61511e"
