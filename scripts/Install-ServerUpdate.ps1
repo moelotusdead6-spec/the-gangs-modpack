@@ -12,6 +12,8 @@ $running = @(Get-CimInstance Win32_Process |
         $_.ProcessId -ne $PID -and
         $_.CommandLine -and
         $_.CommandLine.IndexOf($game, [StringComparison]::OrdinalIgnoreCase) -ge 0 -and
+        $_.CommandLine.IndexOf('Install-ServerUpdate', [StringComparison]::OrdinalIgnoreCase) -lt 0 -and
+        $_.CommandLine.IndexOf('Test-UpdateInstallers', [StringComparison]::OrdinalIgnoreCase) -lt 0 -and
         ($_.Name -in @('java.exe', 'javaw.exe', 'cmd.exe', 'powershell.exe', 'pwsh.exe'))
     })
 if ($running.Count) { throw 'A process references this server directory. Stop the server before installing.' }
