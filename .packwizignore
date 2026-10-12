@@ -25,6 +25,7 @@ sources/*/logs/
 tmp/
 scripts/
 docs/
+mods/*.jar
 artifacts/goldclaim-1.0.26.jar
 artifacts/*.bak*
 artifacts/
