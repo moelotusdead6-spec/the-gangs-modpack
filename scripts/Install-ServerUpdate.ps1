@@ -15,17 +15,24 @@ $running = @(Get-CimInstance Win32_Process |
         ($_.Name -in @('java.exe', 'javaw.exe', 'cmd.exe', 'powershell.exe', 'pwsh.exe'))
     })
 if ($running.Count) { throw 'A process references this server directory. Stop the server before installing.' }
+$isRepo = (Test-Path -LiteralPath (Join-Path $PSScriptRoot '..\artifacts') -PathType Container) -and
+          (Test-Path -LiteralPath (Join-Path $PSScriptRoot '..\config') -PathType Container)
+$repo = if ($isRepo) { (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path } else { $null }
+
+$modsDir = if ($isRepo) { Join-Path $repo 'artifacts' } else { Join-Path $PSScriptRoot 'mods' }
+$configDir = if ($isRepo) { Join-Path $repo 'config' } else { Join-Path $PSScriptRoot 'config' }
+
 $propertiesPath = Join-Path $game 'server.properties'
 $corePath = Join-Path $game 'config\sophisticatedcore-common.toml'
 $startPath = Join-Path $game 'start.bat'
 foreach ($path in @($propertiesPath, $corePath, (Join-Path $game 'config\global_packs.toml'),
-        (Join-Path $PSScriptRoot 'mods\goldclaim-1.0.32.jar'),
-        (Join-Path $PSScriptRoot 'mods\soulsbackpackscompat-1.1.0.jar'),
-        (Join-Path $PSScriptRoot 'mods\gangscosmetics-2.0.2.jar'),
-        (Join-Path $PSScriptRoot 'config\gangscosmetics.json'),
+        (Join-Path $modsDir 'goldclaim-1.0.32.jar'),
+        (Join-Path $modsDir 'soulsbackpackscompat-1.1.0.jar'),
+        (Join-Path $modsDir 'gangscosmetics-2.0.2.jar'),
+        (Join-Path $configDir 'gangscosmetics.json'),
         (Join-Path $PSScriptRoot 'server-settings.properties'),
         (Join-Path $PSScriptRoot 'Install-ResourcePackDefaults.ps1'),
-        (Join-Path $PSScriptRoot 'config\paxi\datapacks\gangs_kits\data\sophisticatedbackpacks\recipes\inception_upgrade.json'))) {
+        (Join-Path $configDir 'paxi\datapacks\gangs_kits\data\sophisticatedbackpacks\recipes\inception_upgrade.json'))) {
     if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { throw "Required update/server file is missing: $path" }
 }
 $core = [IO.File]::ReadAllText($corePath)
@@ -86,9 +93,9 @@ foreach ($file in $removed) {
     Backup-File $file.FullName
     Remove-Item -LiteralPath $file.FullName
 }
-Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'mods\goldclaim-1.0.32.jar') -Destination $mods
-Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'mods\soulsbackpackscompat-1.1.0.jar') -Destination $mods
-Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'mods\gangscosmetics-2.0.2.jar') -Destination $mods
+Copy-Item -LiteralPath (Join-Path $modsDir 'goldclaim-1.0.32.jar') -Destination $mods
+Copy-Item -LiteralPath (Join-Path $modsDir 'soulsbackpackscompat-1.1.0.jar') -Destination $mods
+Copy-Item -LiteralPath (Join-Path $modsDir 'gangscosmetics-2.0.2.jar') -Destination $mods
 $additionalJars = @(
     'EndsPhantasm-1.20.1-1.4.jar',
     'Nullscape_1.20.x_v1.2.8.jar',
@@ -99,31 +106,59 @@ $additionalJars = @(
     'bc_particle-0.0.6-fabric-1.20.1.jar'
 )
 foreach ($jar in $additionalJars) {
-    $src = Join-Path $PSScriptRoot "mods\$jar"
+    $src = Join-Path $modsDir $jar
     if (Test-Path -LiteralPath $src -PathType Leaf) {
         Copy-Item -LiteralPath $src -Destination $mods -Force
     }
 }
 Backup-File (Join-Path $game 'config\gangscosmetics.json')
-Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'config\gangscosmetics.json') -Destination (Join-Path $game 'config')
+Copy-Item -LiteralPath (Join-Path $configDir 'gangscosmetics.json') -Destination (Join-Path $game 'config')
 [IO.File]::WriteAllText($corePath, $updatedCore, $utf8)
 [IO.File]::WriteAllText($propertiesPath, $properties, $utf8)
-$relative = 'config\paxi\datapacks\gangs_kits\data\sophisticatedbackpacks\recipes\inception_upgrade.json'
-$destination = Join-Path $game $relative
+$relative = 'paxi\datapacks\gangs_kits\data\sophisticatedbackpacks\recipes\inception_upgrade.json'
+$destination = Join-Path $game ('config\' + $relative)
 Backup-File $destination
 New-Item -ItemType Directory -Path ([IO.Path]::GetDirectoryName($destination)) -Force | Out-Null
-Copy-Item -LiteralPath (Join-Path $PSScriptRoot $relative) -Destination $destination
+Copy-Item -LiteralPath (Join-Path $configDir $relative) -Destination $destination
+
+$gangsFixesDir = Join-Path $configDir 'paxi\datapacks\gangs_fixes'
+if (Test-Path -LiteralPath $gangsFixesDir -PathType Container) {
+    foreach ($file in Get-ChildItem -LiteralPath $gangsFixesDir -Recurse -File) {
+        $subPath = $file.FullName.Substring($configDir.Length).TrimStart('\')
+        $dest = Join-Path (Join-Path $game 'config') $subPath
+        Backup-File $dest
+        New-Item -ItemType Directory -Path ([IO.Path]::GetDirectoryName($dest)) -Force | Out-Null
+        Copy-Item -LiteralPath $file.FullName -Destination $dest -Force
+    }
+}
+
+$ecDest = Join-Path $game 'config\EssentialCommands.properties'
+if (Test-Path -LiteralPath $ecDest -PathType Leaf) {
+    Backup-File $ecDest
+    $ecContent = [IO.File]::ReadAllText($ecDest)
+    $pattern = '(?m)^rtp_enabled_worlds=.*$'
+    $replacement = 'rtp_enabled_worlds=["minecraft:overworld", "multiworld:rsw"]'
+    if ([regex]::IsMatch($ecContent, $pattern)) {
+        $ecContent = [regex]::Replace($ecContent, $pattern, $replacement)
+    } else {
+        $ecContent = $ecContent.TrimEnd("`r", "`n") + "`r`n" + $replacement + "`r`n"
+    }
+    [IO.File]::WriteAllText($ecDest, $ecContent, $utf8)
+} elseif (Test-Path -LiteralPath (Join-Path $configDir 'EssentialCommands.properties') -PathType Leaf) {
+    Copy-Item -LiteralPath (Join-Path $configDir 'EssentialCommands.properties') -Destination $ecDest
+}
+
 & (Join-Path $PSScriptRoot 'Install-ResourcePackDefaults.ps1') -Target Server -GameDirectory $game
 if ((Get-FileHash (Join-Path $mods 'goldclaim-1.0.32.jar')).Hash -ne
-        (Get-FileHash (Join-Path $PSScriptRoot 'mods\goldclaim-1.0.32.jar')).Hash) {
+        (Get-FileHash (Join-Path $modsDir 'goldclaim-1.0.32.jar')).Hash) {
     throw 'Installed GoldClaim hash does not match the supplied update.'
 }
 if ((Get-FileHash (Join-Path $mods 'soulsbackpackscompat-1.1.0.jar')).Hash -ne
-            (Get-FileHash (Join-Path $PSScriptRoot 'mods\soulsbackpackscompat-1.1.0.jar')).Hash) {
+            (Get-FileHash (Join-Path $modsDir 'soulsbackpackscompat-1.1.0.jar')).Hash) {
         throw 'Installed Soulslike Backpacks Compatibility hash does not match the supplied update.'
 }
 if ((Get-FileHash (Join-Path $mods 'gangscosmetics-2.0.2.jar')).Hash -ne
-            (Get-FileHash (Join-Path $PSScriptRoot 'mods\gangscosmetics-2.0.2.jar')).Hash) {
+            (Get-FileHash (Join-Path $modsDir 'gangscosmetics-2.0.2.jar')).Hash) {
     throw 'Installed Gangs Cosmetics hash does not match the supplied update.'
 }
 if (@(Get-ChildItem -LiteralPath $mods -File | Where-Object {
