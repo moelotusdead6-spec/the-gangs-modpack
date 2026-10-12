@@ -6,7 +6,7 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "ea641419856d34ed860c5bff69a54257d0015393cc23b385aa6b69e1ff2236d0"
+hash = "fe01eda64f0d8ff723372bcf871527e06784288bf692e500ea7c5c1eb5267451"
 
 [[files]]
 file = "README.md"
@@ -14,7 +14,7 @@ hash = "10006af7661ff85f6385f56205d2cf7404faac415b0dc7a6a7c3abbad1c9bf00"
 
 [[files]]
 file = "config/EssentialCommands.properties"
-hash = "dd31d46981853061db8d439d8ad684e2689249aa3485f755ae3ee1f64c5d781a"
+hash = "d87645d4a09789a27f785f33e6f3a8aa9e419a53cac5714c7647817b746bea92"
 
 [[files]]
 file = "config/bcc.json"
@@ -98,11 +98,11 @@ hash = "d0aaf3172f34275479f0669aa5b0a94b85788ae638f3062b948ec49d31c38293"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_fixes/data/enhancedcelestials/enhancedcelestials/lunar/event/blood_moon.json"
-hash = "981238034f776f41158c6091dfd59b03298f0ab677d21a89277472d063f8c924"
+hash = "4ce54088a04d8617c3d9858d7bea0919e4cf9ba7f1e6ccdcdbe3b02f70e22853"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_fixes/data/enhancedcelestials/enhancedcelestials/lunar/event/super_blood_moon.json"
-hash = "78aef0257eda0027377687dda80adeb712860b8b4bd3384e69a64f7a196f320e"
+hash = "82d0a1f96e45acd119d49260ef4caa1ce388941df8b658d82afdb169f4c8e719"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_fixes/data/furniture/loot_tables/blocks/bin.json"
@@ -110,7 +110,7 @@ hash = "f2ef2d7bc8fa2d343b0a7dd834f0eb550f84937bc0ce41f37b2cbae81c945496"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_fixes/data/gangs/dimension_type/rsw_nether.json"
-hash = "e0ad1d374c53922cceef334b04197ecbb4b8b6ad77e1546f5a75704681ca1c68"
+hash = "3b50247a28865b09a4c4c0395121eb7d57d0859fc95fde2a4cf154f709286e95"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_fixes/data/gangs_fixes/functions/load.mcfunction"
@@ -130,7 +130,7 @@ hash = "ffd8304d6ca5e1ac6ed7684446b2a218ecf3b15316dfc250ee98a280dadb56d0"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_fixes/data/multiworld/enhancedcelestials/lunar/dimension_settings/rsw.json"
-hash = "0c3b21b3af3c5fb5e9397bfc0c33060a543a3f6b3fe7de91d018a7c8a241b3d3"
+hash = "96b4dba07c7c48b3a5840f805ec5a49b9d7ddc9b00b17a386de1d7b0402ccb9c"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_fixes/pack.mcmeta"
@@ -502,7 +502,7 @@ hash = "d022c03cd1366878024d932aca7e3eda35a9f19e87bac7fc11bf8e1521d36ac7"
 
 [[files]]
 file = "index.html"
-hash = "9b92e04402a8c53d9dfe77257803bf16c830c8ef58dac19405dde42e10e202ba"
+hash = "8d17891157b28dac78d7198ade0da0cef1b62cf29fcfe10819c2f0535f8d23c3"
 
 [[files]]
 file = "mods/.gitkeep"
@@ -930,7 +930,7 @@ metafile = true
 
 [[files]]
 file = "mods/bc-particle-direct.pw.toml"
-hash = "cec1da818f9c595e81d8dcf209d59a22cc803f6ee20ac5361e98a43af47821ea"
+hash = "5edc63164e8a4478f6d8d5e1c6b15ff7ec36ac477355dd40d799f22182b7d3b7"
 metafile = true
 
 [[files]]
@@ -1080,7 +1080,7 @@ metafile = true
 
 [[files]]
 file = "mods/endsphantasm-direct.pw.toml"
-hash = "a1a7cf73ac5e943fec998c563f5ebc07c57e486cc6d302a4aa3b4d6de248edb0"
+hash = "87cb28621f39f955aacb7456b57cf99ab2ca75aba343253793857003b19821fb"
 metafile = true
 
 [[files]]
@@ -1270,7 +1270,7 @@ metafile = true
 
 [[files]]
 file = "mods/immersive-armors-direct.pw.toml"
-hash = "8726baec714c1813358cd746f9a6bd6235b605b179077343e37295d876f84729"
+hash = "79c1db3aebd6429bb1e5829b511c9a67dbbddcae46361953166c48c7e5f77ce8"
 metafile = true
 
 [[files]]
@@ -1465,7 +1465,7 @@ metafile = true
 
 [[files]]
 file = "mods/necronomicon-direct.pw.toml"
-hash = "5119ed4c96d09ec60ebc6e0cdf140b1d5433d75d2fea9e4d1d66ac39fb6911e8"
+hash = "3c6072797b750217a438dd9a89368926385fdd368029476758c527b27b929fc8"
 metafile = true
 
 [[files]]
@@ -1475,7 +1475,7 @@ metafile = true
 
 [[files]]
 file = "mods/nullscape-direct.pw.toml"
-hash = "a9816ef465eca5f3d23b4ce5e51dc95777ef2ae28541293b81ae51d69c98390e"
+hash = "d8003b7d8b19d2c7af57b9b491794f83191f4a359851141f651c93a8b6017779"
 metafile = true
 
 [[files]]
@@ -1570,7 +1570,7 @@ metafile = true
 
 [[files]]
 file = "mods/roughly-enough-items-direct.pw.toml"
-hash = "a8565665319b5440803eb875b32dc844555f84985a6ccaa354d72e39bfd03be9"
+hash = "26e3ee47b301af8f03d37cc13f9132a4c3e3e55069fa1a2547006c8cd45aae62"
 metafile = true
 
 [[files]]
@@ -1595,7 +1595,7 @@ metafile = true
 
 [[files]]
 file = "mods/shield-overhaul-direct.pw.toml"
-hash = "036fd759ff541d8106d34d65fff3e4f64d05960ab0a38518af49215f67bc830f"
+hash = "f8c2a021e0d5530f56cd4ae39be75afdb1eddaf43032bb6c9333917c9d3ad21e"
 metafile = true
 
 [[files]]
