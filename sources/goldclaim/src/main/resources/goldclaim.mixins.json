@@ -21,6 +21,7 @@
     "CoralDryingMixin",
     "PairedBlockMixin",
     "FireBlockMixin",
+    "AbstractFireBlockMixin",
     "NetherPortalBlockMixin",
     "EndPortalBlockMixin"
   ],

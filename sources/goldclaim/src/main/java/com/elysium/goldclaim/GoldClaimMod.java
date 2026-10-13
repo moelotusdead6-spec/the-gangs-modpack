@@ -821,7 +821,7 @@ implements ModInitializer {
                 playerToEvacuate -> this.teleportToHub(playerToEvacuate, false, false),
                 (activeServer, seed) -> {
                     this.createMultiworld(activeServer, RSW_DIMENSION, "NORMAL", seed);
-                    this.createMultiworld(activeServer, RSW_NETHER_DIMENSION, "gangs:rsw_nether", seed);
+                    this.createMultiworld(activeServer, RSW_NETHER_DIMENSION, "NETHER", seed);
                     this.createMultiworld(activeServer, RSW_THE_END_DIMENSION, "THE_END", seed);
                 },
                 activeServer -> {
@@ -832,7 +832,15 @@ implements ModInitializer {
                         }
                         this.applyWorldBorder(activeServer, rswDim, 10000.0);
                     }
+                    ServerWorld rswEnd = this.getWorld(activeServer, RSW_THE_END_DIMENSION);
+                    if (rswEnd != null) {
+                        RswDragonFightService.ensureDragonFight(rswEnd);
+                    }
                 });
+            ServerWorld activeRswEnd = this.getWorld(server, RSW_THE_END_DIMENSION);
+            if (activeRswEnd != null) {
+                RswDragonFightService.tickDragonFight(activeRswEnd);
+            }
             this.rswEntrySearch.tick();
             boolean runPlayerMaintenance = false;
             if (++this.playerMaintenanceTicks >= 20) {
@@ -948,7 +956,7 @@ implements ModInitializer {
         this.createMultiworldIfMissing(server, PVP_DIMENSION, "VOID");
         if (!this.rswResetService.isClosed()) {
             this.createMultiworldIfMissing(server, RSW_DIMENSION, "NORMAL");
-            this.createMultiworldIfMissing(server, RSW_NETHER_DIMENSION, "gangs:rsw_nether");
+            this.createMultiworldIfMissing(server, RSW_NETHER_DIMENSION, "NETHER");
             this.createMultiworldIfMissing(server, RSW_THE_END_DIMENSION, "THE_END");
         }
         this.applyWorldBorder(server, PVP_DIMENSION, 1000.0);
@@ -958,6 +966,10 @@ implements ModInitializer {
             if (rswWorld != null) {
                 applyRswFireRule(rswDim, rswWorld.getGameRules(), server);
             }
+        }
+        ServerWorld rswEnd = this.getWorld(server, RSW_THE_END_DIMENSION);
+        if (rswEnd != null) {
+            RswDragonFightService.ensureDragonFight(rswEnd);
         }
         this.applyPvpWorldRules(server);
     }

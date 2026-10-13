@@ -93,7 +93,7 @@ public abstract class RswPlayerTravelMixin {
 
     private TeleportTarget goldclaim$calculateNetherTeleportTarget(ServerPlayerEntity player, ServerWorld currentWorld, ServerWorld destination, boolean isEnteringNether) {
         WorldBorder worldBorder = destination.getWorldBorder();
-        double scale = DimensionType.getCoordinateScaleFactor(currentWorld.getDimension(), destination.getDimension());
+        double scale = 1.0;
         BlockPos blockPos = worldBorder.clamp(player.getX() * scale, player.getY(), player.getZ() * scale);
         return destination.getPortalForcer().getPortalRect(blockPos, isEnteringNether, worldBorder).map(rect -> {
             BlockPos portalPos = player.getBlockPos();

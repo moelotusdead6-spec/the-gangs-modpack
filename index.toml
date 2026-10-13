@@ -1240,7 +1240,7 @@ metafile = true
 
 [[files]]
 file = "mods/goldclaim-direct.pw.toml"
-hash = "7e2f18a3ddfb0b71c7276195420f1ea4cfb3ce98b3997f0f7bdc902142c03536"
+hash = "9bbc82dee2bdc59507cbcc3b5e2e0cd964f112f4d9a0e80c8410dc529847475d"
 metafile = true
 
 [[files]]

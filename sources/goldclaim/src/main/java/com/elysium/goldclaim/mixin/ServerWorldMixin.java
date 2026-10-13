@@ -14,11 +14,15 @@
 package com.elysium.goldclaim.mixin;
 
 import com.elysium.goldclaim.GoldClaimMod;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.server.MinecraftServer;
+import com.elysium.goldclaim.RswDragonFightService;
+import net.minecraft.entity.boss.dragon.EnderDragonFight;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.SaveProperties;
+import net.minecraft.world.World;
 import net.minecraft.world.timer.Timer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -39,6 +43,16 @@ public abstract class ServerWorldMixin {
     private void goldclaim$skipSharedScheduledEvents(Timer<MinecraftServer> timer, Object server, long time) {
         if (!GoldClaimMod.isTestingWorld((ServerWorld)(Object)this)) {
             timer.processEvents((MinecraftServer)server, time);
+        }
+    }
+
+    @Redirect(method = "save", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/SaveProperties;setDragonFight(Lnet/minecraft/entity/boss/dragon/EnderDragonFight$Data;)V"))
+    private void goldclaim$saveDragonFight(SaveProperties saveProperties, EnderDragonFight.Data data) {
+        ServerWorld world = (ServerWorld)(Object)this;
+        if (world.getRegistryKey() == World.END) {
+            saveProperties.setDragonFight(data);
+        } else if (GoldClaimMod.RSW_THE_END_DIMENSION.equals(world.getRegistryKey().getValue().toString())) {
+            RswDragonFightService.saveFightData(world, data);
         }
     }
 }
