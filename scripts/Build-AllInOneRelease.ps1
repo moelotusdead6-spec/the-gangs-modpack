@@ -68,8 +68,9 @@ try {
     Copy-Entry 'docs/updates/README.md' (Join-Path $repo 'docs\updates\README.md')
     Copy-Entry 'docs/updates/v1.1.4.md' (Join-Path $repo 'docs\updates\v1.1.4.md')
     Copy-Entry 'docs/updates/v1.1.5.md' (Join-Path $repo 'docs\updates\v1.1.5.md')
+    Copy-Entry 'docs/updates/v1.1.6.md' (Join-Path $repo 'docs\updates\v1.1.6.md')
     Copy-Entry 'server-update/README.txt' (Join-Path $PSScriptRoot 'SERVER-UPDATE.txt')
-    Copy-Entry 'server-update/mods/goldclaim-1.0.33.jar' (Join-Path $repo 'artifacts\goldclaim-1.0.33.jar')
+    Copy-Entry 'server-update/mods/goldclaim-1.0.34.jar' (Join-Path $repo 'artifacts\goldclaim-1.0.34.jar')
     Copy-Entry 'server-update/mods/gangshop-1.0.9.jar' (Join-Path $repo 'artifacts\gangshop-1.0.9.jar')
     $newPackMods = @(
         'EndsPhantasm-1.20.1-1.4.jar',
@@ -114,6 +115,7 @@ try {
     }
     Copy-Entry 'minecraft/mods/rankbadges-1.0.2.jar' (Join-Path $repo 'artifacts\rankbadges-1.0.2.jar')
     Copy-Entry 'server-update/Install-ServerUpdate.ps1' (Join-Path $PSScriptRoot 'Install-ServerUpdate.ps1')
+    Copy-Entry 'server-update/Prune-ServerBackups.ps1' (Join-Path $PSScriptRoot 'Prune-ServerBackups.ps1')
     Copy-Entry 'server-update/server-settings.properties' (Join-Path $PSScriptRoot 'server-settings.properties')
     foreach ($prefix in @('client-update/', 'server-update/')) {
         Copy-Entry ($prefix + 'Install-ResourcePackDefaults.ps1') (Join-Path $PSScriptRoot 'Install-ResourcePackDefaults.ps1')
@@ -129,7 +131,7 @@ try {
         }
     }
     $instance = Read-Entry 'instance.cfg'
-    $instance = [regex]::Replace($instance, '(?m)^name=[^\r\n]*', 'name=The Gangs Modpack v1.1.5')
+    $instance = [regex]::Replace($instance, '(?m)^name=[^\r\n]*', 'name=The Gangs Modpack v1.1.6')
     $instance = Get-PrismAutoUpdateConfig $instance
     Write-Entry 'instance.cfg' ($utf8.GetBytes($instance))
     $options = [IO.File]::ReadAllText((Join-Path $repo 'config\defaultoptions\options.txt'))
@@ -156,7 +158,7 @@ try {
         throw 'Removed mod remains in the ZIP.'
     }
     $goldclaim = @($zip.Entries | Where-Object { $_.FullName -match '^server-update/mods/goldclaim-.*\.jar$' })
-    if ($goldclaim.Count -ne 1 -or $goldclaim[0].Name -ne 'goldclaim-1.0.33.jar') {
+    if ($goldclaim.Count -ne 1 -or $goldclaim[0].Name -ne 'goldclaim-1.0.34.jar') {
         throw 'Wrong or duplicate GoldClaim server-update jar.'
     }
     foreach ($name in @('server-update/mods/soulsbackpackscompat-1.1.0.jar',
@@ -220,7 +222,7 @@ try {
     $stream = $goldclaim[0].Open()
     try { $actual = [BitConverter]::ToString($hash.ComputeHash($stream)).Replace('-', '') }
     finally { $stream.Dispose(); $hash.Dispose() }
-    if ($actual -ne (Get-FileHash (Join-Path $repo 'artifacts\goldclaim-1.0.33.jar') -Algorithm SHA256).Hash) {
+    if ($actual -ne (Get-FileHash (Join-Path $repo 'artifacts\goldclaim-1.0.34.jar') -Algorithm SHA256).Hash) {
         throw 'Packaged GoldClaim does not match the built artifact.'
     }
     foreach ($mod in $newPackMods) {

@@ -48,13 +48,14 @@ $propertiesPath = Join-Path $game 'server.properties'
 $corePath = Join-Path $game 'config\sophisticatedcore-common.toml'
 $startPath = Join-Path $game 'start.bat'
 foreach ($path in @($propertiesPath, $corePath, (Join-Path $game 'config\global_packs.toml'),
-        (Join-Path $modsDir 'goldclaim-1.0.33.jar'),
+        (Join-Path $modsDir 'goldclaim-1.0.34.jar'),
         (Join-Path $modsDir 'gangshop-1.0.9.jar'),
         (Join-Path $modsDir 'soulsbackpackscompat-1.1.0.jar'),
         (Join-Path $modsDir 'gangscosmetics-2.0.2.jar'),
         (Join-Path $configDir 'gangscosmetics.json'),
         (Join-Path $PSScriptRoot 'server-settings.properties'),
         (Join-Path $PSScriptRoot 'Install-ResourcePackDefaults.ps1'),
+        (Join-Path $PSScriptRoot 'Prune-ServerBackups.ps1'),
         (Join-Path $configDir 'paxi\datapacks\gangs_kits\data\sophisticatedbackpacks\recipes\inception_upgrade.json'))) {
     if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { throw "Required update/server file is missing: $path" }
 }
@@ -85,6 +86,12 @@ if ($ResetRswEnd) {
         throw 'Refusing to reset an RSW End outside this server directory.'
     }
     $end = Join-Path (Join-Path $game $levelName) 'dimensions\multiworld\rsw_the_end'
+    if (Test-Path -LiteralPath $end) {
+        $items = @((Get-Item -LiteralPath $end)) + @(Get-ChildItem -LiteralPath $end -Recurse -Force)
+        if (@($items | Where-Object { $_.Attributes -band [IO.FileAttributes]::ReparsePoint }).Count) {
+            throw 'Refusing to reset RSW End containing a filesystem link/junction.'
+        }
+    }
 }
 foreach ($line in [IO.File]::ReadAllLines((Join-Path $PSScriptRoot 'server-settings.properties'))) {
     if ($line -notmatch '^(view-distance|simulation-distance|require-resource-pack)=(.+)$') {
@@ -103,12 +110,12 @@ if (Test-Path -LiteralPath $backupRoot) {
     $previous = @(Get-ChildItem -LiteralPath $backupRoot -Directory |
         Where-Object { $_.Name -match '^policy-v\d+\.\d+\.\d+-\d{8}-\d{6}-\d{4}$' } |
         Sort-Object { $_.Name -replace '^policy-v\d+\.\d+\.\d+-', '' })
-    foreach ($old in @($previous | Select-Object -First ([Math]::Max(0, $previous.Count - 2)))) {
+    foreach ($old in @($previous | Select-Object -First ([Math]::Max(0, $previous.Count - 1)))) {
         Write-Output "Pruning oldest update backup: $($old.FullName)"
         Remove-Item -LiteralPath $old.FullName -Recurse -Force
     }
 }
-$backup = Join-Path $game ('backups\policy-v1.1.5-' + (Get-Date -Format 'yyyyMMdd-HHmmss-ffff'))
+$backup = Join-Path $game ('backups\policy-v1.1.6-' + (Get-Date -Format 'yyyyMMdd-HHmmss-ffff'))
 New-Item -ItemType Directory -Path $backup | Out-Null
 function Backup-File([string]$Path) {
     if (Test-Path -LiteralPath $Path -PathType Leaf) {
@@ -123,7 +130,7 @@ foreach ($path in @($propertiesPath, $corePath, $startPath, (Join-Path $game 'co
 }
 if (Test-Path -LiteralPath $startPath) {
     $start = [IO.File]::ReadAllText($startPath)
-    $start = [regex]::Replace($start, 'goldclaim-\d+\.\d+\.\d+\.jar', 'goldclaim-1.0.33.jar')
+    $start = [regex]::Replace($start, 'goldclaim-\d+\.\d+\.\d+\.jar', 'goldclaim-1.0.34.jar')
     $start = [regex]::Replace($start, 'gangscosmetics-\d+\.\d+\.\d+\.jar', 'gangscosmetics-2.0.2.jar')
     $start = [regex]::Replace($start, 'gangshop-\d+\.\d+\.\d+\.jar', 'gangshop-1.0.9.jar')
     [IO.File]::WriteAllText($startPath, $start, $utf8)
@@ -138,12 +145,11 @@ foreach ($file in $removed) {
 }
 if ($ResetRswEnd) {
     if (Test-Path -LiteralPath $end -PathType Container) {
-        $archivedEnd = Join-Path $backup 'rsw_the_end'
-        Move-Item -LiteralPath $end -Destination $archivedEnd
-        Write-Output "Archived only RSW End to $archivedEnd; it will regenerate on next start."
+        Remove-Item -LiteralPath $end -Recurse -Force
+        Write-Output 'Deleted only RSW End without a backup; it will regenerate on next start.'
     }
 }
-Copy-Item -LiteralPath (Join-Path $modsDir 'goldclaim-1.0.33.jar') -Destination $mods
+Copy-Item -LiteralPath (Join-Path $modsDir 'goldclaim-1.0.34.jar') -Destination $mods
 Copy-Item -LiteralPath (Join-Path $modsDir 'gangshop-1.0.9.jar') -Destination $mods
 Copy-Item -LiteralPath (Join-Path $modsDir 'soulsbackpackscompat-1.1.0.jar') -Destination $mods
 Copy-Item -LiteralPath (Join-Path $modsDir 'gangscosmetics-2.0.2.jar') -Destination $mods
@@ -206,9 +212,36 @@ if (Test-Path -LiteralPath $ecDest -PathType Leaf) {
     Copy-Item -LiteralPath (Join-Path $configDir 'EssentialCommands.properties') -Destination $ecDest
 }
 
+$c2mePath = Join-Path $game 'config\c2me.toml'
+$c2me = if (Test-Path -LiteralPath $c2mePath) { [IO.File]::ReadAllText($c2mePath) } else { '' }
+$section = [regex]::Match($c2me, '(?ms)^\[threadedWorldGen\][^\r\n]*\r?\n.*?(?=^\[|\z)')
+if ($section.Success) {
+    $pattern = '(?m)^[ \t]*enabled[ \t]*=[^\r\n]*'
+    if ([regex]::Matches($section.Value, $pattern).Count -ne 1) {
+        throw 'Expected one threadedWorldGen.enabled setting; C2ME config was not changed.'
+    }
+    $updated = [regex]::Replace($section.Value, $pattern, 'enabled = false')
+    $c2me = $c2me.Substring(0, $section.Index) + $updated + $c2me.Substring($section.Index + $section.Length)
+} else {
+    $c2me = $c2me.TrimEnd("`r", "`n") + "`n[threadedWorldGen]`nenabled = false`n"
+}
+Backup-File $c2mePath
+[IO.File]::WriteAllText($c2mePath, $c2me, $utf8)
+$lithiumPath = Join-Path $game 'config\lithium.properties'
+$lithium = if (Test-Path -LiteralPath $lithiumPath) { [IO.File]::ReadAllText($lithiumPath) } else { '' }
+$pattern = '(?m)^[ \t]*mixin\.util\.block_tracking[ \t]*=[^\r\n]*'
+if ([regex]::Matches($lithium, $pattern).Count -gt 1) { throw 'Duplicate Lithium block tracking setting.' }
+if ([regex]::IsMatch($lithium, $pattern)) {
+    $lithium = [regex]::Replace($lithium, $pattern, 'mixin.util.block_tracking=false')
+} else {
+    $lithium = $lithium.TrimEnd("`r", "`n") + "`nmixin.util.block_tracking=false`n"
+}
+Backup-File $lithiumPath
+[IO.File]::WriteAllText($lithiumPath, $lithium, $utf8)
+& (Join-Path $PSScriptRoot 'Prune-ServerBackups.ps1') -GameDirectory $game
 & (Join-Path $PSScriptRoot 'Install-ResourcePackDefaults.ps1') -Target Server -GameDirectory $game
-if ((Get-FileHash (Join-Path $mods 'goldclaim-1.0.33.jar')).Hash -ne
-        (Get-FileHash (Join-Path $modsDir 'goldclaim-1.0.33.jar')).Hash) {
+if ((Get-FileHash (Join-Path $mods 'goldclaim-1.0.34.jar')).Hash -ne
+        (Get-FileHash (Join-Path $modsDir 'goldclaim-1.0.34.jar')).Hash) {
     throw 'Installed GoldClaim hash does not match the supplied update.'
 }
 if ((Get-FileHash (Join-Path $mods 'soulsbackpackscompat-1.1.0.jar')).Hash -ne
@@ -228,7 +261,7 @@ if (@(Get-ChildItem -LiteralPath $mods -File | Where-Object {
 }).Count) { throw 'Old Gang Shop jars remain installed.' }
 if (@(Get-ChildItem -LiteralPath $mods -File | Where-Object {
         $_.Name -match '^(NaturesCompass-.*\.jar|ExplorersCompass-.*\.jar|goldclaim-.*\.jar(?:\.pending)?|soulsbackpackscompat-.*\.jar(?:\.pending)?|gangshats-.*\.jar(?:\.pending)?|gangscosmetics-.*\.jar(?:\.pending)?|jei-.*\.jar|YungsBetterEndIsland-.*\.jar)$' -and
-                $_.Name -notin @('goldclaim-1.0.33.jar', 'soulsbackpackscompat-1.1.0.jar', 'gangscosmetics-2.0.2.jar')
+                $_.Name -notin @('goldclaim-1.0.34.jar', 'soulsbackpackscompat-1.1.0.jar', 'gangscosmetics-2.0.2.jar')
         }).Count) { throw 'Old or removed mod jars remain installed.' }
 Write-Output "Server policy update installed. Backup: $backup"
-Write-Output 'GoldClaim 1.0.33, new mods and RSW Waystones policy installed. Existing unused Wild waystones are cleaned up with backups on next startup, preserving stones activated by any player. Player data, claims, homes, kit data and the RSW journal were preserved. Only an explicitly requested RSW End reset archives world data. Server remains stopped; start it yourself when ready.'
+Write-Output 'GoldClaim 1.0.34, BetterEnd Lootr tags, server compatibility settings and backup limits installed. Wild Waystones cleanup recovery is preserved; no completed RSW backups are retained. Active worlds, player data, claims, homes, kit data and the RSW journal were preserved unless an End reset was explicitly requested. Server remains stopped; start it yourself when ready.'

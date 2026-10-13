@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -242,16 +243,14 @@ final class RswResetService {
                     return;
                 }
                 for (ServerWorld w : this.unloadingWorlds) {
-                    try {
-                        w.close();
-                    } catch (Exception ignored) {}
+                    w.close();
                 }
                 this.unloadingWorlds.clear();
                 if (this.archive == null) {
                     this.state.phase = "ARCHIVING";
                     this.save();
                     Path root = server.getSavePath(WorldSavePath.ROOT);
-                    Path backup = root.resolve("dimensions/multiworld/rsw-reset-backups").resolve(this.state.backup);
+                    Path backup = resetStaging(root, this.state.backup);
                     this.archive = CompletableFuture.runAsync(() -> {
                         try {
                             Files.createDirectories(backup);
@@ -328,12 +327,13 @@ final class RswResetService {
                     }
                 }
                 ready.accept(server);
+                clearResetStaging(server.getSavePath(WorldSavePath.ROOT), this.state.backup);
                 State completed = completedState(this.state, now);
                 this.save(completed);
                 this.state = completed;
                 this.lastRemaining = this.state.nextResetAtMs - now;
-                LOGGER.info("RSW reset complete: old seed={}, new seed={}, duration={}s, backup={}",
-                    this.state.previousSeed, this.state.seed, (now - this.state.startedAtMs) / 1000, this.state.backup);
+                LOGGER.info("RSW reset complete: old seed={}, new seed={}, duration={}s; temporary reset data removed",
+                    this.state.previousSeed, this.state.seed, (now - this.state.startedAtMs) / 1000);
                 broadcast(server, "RSW has reset with a new seed and is ready. Next reset: 5am EST.");
             }
         } catch (Exception failure) {
@@ -383,6 +383,28 @@ final class RswResetService {
         }
         handle.getClass().getMethod("setTickWhenEmpty", boolean.class).invoke(handle, false);
         handle.getClass().getMethod("unload").invoke(handle);
+    }
+
+    static Path resetStaging(Path root, String transaction) {
+        if (transaction == null || !transaction.matches("reset-[0-9]+")) {
+            throw new IllegalArgumentException("Invalid RSW reset transaction: " + transaction);
+        }
+        Path world = root.toAbsolutePath().normalize();
+        return world.getParent().resolve(".rsw-reset-in-progress").resolve(world.getFileName()).resolve(transaction);
+    }
+
+    static void clearResetStaging(Path root, String transaction) throws IOException {
+        Path staging = resetStaging(root, transaction);
+        // Also finish transactions started by versions that archived inside the world.
+        Path legacy = root.resolve("dimensions/multiworld/rsw-reset-backups").resolve(transaction);
+        for (Path directory : List.of(staging, legacy)) {
+            if (!Files.exists(directory, java.nio.file.LinkOption.NOFOLLOW_LINKS)) continue;
+            try (var entries = Files.walk(directory)) {
+                for (Path entry : entries.sorted(Comparator.reverseOrder()).toList()) {
+                    Files.delete(entry);
+                }
+            }
+        }
     }
 
     private void save() throws IOException {

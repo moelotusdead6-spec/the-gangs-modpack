@@ -125,6 +125,14 @@ file = "config/paxi/datapacks/gangs_fixes/data/gangs_fixes/functions/tick.mcfunc
 hash = "9b4733371247d135ed095c24ee152cd95307bd27765e6ab5601e63e853fa6ed7"
 
 [[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/lootr/tags/blocks/convert/barrels.json"
+hash = "3d95b649d02aa17164c39d275efdd1222eba67f33d7ccf803f72155b3374f1d5"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/lootr/tags/blocks/convert/chests.json"
+hash = "8e5a4769c7045e3058c88ee53856bfa45acda171711b7cbd4645ab9dac078a75"
+
+[[files]]
 file = "config/paxi/datapacks/gangs_fixes/data/minecraft/tags/functions/load.json"
 hash = "0f7edeb2f48d171ebbc8de46a7159bc4a51efc5e2c94a6c1e8217c1bb22c6c8d"
 
@@ -1288,7 +1296,7 @@ metafile = true
 
 [[files]]
 file = "mods/goldclaim-direct.pw.toml"
-hash = "1ca424aa818515d399b203d2473b2c23b60d028e632fbbe91c473b18778816d0"
+hash = "9670032610e7df6abd9afcd566192ebca1b6a86ed5da222b72da41540df870c1"
 metafile = true
 
 [[files]]

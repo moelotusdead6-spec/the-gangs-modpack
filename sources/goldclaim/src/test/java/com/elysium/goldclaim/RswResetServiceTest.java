@@ -20,6 +20,31 @@ public class RswResetServiceTest {
     }
 
     @Test
+    public void resetStagingIsOutsideWorldAndCleanupIsScopedAndRepeatable() throws Exception {
+        Path world = temporary.getRoot().toPath().resolve("world");
+        Path staging = RswResetService.resetStaging(world, "reset-123");
+        assertFalse(staging.startsWith(world));
+        Path legacy = world.resolve("dimensions/multiworld/rsw-reset-backups/reset-123");
+        for (Path directory : java.util.List.of(staging, legacy)) {
+            Files.createDirectories(directory.resolve("world/rsw/region"));
+            Files.writeString(directory.resolve("world/rsw/region/fixture.mca"), "old");
+        }
+        Path active = world.resolve("dimensions/multiworld/rsw/region/fixture.mca");
+        Files.createDirectories(active.getParent());
+        Files.writeString(active, "new");
+        Path unrelated = staging.resolveSibling("reset-456");
+        Files.createDirectories(unrelated);
+        RswResetService.clearResetStaging(world, "reset-123");
+        RswResetService.clearResetStaging(world, "reset-123");
+        assertFalse(Files.exists(staging));
+        assertFalse(Files.exists(legacy));
+        assertEquals("new", Files.readString(active));
+        assertTrue(Files.exists(unrelated));
+        assertThrows(IllegalArgumentException.class,
+            () -> RswResetService.clearResetStaging(world, "../world"));
+    }
+
+    @Test
     public void manualResetIsExactlyFifteenMinutesAndSurvivesRestart() throws Exception {
         RswResetService service = new RswResetService(journal());
         service.initialize(NOW);

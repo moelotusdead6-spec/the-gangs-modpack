@@ -18,6 +18,14 @@ $stamp = Get-Date -Format 'yyyyMMdd-HHmmss-ffff'
 
 function Save-WithBackup([string]$Path, [string]$Content) {
     if (Test-Path -LiteralPath $Path) {
+        $directory = [IO.Path]::GetDirectoryName($Path)
+        $prefix = [IO.Path]::GetFileName($Path) + '.resource-pack-backup-'
+        $previous = @(Get-ChildItem -LiteralPath $directory -File | Where-Object {
+            $_.Name.StartsWith($prefix) -and $_.Name.Substring($prefix.Length) -match '^\d{8}-\d{6}-\d{4}$'
+        } | Sort-Object Name)
+        foreach ($old in @($previous | Select-Object -First ([Math]::Max(0, $previous.Count - 1)))) {
+            Remove-Item -LiteralPath $old.FullName
+        }
         Copy-Item -LiteralPath $Path -Destination "$Path.resource-pack-backup-$stamp" -ErrorAction Stop
     }
     [IO.File]::WriteAllText($Path, $Content, $utf8)

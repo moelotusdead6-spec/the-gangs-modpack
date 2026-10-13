@@ -3,7 +3,7 @@
 ## Keep one Prism instance
 
 Keep the same Prism instance and press Play for normal client pack updates.
-New v1.1.5 imports have automatic client-only Packwiz updates enabled.
+New v1.1.6 imports have automatic client-only Packwiz updates enabled.
 The public ZIP is for new installations, not a replacement instance for
 every release.
 
@@ -57,7 +57,7 @@ instructions and stopped-server installer. Apply it only after stopping the
 server and making a world backup, then start the server yourself.
 Publishing the pack does not install or restart the live server.
 
-GoldClaim 1.0.33 coordinates Resetting World (RSW) rotation across three
+GoldClaim 1.0.34 coordinates Resetting World (RSW) rotation across three
 synchronized dimensions (`multiworld:rsw`, `multiworld:rsw_nether`, and
 `multiworld:rsw_the_end`) with matching seeds and 10,000-block diameter
 (5,000-block radius) borders centered at (0, 0). The Nether dimension uses a
@@ -81,3 +81,9 @@ waystones never activated by any player, including offline players; future
 Wild placements are not automatically removed. Cleanup backs up touched region
 files and the waystone registry separately before removal. No additional End
 reset is needed for the already-prepared server. See [v1.1.5 details](v1.1.5.md).
+
+v1.1.6 retains no completed RSW backups and caps other timestamped server
+backup categories at two generations each. It adds BetterEnd Lootr conversion
+tags and targeted server-only Lithium/C2ME compatibility settings. The pending
+PacketEvents custom-particle parsing issue is documented separately.
+See [v1.1.6 details](v1.1.6.md).

@@ -187,11 +187,13 @@ public final class WaystonePolicy {
         Path root = world.getServer().getSavePath(WorldSavePath.ROOT);
         Path dimension = DimensionType.getSaveDirectory(world.getRegistryKey(), root);
         try {
-            for (String folder : new String[]{"region", "entities", "poi"}) {
-                backupFile(dimension.resolve(folder).resolve("r." + (pos.getX() >> 9) + "."
-                    + (pos.getZ() >> 9) + ".mca"), root);
-                backupFile(dimension.resolve(folder).resolve("c." + (pos.getX() >> 4) + "."
-                    + (pos.getZ() >> 4) + ".mcc"), root);
+            if (!GoldClaimMod.RSW_DIMENSIONS.contains(world.getRegistryKey().getValue().toString())) {
+                for (String folder : new String[]{"region", "entities", "poi"}) {
+                    backupFile(dimension.resolve(folder).resolve("r." + (pos.getX() >> 9) + "."
+                        + (pos.getZ() >> 9) + ".mca"), root);
+                    backupFile(dimension.resolve(folder).resolve("c." + (pos.getX() >> 4) + "."
+                        + (pos.getZ() >> 4) + ".mcc"), root);
+                }
             }
             backupFile(root.resolve("data/waystones.dat"), root);
         } catch (IOException failure) {

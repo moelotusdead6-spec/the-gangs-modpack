@@ -20,12 +20,20 @@ import net.minecraft.util.Identifier;
 final class RswDragonSmokeTest {
     private static int ticks;
     private static ServerPlayerEntity player;
+    private static boolean resetRequested;
 
     static void register() {
         if (FabricLoader.getInstance().isModLoaded("waystones")) WaystoneSmokeTest.register();
+        if (FabricLoader.getInstance().isModLoaded("lootr") && FabricLoader.getInstance().isModLoaded("betterend")) {
+            LootrSmokeTest.register();
+        }
         ServerTickEvents.END_SERVER_TICK.register(server -> {
-            if (++ticks > 1600) {
-                throw new IllegalStateException("RSW End failed to spawn a True Ending dragon within 1600 ticks.");
+            if (++ticks > 4000) {
+                throw new IllegalStateException("RSW dragon/loot/reset verification timed out after 4000 ticks.");
+            }
+            if (resetRequested) {
+                if (RswResetSmokeTest.verify(server)) finish(server);
+                return;
             }
             ServerWorld world = server.getWorld(RegistryKey.of(RegistryKeys.WORLD,
                 new Identifier(GoldClaimMod.RSW_THE_END_DIMENSION)));
@@ -50,6 +58,8 @@ final class RswDragonSmokeTest {
             }
             if (FabricLoader.getInstance().isModLoaded("waystones") && !WaystoneSmokeTest.verify(server)) return;
             if (FabricLoader.getInstance().isModLoaded("gangshop")) ShopSmokeTest.verify();
+            if (FabricLoader.getInstance().isModLoaded("lootr")
+                    && FabricLoader.getInstance().isModLoaded("betterend") && !LootrSmokeTest.verify(server)) return;
             if (FabricLoader.getInstance().isModLoaded("betterend")) {
                 boolean hasBetterEnd = world.getChunkManager().getChunkGenerator()
                     .getBiomeSource().getBiomes().stream().anyMatch(biome ->
@@ -79,16 +89,23 @@ final class RswDragonSmokeTest {
                     || !server.getSaveProperties().getDragonFight().equals(vanillaData)) {
                 throw new IllegalStateException("RSW fight persistence changed its state or vanilla End data.");
             }
-            try {
-                Files.writeString(Path.of("rsw-smoke-passed.txt"),
-                    "PASS: custom RSW End spawned exactly one dragon; True Ending tag and 300 HP applied; "
-                    + "fight state reloaded independently of vanilla End; optional BetterEnd biome samples "
-                    + "and Waystones offline-activation cleanup / all-dimension placement and travel bans passed.\n");
-            } catch (IOException failure) {
-                throw new IllegalStateException("Cannot save RSW smoke-test result", failure);
-            }
             world.removePlayer(player, net.minecraft.entity.Entity.RemovalReason.DISCARDED);
-            server.stop(false);
+            RswResetSmokeTest.start(server);
+            resetRequested = true;
         });
+    }
+
+    private static void finish(net.minecraft.server.MinecraftServer server) {
+        try {
+            Files.writeString(Path.of("rsw-smoke-passed.txt"),
+                "PASS: custom RSW End spawned exactly one dragon; True Ending tag and 300 HP applied; "
+                + "fight state reloaded independently of vanilla End; optional BetterEnd biome samples "
+                + "and Waystones offline-activation cleanup / all-dimension placement and travel bans passed; "
+                + "all 20 BetterEnd Lootr conversions, personal storage preservation, independent player loot "
+                + "and a full synchronized reset without retained RSW backups passed.\n");
+        } catch (IOException failure) {
+            throw new IllegalStateException("Cannot save RSW smoke-test result", failure);
+        }
+        server.stop(false);
     }
 }

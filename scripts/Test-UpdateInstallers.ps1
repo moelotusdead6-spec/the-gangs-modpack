@@ -114,6 +114,8 @@ Write-Fixture (Join-Path $server 'server.properties') "motd=Keep me`r`nview-dist
 Write-Fixture (Join-Path $server 'start.bat') 'java -jar goldclaim-1.0.31.jar'
 Write-Fixture (Join-Path $server 'config\sophisticatedcore-common.toml') 'enabledItems = ["sophisticatedbackpacks:inception_upgrade|true", "other:item|true"]'
 Write-Fixture (Join-Path $server 'config\global_packs.toml') "[resourcepacks]`r`nrequired = [`"legacy.zip`"]`r`n"
+Write-Fixture (Join-Path $server 'config\c2me.toml') "[threadedWorldGen]`nenabled = `"default`"`nother = true`n[ioSystem]`nenabled = true`n"
+Write-Fixture (Join-Path $server 'config\lithium.properties') "mixin.util.block_tracking=true`nmixin.math.sine_lut=false`n"
 Write-Fixture (Join-Path $server 'mods\goldclaim-1.0.31.jar') 'old-fixture-jar'
 Write-Fixture (Join-Path $server 'mods\gangshop-1.0.8.jar') 'old-shop-jar'
 Write-Fixture (Join-Path $server 'mods\YungsBetterEndIsland-1.20-Fabric-2.0.6.jar') 'removed-island-mod'
@@ -124,11 +126,18 @@ foreach ($stamp in @('20261001-120000-0000', '20261002-120000-0000', '20261003-1
 }
 $hashes = @{}
 foreach ($relative in @('world\level.dat', 'world\playerdata\fixture.dat', 'config\goldclaim\claims.json',
-        'config\goldclaim\rsw-reset.json', 'config\multiworld\worlds\multiworld\rsw.yml',
+        'config\multiworld\worlds\multiworld\rsw.yml',
         'config\personal-server-mod.json')) {
     $path = Join-Path $server $relative
     Write-Fixture $path 'untouched-fixture'
     $hashes[$path] = (Get-FileHash -LiteralPath $path).Hash
+}
+$journal = Join-Path $server 'config\goldclaim\rsw-reset.json'
+Write-Fixture $journal '{"phase":"IDLE","generation":8}'
+$hashes[$journal] = (Get-FileHash $journal).Hash
+Write-Fixture (Join-Path $server 'world\dimensions\multiworld\rsw-reset-backups\reset-123\world\rsw\fixture.mca') 'obsolete-reset'
+foreach ($stamp in @('20261001-120000', '20261002-120000', '20261003-120000')) {
+    Write-Fixture (Join-Path $server "backups\personal-boots-rsw-$stamp\fixture.txt") 'old-other-backup'
 }
 foreach ($relative in @('config\gangshop\prices.json', 'config\gangshop\category_settings.json',
         'world\data\gangbucks_wallets.dat', 'world\data\waystones.dat', 'world\playerdata\offline.dat')) {
@@ -138,17 +147,21 @@ foreach ($relative in @('config\gangshop\prices.json', 'config\gangshop\category
 }
 & (Join-Path $root 'server-update\Install-ServerUpdate.ps1') -GameDirectory $server -ResetRswEnd
 Assert-Preserved $hashes
-Require (Test-Path -LiteralPath (Join-Path $server 'mods\goldclaim-1.0.33.jar')) 'New GoldClaim is missing.'
+Require (Test-Path -LiteralPath (Join-Path $server 'mods\goldclaim-1.0.34.jar')) 'New GoldClaim is missing.'
 Require (-not (Test-Path -LiteralPath (Join-Path $server 'mods\goldclaim-1.0.31.jar'))) 'Old GoldClaim remains.'
 Require (-not (Test-Path -LiteralPath (Join-Path $server 'mods\gangshop-1.0.8.jar'))) 'Old Gang Shop remains.'
 Require (-not (Test-Path -LiteralPath (Join-Path $server 'mods\YungsBetterEndIsland-1.20-Fabric-2.0.6.jar'))) 'Better End Island remains.'
 Require ([IO.File]::ReadAllText((Join-Path $server 'mods\tru.e-ending-v1.1.0c.jar')) -eq 'preserved-dragon-overhaul') 'True Ending was changed.'
 Require (-not (Test-Path -LiteralPath (Join-Path $server 'world\dimensions\multiworld\rsw_the_end'))) 'RSW End was not archived.'
 $backups = @(Get-ChildItem -LiteralPath (Join-Path $server 'backups') -Directory)
-Require ($backups.Count -eq 3) 'Update backup retention must keep three backups.'
+Require (@($backups | Where-Object { $_.Name -match '^policy-' }).Count -eq 2) 'Update backup retention must keep two backups.'
+Require (@($backups | Where-Object { $_.Name -match '^personal-boots-rsw-' }).Count -eq 2) 'Other backup categories must keep two backups.'
 Require (-not (Test-Path -LiteralPath (Join-Path $server 'backups\policy-v1.1.3-20261001-120000-0000'))) 'Oldest update backup was not pruned.'
-$currentBackup = $backups | Where-Object { $_.Name -like 'policy-v1.1.5-*' }
-Require ([IO.File]::ReadAllText((Join-Path $currentBackup.FullName 'rsw_the_end\region\fixture.mca')) -eq 'old-arena') 'Archived End content was not preserved.'
+Require (-not @(Get-ChildItem (Join-Path $server 'world\dimensions\multiworld\rsw-reset-backups') -Directory).Count) 'RSW reset backups remain.'
+Require (-not @(Get-ChildItem (Join-Path $server 'backups') -Recurse -Directory | Where-Object { $_.Name -eq 'rsw_the_end' }).Count) 'An RSW End backup remains.'
+Require ([IO.File]::ReadAllText((Join-Path $server 'config\c2me.toml')) -match '(?s)\[threadedWorldGen\]\nenabled = false\nother = true\n\[ioSystem\]\nenabled = true') 'C2ME patch changed unrelated settings.'
+Require ([IO.File]::ReadAllText((Join-Path $server 'config\lithium.properties')) -match 'mixin.math.sine_lut=false') 'Lithium patch changed unrelated settings.'
+Require ([IO.File]::ReadAllText((Join-Path $server 'config\lithium.properties')) -match 'mixin.util.block_tracking=false') 'Lithium compatibility switch missing.'
 $properties = [IO.File]::ReadAllText((Join-Path $server 'server.properties'))
 Require ($properties -match 'server-port=25588' -and $properties -match 'motd=Keep me') 'Unrelated server properties changed.'
 Require ($properties -match 'view-distance=6' -and $properties -match 'simulation-distance=6') 'Server policy was not applied.'

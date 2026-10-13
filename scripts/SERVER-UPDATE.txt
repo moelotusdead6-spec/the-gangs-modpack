@@ -1,18 +1,19 @@
-The Gangs Modpack v1.1.5 - server update
+The Gangs Modpack v1.1.6 - server update
 
 STOP THE SERVER and keep a world backup before applying this update.
 Run PowerShell:
   powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Install-ServerUpdate.ps1 -GameDirectory "C:\path\to\server"
 
-The installer backs up touched files and installs GoldClaim 1.0.33,
+The installer backs up touched files and installs GoldClaim 1.0.34,
 removes YUNG's Better End Island and routes the retained True Ending
 dragon overhaul to RSW End. Good Ending (Overworld content) is unchanged.
 To replace an existing YUNG arena with a clean End, append -ResetRswEnd.
-This MOVES only the RSW End dimension into the update backup, including
-its dragon fight state, so it regenerates on startup. Without that flag,
-all world folders are preserved. Keep a full world backup separately.
-Update-file backups retain three generations, pruning the oldest before
-creating the new backup. Other backup categories are not pruned.
+This DELETES only RSW End without a backup, so it regenerates on startup.
+Without that flag, active world folders are preserved.
+No completed RSW reset backups are retained. Temporary reset recovery data
+is deleted after a successful reset and is stored outside the active world.
+Update-file backups and other timestamped server backup categories retain
+two generations each. Historical RSW backups are removed while stopped.
 removes JEI, installs server-applicable mods (EndsPhantasm, Nullscape,
 Shield Overhaul, Necronomicon, Immersive Armors, Roughly Enough Items,
 bc_particle), and retains view-distance=6 / simulation-distance=6.
@@ -37,7 +38,17 @@ Wild stones are preserved. This is a one-time cleanup, not deletion of future
 Wild placements. Original region/waystone files and the cleanup plan are kept
 under backups\waystones-policy-v1.1.5\<level-name>, outside world generation.
 Cleanup saves changed chunks and registry before marking itself complete.
+RSW region backups are not kept; Wild cleanup recovery files are preserved.
 Do NOT repeat -ResetRswEnd for the server already prepared with v1.1.4.
+
+v1.1.6 enables Lootr conversion for all BetterEnd loot-bearing wood chests
+and barrels. Personal storage is not converted. Eligible existing chests
+convert on load; already-generated inventory contents cannot be recovered
+as a loot table. Converted blocks use Lootr's appearance.
+The installer selectively disables Lithium block tracking and C2ME threaded
+world generation to avoid BetterEnd/BCLib class warnings and save-file races.
+Other performance settings remain intact. The separate GrimAC/PacketEvents
+custom-particle registry parsing issue is not fixed by those settings.
 
 Do not overwrite live configs with the full config folder: it is supplied
 for new installations/reference. The installer merges only this update's
