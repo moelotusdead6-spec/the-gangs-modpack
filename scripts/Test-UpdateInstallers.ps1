@@ -115,6 +115,7 @@ Write-Fixture (Join-Path $server 'start.bat') 'java -jar goldclaim-1.0.31.jar'
 Write-Fixture (Join-Path $server 'config\sophisticatedcore-common.toml') 'enabledItems = ["sophisticatedbackpacks:inception_upgrade|true", "other:item|true"]'
 Write-Fixture (Join-Path $server 'config\global_packs.toml') "[resourcepacks]`r`nrequired = [`"legacy.zip`"]`r`n"
 Write-Fixture (Join-Path $server 'mods\goldclaim-1.0.31.jar') 'old-fixture-jar'
+Write-Fixture (Join-Path $server 'mods\gangshop-1.0.8.jar') 'old-shop-jar'
 Write-Fixture (Join-Path $server 'mods\YungsBetterEndIsland-1.20-Fabric-2.0.6.jar') 'removed-island-mod'
 Write-Fixture (Join-Path $server 'mods\tru.e-ending-v1.1.0c.jar') 'preserved-dragon-overhaul'
 Write-Fixture (Join-Path $server 'world\dimensions\multiworld\rsw_the_end\region\fixture.mca') 'old-arena'
@@ -129,20 +130,38 @@ foreach ($relative in @('world\level.dat', 'world\playerdata\fixture.dat', 'conf
     Write-Fixture $path 'untouched-fixture'
     $hashes[$path] = (Get-FileHash -LiteralPath $path).Hash
 }
+foreach ($relative in @('config\gangshop\prices.json', 'config\gangshop\category_settings.json',
+        'world\data\gangbucks_wallets.dat', 'world\data\waystones.dat', 'world\playerdata\offline.dat')) {
+    $path = Join-Path $server $relative
+    Write-Fixture $path 'preserve-shop-and-waystone-data-before-startup'
+    $hashes[$path] = (Get-FileHash -LiteralPath $path).Hash
+}
 & (Join-Path $root 'server-update\Install-ServerUpdate.ps1') -GameDirectory $server -ResetRswEnd
 Assert-Preserved $hashes
-Require (Test-Path -LiteralPath (Join-Path $server 'mods\goldclaim-1.0.32.jar')) 'New GoldClaim is missing.'
+Require (Test-Path -LiteralPath (Join-Path $server 'mods\goldclaim-1.0.33.jar')) 'New GoldClaim is missing.'
 Require (-not (Test-Path -LiteralPath (Join-Path $server 'mods\goldclaim-1.0.31.jar'))) 'Old GoldClaim remains.'
+Require (-not (Test-Path -LiteralPath (Join-Path $server 'mods\gangshop-1.0.8.jar'))) 'Old Gang Shop remains.'
 Require (-not (Test-Path -LiteralPath (Join-Path $server 'mods\YungsBetterEndIsland-1.20-Fabric-2.0.6.jar'))) 'Better End Island remains.'
 Require ([IO.File]::ReadAllText((Join-Path $server 'mods\tru.e-ending-v1.1.0c.jar')) -eq 'preserved-dragon-overhaul') 'True Ending was changed.'
 Require (-not (Test-Path -LiteralPath (Join-Path $server 'world\dimensions\multiworld\rsw_the_end'))) 'RSW End was not archived.'
 $backups = @(Get-ChildItem -LiteralPath (Join-Path $server 'backups') -Directory)
 Require ($backups.Count -eq 3) 'Update backup retention must keep three backups.'
 Require (-not (Test-Path -LiteralPath (Join-Path $server 'backups\policy-v1.1.3-20261001-120000-0000'))) 'Oldest update backup was not pruned.'
-$currentBackup = $backups | Where-Object { $_.Name -like 'policy-v1.1.4-*' }
+$currentBackup = $backups | Where-Object { $_.Name -like 'policy-v1.1.5-*' }
 Require ([IO.File]::ReadAllText((Join-Path $currentBackup.FullName 'rsw_the_end\region\fixture.mca')) -eq 'old-arena') 'Archived End content was not preserved.'
 $properties = [IO.File]::ReadAllText((Join-Path $server 'server.properties'))
 Require ($properties -match 'server-port=25588' -and $properties -match 'motd=Keep me') 'Unrelated server properties changed.'
 Require ($properties -match 'view-distance=6' -and $properties -match 'simulation-distance=6') 'Server policy was not applied.'
+foreach ($file in Get-ChildItem -LiteralPath (Join-Path $root 'server-update\mods') -Filter '*.jar' |
+        Where-Object { $_.Name -match '^(supplementaries-|suppsquared-|EnderZoology-|better-cities-|better-end-|bclib-|mcw-|elytraslot-|gangshop-|goldclaim-)' }) {
+    Require ((Get-FileHash (Join-Path $server ('mods\' + $file.Name))).Hash -eq
+        (Get-FileHash $file.FullName).Hash) "Server payload mod missing or changed: $($file.Name)"
+}
+Write-Fixture (Join-Path $server 'world\dimensions\multiworld\rsw_the_end\region\fixture.mca') 'keep-new-end'
+$endHash = (Get-FileHash (Join-Path $server 'world\dimensions\multiworld\rsw_the_end\region\fixture.mca')).Hash
+& (Join-Path $root 'server-update\Install-ServerUpdate.ps1') -GameDirectory $server
+Assert-Preserved $hashes
+Require ((Get-FileHash (Join-Path $server 'world\dimensions\multiworld\rsw_the_end\region\fixture.mca')).Hash -eq
+    $endHash) 'Normal mod installation reset the End without approval.'
 Write-Output 'PASS: byte-for-byte client preferences/server-list retention on first install and rerun; Prism hook placement/idempotence; default server NBT; stopped-server installation with worlds, player data, claims and RSW journal/config preserved.'
 Remove-Item -LiteralPath $root -Recurse

@@ -37,6 +37,9 @@ public final class ShopCategory {
     }
 
     public static ShopCategory forMod(String namespace, String displayName) {
+        if (namespace.startsWith("mcw")) {
+            return new ShopCategory("macaws", "Macaw's", true);
+        }
         return new ShopCategory(namespace, displayName, true);
     }
 
@@ -66,4 +69,3 @@ public final class ShopCategory {
         return 31 * this.id.hashCode() + Boolean.hashCode(this.modded);
     }
 }
-

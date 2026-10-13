@@ -300,6 +300,7 @@ implements ModInitializer {
     public void onInitialize() {
         INSTANCE = this;
         BannedContent.register();
+        WaystonePolicy.register();
         this.config = GoldClaimConfig.load();
         Path claimsPath = Path.of("config", "goldclaim", "claims.json");
         this.claimManager = new ClaimManager(claimsPath, this.config);

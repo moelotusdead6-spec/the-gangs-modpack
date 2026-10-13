@@ -45,6 +45,7 @@ try {
     foreach ($entry in @($zip.Entries)) {
         if ($entry.FullName -match '(?i)(?:^|/)(?:NaturesCompass-|ExplorersCompass-).*\.jar$' -or
                 $entry.FullName -match '^server-update/mods/goldclaim-.*\.jar$' -or
+                $entry.FullName -match '^(minecraft|client-update|server-update)/mods/gangshop-.*\.jar$' -or
                 $entry.FullName -match '^(minecraft|client-update|server-update)/mods/(soulsbackpackscompat|defaultoptions)-.*\.jar$' -or
                 $entry.FullName -match '^(minecraft|client-update|server-update)/mods/jei-.*\.jar$' -or
                 $entry.FullName -match '(?i)(?:^|/)YungsBetterEndIsland-.*\.jar$' -or
@@ -66,8 +67,10 @@ try {
     Copy-Entry 'README.md' (Join-Path $repo 'README.md')
     Copy-Entry 'docs/updates/README.md' (Join-Path $repo 'docs\updates\README.md')
     Copy-Entry 'docs/updates/v1.1.4.md' (Join-Path $repo 'docs\updates\v1.1.4.md')
+    Copy-Entry 'docs/updates/v1.1.5.md' (Join-Path $repo 'docs\updates\v1.1.5.md')
     Copy-Entry 'server-update/README.txt' (Join-Path $PSScriptRoot 'SERVER-UPDATE.txt')
-    Copy-Entry 'server-update/mods/goldclaim-1.0.32.jar' (Join-Path $repo 'artifacts\goldclaim-1.0.32.jar')
+    Copy-Entry 'server-update/mods/goldclaim-1.0.33.jar' (Join-Path $repo 'artifacts\goldclaim-1.0.33.jar')
+    Copy-Entry 'server-update/mods/gangshop-1.0.9.jar' (Join-Path $repo 'artifacts\gangshop-1.0.9.jar')
     $newPackMods = @(
         'EndsPhantasm-1.20.1-1.4.jar',
         'Nullscape_1.20.x_v1.2.8.jar',
@@ -75,7 +78,19 @@ try {
         'shield_overhaul-2.0.4.jar',
         'Necronomicon-Fabric-1.6.0+1.20.1.jar',
         'immersive_armors-1.7.2+1.20.1-fabric.jar',
-        'bc_particle-0.0.6-fabric-1.20.1.jar'
+        'bc_particle-0.0.6-fabric-1.20.1.jar',
+        'supplementaries-1.20-3.1.44-fabric.jar',
+        'suppsquared-1.20-1.1.29.jar',
+        'EnderZoology-v8.0.3-1.20.1-Fabric.jar',
+        'better-cities-better-end-1.16-1.20.jar',
+        'better-end-4.0.11.jar',
+        'bclib-3.0.14.jar',
+        'mcw-doors-1.1.5-mc1.20.1fabric.jar',
+        'mcw-mcwwindows-2.4.2-mc1.20.1fabric.jar',
+        'mcw-furniture-3.4.1-mc1.20.1fabric.jar',
+        'mcw-roofs-2.3.2-mc1.20.1fabric.jar',
+        'mcw-trapdoors-1.1.5-mc1.20.1fabric.jar',
+        'elytraslot-fabric-6.4.4+1.20.1.jar'
     )
     foreach ($mod in $newPackMods) {
         Copy-Entry ("minecraft/mods/$mod") (Join-Path $repo "artifacts\$mod")
@@ -114,7 +129,7 @@ try {
         }
     }
     $instance = Read-Entry 'instance.cfg'
-    $instance = [regex]::Replace($instance, '(?m)^name=[^\r\n]*', 'name=The Gangs Modpack v1.1.4')
+    $instance = [regex]::Replace($instance, '(?m)^name=[^\r\n]*', 'name=The Gangs Modpack v1.1.5')
     $instance = Get-PrismAutoUpdateConfig $instance
     Write-Entry 'instance.cfg' ($utf8.GetBytes($instance))
     $options = [IO.File]::ReadAllText((Join-Path $repo 'config\defaultoptions\options.txt'))
@@ -141,7 +156,7 @@ try {
         throw 'Removed mod remains in the ZIP.'
     }
     $goldclaim = @($zip.Entries | Where-Object { $_.FullName -match '^server-update/mods/goldclaim-.*\.jar$' })
-    if ($goldclaim.Count -ne 1 -or $goldclaim[0].Name -ne 'goldclaim-1.0.32.jar') {
+    if ($goldclaim.Count -ne 1 -or $goldclaim[0].Name -ne 'goldclaim-1.0.33.jar') {
         throw 'Wrong or duplicate GoldClaim server-update jar.'
     }
     foreach ($name in @('server-update/mods/soulsbackpackscompat-1.1.0.jar',
@@ -179,6 +194,20 @@ try {
     if (@($zip.Entries | Where-Object { $_.FullName -match '^minecraft/mods/goldclaim-' }).Count) {
         throw 'Server-only GoldClaim is present in the client mods folder.'
     }
+    if (@($zip.Entries | Where-Object { $_.FullName -match '^(minecraft|client-update)/mods/gangshop-' }).Count) {
+        throw 'Server-only Gang Shop is present in a client payload.'
+    }
+    $shop = @($zip.Entries | Where-Object { $_.FullName -match '^server-update/mods/gangshop-.*\.jar$' })
+    if ($shop.Count -ne 1 -or $shop[0].Name -ne 'gangshop-1.0.9.jar') {
+        throw 'Wrong or duplicate Gang Shop server jar.'
+    }
+    $hash = [Security.Cryptography.SHA256]::Create()
+    $stream = $shop[0].Open()
+    try { $actual = [BitConverter]::ToString($hash.ComputeHash($stream)).Replace('-', '') }
+    finally { $stream.Dispose(); $hash.Dispose() }
+    if ($actual -ne (Get-FileHash (Join-Path $repo 'artifacts\gangshop-1.0.9.jar')).Hash) {
+        throw 'Packaged Gang Shop does not match the built artifact.'
+    }
     if (-not $zip.GetEntry('minecraft/mods/RoughlyEnoughItems-12.1.785-fabric.jar')) {
         throw 'Roughly Enough Items is missing from client mods.'
     }
@@ -191,8 +220,26 @@ try {
     $stream = $goldclaim[0].Open()
     try { $actual = [BitConverter]::ToString($hash.ComputeHash($stream)).Replace('-', '') }
     finally { $stream.Dispose(); $hash.Dispose() }
-    if ($actual -ne (Get-FileHash (Join-Path $repo 'artifacts\goldclaim-1.0.32.jar') -Algorithm SHA256).Hash) {
+    if ($actual -ne (Get-FileHash (Join-Path $repo 'artifacts\goldclaim-1.0.33.jar') -Algorithm SHA256).Hash) {
         throw 'Packaged GoldClaim does not match the built artifact.'
+    }
+    foreach ($mod in $newPackMods) {
+        $metadata = @(Get-ChildItem -LiteralPath (Join-Path $repo 'mods') -Filter '*.pw.toml' |
+            Where-Object { [IO.File]::ReadAllText($_.FullName).Contains('filename = "' + $mod + '"') })
+        if ($metadata.Count -ne 1) { throw "Expected exactly one Packwiz record for $mod." }
+        $text = [IO.File]::ReadAllText($metadata[0].FullName)
+        if ($text -notmatch '(?m)^side = "both"$') { throw "Wrong client/server side for $mod." }
+        $algorithm = [regex]::Match($text, '(?m)^hash-format = "([^"]+)"').Groups[1].Value
+        $expected = [regex]::Match($text, '(?m)^hash = "([^"]+)"').Groups[1].Value
+        foreach ($prefix in @('minecraft/mods/', 'server-update/mods/')) {
+            $entry = $zip.GetEntry($prefix + $mod)
+            if (-not $entry) { throw "New mod missing: $prefix$mod" }
+            $hash = [Security.Cryptography.HashAlgorithm]::Create($algorithm)
+            $stream = $entry.Open()
+            try { $actual = [BitConverter]::ToString($hash.ComputeHash($stream)).Replace('-', '').ToLowerInvariant() }
+            finally { $stream.Dispose(); $hash.Dispose() }
+            if ($actual -ne $expected) { throw "Packwiz/ZIP hash mismatch for $prefix$mod." }
+        }
     }
     foreach ($name in @('minecraft/config/global_packs.toml', 'config/global_packs.toml',
             'server-update/config/global_packs.toml')) {

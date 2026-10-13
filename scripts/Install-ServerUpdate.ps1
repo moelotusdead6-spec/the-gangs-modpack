@@ -24,12 +24,32 @@ $repo = if ($isRepo) { (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')
 
 $modsDir = if ($isRepo) { Join-Path $repo 'artifacts' } else { Join-Path $PSScriptRoot 'mods' }
 $configDir = if ($isRepo) { Join-Path $repo 'config' } else { Join-Path $PSScriptRoot 'config' }
+$releaseAdditions = @(
+    'supplementaries-1.20-3.1.44-fabric.jar',
+    'suppsquared-1.20-1.1.29.jar',
+    'EnderZoology-v8.0.3-1.20.1-Fabric.jar',
+    'better-cities-better-end-1.16-1.20.jar',
+    'better-end-4.0.11.jar',
+    'bclib-3.0.14.jar',
+    'mcw-doors-1.1.5-mc1.20.1fabric.jar',
+    'mcw-mcwwindows-2.4.2-mc1.20.1fabric.jar',
+    'mcw-furniture-3.4.1-mc1.20.1fabric.jar',
+    'mcw-roofs-2.3.2-mc1.20.1fabric.jar',
+    'mcw-trapdoors-1.1.5-mc1.20.1fabric.jar',
+    'elytraslot-fabric-6.4.4+1.20.1.jar'
+)
+foreach ($jar in $releaseAdditions) {
+    if (-not (Test-Path -LiteralPath (Join-Path $modsDir $jar) -PathType Leaf)) {
+        throw "Required release mod is missing: $jar"
+    }
+}
 
 $propertiesPath = Join-Path $game 'server.properties'
 $corePath = Join-Path $game 'config\sophisticatedcore-common.toml'
 $startPath = Join-Path $game 'start.bat'
 foreach ($path in @($propertiesPath, $corePath, (Join-Path $game 'config\global_packs.toml'),
-        (Join-Path $modsDir 'goldclaim-1.0.32.jar'),
+        (Join-Path $modsDir 'goldclaim-1.0.33.jar'),
+        (Join-Path $modsDir 'gangshop-1.0.9.jar'),
         (Join-Path $modsDir 'soulsbackpackscompat-1.1.0.jar'),
         (Join-Path $modsDir 'gangscosmetics-2.0.2.jar'),
         (Join-Path $configDir 'gangscosmetics.json'),
@@ -88,7 +108,7 @@ if (Test-Path -LiteralPath $backupRoot) {
         Remove-Item -LiteralPath $old.FullName -Recurse -Force
     }
 }
-$backup = Join-Path $game ('backups\policy-v1.1.4-' + (Get-Date -Format 'yyyyMMdd-HHmmss-ffff'))
+$backup = Join-Path $game ('backups\policy-v1.1.5-' + (Get-Date -Format 'yyyyMMdd-HHmmss-ffff'))
 New-Item -ItemType Directory -Path $backup | Out-Null
 function Backup-File([string]$Path) {
     if (Test-Path -LiteralPath $Path -PathType Leaf) {
@@ -103,13 +123,14 @@ foreach ($path in @($propertiesPath, $corePath, $startPath, (Join-Path $game 'co
 }
 if (Test-Path -LiteralPath $startPath) {
     $start = [IO.File]::ReadAllText($startPath)
-    $start = [regex]::Replace($start, 'goldclaim-\d+\.\d+\.\d+\.jar', 'goldclaim-1.0.32.jar')
+    $start = [regex]::Replace($start, 'goldclaim-\d+\.\d+\.\d+\.jar', 'goldclaim-1.0.33.jar')
     $start = [regex]::Replace($start, 'gangscosmetics-\d+\.\d+\.\d+\.jar', 'gangscosmetics-2.0.2.jar')
+    $start = [regex]::Replace($start, 'gangshop-\d+\.\d+\.\d+\.jar', 'gangshop-1.0.9.jar')
     [IO.File]::WriteAllText($startPath, $start, $utf8)
 }
 $mods = Join-Path $game 'mods'
 $removed = @(Get-ChildItem -LiteralPath $mods -File | Where-Object {
-    $_.Name -match '^(goldclaim-.*\.jar(?:\.pending)?|soulsbackpackscompat-.*\.jar(?:\.pending)?|gangshats-.*\.jar(?:\.pending)?|gangscosmetics-.*\.jar(?:\.pending)?|NaturesCompass-.*\.jar|ExplorersCompass-.*\.jar|jei-.*\.jar|YungsBetterEndIsland-.*\.jar)$'
+    $_.Name -match '^(goldclaim-.*\.jar(?:\.pending)?|gangshop-.*\.jar(?:\.pending)?|soulsbackpackscompat-.*\.jar(?:\.pending)?|gangshats-.*\.jar(?:\.pending)?|gangscosmetics-.*\.jar(?:\.pending)?|NaturesCompass-.*\.jar|ExplorersCompass-.*\.jar|jei-.*\.jar|YungsBetterEndIsland-.*\.jar)$'
 })
 foreach ($file in $removed) {
     Backup-File $file.FullName
@@ -122,7 +143,8 @@ if ($ResetRswEnd) {
         Write-Output "Archived only RSW End to $archivedEnd; it will regenerate on next start."
     }
 }
-Copy-Item -LiteralPath (Join-Path $modsDir 'goldclaim-1.0.32.jar') -Destination $mods
+Copy-Item -LiteralPath (Join-Path $modsDir 'goldclaim-1.0.33.jar') -Destination $mods
+Copy-Item -LiteralPath (Join-Path $modsDir 'gangshop-1.0.9.jar') -Destination $mods
 Copy-Item -LiteralPath (Join-Path $modsDir 'soulsbackpackscompat-1.1.0.jar') -Destination $mods
 Copy-Item -LiteralPath (Join-Path $modsDir 'gangscosmetics-2.0.2.jar') -Destination $mods
 $additionalJars = @(
@@ -138,6 +160,13 @@ foreach ($jar in $additionalJars) {
     $src = Join-Path $modsDir $jar
     if (Test-Path -LiteralPath $src -PathType Leaf) {
         Copy-Item -LiteralPath $src -Destination $mods -Force
+    }
+    foreach ($jar in $releaseAdditions) {
+        Backup-File (Join-Path $mods $jar)
+        Copy-Item -LiteralPath (Join-Path $modsDir $jar) -Destination $mods -Force
+        if ((Get-FileHash (Join-Path $mods $jar)).Hash -ne (Get-FileHash (Join-Path $modsDir $jar)).Hash) {
+            throw "Installed release mod hash mismatch: $jar"
+        }
     }
 }
 Backup-File (Join-Path $game 'config\gangscosmetics.json')
@@ -178,8 +207,8 @@ if (Test-Path -LiteralPath $ecDest -PathType Leaf) {
 }
 
 & (Join-Path $PSScriptRoot 'Install-ResourcePackDefaults.ps1') -Target Server -GameDirectory $game
-if ((Get-FileHash (Join-Path $mods 'goldclaim-1.0.32.jar')).Hash -ne
-        (Get-FileHash (Join-Path $modsDir 'goldclaim-1.0.32.jar')).Hash) {
+if ((Get-FileHash (Join-Path $mods 'goldclaim-1.0.33.jar')).Hash -ne
+        (Get-FileHash (Join-Path $modsDir 'goldclaim-1.0.33.jar')).Hash) {
     throw 'Installed GoldClaim hash does not match the supplied update.'
 }
 if ((Get-FileHash (Join-Path $mods 'soulsbackpackscompat-1.1.0.jar')).Hash -ne
@@ -190,9 +219,16 @@ if ((Get-FileHash (Join-Path $mods 'gangscosmetics-2.0.2.jar')).Hash -ne
             (Get-FileHash (Join-Path $modsDir 'gangscosmetics-2.0.2.jar')).Hash) {
     throw 'Installed Gangs Cosmetics hash does not match the supplied update.'
 }
+if ((Get-FileHash (Join-Path $mods 'gangshop-1.0.9.jar')).Hash -ne
+        (Get-FileHash (Join-Path $modsDir 'gangshop-1.0.9.jar')).Hash) {
+    throw 'Installed Gang Shop hash does not match the supplied update.'
+}
+if (@(Get-ChildItem -LiteralPath $mods -File | Where-Object {
+    $_.Name -match '^gangshop-.*\.jar(?:\.pending)?$' -and $_.Name -ne 'gangshop-1.0.9.jar'
+}).Count) { throw 'Old Gang Shop jars remain installed.' }
 if (@(Get-ChildItem -LiteralPath $mods -File | Where-Object {
         $_.Name -match '^(NaturesCompass-.*\.jar|ExplorersCompass-.*\.jar|goldclaim-.*\.jar(?:\.pending)?|soulsbackpackscompat-.*\.jar(?:\.pending)?|gangshats-.*\.jar(?:\.pending)?|gangscosmetics-.*\.jar(?:\.pending)?|jei-.*\.jar|YungsBetterEndIsland-.*\.jar)$' -and
-                $_.Name -notin @('goldclaim-1.0.32.jar', 'soulsbackpackscompat-1.1.0.jar', 'gangscosmetics-2.0.2.jar')
+                $_.Name -notin @('goldclaim-1.0.33.jar', 'soulsbackpackscompat-1.1.0.jar', 'gangscosmetics-2.0.2.jar')
         }).Count) { throw 'Old or removed mod jars remain installed.' }
 Write-Output "Server policy update installed. Backup: $backup"
-Write-Output 'GoldClaim 1.0.32 and True Ending RSW compatibility installed; Better End Island removed. Player data, claims, homes, kit data and the RSW journal were preserved. Only an explicitly requested RSW End reset archives world data. Server remains stopped; start it yourself when ready.'
+Write-Output 'GoldClaim 1.0.33, new mods and RSW Waystones policy installed. Existing unused Wild waystones are cleaned up with backups on next startup, preserving stones activated by any player. Player data, claims, homes, kit data and the RSW journal were preserved. Only an explicitly requested RSW End reset archives world data. Server remains stopped; start it yourself when ready.'

@@ -257,6 +257,9 @@ public class CatalogService {
         if (SHOP_EXCLUDED_NAMESPACES.contains(id.getNamespace().toLowerCase())) {
             return false;
         }
+        if (id.getNamespace().startsWith("mcw")) {
+            return !CatalogService.isHardDenied(id) && !this.priceConfig.isDenied(id);
+        }
         if (CatalogService.isExplicitFoodItem(id)) {
             return !this.priceConfig.isDenied(id);
         }
@@ -556,6 +559,9 @@ public class CatalogService {
     private ShopCategory detectCategory(Item item, Identifier id) {
         String namespace = id.getNamespace().toLowerCase();
         String path = id.getPath().toLowerCase();
+        if (namespace.startsWith("mcw")) {
+            return ShopCategory.forMod(namespace, "Macaw's");
+        }
         if (item.isFood() || CatalogService.isExplicitFoodItem(id)) {
             return ShopCategory.FOODS;
         }

@@ -12,6 +12,13 @@ base {
 
 repositories {
 	mavenCentral()
+	maven { url 'https://api.modrinth.com/maven' }
+	ivy {
+		url 'https://mediafilez.forgecdn.net/files/7682/268'
+		patternLayout { artifact '[artifact].[ext]' }
+		metadataSources { artifact() }
+		content { includeGroup 'waystones-pinned' }
+	}
 }
 
 dependencies {
@@ -20,6 +27,8 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 	compileOnly "net.luckperms:api:5.4"
+	modCompileOnly 'maven.modrinth:balm:sWBQARQL'
+	modCompileOnly 'waystones-pinned:waystones-fabric-1.20.1-14.1.20:14.1.20@jar'
 	testImplementation 'junit:junit:4.13.2'
 	testRuntimeOnly "net.luckperms:api:5.4"
 	if (project.hasProperty('smokePlushieJar')) {
@@ -28,6 +37,9 @@ dependencies {
 	for (propertyName in ['smokeMultiworldJar', 'smokeTrueEndingJar', 'smokeFantasyJar']) {
 		if (project.hasProperty(propertyName)) {
 			modRuntimeOnly files(project.property(propertyName))
+		}
+		if (project.hasProperty('smokeModsDir')) {
+			modRuntimeOnly fileTree(dir: project.property('smokeModsDir'), include: '*.jar')
 		}
 	}
 }

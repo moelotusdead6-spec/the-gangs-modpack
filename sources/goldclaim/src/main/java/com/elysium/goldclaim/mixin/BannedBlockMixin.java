@@ -1,6 +1,8 @@
 package com.elysium.goldclaim.mixin;
 
 import com.elysium.goldclaim.BannedContent;
+import com.elysium.goldclaim.WaystonePolicy;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.WorldChunk;
@@ -17,6 +19,10 @@ public abstract class BannedBlockMixin {
                                               CallbackInfoReturnable<BlockState> cir) {
         if (BannedContent.isBanned(state)) {
             BannedContent.report("block placement/write rejected");
+            cir.setReturnValue(null);
+        }
+        if ((Object)this instanceof WorldChunk chunk && chunk.getWorld() instanceof ServerWorld world
+                && WaystonePolicy.isRsw(world) && WaystonePolicy.isWaystone(state)) {
             cir.setReturnValue(null);
         }
     }

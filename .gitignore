@@ -6,6 +6,17 @@ mods/*.jar
 packwiz-installer.jar
 packwiz.json
 artifacts/*.bak*
+artifacts/supplementaries-1.20-3.1.44-fabric.jar
+artifacts/suppsquared-1.20-1.1.29.jar
+artifacts/EnderZoology-v8.0.3-1.20.1-Fabric.jar
+artifacts/better-end-4.0.11.jar
+artifacts/bclib-3.0.14.jar
+artifacts/mcw-doors-1.1.5-mc1.20.1fabric.jar
+artifacts/mcw-mcwwindows-2.4.2-mc1.20.1fabric.jar
+artifacts/mcw-furniture-3.4.1-mc1.20.1fabric.jar
+artifacts/mcw-roofs-2.3.2-mc1.20.1fabric.jar
+artifacts/mcw-trapdoors-1.1.5-mc1.20.1fabric.jar
+artifacts/elytraslot-fabric-6.4.4+1.20.1.jar
 artifacts/gangs_hub_backup_*/
 sources/*/.gradle/
 sources/*/build/

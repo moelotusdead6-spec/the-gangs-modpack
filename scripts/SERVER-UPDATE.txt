@@ -1,10 +1,10 @@
-The Gangs Modpack v1.1.4 - server update
+The Gangs Modpack v1.1.5 - server update
 
 STOP THE SERVER and keep a world backup before applying this update.
 Run PowerShell:
   powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Install-ServerUpdate.ps1 -GameDirectory "C:\path\to\server"
 
-The installer backs up touched files and installs GoldClaim 1.0.32,
+The installer backs up touched files and installs GoldClaim 1.0.33,
 removes YUNG's Better End Island and routes the retained True Ending
 dragon overhaul to RSW End. Good Ending (Overworld content) is unchanged.
 To replace an existing YUNG arena with a clean End, append -ResetRswEnd.
@@ -23,6 +23,21 @@ Blood Moons are moved exclusively to RSW. /rtp is restricted to Wild
 Overworld and RSW Overworld. Other settings, worlds, player data, claims,
 homes, kit data and the RSW reset journal are preserved. The installer
 DOES NOT start the server.
+
+v1.1.5 adds Supplementaries, Supplementaries Squared, Ender Zoology,
+Better End Cities for Better End, BetterEnd, BCLib, Elytra Slot, and
+Macaw's Doors, Windows, Furniture, Roofs and Trapdoors. Existing required
+Moonlight, Puzzles Lib, Forge Config API Port, Trinkets and Fabric API stay.
+Gang Shop 1.0.9 puts all Macaw's items in one Macaw's category without
+replacing prices, category settings or wallet data.
+GoldClaim bans Waystones blocks, item use and travel in all three RSW worlds.
+On next startup, existing Wild waystones never activated by ANY player are
+removed without drops; offline players' activations are included. Activated
+Wild stones are preserved. This is a one-time cleanup, not deletion of future
+Wild placements. Original region/waystone files and the cleanup plan are kept
+under backups\waystones-policy-v1.1.5\<level-name>, outside world generation.
+Cleanup saves changed chunks and registry before marking itself complete.
+Do NOT repeat -ResetRswEnd for the server already prepared with v1.1.4.
 
 Do not overwrite live configs with the full config folder: it is supplied
 for new installations/reference. The installer merges only this update's
