@@ -46,7 +46,7 @@ public abstract class ServerWorldMixin {
         }
     }
 
-    @Redirect(method = "save", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/SaveProperties;setDragonFight(Lnet/minecraft/entity/boss/dragon/EnderDragonFight$Data;)V"))
+    @Redirect(method = "saveLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/SaveProperties;setDragonFight(Lnet/minecraft/entity/boss/dragon/EnderDragonFight$Data;)V"))
     private void goldclaim$saveDragonFight(SaveProperties saveProperties, EnderDragonFight.Data data) {
         ServerWorld world = (ServerWorld)(Object)this;
         if (world.getRegistryKey() == World.END) {
