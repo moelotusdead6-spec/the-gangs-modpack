@@ -95,18 +95,23 @@ public abstract class RswPlayerTravelMixin {
         WorldBorder worldBorder = destination.getWorldBorder();
         double scale = 1.0;
         BlockPos blockPos = worldBorder.clamp(player.getX() * scale, player.getY(), player.getZ() * scale);
-        return destination.getPortalForcer().getPortalRect(blockPos, isEnteringNether, worldBorder).map(rect -> {
-            BlockPos portalPos = player.getBlockPos();
-            BlockState blockState = currentWorld.getBlockState(portalPos);
-            Direction.Axis axis;
+
+        BlockPos portalPos = player.getBlockPos();
+        BlockState blockState = currentWorld.getBlockState(portalPos);
+        Direction.Axis axis = blockState.contains(Properties.HORIZONTAL_AXIS) ? blockState.get(Properties.HORIZONTAL_AXIS) : Direction.Axis.X;
+
+        Optional<BlockLocating.Rectangle> portalRect = destination.getPortalForcer().getPortalRect(blockPos, isEnteringNether, worldBorder);
+        if (portalRect.isEmpty()) {
+            portalRect = destination.getPortalForcer().createPortal(blockPos, axis);
+        }
+
+        return portalRect.map(rect -> {
             Vec3d vec3d;
             if (blockState.contains(Properties.HORIZONTAL_AXIS)) {
-                axis = blockState.get(Properties.HORIZONTAL_AXIS);
                 BlockLocating.Rectangle rectangle = BlockLocating.getLargestRectangle(
                     portalPos, axis, 21, Direction.Axis.Y, 21, pos -> currentWorld.getBlockState(pos) == blockState);
                 vec3d = NetherPortal.entityPosInPortal(rectangle, axis, player.getPos(), player.getDimensions(player.getPose()));
             } else {
-                axis = Direction.Axis.X;
                 vec3d = new Vec3d(0.5, 0.0, 0.0);
             }
             return NetherPortal.getNetherTeleportTarget(destination, rect, axis, vec3d, player, player.getVelocity(), player.getYaw(), player.getPitch());

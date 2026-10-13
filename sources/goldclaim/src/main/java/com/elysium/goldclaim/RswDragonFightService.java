@@ -88,14 +88,18 @@ public class RswDragonFightService {
                 Method bellMethod = idragonFightClass.getMethod("betterendisland$tickBellSound");
                 bellMethod.invoke(fight);
 
-                Method firstPortalMethod = idragonFightClass.getMethod("betterendisland$firstExitPortalSpawn");
-                boolean firstSpawned = (boolean) firstPortalMethod.invoke(fight);
-                if (!firstSpawned && !world.getPlayers().isEmpty()) {
+                Method everSpawnedMethod = idragonFightClass.getMethod("betterendisland$hasDragonEverSpawned");
+                boolean everSpawned = (boolean) everSpawnedMethod.invoke(fight);
+
+                Method stageMethod = idragonFightClass.getMethod("betterendisland$getDragonRespawnStage");
+                Object stage = stageMethod.invoke(fight);
+
+                if (!everSpawned && stage == null && (world.getTime() % 5L == 0L) && !world.getPlayers().isEmpty()) {
                     for (ServerPlayerEntity player : world.getPlayers()) {
-                        if (player.getBlockPos().isWithinDistance(BlockPos.ORIGIN, 1000.0)) {
+                        if (!player.isSpectator() && player.getBlockPos().isWithinDistance(BlockPos.ORIGIN, 32.0)) {
                             Method initialRespawn = idragonFightClass.getMethod("betterendisland$initialRespawn");
                             initialRespawn.invoke(fight);
-                            LOGGER.info("Triggered YUNG's Better End Island initial respawn in RSW The End!");
+                            LOGGER.info("Triggered YUNG's Better End Island initial respawn in RSW The End for player {}", player.getName().getString());
                             break;
                         }
                     }
