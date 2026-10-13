@@ -47,6 +47,7 @@ try {
                 $entry.FullName -match '^server-update/mods/goldclaim-.*\.jar$' -or
                 $entry.FullName -match '^(minecraft|client-update|server-update)/mods/(soulsbackpackscompat|defaultoptions)-.*\.jar$' -or
                 $entry.FullName -match '^(minecraft|client-update|server-update)/mods/jei-.*\.jar$' -or
+                $entry.FullName -match '(?i)(?:^|/)YungsBetterEndIsland-.*\.jar$' -or
                 $entry.FullName -in @('minecraft/options.txt', 'minecraft/servers.dat',
                     'minecraft/servers.dat_old', 'minecraft/defaultoptions.journal.json',
                     'minecraft/config/resource-pack-defaults-applied-v1.json',
@@ -64,6 +65,7 @@ try {
     }
     Copy-Entry 'README.md' (Join-Path $repo 'README.md')
     Copy-Entry 'docs/updates/README.md' (Join-Path $repo 'docs\updates\README.md')
+    Copy-Entry 'docs/updates/v1.1.4.md' (Join-Path $repo 'docs\updates\v1.1.4.md')
     Copy-Entry 'server-update/README.txt' (Join-Path $PSScriptRoot 'SERVER-UPDATE.txt')
     Copy-Entry 'server-update/mods/goldclaim-1.0.32.jar' (Join-Path $repo 'artifacts\goldclaim-1.0.32.jar')
     $newPackMods = @(
@@ -112,7 +114,7 @@ try {
         }
     }
     $instance = Read-Entry 'instance.cfg'
-    $instance = [regex]::Replace($instance, '(?m)^name=[^\r\n]*', 'name=The Gangs Modpack v1.1.3')
+    $instance = [regex]::Replace($instance, '(?m)^name=[^\r\n]*', 'name=The Gangs Modpack v1.1.4')
     $instance = Get-PrismAutoUpdateConfig $instance
     Write-Entry 'instance.cfg' ($utf8.GetBytes($instance))
     $options = [IO.File]::ReadAllText((Join-Path $repo 'config\defaultoptions\options.txt'))
@@ -135,7 +137,7 @@ try {
 
 $zip = [IO.Compression.ZipFile]::OpenRead($output)
 try {
-    if (@($zip.Entries | Where-Object { $_.FullName -match '(?i)(NaturesCompass|ExplorersCompass|jei-).*\.jar$' }).Count) {
+    if (@($zip.Entries | Where-Object { $_.FullName -match '(?i)(NaturesCompass|ExplorersCompass|jei-|YungsBetterEndIsland-).*\.jar$' }).Count) {
         throw 'Removed mod remains in the ZIP.'
     }
     $goldclaim = @($zip.Entries | Where-Object { $_.FullName -match '^server-update/mods/goldclaim-.*\.jar$' })
@@ -179,6 +181,11 @@ try {
     }
     if (-not $zip.GetEntry('minecraft/mods/RoughlyEnoughItems-12.1.785-fabric.jar')) {
         throw 'Roughly Enough Items is missing from client mods.'
+    }
+    foreach ($name in @('minecraft/mods/tru.e-ending-v1.1.0c.jar',
+            'minecraft/mods/GoodEnding-1.20.1-1.1.0-Fabric.jar',
+            'server-update/config/paxi/datapacks/gangs_fixes/data/true_ending/functions/tick.mcfunction')) {
+        if (-not $zip.GetEntry($name)) { throw "Retained End overhaul or RSW compatibility missing: $name" }
     }
     $hash = [Security.Cryptography.SHA256]::Create()
     $stream = $goldclaim[0].Open()

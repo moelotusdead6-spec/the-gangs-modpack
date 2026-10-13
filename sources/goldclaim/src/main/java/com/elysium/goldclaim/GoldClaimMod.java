@@ -837,10 +837,6 @@ implements ModInitializer {
                         RswDragonFightService.ensureDragonFight(rswEnd);
                     }
                 });
-            ServerWorld activeRswEnd = this.getWorld(server, RSW_THE_END_DIMENSION);
-            if (activeRswEnd != null) {
-                RswDragonFightService.tickDragonFight(activeRswEnd);
-            }
             this.rswEntrySearch.tick();
             boolean runPlayerMaintenance = false;
             if (++this.playerMaintenanceTicks >= 20) {

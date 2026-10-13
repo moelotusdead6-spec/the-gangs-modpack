@@ -1,7 +1,8 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $true)]
-    [string]$GameDirectory
+    [string]$GameDirectory,
+    [switch]$ResetRswEnd
 )
 
 $ErrorActionPreference = 'Stop'
@@ -56,6 +57,15 @@ if ($entries.Count -eq 1) {
 $updatedCore = $core.Substring(0, $arrays[0].Index) + $updatedArray +
     $core.Substring($arrays[0].Index + $arrays[0].Length)
 $properties = [IO.File]::ReadAllText($propertiesPath)
+$end = $null
+if ($ResetRswEnd) {
+    $levelName = [regex]::Match($properties, '(?m)^level-name=([^\r\n]+)').Groups[1].Value.Trim()
+    if (-not $levelName) { $levelName = 'world' }
+    if ([IO.Path]::IsPathRooted($levelName) -or $levelName -match '(^|[\\/])\.\.([\\/]|$)') {
+        throw 'Refusing to reset an RSW End outside this server directory.'
+    }
+    $end = Join-Path (Join-Path $game $levelName) 'dimensions\multiworld\rsw_the_end'
+}
 foreach ($line in [IO.File]::ReadAllLines((Join-Path $PSScriptRoot 'server-settings.properties'))) {
     if ($line -notmatch '^(view-distance|simulation-distance|require-resource-pack)=(.+)$') {
         throw "Unsupported server policy setting: $line"
@@ -68,7 +78,17 @@ foreach ($line in [IO.File]::ReadAllLines((Join-Path $PSScriptRoot 'server-setti
         $properties = $properties.TrimEnd("`r", "`n") + "`r`n" + $line + "`r`n"
     }
 }
-$backup = Join-Path $game ('backups\policy-v1.1.3-' + (Get-Date -Format 'yyyyMMdd-HHmmss-ffff'))
+$backupRoot = Join-Path $game 'backups'
+if (Test-Path -LiteralPath $backupRoot) {
+    $previous = @(Get-ChildItem -LiteralPath $backupRoot -Directory |
+        Where-Object { $_.Name -match '^policy-v\d+\.\d+\.\d+-\d{8}-\d{6}-\d{4}$' } |
+        Sort-Object { $_.Name -replace '^policy-v\d+\.\d+\.\d+-', '' })
+    foreach ($old in @($previous | Select-Object -First ([Math]::Max(0, $previous.Count - 2)))) {
+        Write-Output "Pruning oldest update backup: $($old.FullName)"
+        Remove-Item -LiteralPath $old.FullName -Recurse -Force
+    }
+}
+$backup = Join-Path $game ('backups\policy-v1.1.4-' + (Get-Date -Format 'yyyyMMdd-HHmmss-ffff'))
 New-Item -ItemType Directory -Path $backup | Out-Null
 function Backup-File([string]$Path) {
     if (Test-Path -LiteralPath $Path -PathType Leaf) {
@@ -89,11 +109,18 @@ if (Test-Path -LiteralPath $startPath) {
 }
 $mods = Join-Path $game 'mods'
 $removed = @(Get-ChildItem -LiteralPath $mods -File | Where-Object {
-    $_.Name -match '^(goldclaim-.*\.jar(?:\.pending)?|soulsbackpackscompat-.*\.jar(?:\.pending)?|gangshats-.*\.jar(?:\.pending)?|gangscosmetics-.*\.jar(?:\.pending)?|NaturesCompass-.*\.jar|ExplorersCompass-.*\.jar|jei-.*\.jar)$'
+    $_.Name -match '^(goldclaim-.*\.jar(?:\.pending)?|soulsbackpackscompat-.*\.jar(?:\.pending)?|gangshats-.*\.jar(?:\.pending)?|gangscosmetics-.*\.jar(?:\.pending)?|NaturesCompass-.*\.jar|ExplorersCompass-.*\.jar|jei-.*\.jar|YungsBetterEndIsland-.*\.jar)$'
 })
 foreach ($file in $removed) {
     Backup-File $file.FullName
     Remove-Item -LiteralPath $file.FullName
+}
+if ($ResetRswEnd) {
+    if (Test-Path -LiteralPath $end -PathType Container) {
+        $archivedEnd = Join-Path $backup 'rsw_the_end'
+        Move-Item -LiteralPath $end -Destination $archivedEnd
+        Write-Output "Archived only RSW End to $archivedEnd; it will regenerate on next start."
+    }
 }
 Copy-Item -LiteralPath (Join-Path $modsDir 'goldclaim-1.0.32.jar') -Destination $mods
 Copy-Item -LiteralPath (Join-Path $modsDir 'soulsbackpackscompat-1.1.0.jar') -Destination $mods
@@ -164,8 +191,8 @@ if ((Get-FileHash (Join-Path $mods 'gangscosmetics-2.0.2.jar')).Hash -ne
     throw 'Installed Gangs Cosmetics hash does not match the supplied update.'
 }
 if (@(Get-ChildItem -LiteralPath $mods -File | Where-Object {
-        $_.Name -match '^(NaturesCompass-.*\.jar|ExplorersCompass-.*\.jar|goldclaim-.*\.jar(?:\.pending)?|soulsbackpackscompat-.*\.jar(?:\.pending)?|gangshats-.*\.jar(?:\.pending)?|gangscosmetics-.*\.jar(?:\.pending)?|jei-.*\.jar)$' -and
+        $_.Name -match '^(NaturesCompass-.*\.jar|ExplorersCompass-.*\.jar|goldclaim-.*\.jar(?:\.pending)?|soulsbackpackscompat-.*\.jar(?:\.pending)?|gangshats-.*\.jar(?:\.pending)?|gangscosmetics-.*\.jar(?:\.pending)?|jei-.*\.jar|YungsBetterEndIsland-.*\.jar)$' -and
                 $_.Name -notin @('goldclaim-1.0.32.jar', 'soulsbackpackscompat-1.1.0.jar', 'gangscosmetics-2.0.2.jar')
         }).Count) { throw 'Old or removed mod jars remain installed.' }
 Write-Output "Server policy update installed. Backup: $backup"
-Write-Output 'Restart the server when ready. GoldClaim 1.0.32 rotates RSW Overworld, Nether (1:1 scale), and End with 5,000-block borders and disables wild portal entry. Worlds, player data, claims, homes, kit data and the RSW journal were not changed. Server remains stopped.'
+Write-Output 'GoldClaim 1.0.32 and True Ending RSW compatibility installed; Better End Island removed. Player data, claims, homes, kit data and the RSW journal were preserved. Only an explicitly requested RSW End reset archives world data. Server remains stopped; start it yourself when ready.'

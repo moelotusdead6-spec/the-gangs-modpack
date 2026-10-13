@@ -43,6 +43,10 @@ import net.minecraft.util.hit.BlockHitResult;
 public final class PolicySmokeTest implements ModInitializer {
     @Override
     public void onInitialize() {
+        if ("true".equals(System.getenv("GOLDCLAIM_RSW_SMOKE"))) {
+            RswDragonSmokeTest.register();
+            return;
+        }
         EntityType<PathAwareEntity> moddedHostile = Registry.register(Registries.ENTITY_TYPE,
             new Identifier("goldclaim_policy_smoke:modded_hostile"),
             EntityType.Builder.<PathAwareEntity>create((type, world) -> new PathAwareEntity(type, world) {},

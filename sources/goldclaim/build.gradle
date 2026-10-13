@@ -25,6 +25,11 @@ dependencies {
 	if (project.hasProperty('smokePlushieJar')) {
 		modRuntimeOnly files(project.property('smokePlushieJar'))
 	}
+	for (propertyName in ['smokeMultiworldJar', 'smokeTrueEndingJar', 'smokeFantasyJar']) {
+		if (project.hasProperty(propertyName)) {
+			modRuntimeOnly files(project.property(propertyName))
+		}
+	}
 }
 
 sourceSets {
@@ -46,6 +51,51 @@ loom {
 			source sourceSets.testmod
 			runDir '../../tmp/goldclaim-policy-smoke'
 			programArg 'nogui'
+		}
+		rswSmoke {
+			server()
+			name 'Isolated RSW True Ending smoke test'
+			source sourceSets.testmod
+			runDir '../../tmp/goldclaim-rsw-smoke'
+			environmentVariable 'GOLDCLAIM_RSW_SMOKE', 'true'
+			programArg 'nogui'
+		}
+	}
+
+	tasks.named('runRswSmoke') {
+		doFirst {
+			def directory = file('../../tmp/goldclaim-rsw-smoke')
+			def eula = new File(directory, 'eula.txt')
+			if (!eula.exists() || !(eula.text =~ /(?m)^eula=true\s*$/).find()) {
+				throw new GradleException('Copy your accepted eula.txt into tmp/goldclaim-rsw-smoke first.')
+			}
+			new File(directory, 'server.properties').text = '''server-ip=127.0.0.1
+	server-port=0
+	online-mode=false
+	enable-query=false
+	enable-rcon=false
+	level-name=smoke-world
+	view-distance=2
+	simulation-distance=2
+	max-tick-time=60000
+	'''
+			copy {
+				from '../../config/paxi/datapacks/gangs_fixes'
+				into new File(directory, 'smoke-world/datapacks/gangs_fixes')
+			}
+			copy {
+				from '../../config/randomcollections/config.json'
+				into new File(directory, 'config/randomcollections')
+			}
+			def result = new File(directory, 'rsw-smoke-passed.txt')
+			if (result.exists() && !result.delete()) {
+				throw new GradleException('Cannot clear the previous RSW smoke-test result.')
+			}
+		}
+		doLast {
+			if (!file('../../tmp/goldclaim-rsw-smoke/rsw-smoke-passed.txt').exists()) {
+				throw new GradleException('RSW dragon verification did not produce a passing result.')
+			}
 		}
 	}
 }

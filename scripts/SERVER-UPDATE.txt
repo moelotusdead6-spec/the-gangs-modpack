@@ -1,10 +1,18 @@
-The Gangs Modpack v1.1.3 - server update
+The Gangs Modpack v1.1.4 - server update
 
 STOP THE SERVER and keep a world backup before applying this update.
 Run PowerShell:
   powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Install-ServerUpdate.ps1 -GameDirectory "C:\path\to\server"
 
 The installer backs up touched files and installs GoldClaim 1.0.32,
+removes YUNG's Better End Island and routes the retained True Ending
+dragon overhaul to RSW End. Good Ending (Overworld content) is unchanged.
+To replace an existing YUNG arena with a clean End, append -ResetRswEnd.
+This MOVES only the RSW End dimension into the update backup, including
+its dragon fight state, so it regenerates on startup. Without that flag,
+all world folders are preserved. Keep a full world backup separately.
+Update-file backups retain three generations, pruning the oldest before
+creating the new backup. Other backup categories are not pruned.
 removes JEI, installs server-applicable mods (EndsPhantasm, Nullscape,
 Shield Overhaul, Necronomicon, Immersive Armors, Roughly Enough Items,
 bc_particle), and retains view-distance=6 / simulation-distance=6.

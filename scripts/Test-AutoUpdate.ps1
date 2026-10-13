@@ -63,7 +63,7 @@ hash = "$hash"
 "@
     }
     $hashes = @{}
-    foreach ($relative in @('options.txt', 'servers.dat', 'servers.dat_old', 'config\personal-mod.json',
+    foreach ($relative in @('options.txt', 'servers.dat', 'servers.dat_old', 'defaultoptions.journal.json', 'config\personal-mod.json',
             'mods\player-added-client-mod.jar')) {
         $path = Join-Path $game $relative
         Write-Fixture $path "personal-$relative"
@@ -74,6 +74,13 @@ hash = "$hash"
     $java = (Get-Command java.exe -ErrorAction Stop).Source
     $pending = $listener.GetContextAsync()
     foreach ($generation in 1..2) {
+        $islandMetadata = Join-Path $published 'mods\removed-island.pw.toml'
+        if ($generation -eq 1) {
+            $island = [IO.File]::ReadAllText((Join-Path $published 'mods\client.pw.toml'))
+            Write-Fixture $islandMetadata ($island.Replace('client-fixture.jar', 'YungsBetterEndIsland-fixture.jar'))
+        } else {
+            Remove-Item -LiteralPath $islandMetadata
+        }
         Write-Fixture (Join-Path $published 'config\defaultoptions\options.txt') "generation:$generation"
         Write-Fixture (Join-Path $published 'config\defaultoptions\servers.dat') "default-server-generation-$generation"
         Push-Location $published
@@ -122,6 +129,7 @@ hash = "$hash"
         Require ([IO.File]::ReadAllText((Join-Path $game 'config\defaultoptions\options.txt')) -ceq "generation:$generation") 'Managed defaults did not update.'
         Require (Test-Path -LiteralPath (Join-Path $game 'mods\client-fixture.jar')) 'Client mod was not installed.'
         Require (-not (Test-Path -LiteralPath (Join-Path $game 'mods\server-fixture.jar'))) 'Automatic client update installed a server-only mod.'
+        Require ((Test-Path -LiteralPath (Join-Path $game 'mods\YungsBetterEndIsland-fixture.jar')) -eq ($generation -eq 1)) 'Automatic update did not remove the previously managed island mod.'
     }
     Write-Output 'PASS: two real headless Packwiz updates; managed defaults updated, personal options/server lists and player-added mod jars stayed byte-identical, root preference exclusions worked, and server-only mods were skipped.'
 } finally { $listener.Stop(); $listener.Close() }

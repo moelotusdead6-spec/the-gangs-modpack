@@ -113,6 +113,10 @@ file = "config/paxi/datapacks/gangs_fixes/data/gangs/dimension_type/rsw_nether.j
 hash = "3b50247a28865b09a4c4c0395121eb7d57d0859fc95fde2a4cf154f709286e95"
 
 [[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/gangs/functions/true_ending/rsw_tick.mcfunction"
+hash = "3548d35b8d8aa46d1c1613cb39ac0701068ba14d21f8d881dfc6c1c5eb1a9b02"
+
+[[files]]
 file = "config/paxi/datapacks/gangs_fixes/data/gangs_fixes/functions/load.mcfunction"
 hash = "5285d938c2b559919100996565cd6105963e0dba14610d10c7374eef8a82410d"
 
@@ -131,6 +135,30 @@ hash = "ffd8304d6ca5e1ac6ed7684446b2a218ecf3b15316dfc250ee98a280dadb56d0"
 [[files]]
 file = "config/paxi/datapacks/gangs_fixes/data/multiworld/enhancedcelestials/lunar/dimension_settings/rsw.json"
 hash = "96b4dba07c7c48b3a5840f805ec5a49b9d7ddc9b00b17a386de1d7b0402ccb9c"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/true_ending/advancements/enter_the_end.json"
+hash = "7e0c29ecb23a15e1516f1816060e8dfd08fc914172e1438109fa1fd4e4463859"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/true_ending/functions/commands/_teleport_to_the_end.mcfunction"
+hash = "e3f018b4409e24f7ad9bd0aa4c3341968b2e4da10f96676959a828fdc690b556"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/true_ending/functions/music.mcfunction"
+hash = "28ced1ccbc417d45297bcc0cb51689fec2bd0e2dd040a9607f6b4647ffbb88e6"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/true_ending/functions/other/kill_dragon.mcfunction"
+hash = "e6214f373b21d8efeb85ca56bea65db98c55b45cdbc05cddb49b58ef13683346"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/true_ending/functions/tick.mcfunction"
+hash = "97d887b03334c8477364d5cefc3c4117897e9e097c8586f6f44d637292e7ac6b"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/true_ending/predicates/position/the_end.json"
+hash = "89c7aac590f2ec202ddd8c64b86f752c5f54d5b812b2f916d1499919fbcdae3a"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_fixes/pack.mcmeta"
@@ -764,11 +792,6 @@ hash = "9807abddadbfbd4df4a81102c930ec090c464a15d299a8753c707675bf23c39b"
 metafile = true
 
 [[files]]
-file = "mods/YungsBetterEndIsland-1.20-Fabric-2.0.6.pw.toml"
-hash = "38956878c90474644551caa1f30c6b3e77a78d0160b1cf7f2f7b282846730cfb"
-metafile = true
-
-[[files]]
 file = "mods/YungsBetterJungleTemples-1.20-Fabric-2.0.5.pw.toml"
 hash = "2327b18d2b56d003e30fc2a50442b4311cdaf2f89c6324cc2b69806b99a2e1cd"
 metafile = true
@@ -1240,7 +1263,7 @@ metafile = true
 
 [[files]]
 file = "mods/goldclaim-direct.pw.toml"
-hash = "b3564c4943dc2b4643b28e7483e079b6b67babad7dd52967bc93a13a2e144152"
+hash = "c6469cef4c54c07f020e8c58eef31c8bc9a8f1ab8a3b4e582c767d362eff14f6"
 metafile = true
 
 [[files]]

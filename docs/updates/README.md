@@ -3,7 +3,7 @@
 ## Keep one Prism instance
 
 Keep the same Prism instance and press Play for normal client pack updates.
-New v1.1.3 imports have automatic client-only Packwiz updates enabled.
+New v1.1.4 imports have automatic client-only Packwiz updates enabled.
 The public ZIP is for new installations, not a replacement instance for
 every release.
 
@@ -67,3 +67,9 @@ Overworld may be lit but cannot be entered. Blood Moons are isolated
 exclusively to RSW. `/rtp` is restricted to Wild Overworld and RSW Overworld.
 GoldClaim also disables `doFireTick` across RSW dimensions.
 RSW reset timing, first-entry safety and saved return positions are unchanged.
+
+v1.1.4 removes YUNG's Better End Island, retaining True Ending: Ender Dragon
+Overhaul (by limesplatus). Good Ending is a separate Overworld mod and remains.
+The RSW End uses Minecraft's dragon fight lifecycle with True Ending's attacks;
+dimension compatibility overrides route its functions and predicates to RSW End.
+See [v1.1.4 details](v1.1.4.md), including the optional backed-up End regeneration.

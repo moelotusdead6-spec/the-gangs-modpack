@@ -115,6 +115,12 @@ Write-Fixture (Join-Path $server 'start.bat') 'java -jar goldclaim-1.0.31.jar'
 Write-Fixture (Join-Path $server 'config\sophisticatedcore-common.toml') 'enabledItems = ["sophisticatedbackpacks:inception_upgrade|true", "other:item|true"]'
 Write-Fixture (Join-Path $server 'config\global_packs.toml') "[resourcepacks]`r`nrequired = [`"legacy.zip`"]`r`n"
 Write-Fixture (Join-Path $server 'mods\goldclaim-1.0.31.jar') 'old-fixture-jar'
+Write-Fixture (Join-Path $server 'mods\YungsBetterEndIsland-1.20-Fabric-2.0.6.jar') 'removed-island-mod'
+Write-Fixture (Join-Path $server 'mods\tru.e-ending-v1.1.0c.jar') 'preserved-dragon-overhaul'
+Write-Fixture (Join-Path $server 'world\dimensions\multiworld\rsw_the_end\region\fixture.mca') 'old-arena'
+foreach ($stamp in @('20261001-120000-0000', '20261002-120000-0000', '20261003-120000-0000')) {
+    Write-Fixture (Join-Path $server "backups\policy-v1.1.3-$stamp\fixture.txt") 'old-backup'
+}
 $hashes = @{}
 foreach ($relative in @('world\level.dat', 'world\playerdata\fixture.dat', 'config\goldclaim\claims.json',
         'config\goldclaim\rsw-reset.json', 'config\multiworld\worlds\multiworld\rsw.yml',
@@ -123,10 +129,18 @@ foreach ($relative in @('world\level.dat', 'world\playerdata\fixture.dat', 'conf
     Write-Fixture $path 'untouched-fixture'
     $hashes[$path] = (Get-FileHash -LiteralPath $path).Hash
 }
-& (Join-Path $root 'server-update\Install-ServerUpdate.ps1') -GameDirectory $server
+& (Join-Path $root 'server-update\Install-ServerUpdate.ps1') -GameDirectory $server -ResetRswEnd
 Assert-Preserved $hashes
 Require (Test-Path -LiteralPath (Join-Path $server 'mods\goldclaim-1.0.32.jar')) 'New GoldClaim is missing.'
 Require (-not (Test-Path -LiteralPath (Join-Path $server 'mods\goldclaim-1.0.31.jar'))) 'Old GoldClaim remains.'
+Require (-not (Test-Path -LiteralPath (Join-Path $server 'mods\YungsBetterEndIsland-1.20-Fabric-2.0.6.jar'))) 'Better End Island remains.'
+Require ([IO.File]::ReadAllText((Join-Path $server 'mods\tru.e-ending-v1.1.0c.jar')) -eq 'preserved-dragon-overhaul') 'True Ending was changed.'
+Require (-not (Test-Path -LiteralPath (Join-Path $server 'world\dimensions\multiworld\rsw_the_end'))) 'RSW End was not archived.'
+$backups = @(Get-ChildItem -LiteralPath (Join-Path $server 'backups') -Directory)
+Require ($backups.Count -eq 3) 'Update backup retention must keep three backups.'
+Require (-not (Test-Path -LiteralPath (Join-Path $server 'backups\policy-v1.1.3-20261001-120000-0000'))) 'Oldest update backup was not pruned.'
+$currentBackup = $backups | Where-Object { $_.Name -like 'policy-v1.1.4-*' }
+Require ([IO.File]::ReadAllText((Join-Path $currentBackup.FullName 'rsw_the_end\region\fixture.mca')) -eq 'old-arena') 'Archived End content was not preserved.'
 $properties = [IO.File]::ReadAllText((Join-Path $server 'server.properties'))
 Require ($properties -match 'server-port=25588' -and $properties -match 'motd=Keep me') 'Unrelated server properties changed.'
 Require ($properties -match 'view-distance=6' -and $properties -match 'simulation-distance=6') 'Server policy was not applied.'
