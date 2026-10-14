@@ -625,6 +625,7 @@ implements ModInitializer {
 
     private void registerDisconnectCleanup() {
         ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
+            this.evacuateLegacyPlayer(newPlayer);
             rememberRswLocation(oldPlayer);
             this.selectionManager.clear(oldPlayer.getUuid());
             this.visualizationSessions.remove(oldPlayer.getUuid());
@@ -732,6 +733,9 @@ implements ModInitializer {
     private void registerJoinHandler() {
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> server.execute(() -> {
             ServerPlayerEntity player = handler.getPlayer();
+            if (LegacyDimensionPolicy.isClosed(player.getServerWorld())) {
+                this.evacuateLegacyPlayer(player);
+            }
             this.kitService.join(player);
             if (this.isFirstJoin(player, server)) {
                 this.giveFirstJoinTools(player);
@@ -810,6 +814,9 @@ implements ModInitializer {
 
     private void registerTickHandlers() {
         ServerTickEvents.END_SERVER_TICK.register(server -> {
+            for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
+                this.evacuateLegacyPlayer(player);
+            }
             if (this.initializeTestingWorlds) {
                 this.initializeTestingWorlds = false;
                 this.ensureTestingWorlds(server);
@@ -1408,6 +1415,10 @@ implements ModInitializer {
             source.sendError((Text)Text.literal((String)"Only players can run this command."));
             return 0;
         }
+        if (LegacyDimensionPolicy.isClosed(player.getServerWorld())) {
+            source.sendError(Text.literal(LegacyDimensionPolicy.MESSAGE));
+            return 0;
+        }
         String normalizedHomeName = this.normalizeHomeName(homeName);
         if (normalizedHomeName.isEmpty()) {
             source.sendError((Text)Text.literal((String)"Home name cannot be empty."));
@@ -1549,6 +1560,10 @@ implements ModInitializer {
 
     private int teleportPlayerToSavedHome(ServerPlayerEntity player, SavedHome savedHome, String successPrefix, boolean includeOwner) {
         ServerCommandSource source = player.getCommandSource();
+        if (LegacyDimensionPolicy.isClosed(savedHome.worldId)) {
+            source.sendError(Text.literal(LegacyDimensionPolicy.MESSAGE));
+            return 0;
+        }
         Identifier targetId = Identifier.tryParse((String)savedHome.worldId);
         if (targetId == null) {
             source.sendError((Text)Text.literal((String)("Saved home has an invalid dimension: " + savedHome.worldId)));
@@ -1975,12 +1990,29 @@ implements ModInitializer {
         return this.teleportToHub(player, true, true);
     }
 
+    void evacuateLegacyPlayer(ServerPlayerEntity player) {
+        if (!LegacyDimensionPolicy.isClosed(player.getServerWorld())) return;
+        if (!this.teleportToHub(player, false)
+                || LegacyDimensionPolicy.isClosed(player.getServerWorld())) {
+            LOGGER.error("Cannot evacuate player {} from closed dimension {}; disconnecting instead of trapping them.",
+                player.getUuid(), player.getServerWorld().getRegistryKey().getValue());
+            player.networkHandler.disconnect(Text.literal("Cannot reach the hub. Please contact an administrator."));
+            return;
+        }
+        player.sendMessage(Text.literal(LegacyDimensionPolicy.MESSAGE), false);
+    }
+
     private boolean teleportToHub(ServerPlayerEntity player, boolean rememberLocation) {
         return this.teleportToHub(player, rememberLocation, false);
     }
 
     private boolean teleportToHub(ServerPlayerEntity player, boolean rememberLocation, boolean showTitle) {
         Identifier targetId;
+        if (LegacyDimensionPolicy.isClosed(this.config.portalHubDimension)) {
+            player.sendMessage(Text.literal("Hub configuration points to a closed dimension. Contact an administrator."), false);
+            LOGGER.error("Hub configuration targets closed dimension {}.", this.config.portalHubDimension);
+            return false;
+        }
         this.pendingHubTeleports.remove(player.getUuid());
         if (rememberLocation) {
             this.rememberWildLocation(player);

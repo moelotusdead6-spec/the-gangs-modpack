@@ -75,11 +75,15 @@ hash = "$hash"
     $pending = $listener.GetContextAsync()
     foreach ($generation in 1..2) {
         $islandMetadata = Join-Path $published 'mods\removed-island.pw.toml'
+        $grimMetadata = Join-Path $published 'mods\grimac.pw.toml'
         if ($generation -eq 1) {
             $island = [IO.File]::ReadAllText((Join-Path $published 'mods\client.pw.toml'))
             Write-Fixture $islandMetadata ($island.Replace('client-fixture.jar', 'YungsBetterEndIsland-fixture.jar'))
+            $grim = $island.Replace('client-fixture.jar', 'grimac-fabric-fixture.jar').Replace('side = "client"', 'side = "both"')
+            Write-Fixture $grimMetadata $grim
         } else {
             Remove-Item -LiteralPath $islandMetadata
+            Remove-Item -LiteralPath $grimMetadata
         }
         Write-Fixture (Join-Path $published 'config\defaultoptions\options.txt') "generation:$generation"
         Write-Fixture (Join-Path $published 'config\defaultoptions\servers.dat') "default-server-generation-$generation"
@@ -130,6 +134,7 @@ hash = "$hash"
         Require (Test-Path -LiteralPath (Join-Path $game 'mods\client-fixture.jar')) 'Client mod was not installed.'
         Require (-not (Test-Path -LiteralPath (Join-Path $game 'mods\server-fixture.jar'))) 'Automatic client update installed a server-only mod.'
         Require ((Test-Path -LiteralPath (Join-Path $game 'mods\YungsBetterEndIsland-fixture.jar')) -eq ($generation -eq 1)) 'Automatic update did not remove the previously managed island mod.'
+        Require ((Test-Path -LiteralPath (Join-Path $game 'mods\grimac-fabric-fixture.jar')) -eq ($generation -eq 1)) 'Automatic update did not remove the previously managed GrimAC mod.'
     }
     Write-Output 'PASS: two real headless Packwiz updates; managed defaults updated, personal options/server lists and player-added mod jars stayed byte-identical, root preference exclusions worked, and server-only mods were skipped.'
 } finally { $listener.Stop(); $listener.Close() }

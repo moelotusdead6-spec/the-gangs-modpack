@@ -37,7 +37,8 @@ $removed = @(Get-ChildItem -LiteralPath $mods -File | Where-Object {
     $_.Name -match '^(NaturesCompass-|ExplorersCompass-).*\.jar$' -or
         $_.Name -match '^soulsbackpackscompat-.*\.jar(?:\.pending)?$' -or
         $_.Name -match '^defaultoptions-.*\.jar(?:\.pending)?$' -or
-        $_.Name -match '^gangscosmetics-.*\.jar(?:\.pending)?$'
+        $_.Name -match '^gangscosmetics-.*\.jar(?:\.pending)?$' -or
+        $_.Name -match '^grimac-.*\.jar(?:\.pending)?$'
 })
 if ($removed.Count) {
     $backup = Join-Path $game ('backups\client-mod-update-' + (Get-Date -Format 'yyyyMMdd-HHmmss-ffff'))

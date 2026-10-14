@@ -1,10 +1,24 @@
-The Gangs Modpack v1.1.6 - server update
+The Gangs Modpack v1.1.7 - server update
+
+v1.1.7 closes only minecraft:the_nether and minecraft:the_end.
+All saved /home, public home, warp and /back destinations into those worlds
+are purged while stopped. Their Waystones are removed from the registry and
+all offline player activation lists (.dat and .dat_old). A restart-safe
+physical-block cleanup runs on the next boot; original regions are protected
+in this update's two-generation backup category. No RSW backup is created.
+Wild Overworld, the hub and all RSW destinations remain accessible.
+Inventories, experience, allowed homes and allowed Waystones are preserved.
+GoldClaim blocks stale/new entry attempts, including operators and forced
+Waystone teleports, and recovers stranded players to the hub.
+World folders are not deleted. No Sharestone-specific ban is introduced.
 
 STOP THE SERVER and keep a world backup before applying this update.
 Run PowerShell:
   powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Install-ServerUpdate.ps1 -GameDirectory "C:\path\to\server"
 
-The installer backs up touched files and installs GoldClaim 1.0.34,
+The installer requires Java 17+ and installs GoldClaim 1.0.35.
+If Java is not on PATH, add -JavaExecutable "C:\path\to\java.exe".
+It backs up touched files, purges original Nether/End teleport destinations,
 removes YUNG's Better End Island and routes the retained True Ending
 dragon overhaul to RSW End. Good Ending (Overworld content) is unchanged.
 To replace an existing YUNG arena with a clean End, append -ResetRswEnd.
@@ -22,7 +36,7 @@ to protect players within the 5,000-block radius border), and The End.
 Portals in the wild Overworld can be lit but cannot be entered.
 Blood Moons are moved exclusively to RSW. /rtp is restricted to Wild
 Overworld and RSW Overworld. Other settings, worlds, player data, claims,
-homes, kit data and the RSW reset journal are preserved. The installer
+allowed homes, inventories, kit data and the RSW reset journal are preserved. The installer
 DOES NOT start the server.
 
 v1.1.5 adds Supplementaries, Supplementaries Squared, Ender Zoology,
@@ -49,6 +63,13 @@ The installer selectively disables Lithium block tracking and C2ME threaded
 world generation to avoid BetterEnd/BCLib class warnings and save-file races.
 Other performance settings remain intact. The separate GrimAC/PacketEvents
 custom-particle registry parsing issue is not fixed by those settings.
+
+v1.1.7 removes GrimAC and its bundled PacketEvents. The newest official
+Fabric 1.20.1 candidate still rejects BetterEnd's custom particle.
+GrimAC movement/combat cheat checks are now DISABLED. BetterEnd, Lootr,
+GoldClaim claim protections and permissions remain; no world reset is needed.
+Existing anticheat config files and the unrelated BadPackets library remain.
+Clients update by pressing Play in their existing automatic-update instance.
 
 Do not overwrite live configs with the full config folder: it is supplied
 for new installations/reference. The installer merges only this update's

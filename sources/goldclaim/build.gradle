@@ -45,10 +45,28 @@ dependencies {
 }
 
 sourceSets {
+	maintenance
 	testmod {
 		compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
 		runtimeClasspath += output + compileClasspath + sourceSets.main.runtimeClasspath
 	}
+}
+
+dependencies {
+	maintenanceImplementation 'net.kyori:adventure-nbt:4.26.1'
+	maintenanceImplementation 'com.google.code.gson:gson:2.10.1'
+	testImplementation sourceSets.maintenance.output
+	testImplementation 'net.kyori:adventure-nbt:4.26.1'
+}
+
+tasks.register('legacyTeleportPurgeJar', Jar) {
+	archiveBaseName = 'gangs-teleport-purge'
+	archiveVersion = '1.0.0'
+	manifest { attributes 'Main-Class': 'com.elysium.goldclaim.maintenance.LegacyTeleportPurge' }
+	from sourceSets.maintenance.output
+	from { configurations.maintenanceRuntimeClasspath.collect { zipTree(it) } }
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+	exclude 'META-INF/*.SF', 'META-INF/*.RSA', 'META-INF/*.DSA', 'module-info.class'
 }
 
 loom {
@@ -101,6 +119,18 @@ loom {
 				from '../../config/paxi/datapacks/gangs_fixes'
 				into new File(directory, 'smoke-world/datapacks/gangs_fixes')
 			}
+			copy {
+				from '../../config/paxi/datapacks/gangs_hub'
+				into new File(directory, 'smoke-world/datapacks/gangs_hub')
+			}
+			def homes = new File(directory, 'config/goldclaim/player-homes.json')
+			homes.parentFile.mkdirs()
+			homes.text = '''[
+{"playerUuid":"00000000-0000-0000-0000-000000000117","name":"stale-nether","worldId":"minecraft:the_nether","x":0.5,"y":100,"z":0.5},
+{"playerUuid":"00000000-0000-0000-0000-000000000117","name":"stale-end","worldId":"minecraft:the_end","x":0.5,"y":100,"z":0.5},
+{"playerUuid":"00000000-0000-0000-0000-000000000117","name":"allowed-wild","worldId":"minecraft:overworld","x":64.5,"y":100,"z":64.5}
+]
+'''
 			copy {
 				from '../../config/randomcollections/config.json'
 				into new File(directory, 'config/randomcollections')

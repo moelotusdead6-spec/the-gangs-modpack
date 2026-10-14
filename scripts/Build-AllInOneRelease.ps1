@@ -49,6 +49,7 @@ try {
                 $entry.FullName -match '^(minecraft|client-update|server-update)/mods/(soulsbackpackscompat|defaultoptions)-.*\.jar$' -or
                 $entry.FullName -match '^(minecraft|client-update|server-update)/mods/jei-.*\.jar$' -or
                 $entry.FullName -match '(?i)(?:^|/)YungsBetterEndIsland-.*\.jar$' -or
+                $entry.FullName -match '(?i)(?:^|/)grimac-.*\.jar$' -or
                 $entry.FullName -in @('minecraft/options.txt', 'minecraft/servers.dat',
                     'minecraft/servers.dat_old', 'minecraft/defaultoptions.journal.json',
                     'minecraft/config/resource-pack-defaults-applied-v1.json',
@@ -69,8 +70,10 @@ try {
     Copy-Entry 'docs/updates/v1.1.4.md' (Join-Path $repo 'docs\updates\v1.1.4.md')
     Copy-Entry 'docs/updates/v1.1.5.md' (Join-Path $repo 'docs\updates\v1.1.5.md')
     Copy-Entry 'docs/updates/v1.1.6.md' (Join-Path $repo 'docs\updates\v1.1.6.md')
+    Copy-Entry 'docs/updates/v1.1.7.md' (Join-Path $repo 'docs\updates\v1.1.7.md')
     Copy-Entry 'server-update/README.txt' (Join-Path $PSScriptRoot 'SERVER-UPDATE.txt')
-    Copy-Entry 'server-update/mods/goldclaim-1.0.34.jar' (Join-Path $repo 'artifacts\goldclaim-1.0.34.jar')
+    Copy-Entry 'server-update/mods/goldclaim-1.0.35.jar' (Join-Path $repo 'artifacts\goldclaim-1.0.35.jar')
+    Copy-Entry 'server-update/tools/gangs-teleport-purge-1.0.0.jar' (Join-Path $repo 'artifacts\gangs-teleport-purge-1.0.0.jar')
     Copy-Entry 'server-update/mods/gangshop-1.0.9.jar' (Join-Path $repo 'artifacts\gangshop-1.0.9.jar')
     $newPackMods = @(
         'EndsPhantasm-1.20.1-1.4.jar',
@@ -131,7 +134,7 @@ try {
         }
     }
     $instance = Read-Entry 'instance.cfg'
-    $instance = [regex]::Replace($instance, '(?m)^name=[^\r\n]*', 'name=The Gangs Modpack v1.1.6')
+    $instance = [regex]::Replace($instance, '(?m)^name=[^\r\n]*', 'name=The Gangs Modpack v1.1.7')
     $instance = Get-PrismAutoUpdateConfig $instance
     Write-Entry 'instance.cfg' ($utf8.GetBytes($instance))
     $options = [IO.File]::ReadAllText((Join-Path $repo 'config\defaultoptions\options.txt'))
@@ -154,11 +157,11 @@ try {
 
 $zip = [IO.Compression.ZipFile]::OpenRead($output)
 try {
-    if (@($zip.Entries | Where-Object { $_.FullName -match '(?i)(NaturesCompass|ExplorersCompass|jei-|YungsBetterEndIsland-).*\.jar$' }).Count) {
+    if (@($zip.Entries | Where-Object { $_.FullName -match '(?i)(NaturesCompass|ExplorersCompass|jei-|YungsBetterEndIsland-|grimac-).*\.jar$' }).Count) {
         throw 'Removed mod remains in the ZIP.'
     }
     $goldclaim = @($zip.Entries | Where-Object { $_.FullName -match '^server-update/mods/goldclaim-.*\.jar$' })
-    if ($goldclaim.Count -ne 1 -or $goldclaim[0].Name -ne 'goldclaim-1.0.34.jar') {
+    if ($goldclaim.Count -ne 1 -or $goldclaim[0].Name -ne 'goldclaim-1.0.35.jar') {
         throw 'Wrong or duplicate GoldClaim server-update jar.'
     }
     foreach ($name in @('server-update/mods/soulsbackpackscompat-1.1.0.jar',
@@ -222,9 +225,21 @@ try {
     $stream = $goldclaim[0].Open()
     try { $actual = [BitConverter]::ToString($hash.ComputeHash($stream)).Replace('-', '') }
     finally { $stream.Dispose(); $hash.Dispose() }
-    if ($actual -ne (Get-FileHash (Join-Path $repo 'artifacts\goldclaim-1.0.34.jar') -Algorithm SHA256).Hash) {
+    if ($actual -ne (Get-FileHash (Join-Path $repo 'artifacts\goldclaim-1.0.35.jar') -Algorithm SHA256).Hash) {
         throw 'Packaged GoldClaim does not match the built artifact.'
     }
+    $utility = $zip.GetEntry('server-update/tools/gangs-teleport-purge-1.0.0.jar')
+    if (-not $utility) { throw 'Offline server teleport cleanup tool is missing.' }
+    $hash = [Security.Cryptography.SHA256]::Create()
+    $stream = $utility.Open()
+    try { $actual = [BitConverter]::ToString($hash.ComputeHash($stream)).Replace('-', '') }
+    finally { $stream.Dispose(); $hash.Dispose() }
+    if ($actual -ne (Get-FileHash (Join-Path $repo 'artifacts\gangs-teleport-purge-1.0.0.jar') -Algorithm SHA256).Hash) {
+        throw 'Packaged teleport cleanup tool does not match the built artifact.'
+    }
+    if (@($zip.Entries | Where-Object {
+        $_.FullName -match '^(minecraft|client-update)/.*gangs-teleport-purge'
+    }).Count) { throw 'Offline server cleanup tool must never ship on the client.' }
     foreach ($mod in $newPackMods) {
         $metadata = @(Get-ChildItem -LiteralPath (Join-Path $repo 'mods') -Filter '*.pw.toml' |
             Where-Object { [IO.File]::ReadAllText($_.FullName).Contains('filename = "' + $mod + '"') })

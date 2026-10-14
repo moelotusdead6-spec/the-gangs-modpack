@@ -21,6 +21,7 @@ final class RswDragonSmokeTest {
     private static int ticks;
     private static ServerPlayerEntity player;
     private static boolean resetRequested;
+    private static boolean legacyVerified;
 
     static void register() {
         if (FabricLoader.getInstance().isModLoaded("waystones")) WaystoneSmokeTest.register();
@@ -57,6 +58,10 @@ final class RswDragonSmokeTest {
                 throw new IllegalStateException("True Ending did not apply its 300 HP dragon overhaul.");
             }
             if (FabricLoader.getInstance().isModLoaded("waystones") && !WaystoneSmokeTest.verify(server)) return;
+            if (!legacyVerified) {
+                LegacyDimensionSmokeTest.verify(server);
+                legacyVerified = true;
+            }
             if (FabricLoader.getInstance().isModLoaded("gangshop")) ShopSmokeTest.verify();
             if (FabricLoader.getInstance().isModLoaded("lootr")
                     && FabricLoader.getInstance().isModLoaded("betterend") && !LootrSmokeTest.verify(server)) return;

@@ -1296,7 +1296,7 @@ metafile = true
 
 [[files]]
 file = "mods/goldclaim-direct.pw.toml"
-hash = "9670032610e7df6abd9afcd566192ebca1b6a86ed5da222b72da41540df870c1"
+hash = "69b47694f0708bfd40a127932ebbe4ea97c7909d930151908fdfc9ec4df8aebe"
 metafile = true
 
 [[files]]
@@ -1307,11 +1307,6 @@ metafile = true
 [[files]]
 file = "mods/grand-teleport-1.20.1-build252.pw.toml"
 hash = "f383eaf554df28e92c82793afdc3a3aa4f9b03c86f28d43482f5a7c1e64b1694"
-metafile = true
-
-[[files]]
-file = "mods/grimac.pw.toml"
-hash = "9c0b1943f9fc8edfd74f67bece271a2510788a52b6258ac186e2209112ba83db"
 metafile = true
 
 [[files]]

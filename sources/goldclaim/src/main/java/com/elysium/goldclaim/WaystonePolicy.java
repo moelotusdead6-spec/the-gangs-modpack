@@ -23,6 +23,12 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtHelper;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.util.Identifier;
 import net.minecraft.registry.Registries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
@@ -47,6 +53,9 @@ public final class WaystonePolicy {
     private static final Set<ServerWorld> CHANGED_WORLDS = new HashSet<>();
     private static Path backup;
     private static boolean finishing;
+    private static final ArrayDeque<NbtCompound> LEGACY_PENDING = new ArrayDeque<>();
+    private static final Set<ServerWorld> LEGACY_CHANGED_WORLDS = new HashSet<>();
+    private static Path legacyPlan;
 
     private WaystonePolicy() {}
 
@@ -62,7 +71,10 @@ public final class WaystonePolicy {
         if (!FabricLoader.getInstance().isModLoaded("waystones")) return;
         Balm.getEvents().onEvent(WaystoneTeleportEvent.Pre.class, event -> {
             var context = event.getContext();
-            if ((context.getEntity().getWorld() instanceof ServerWorld source && isRsw(source))
+            if (LegacyDimensionPolicy.isClosed(event.getDestination().getLevel())) {
+                event.setCanceled(true);
+                context.getEntity().sendMessage(Text.literal(LegacyDimensionPolicy.MESSAGE));
+            } else if ((context.getEntity().getWorld() instanceof ServerWorld source && isRsw(source))
                     || isRsw(event.getDestination().getLevel())) {
                 event.setCanceled(true);
                 context.getEntity().sendMessage(Text.literal(MESSAGE));
@@ -90,6 +102,7 @@ public final class WaystonePolicy {
             return TypedActionResult.pass(stack);
         });
         ServerLifecycleEvents.SERVER_STARTED.register(WaystonePolicy::prepareCleanup);
+        ServerLifecycleEvents.SERVER_STARTED.register(WaystonePolicy::prepareLegacyCleanup);
         ServerChunkEvents.CHUNK_LOAD.register((world, chunk) -> {
             if (isRsw(world)) CHUNKS.enqueue(world, chunk);
         });
@@ -97,6 +110,7 @@ public final class WaystonePolicy {
         ServerTickEvents.END_WORLD_TICK.register(world ->
             CHUNKS.drain(world, 1, chunk -> removeRswWaystones(world, chunk)));
         ServerTickEvents.END_SERVER_TICK.register(WaystonePolicy::tickCleanup);
+        ServerTickEvents.END_SERVER_TICK.register(WaystonePolicy::tickLegacyCleanup);
         ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
             CHUNKS.clear();
             PENDING.clear();
@@ -104,7 +118,65 @@ public final class WaystonePolicy {
             CHANGED_WORLDS.clear();
             backup = null;
             finishing = false;
+            LEGACY_PENDING.clear();
+            LEGACY_CHANGED_WORLDS.clear();
+            legacyPlan = null;
         });
+    }
+
+    private static void prepareLegacyCleanup(MinecraftServer server) {
+        legacyPlan = server.getSavePath(WorldSavePath.ROOT).resolve("data/goldclaim-legacy-waystones.dat");
+        if (!Files.exists(legacyPlan)) {
+            legacyPlan = null;
+            return;
+        }
+        try {
+            NbtCompound plan = NbtIo.readCompressed(legacyPlan.toFile());
+            if (!plan.contains("Waystones", NbtElement.LIST_TYPE)) {
+                throw new IllegalStateException("Invalid legacy Waystone cleanup plan.");
+            }
+            var stones = plan.getList("Waystones", NbtElement.COMPOUND_TYPE);
+            for (int i = 0; i < stones.size(); i++) {
+                NbtCompound stone = stones.getCompound(i);
+                if (!LegacyDimensionPolicy.isClosed(stone.getString("World"))) {
+                    throw new IllegalStateException("Refusing Waystone cleanup outside original Nether/End.");
+                }
+                LEGACY_PENDING.add(stone);
+            }
+        } catch (IOException failure) {
+            throw new IllegalStateException("Cannot read pending legacy Waystone cleanup.", failure);
+        }
+        LOGGER.info("Queued {} original Nether/End Waystone blocks for removal; stopped-server backups already prepared.",
+            LEGACY_PENDING.size());
+    }
+
+    private static void tickLegacyCleanup(MinecraftServer server) {
+        if (legacyPlan == null) return;
+        NbtCompound stone = LEGACY_PENDING.peek();
+        if (stone != null) {
+            if (stone.contains("GoldClaimPhysicalCleanup") && !stone.getBoolean("GoldClaimPhysicalCleanup")) {
+                LEGACY_PENDING.remove();
+                return;
+            }
+            ServerWorld world = server.getWorld(RegistryKey.of(RegistryKeys.WORLD, new Identifier(stone.getString("World"))));
+            if (world == null) throw new IllegalStateException("Cannot load legacy Waystone dimension.");
+            BlockPos pos = NbtHelper.toBlockPos(stone.getCompound("BlockPos"));
+            removeStone(world, pos, WaystonesAPI.getWaystoneAt(world, pos).orElse(null), false);
+            LEGACY_CHANGED_WORLDS.add(world);
+            LEGACY_PENDING.remove();
+        }
+        if (LEGACY_PENDING.isEmpty()) {
+            for (ServerWorld world : LEGACY_CHANGED_WORLDS) world.getChunkManager().save(true);
+            server.getOverworld().getPersistentStateManager().save();
+            try {
+                Files.delete(legacyPlan);
+            } catch (IOException failure) {
+                throw new IllegalStateException("Cannot finish legacy Waystone block cleanup.", failure);
+            }
+            legacyPlan = null;
+            LEGACY_CHANGED_WORLDS.clear();
+            LOGGER.info("Original Nether/End Waystone physical cleanup completed.");
+        }
     }
 
     private static void prepareCleanup(MinecraftServer server) {
@@ -184,22 +256,29 @@ public final class WaystonePolicy {
     }
 
     private static void removeStone(ServerWorld world, BlockPos pos, IWaystone stone) {
+        removeStone(world, pos, stone, true);
+    }
+
+    private static void removeStone(ServerWorld world, BlockPos pos, IWaystone stone, boolean needsBackup) {
         Path root = world.getServer().getSavePath(WorldSavePath.ROOT);
         Path dimension = DimensionType.getSaveDirectory(world.getRegistryKey(), root);
         try {
-            if (!GoldClaimMod.RSW_DIMENSIONS.contains(world.getRegistryKey().getValue().toString())) {
-                for (String folder : new String[]{"region", "entities", "poi"}) {
-                    backupFile(dimension.resolve(folder).resolve("r." + (pos.getX() >> 9) + "."
-                        + (pos.getZ() >> 9) + ".mca"), root);
-                    backupFile(dimension.resolve(folder).resolve("c." + (pos.getX() >> 4) + "."
-                        + (pos.getZ() >> 4) + ".mcc"), root);
+            if (needsBackup) {
+                if (!GoldClaimMod.RSW_DIMENSIONS.contains(world.getRegistryKey().getValue().toString())) {
+                    for (String folder : new String[]{"region", "entities", "poi"}) {
+                        backupFile(dimension.resolve(folder).resolve("r." + (pos.getX() >> 9) + "."
+                            + (pos.getZ() >> 9) + ".mca"), root);
+                        backupFile(dimension.resolve(folder).resolve("c." + (pos.getX() >> 4) + "."
+                            + (pos.getZ() >> 4) + ".mcc"), root);
+                    }
                 }
+                backupFile(root.resolve("data/waystones.dat"), root);
             }
-            backupFile(root.resolve("data/waystones.dat"), root);
         } catch (IOException failure) {
             throw new IllegalStateException("Cannot back up waystone at " + pos + "; removal aborted.", failure);
         }
         world.getChunk(pos);
+        if (stone == null) stone = WaystonesAPI.getWaystoneAt(world, pos).orElse(null);
         BlockState state = world.getBlockState(pos);
         BlockPos lower = state.contains(Properties.DOUBLE_BLOCK_HALF)
                 && state.get(Properties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.UPPER ? pos.down() : pos;

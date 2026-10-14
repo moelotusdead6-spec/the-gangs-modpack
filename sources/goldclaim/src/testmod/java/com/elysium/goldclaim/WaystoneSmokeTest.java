@@ -16,6 +16,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.nbt.NbtHelper;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
 import net.minecraft.network.ClientConnection;
@@ -38,9 +39,34 @@ final class WaystoneSmokeTest {
     private static IWaystone unused;
     private static NbtCompound offlineData;
     private static java.nio.file.Path offlineFile;
+    private static final java.util.List<IWaystone> legacyStones = new java.util.ArrayList<>();
 
     static void register() {
         ServerWorldEvents.LOAD.register((server, world) -> {
+            if (LegacyDimensionPolicy.isClosed(world)) {
+                BlockPos pos = new BlockPos(10, 100, 10);
+                world.setBlockState(pos.down(), Blocks.STONE.getDefaultState());
+                IWaystone stone = WaystonesAPI.placeWaystone(world, pos,
+                    new WaystoneStyle(new Identifier("waystones:waystone"))).orElseThrow();
+                legacyStones.add(stone);
+                WaystonesAPI.removeWaystoneFromDatabase(server, stone);
+                var path = server.getSavePath(WorldSavePath.ROOT).resolve("data/goldclaim-legacy-waystones.dat");
+                try {
+                    Files.createDirectories(path.getParent());
+                    var plan = Files.exists(path) ? NbtIo.readCompressed(path.toFile()) : new NbtCompound();
+                    var stones = plan.getList("Waystones", net.minecraft.nbt.NbtElement.COMPOUND_TYPE);
+                    var record = new NbtCompound();
+                    record.putString("World", world.getRegistryKey().getValue().toString());
+                    record.put("BlockPos", NbtHelper.fromBlockPos(stone.getPos()));
+                    record.putUuid("WaystoneUid", stone.getWaystoneUid());
+                    stones.add(record);
+                    plan.put("Waystones", stones);
+                    NbtIo.writeCompressed(plan, path.toFile());
+                } catch (IOException failure) {
+                    throw new IllegalStateException("Cannot prepare legacy physical cleanup fixture.", failure);
+                }
+                return;
+            }
             if (world.getRegistryKey() != World.OVERWORLD) return;
             var style = new WaystoneStyle(new Identifier("waystones:waystone"));
             BlockPos pos = new BlockPos(96, 100, 96);
@@ -67,6 +93,16 @@ final class WaystoneSmokeTest {
     }
 
     static boolean verify(MinecraftServer server) {
+        if (Files.exists(server.getSavePath(WorldSavePath.ROOT).resolve("data/goldclaim-legacy-waystones.dat"))) return false;
+        if (legacyStones.size() != 2) throw new IllegalStateException("Both legacy Waystone fixtures must exist.");
+        for (IWaystone stone : legacyStones) {
+            var world = server.getWorld(stone.getDimension());
+            if (WaystonesAPI.getWaystone(server, stone.getWaystoneUid()).isPresent()
+                    || WaystonePolicy.isWaystone(world.getBlockState(stone.getPos()))
+                    || WaystonePolicy.isWaystone(world.getBlockState(stone.getPos().down()))) {
+                throw new IllegalStateException("Legacy Waystone registry or physical block cleanup failed.");
+            }
+        }
         var backup = FabricLoader.getInstance().getGameDir().resolve("backups/waystones-policy-v1.1.5")
             .resolve(server.getSavePath(WorldSavePath.ROOT).toAbsolutePath().normalize().getFileName());
         if (!Files.exists(backup.resolve("complete.txt"))) return false;
@@ -91,6 +127,19 @@ final class WaystoneSmokeTest {
         var player = new ServerPlayerEntity(server, wild, new GameProfile(UUID.randomUUID(), "WaystoneSmoke"));
         player.networkHandler = new ServerPlayNetworkHandler(server,
             new ClientConnection(NetworkSide.SERVERBOUND), player);
+        for (var key : java.util.List.of(World.NETHER, World.END)) {
+            var target = server.getWorld(key);
+            var context = new WaystoneTeleportContext(player, activated,
+                new TeleportDestination(target, new Vec3d(0.5, 100, 0.5), Direction.NORTH));
+            if (!(WaystonesAPI.tryTeleport(context).right().orElse(null)
+                    instanceof WaystoneTeleportError.CancelledByEvent)) {
+                throw new IllegalStateException("Normal Waystone entry into original dimension was not cancelled.");
+            }
+            WaystonesAPI.forceTeleport(context);
+            if (player.getServerWorld() != wild) {
+                throw new IllegalStateException("Forced Waystone teleport bypassed legacy dimension guard.");
+            }
+        }
         for (String id : GoldClaimMod.RSW_DIMENSIONS) {
             var world = server.getWorld(RegistryKey.of(RegistryKeys.WORLD, new Identifier(id)));
             BlockPos pos = new BlockPos(96, 100, 96);

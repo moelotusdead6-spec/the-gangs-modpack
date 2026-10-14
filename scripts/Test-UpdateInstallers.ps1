@@ -25,7 +25,18 @@ function Require([bool]$Condition, [string]$Message) {
 }
 function Write-Fixture([string]$Path, [string]$Content) {
     New-Item -ItemType Directory -Path ([IO.Path]::GetDirectoryName($Path)) -Force | Out-Null
-    [IO.File]::WriteAllText($Path, $Content, [Text.UTF8Encoding]::new($false))
+    if ($Path -match '\\world\\playerdata\\.*\.dat$' -or $Path -match '\\world\\data\\waystones\.dat$') {
+        $bytes = [byte[]]@(10, 0, 0, 0)
+        if ($Path -match '\\waystones\.dat$') {
+            $bytes = [byte[]]@(10, 0, 0, 10, 0, 4, 100, 97, 116, 97,
+                9, 0, 9, 87, 97, 121, 115, 116, 111, 110, 101, 115, 0, 0, 0, 0, 0, 0, 0)
+        }
+        $stream = [IO.File]::Create($Path)
+        $gzip = [IO.Compression.GzipStream]::new($stream, [IO.Compression.CompressionMode]::Compress)
+        try { $gzip.Write($bytes, 0, $bytes.Length) } finally { $gzip.Dispose(); $stream.Dispose() }
+    } else {
+        [IO.File]::WriteAllText($Path, $Content, [Text.UTF8Encoding]::new($false))
+    }
 }
 function Assert-Preserved([hashtable]$Hashes) {
     foreach ($path in $Hashes.Keys) {
@@ -46,6 +57,10 @@ $personal = @{
     'defaultoptions.journal.json' = '{"journal":"keep"}'
 }
 $hashes = @{}
+Write-Fixture (Join-Path $game 'mods\grimac-fabric-2.3.74-fixture.jar') 'removed-client-anticheat'
+Write-Fixture (Join-Path $game 'mods\badpackets-fabric-fixture.jar') 'unrelated-client-library'
+$hashes[(Join-Path $game 'mods\badpackets-fabric-fixture.jar')] =
+    (Get-FileHash (Join-Path $game 'mods\badpackets-fabric-fixture.jar')).Hash
 foreach ($relative in $personal.Keys) {
     $path = Join-Path $game $relative
     Write-Fixture $path $personal[$relative]
@@ -65,6 +80,7 @@ foreach ($script in @('Install-ClientUpdate.ps1', 'Repair-PrismAutoUpdate.ps1'))
     }
     Require ((Get-FileHash (Join-Path $instance 'instance.cfg')).Hash -ceq $before) 'Open-launcher rejection changed configuration.'
     Assert-Preserved $hashes
+    Require (Test-Path (Join-Path $game 'mods\grimac-fabric-2.3.74-fixture.jar')) 'Open-launcher rejection removed a mod.'
 }
 # The disposable instance is not owned by the user's running Prism process.
 function Get-CimInstance {
@@ -74,6 +90,7 @@ function Get-CimInstance {
 foreach ($run in 1..2) {
     & (Join-Path $root 'client-update\Install-ClientUpdate.ps1') -GameDirectory $game
     Assert-Preserved $hashes
+    Require (-not (Test-Path (Join-Path $game 'mods\grimac-fabric-2.3.74-fixture.jar'))) 'Manual client installer retained GrimAC.'
 }
 $cfg = [IO.File]::ReadAllText((Join-Path $instance 'instance.cfg'))
 Require ($cfg -match '(?ms)^\[General\]\s+OverrideCommands=true\s+PreLaunchCommand=.* -s client .*?\s+PreLaunchCommandIgnoreExitCode=false') 'Prism auto-update keys are not in [General].'
@@ -120,6 +137,8 @@ Write-Fixture (Join-Path $server 'mods\goldclaim-1.0.31.jar') 'old-fixture-jar'
 Write-Fixture (Join-Path $server 'mods\gangshop-1.0.8.jar') 'old-shop-jar'
 Write-Fixture (Join-Path $server 'mods\YungsBetterEndIsland-1.20-Fabric-2.0.6.jar') 'removed-island-mod'
 Write-Fixture (Join-Path $server 'mods\tru.e-ending-v1.1.0c.jar') 'preserved-dragon-overhaul'
+Write-Fixture (Join-Path $server 'mods\grimac-fabric-2.3.74-fixture.jar') 'removed-server-anticheat'
+Write-Fixture (Join-Path $server 'mods\grimac-fabric-2.3.74-fixture.jar.pending') 'removed-pending-anticheat'
 Write-Fixture (Join-Path $server 'world\dimensions\multiworld\rsw_the_end\region\fixture.mca') 'old-arena'
 foreach ($stamp in @('20261001-120000-0000', '20261002-120000-0000', '20261003-120000-0000')) {
     Write-Fixture (Join-Path $server "backups\policy-v1.1.3-$stamp\fixture.txt") 'old-backup'
@@ -131,6 +150,12 @@ foreach ($relative in @('world\level.dat', 'world\playerdata\fixture.dat', 'conf
     $path = Join-Path $server $relative
     Write-Fixture $path 'untouched-fixture'
     $hashes[$path] = (Get-FileHash -LiteralPath $path).Hash
+}
+foreach ($relative in @('mods\better-end-fixture.jar', 'mods\lootr-fixture.jar',
+        'mods\badpackets-fabric-fixture.jar', 'config\GrimAC\config.yml')) {
+    $path = Join-Path $server $relative
+    Write-Fixture $path 'preserve-content-and-settings'
+    $hashes[$path] = (Get-FileHash $path).Hash
 }
 $journal = Join-Path $server 'config\goldclaim\rsw-reset.json'
 Write-Fixture $journal '{"phase":"IDLE","generation":8}'
@@ -147,10 +172,13 @@ foreach ($relative in @('config\gangshop\prices.json', 'config\gangshop\category
 }
 & (Join-Path $root 'server-update\Install-ServerUpdate.ps1') -GameDirectory $server -ResetRswEnd
 Assert-Preserved $hashes
-Require (Test-Path -LiteralPath (Join-Path $server 'mods\goldclaim-1.0.34.jar')) 'New GoldClaim is missing.'
+Require (Test-Path -LiteralPath (Join-Path $server 'mods\goldclaim-1.0.35.jar')) 'New GoldClaim is missing.'
 Require (-not (Test-Path -LiteralPath (Join-Path $server 'mods\goldclaim-1.0.31.jar'))) 'Old GoldClaim remains.'
 Require (-not (Test-Path -LiteralPath (Join-Path $server 'mods\gangshop-1.0.8.jar'))) 'Old Gang Shop remains.'
 Require (-not (Test-Path -LiteralPath (Join-Path $server 'mods\YungsBetterEndIsland-1.20-Fabric-2.0.6.jar'))) 'Better End Island remains.'
+Require (-not @(Get-ChildItem (Join-Path $server 'mods') -File | Where-Object {
+    $_.Name -match '^grimac-.*\.jar(?:\.pending)?$'
+}).Count) 'GrimAC remains installed.'
 Require ([IO.File]::ReadAllText((Join-Path $server 'mods\tru.e-ending-v1.1.0c.jar')) -eq 'preserved-dragon-overhaul') 'True Ending was changed.'
 Require (-not (Test-Path -LiteralPath (Join-Path $server 'world\dimensions\multiworld\rsw_the_end'))) 'RSW End was not archived.'
 $backups = @(Get-ChildItem -LiteralPath (Join-Path $server 'backups') -Directory)

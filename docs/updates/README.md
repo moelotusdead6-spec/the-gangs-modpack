@@ -3,7 +3,7 @@
 ## Keep one Prism instance
 
 Keep the same Prism instance and press Play for normal client pack updates.
-New v1.1.6 imports have automatic client-only Packwiz updates enabled.
+New v1.1.7 imports have automatic client-only Packwiz updates enabled.
 The public ZIP is for new installations, not a replacement instance for
 every release.
 
@@ -57,7 +57,7 @@ instructions and stopped-server installer. Apply it only after stopping the
 server and making a world backup, then start the server yourself.
 Publishing the pack does not install or restart the live server.
 
-GoldClaim 1.0.34 coordinates Resetting World (RSW) rotation across three
+GoldClaim 1.0.35 coordinates Resetting World (RSW) rotation across three
 synchronized dimensions (`multiworld:rsw`, `multiworld:rsw_nether`, and
 `multiworld:rsw_the_end`) with matching seeds and 10,000-block diameter
 (5,000-block radius) borders centered at (0, 0). The Nether dimension uses a
@@ -87,3 +87,13 @@ backup categories at two generations each. It adds BetterEnd Lootr conversion
 tags and targeted server-only Lithium/C2ME compatibility settings. The pending
 PacketEvents custom-particle parsing issue is documented separately.
 See [v1.1.6 details](v1.1.6.md).
+
+v1.1.7 removes GrimAC and its bundled PacketEvents after the newest official
+Fabric build still rejected BetterEnd's custom particle. GrimAC cheat checks
+are disabled; BetterEnd, Lootr, GoldClaim protections and permissions remain.
+It also purges saved homes/warps/return locations and Waystones targeting the
+original `minecraft:the_nether` and `minecraft:the_end`, including offline
+players' activated lists. GoldClaim blocks entry there through teleport APIs
+and commands without an operator bypass; stranded players are sent to the hub.
+Wild Overworld and all RSW worlds remain available. No world reset or
+Sharestone-specific ban is introduced. See [v1.1.7 details](v1.1.7.md).

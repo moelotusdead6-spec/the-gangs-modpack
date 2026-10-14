@@ -1,7 +1,11 @@
 package com.elysium.goldclaim.mixin;
 
 import com.elysium.goldclaim.GoldClaimMod;
+import com.elysium.goldclaim.LegacyDimensionPolicy;
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import java.util.Optional;
+import java.util.Set;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.registry.RegistryKey;
@@ -9,6 +13,7 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.network.packet.s2c.play.PositionFlag;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -24,28 +29,54 @@ import net.minecraft.world.dimension.NetherPortal;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(ServerPlayerEntity.class)
+// The outer wrapper must validate/redirect before Phantasm starts its vanilla-End cutscene.
+@Mixin(value = ServerPlayerEntity.class, priority = 2000)
 public abstract class RswPlayerTravelMixin {
 
-    @Inject(method = "teleport(Lnet/minecraft/server/world/ServerWorld;DDDFF)V", at = @At("HEAD"))
+    @Inject(method = "teleport(Lnet/minecraft/server/world/ServerWorld;DDDFF)V", at = @At("HEAD"), cancellable = true)
     private void goldclaim$rememberBeforeTeleport(ServerWorld target, double x, double y, double z,
                                                  float yaw, float pitch, CallbackInfo ci) {
         ServerPlayerEntity player = (ServerPlayerEntity)(Object)this;
+        if (LegacyDimensionPolicy.deny(player, target)) {
+            ci.cancel();
+            return;
+        }
         if (target != player.getServerWorld()) {
             GoldClaimMod.rememberRswLocation(player);
         }
     }
 
-    @Inject(method = "moveToWorld", at = @At("HEAD"))
-    private void goldclaim$rememberBeforePortal(ServerWorld target, CallbackInfoReturnable<Entity> cir) {
-        GoldClaimMod.rememberRswLocation((ServerPlayerEntity)(Object)this);
+    @Inject(method = "teleport(Lnet/minecraft/server/world/ServerWorld;DDDLjava/util/Set;FF)Z",
+        at = @At("HEAD"), cancellable = true)
+    private void goldclaim$denyLegacyCommandTeleport(ServerWorld target, double x, double y, double z,
+            Set<PositionFlag> flags, float yaw, float pitch, CallbackInfoReturnable<Boolean> cir) {
+        if (LegacyDimensionPolicy.deny((ServerPlayerEntity)(Object)this, target)) cir.setReturnValue(false);
     }
 
-    @ModifyVariable(method = "moveToWorld", at = @At("HEAD"), argsOnly = true)
+    @Inject(method = "setSpawnPoint", at = @At("HEAD"), cancellable = true)
+    private void goldclaim$denyLegacySpawn(RegistryKey<World> dimension, BlockPos pos, float angle,
+            boolean forced, boolean sendMessage, CallbackInfo ci) {
+        if (pos != null && LegacyDimensionPolicy.isClosed(dimension.getValue().toString())) {
+            ((ServerPlayerEntity)(Object)this).sendMessage(
+                net.minecraft.text.Text.literal(LegacyDimensionPolicy.MESSAGE), false);
+            ci.cancel();
+        }
+    }
+
+    @WrapMethod(method = "moveToWorld")
+    private Entity goldclaim$travelWithPolicy(ServerWorld target, Operation<Entity> original) {
+        ServerPlayerEntity player = (ServerPlayerEntity)(Object)this;
+        ServerWorld redirected = goldclaim$redirectRswDestination(target);
+        if (LegacyDimensionPolicy.deny(player, redirected)) {
+            return null;
+        }
+        GoldClaimMod.rememberRswLocation(player);
+        return original.call(redirected);
+    }
+
     private ServerWorld goldclaim$redirectRswDestination(ServerWorld destination) {
         ServerPlayerEntity player = (ServerPlayerEntity)(Object)this;
         ServerWorld currentWorld = player.getServerWorld();
