@@ -61,7 +61,7 @@ dependencies {
 
 tasks.register('legacyTeleportPurgeJar', Jar) {
 	archiveBaseName = 'gangs-teleport-purge'
-	archiveVersion = '1.0.0'
+	archiveVersion = '1.0.1'
 	manifest { attributes 'Main-Class': 'com.elysium.goldclaim.maintenance.LegacyTeleportPurge' }
 	from sourceSets.maintenance.output
 	from { configurations.maintenanceRuntimeClasspath.collect { zipTree(it) } }

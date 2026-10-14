@@ -74,7 +74,7 @@ try {
     Copy-Entry 'docs/updates/v1.1.8.md' (Join-Path $repo 'docs\updates\v1.1.8.md')
     Copy-Entry 'server-update/README.txt' (Join-Path $PSScriptRoot 'SERVER-UPDATE.txt')
     Copy-Entry 'server-update/mods/goldclaim-1.0.36.jar' (Join-Path $repo 'artifacts\goldclaim-1.0.36.jar')
-    Copy-Entry 'server-update/tools/gangs-teleport-purge-1.0.0.jar' (Join-Path $repo 'artifacts\gangs-teleport-purge-1.0.0.jar')
+    Copy-Entry 'server-update/tools/gangs-teleport-purge-1.0.1.jar' (Join-Path $repo 'artifacts\gangs-teleport-purge-1.0.1.jar')
     Copy-Entry 'server-update/tools/gangs-player-recovery-1.0.0.jar' (Join-Path $repo 'artifacts\gangs-player-recovery-1.0.0.jar')
     Copy-Entry 'server-update/mods/gangshop-1.0.9.jar' (Join-Path $repo 'artifacts\gangshop-1.0.9.jar')
     $newPackMods = @(
@@ -230,13 +230,13 @@ try {
     if ($actual -ne (Get-FileHash (Join-Path $repo 'artifacts\goldclaim-1.0.36.jar') -Algorithm SHA256).Hash) {
         throw 'Packaged GoldClaim does not match the built artifact.'
     }
-    $utility = $zip.GetEntry('server-update/tools/gangs-teleport-purge-1.0.0.jar')
+    $utility = $zip.GetEntry('server-update/tools/gangs-teleport-purge-1.0.1.jar')
     if (-not $utility) { throw 'Offline server teleport cleanup tool is missing.' }
     $hash = [Security.Cryptography.SHA256]::Create()
     $stream = $utility.Open()
     try { $actual = [BitConverter]::ToString($hash.ComputeHash($stream)).Replace('-', '') }
     finally { $stream.Dispose(); $hash.Dispose() }
-    if ($actual -ne (Get-FileHash (Join-Path $repo 'artifacts\gangs-teleport-purge-1.0.0.jar') -Algorithm SHA256).Hash) {
+    if ($actual -ne (Get-FileHash (Join-Path $repo 'artifacts\gangs-teleport-purge-1.0.1.jar') -Algorithm SHA256).Hash) {
         throw 'Packaged teleport cleanup tool does not match the built artifact.'
     }
     $recovery = $zip.GetEntry('server-update/tools/gangs-player-recovery-1.0.0.jar')

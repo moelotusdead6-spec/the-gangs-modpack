@@ -159,6 +159,35 @@ public class LegacyTeleportPurgeTest {
         assertArrayEquals(after, Files.readAllBytes(player));
     }
 
+    @Test public void corruptRegionSlotIsTreatedAsUnsavedChunk() throws Exception {
+        Path game = temporary.newFolder("corrupt-region-server").toPath();
+        Files.writeString(game.resolve("server.properties"), "level-name=world\n");
+        Path registry = game.resolve("world").resolve("data").resolve("waystones.dat");
+        Files.createDirectories(registry.getParent());
+        CompoundBinaryTag stone = CompoundBinaryTag.builder().putString("World", "minecraft:the_nether")
+            .putString("WaystoneUid", "12345678-1234-5678-1234-567812345678").put("BlockPos", CompoundBinaryTag.builder()
+                .putInt("X", 10).putInt("Y", 60).putInt("Z", 10).build()).build();
+        BinaryTagIO.writer().write(CompoundBinaryTag.builder().putInt("DataVersion", 3337)
+            .put("data", CompoundBinaryTag.builder().put("Waystones",
+                ListBinaryTag.of(BinaryTagTypes.COMPOUND, java.util.List.of(stone))).build()).build(),
+            registry, BinaryTagIO.Compression.GZIP);
+        Path region = game.resolve("world").resolve("DIM-1").resolve("region").resolve("r.0.0.mca");
+        Files.createDirectories(region.getParent());
+        byte[] regionData = new byte[12288];
+        regionData[2] = 1;
+        regionData[3] = 2;
+        Files.write(region, regionData);
+        Path backup = game.resolve("backups").resolve("policy-test");
+        LegacyTeleportPurge.main(new String[]{"--apply", game.toString(), backup.toString()});
+        assertEquals(0, BinaryTagIO.reader().read(registry, BinaryTagIO.Compression.GZIP)
+            .getCompound("data").getList("Waystones", BinaryTagTypes.COMPOUND).size());
+        var queued = BinaryTagIO.reader().read(game.resolve("world").resolve("data").resolve("goldclaim-legacy-waystones.dat"),
+            BinaryTagIO.Compression.GZIP).getList("Waystones", BinaryTagTypes.COMPOUND);
+        assertEquals(1, queued.size());
+        assertEquals(false, queued.getCompound(0).getBoolean("GoldClaimPhysicalCleanup"));
+        assertArrayEquals(regionData, Files.readAllBytes(region));
+    }
+
     private static CompoundBinaryTag location(String dimension) {
         return CompoundBinaryTag.builder().putString("WorldRegistryKey", dimension)
             .putDouble("x", 12.5).putDouble("y", 70).putDouble("z", 32.5).build();

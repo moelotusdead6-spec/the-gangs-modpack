@@ -26,9 +26,9 @@ $repo = if ($isRepo) { (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')
 $modsDir = if ($isRepo) { Join-Path $repo 'artifacts' } else { Join-Path $PSScriptRoot 'mods' }
 $configDir = if ($isRepo) { Join-Path $repo 'config' } else { Join-Path $PSScriptRoot 'config' }
 $purgeTool = if ($isRepo) {
-    Join-Path $repo 'artifacts\gangs-teleport-purge-1.0.0.jar'
+    Join-Path $repo 'artifacts\gangs-teleport-purge-1.0.1.jar'
 } else {
-    Join-Path $PSScriptRoot 'tools\gangs-teleport-purge-1.0.0.jar'
+    Join-Path $PSScriptRoot 'tools\gangs-teleport-purge-1.0.1.jar'
 }
 $recoveryTool = if ($isRepo) {
     Join-Path $repo 'artifacts\gangs-player-recovery-1.0.0.jar'

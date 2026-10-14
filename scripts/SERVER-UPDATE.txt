@@ -18,6 +18,9 @@ v1.1.8 (GoldClaim 1.0.36):
   the pinned pre-loss snapshot in the v1.1.7 policy backup. A marker
   prevents repeats. If it cannot run, the installer prints a WARNING with
   a rerun command and installs everything else.
+- The original-Nether Waystone purge reruns (tool 1.0.1). It removes 161
+  reappeared Nether Waystone entries and skips corrupt region header slots
+  the same way vanilla does, instead of aborting.
 v1.1.7 closed only minecraft:the_nether and minecraft:the_end.
 All saved /home, public home, warp and /back destinations into those worlds
 are purged while stopped. Their Waystones are removed from the registry and

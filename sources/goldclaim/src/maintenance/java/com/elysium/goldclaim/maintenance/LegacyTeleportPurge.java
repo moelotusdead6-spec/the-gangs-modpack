@@ -309,7 +309,10 @@ public final class LegacyTeleportPurge {
             int location = file.readInt();
             if (location != 0 && ((location >>> 8) < 2 || (location & 255) == 0
                     || ((long) (location >>> 8) + (location & 255)) * 4096 > file.length())) {
-                throw new IOException("Invalid region chunk location: " + region);
+                // Minecraft discards such a slot as having no saved chunk, so no physical block remains to clean up.
+                System.out.println("Ignoring invalid chunk slot " + slot + " in " + region
+                    + "; Minecraft treats it as an unsaved chunk.");
+                return false;
             }
             return location != 0;
         }
