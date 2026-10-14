@@ -74,6 +74,16 @@ public abstract class RswPlayerTravelMixin {
             return null;
         }
         GoldClaimMod.rememberRswLocation(player);
+        if (redirected != null
+                && GoldClaimMod.RSW_THE_END_DIMENSION.equals(player.getServerWorld().getRegistryKey().getValue().toString())
+                && GoldClaimMod.RSW_DIMENSION.equals(redirected.getRegistryKey().getValue().toString())) {
+            // Vanilla moveToWorld detaches the player before asking for a target, so resolve the exit first.
+            TeleportTarget exit = GoldClaimMod.rswEndExitTarget(player, redirected);
+            if (exit != null) {
+                player.teleport(redirected, exit.position.x, exit.position.y, exit.position.z, exit.yaw, exit.pitch);
+            }
+            return player;
+        }
         return original.call(redirected);
     }
 
@@ -117,8 +127,7 @@ public abstract class RswPlayerTravelMixin {
             BlockPos spawn = ServerWorld.END_SPAWN_POS;
             cir.setReturnValue(new TeleportTarget(new Vec3d(spawn.getX() + 0.5, spawn.getY() - 1.0, spawn.getZ() + 0.5), Vec3d.ZERO, 90.0f, 0.0f));
         } else if (GoldClaimMod.RSW_THE_END_DIMENSION.equals(currentDim) && GoldClaimMod.RSW_DIMENSION.equals(destDim)) {
-            BlockPos spawn = destination.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, destination.getSpawnPos());
-            cir.setReturnValue(new TeleportTarget(new Vec3d(spawn.getX() + 0.5, spawn.getY(), spawn.getZ() + 0.5), player.getVelocity(), player.getYaw(), player.getPitch()));
+            cir.setReturnValue(GoldClaimMod.rswEndExitTarget(player, destination));
         }
     }
 

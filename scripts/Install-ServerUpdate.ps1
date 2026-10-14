@@ -30,6 +30,11 @@ $purgeTool = if ($isRepo) {
 } else {
     Join-Path $PSScriptRoot 'tools\gangs-teleport-purge-1.0.0.jar'
 }
+$recoveryTool = if ($isRepo) {
+    Join-Path $repo 'artifacts\gangs-player-recovery-1.0.0.jar'
+} else {
+    Join-Path $PSScriptRoot 'tools\gangs-player-recovery-1.0.0.jar'
+}
 if (-not $JavaExecutable) {
     if ($env:JAVA_HOME -and (Test-Path -LiteralPath (Join-Path $env:JAVA_HOME 'bin\java.exe'))) {
         $JavaExecutable = Join-Path $env:JAVA_HOME 'bin\java.exe'
@@ -39,6 +44,7 @@ if (-not $JavaExecutable) {
 }
 if (-not (Test-Path -LiteralPath $JavaExecutable -PathType Leaf)) { throw 'A Java 17+ executable is required.' }
 if (-not (Test-Path -LiteralPath $purgeTool -PathType Leaf)) { throw 'Offline teleport purge tool is missing.' }
+if (-not (Test-Path -LiteralPath $recoveryTool -PathType Leaf)) { throw 'Offline player recovery tool is missing.' }
 & $JavaExecutable -jar $purgeTool --dry-run $game
 if ($LASTEXITCODE -ne 0) { throw 'Offline teleport purge preflight failed; update aborted.' }
 $releaseAdditions = @(
@@ -65,7 +71,7 @@ $propertiesPath = Join-Path $game 'server.properties'
 $corePath = Join-Path $game 'config\sophisticatedcore-common.toml'
 $startPath = Join-Path $game 'start.bat'
 foreach ($path in @($propertiesPath, $corePath, (Join-Path $game 'config\global_packs.toml'),
-        (Join-Path $modsDir 'goldclaim-1.0.35.jar'),
+        (Join-Path $modsDir 'goldclaim-1.0.36.jar'),
         (Join-Path $modsDir 'gangshop-1.0.9.jar'),
         (Join-Path $modsDir 'soulsbackpackscompat-1.1.0.jar'),
         (Join-Path $modsDir 'gangscosmetics-2.0.2.jar'),
@@ -111,7 +117,7 @@ if ($ResetRswEnd) {
     }
 }
 foreach ($line in [IO.File]::ReadAllLines((Join-Path $PSScriptRoot 'server-settings.properties'))) {
-    if ($line -notmatch '^(view-distance|simulation-distance|require-resource-pack)=(.+)$') {
+    if ($line -notmatch '^(view-distance|simulation-distance|require-resource-pack|difficulty)=(.+)$') {
         throw "Unsupported server policy setting: $line"
     }
     $pattern = '(?m)^' + [regex]::Escape($Matches[1]) + '[ \t]*=[^\r\n]*'
@@ -132,10 +138,21 @@ if (Test-Path -LiteralPath $backupRoot) {
         Remove-Item -LiteralPath $old.FullName -Recurse -Force
     }
 }
-$backup = Join-Path $game ('backups\policy-v1.1.7-' + (Get-Date -Format 'yyyyMMdd-HHmmss-ffff'))
+$backup = Join-Path $game ('backups\policy-v1.1.8-' + (Get-Date -Format 'yyyyMMdd-HHmmss-ffff'))
 New-Item -ItemType Directory -Path $backup | Out-Null
 & $JavaExecutable -jar $purgeTool --apply $game $backup
 if ($LASTEXITCODE -ne 0) { throw "Offline teleport purge failed. Protected originals are in $backup; do not start the server." }
+$previousPreference = $ErrorActionPreference
+$ErrorActionPreference = 'Continue'
+& $JavaExecutable -jar $recoveryTool --apply $game $backup 2>&1 | ForEach-Object { "$_" }
+$recoveryExit = $LASTEXITCODE
+$ErrorActionPreference = $previousPreference
+$recoveryWarning = $null
+if ($recoveryExit -ne 0) {
+    $recoveryWarning = "WARNING: Kunoisback item recovery did not complete (exit $recoveryExit). Nothing was changed for that player; " +
+        "the rest of the update is installed. Rerun with the server stopped: java -jar `"$recoveryTool`" --apply `"$game`" `"$backup`""
+    Write-Warning $recoveryWarning
+}
 function Backup-File([string]$Path) {
     if (Test-Path -LiteralPath $Path -PathType Leaf) {
         $relative = $Path.Substring($game.Length).TrimStart('\')
@@ -149,7 +166,7 @@ foreach ($path in @($propertiesPath, $corePath, $startPath, (Join-Path $game 'co
 }
 if (Test-Path -LiteralPath $startPath) {
     $start = [IO.File]::ReadAllText($startPath)
-    $start = [regex]::Replace($start, 'goldclaim-\d+\.\d+\.\d+\.jar', 'goldclaim-1.0.35.jar')
+    $start = [regex]::Replace($start, 'goldclaim-\d+\.\d+\.\d+\.jar', 'goldclaim-1.0.36.jar')
     $start = [regex]::Replace($start, 'gangscosmetics-\d+\.\d+\.\d+\.jar', 'gangscosmetics-2.0.2.jar')
     $start = [regex]::Replace($start, 'gangshop-\d+\.\d+\.\d+\.jar', 'gangshop-1.0.9.jar')
     [IO.File]::WriteAllText($startPath, $start, $utf8)
@@ -168,7 +185,7 @@ if ($ResetRswEnd) {
         Write-Output 'Deleted only RSW End without a backup; it will regenerate on next start.'
     }
 }
-Copy-Item -LiteralPath (Join-Path $modsDir 'goldclaim-1.0.35.jar') -Destination $mods
+Copy-Item -LiteralPath (Join-Path $modsDir 'goldclaim-1.0.36.jar') -Destination $mods
 Copy-Item -LiteralPath (Join-Path $modsDir 'gangshop-1.0.9.jar') -Destination $mods
 Copy-Item -LiteralPath (Join-Path $modsDir 'soulsbackpackscompat-1.1.0.jar') -Destination $mods
 Copy-Item -LiteralPath (Join-Path $modsDir 'gangscosmetics-2.0.2.jar') -Destination $mods
@@ -257,10 +274,28 @@ if ([regex]::IsMatch($lithium, $pattern)) {
 }
 Backup-File $lithiumPath
 [IO.File]::WriteAllText($lithiumPath, $lithium, $utf8)
+$multiworldWorlds = Join-Path $game 'config\multiworld\worlds'
+if (Test-Path -LiteralPath $multiworldWorlds -PathType Container) {
+    foreach ($yml in Get-ChildItem -LiteralPath $multiworldWorlds -Recurse -File -Filter '*.yml') {
+        $text = [IO.File]::ReadAllText($yml.FullName)
+        $pattern = '(?m)^difficulty:[^\r\n]*'
+        if ([regex]::Matches($text, $pattern).Count -gt 1) { throw "Duplicate Multiworld difficulty in $($yml.FullName)" }
+        if ([regex]::IsMatch($text, $pattern)) {
+            $updatedYml = [regex]::Replace($text, $pattern, 'difficulty: HARD')
+        } else {
+            $newline = if ($text.Contains("`r`n")) { "`r`n" } else { "`n" }
+            $updatedYml = $text.TrimEnd("`r", "`n") + $newline + 'difficulty: HARD' + $newline
+        }
+        if ($updatedYml -ne $text) {
+            Backup-File $yml.FullName
+            [IO.File]::WriteAllText($yml.FullName, $updatedYml, $utf8)
+        }
+    }
+}
 & (Join-Path $PSScriptRoot 'Prune-ServerBackups.ps1') -GameDirectory $game
 & (Join-Path $PSScriptRoot 'Install-ResourcePackDefaults.ps1') -Target Server -GameDirectory $game
-if ((Get-FileHash (Join-Path $mods 'goldclaim-1.0.35.jar')).Hash -ne
-        (Get-FileHash (Join-Path $modsDir 'goldclaim-1.0.35.jar')).Hash) {
+if ((Get-FileHash (Join-Path $mods 'goldclaim-1.0.36.jar')).Hash -ne
+        (Get-FileHash (Join-Path $modsDir 'goldclaim-1.0.36.jar')).Hash) {
     throw 'Installed GoldClaim hash does not match the supplied update.'
 }
 if ((Get-FileHash (Join-Path $mods 'soulsbackpackscompat-1.1.0.jar')).Hash -ne
@@ -280,7 +315,10 @@ if (@(Get-ChildItem -LiteralPath $mods -File | Where-Object {
 }).Count) { throw 'Old Gang Shop jars remain installed.' }
 if (@(Get-ChildItem -LiteralPath $mods -File | Where-Object {
         $_.Name -match '^(NaturesCompass-.*\.jar|ExplorersCompass-.*\.jar|goldclaim-.*\.jar(?:\.pending)?|soulsbackpackscompat-.*\.jar(?:\.pending)?|gangshats-.*\.jar(?:\.pending)?|gangscosmetics-.*\.jar(?:\.pending)?|jei-.*\.jar|YungsBetterEndIsland-.*\.jar|grimac-.*\.jar(?:\.pending)?)$' -and
-                $_.Name -notin @('goldclaim-1.0.35.jar', 'soulsbackpackscompat-1.1.0.jar', 'gangscosmetics-2.0.2.jar')
+                $_.Name -notin @('goldclaim-1.0.36.jar', 'soulsbackpackscompat-1.1.0.jar', 'gangscosmetics-2.0.2.jar')
         }).Count) { throw 'Old or removed mod jars remain installed.' }
 Write-Output "Server policy update installed. Backup: $backup"
+Write-Output 'GoldClaim 1.0.36: RSW End portals now return players to their RSW spawn point or safe RSW ground near 0,0; every world runs on HARD and /difficulty applies server-wide (saved to server.properties).'
+if ($recoveryWarning) { Write-Warning $recoveryWarning }
+Write-Output 'GrimAC and its bundled PacketEvents removed; GrimAC cheat checks are disabled. BetterEnd, Lootr, GoldClaim protections, compatibility settings and backup limits remain. Active worlds, player data and the RSW journal were preserved unless an End reset was explicitly requested. Server remains stopped; start it yourself when ready.'
 Write-Output 'GrimAC and its bundled PacketEvents removed; GrimAC cheat checks are disabled. BetterEnd, Lootr, GoldClaim protections, compatibility settings and backup limits remain. Active worlds, player data and the RSW journal were preserved unless an End reset was explicitly requested. Server remains stopped; start it yourself when ready.'

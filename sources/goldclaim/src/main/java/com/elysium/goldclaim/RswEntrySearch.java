@@ -75,6 +75,25 @@ final class RswEntrySearch {
         return entry.landing != null || this.pending.containsKey(player.getUuid()) ? 1 : 0;
     }
 
+    boolean isPending(UUID player) {
+        return this.pending.containsKey(player);
+    }
+
+    /** Queues a search that only advances from tick(), so callers inside travel code never teleport re-entrantly. */
+    boolean requestDeferred(ServerCommandSource source, ServerPlayerEntity player, ServerWorld world, int radius) {
+        if (this.pending.containsKey(player.getUuid())) return false;
+        Entry entry;
+        try {
+            entry = new Entry(source, player, world, this.resets.generation(), radius);
+        } catch (IllegalArgumentException invalidConfiguration) {
+            LoggerFactory.getLogger("GoldClaim/RSW").error("Invalid entry search configuration", invalidConfiguration);
+            return false;
+        }
+        this.pending.put(player.getUuid(), entry);
+        source.sendFeedback(() -> Text.literal("[RSW] No valid RSW spawn point; finding safe RSW ground near 0,0."), false);
+        return true;
+    }
+
     void tick() {
         Iterator<Entry> iterator = this.pending.values().iterator();
         while (iterator.hasNext()) {

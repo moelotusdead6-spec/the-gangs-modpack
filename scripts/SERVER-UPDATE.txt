@@ -1,6 +1,24 @@
-The Gangs Modpack v1.1.7 - server update
+The Gangs Modpack v1.1.8 - server update
 
-v1.1.7 closes only minecraft:the_nether and minecraft:the_end.
+v1.1.8 (GoldClaim 1.0.36):
+- RSW End exit portals (the main-island pedestal after the dragon and End
+  portals inside modded structures) no longer drop players into or under the
+  Overworld bedrock. They send the player to their valid RSW spawn point, or
+  to safe RSW ground found near 0,0. If RSW is closed the player stays in
+  the End.
+- Every world (Wild, original Nether/End, hub, PvP and all RSW worlds) runs
+  on HARD. server.properties is set to difficulty=hard and every
+  config\multiworld\worlds\**\*.yml gets difficulty: HARD (backed up first).
+  /difficulty now applies to every loaded world immediately and is saved to
+  server.properties. Per-world /mw difficulty values are overridden within
+  about one second.
+- One-time offline recovery of Kunoisback's lost items: 28 stacks are
+  delivered in two named shulker boxes ("Kunoisback recovery 1/2" and
+  "2/2") in his Ender Chest, falling back to his inventory. The source is
+  the pinned pre-loss snapshot in the v1.1.7 policy backup. A marker
+  prevents repeats. If it cannot run, the installer prints a WARNING with
+  a rerun command and installs everything else.
+v1.1.7 closed only minecraft:the_nether and minecraft:the_end.
 All saved /home, public home, warp and /back destinations into those worlds
 are purged while stopped. Their Waystones are removed from the registry and
 all offline player activation lists (.dat and .dat_old). A restart-safe
@@ -16,7 +34,7 @@ STOP THE SERVER and keep a world backup before applying this update.
 Run PowerShell:
   powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Install-ServerUpdate.ps1 -GameDirectory "C:\path\to\server"
 
-The installer requires Java 17+ and installs GoldClaim 1.0.35.
+The installer requires Java 17+ and installs GoldClaim 1.0.36.
 If Java is not on PATH, add -JavaExecutable "C:\path\to\java.exe".
 It backs up touched files, purges original Nether/End teleport destinations,
 removes YUNG's Better End Island and routes the retained True Ending

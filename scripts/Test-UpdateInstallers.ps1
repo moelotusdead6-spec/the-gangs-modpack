@@ -145,7 +145,6 @@ foreach ($stamp in @('20261001-120000-0000', '20261002-120000-0000', '20261003-1
 }
 $hashes = @{}
 foreach ($relative in @('world\level.dat', 'world\playerdata\fixture.dat', 'config\goldclaim\claims.json',
-        'config\multiworld\worlds\multiworld\rsw.yml',
         'config\personal-server-mod.json')) {
     $path = Join-Path $server $relative
     Write-Fixture $path 'untouched-fixture'
@@ -165,14 +164,23 @@ foreach ($stamp in @('20261001-120000', '20261002-120000', '20261003-120000')) {
     Write-Fixture (Join-Path $server "backups\personal-boots-rsw-$stamp\fixture.txt") 'old-other-backup'
 }
 foreach ($relative in @('config\gangshop\prices.json', 'config\gangshop\category_settings.json',
-        'world\data\gangbucks_wallets.dat', 'world\data\waystones.dat', 'world\playerdata\offline.dat')) {
+        'world\data\gangbucks_wallets.dat', 'world\data\waystones.dat', 'world\playerdata\offline.dat',
+        'world\playerdata\07337021-ea67-4593-b127-73f4261b1134.dat')) {
     $path = Join-Path $server $relative
     Write-Fixture $path 'preserve-shop-and-waystone-data-before-startup'
     $hashes[$path] = (Get-FileHash -LiteralPath $path).Hash
 }
-& (Join-Path $root 'server-update\Install-ServerUpdate.ps1') -GameDirectory $server -ResetRswEnd
+Write-Fixture (Join-Path $server 'config\multiworld\worlds\minecraft\overworld.yml') "environment: NORMAL`r`ndifficulty: EASY`r`nseed: 0`r`n"
+Write-Fixture (Join-Path $server 'config\multiworld\worlds\multiworld\rsw.yml') "namespace: multiworld`npath: rsw`nenvironment: NORMAL`nseed: 42`n"
+Write-Fixture (Join-Path $server 'config\multiworld\portals.yml') "portals:`n"
+$portalsHash = (Get-FileHash (Join-Path $server 'config\multiworld\portals.yml')).Hash
+$installOutput = @(& (Join-Path $root 'server-update\Install-ServerUpdate.ps1') -GameDirectory $server -ResetRswEnd 3>&1 | ForEach-Object { "$_" })
+$installOutput | Write-Output
+Require (@($installOutput | Where-Object { $_ -match 'Pinned pre-loss snapshot for Kunoisback was not found' }).Count -eq 1) 'Recovery tool did not run or report the missing source.'
+Require (@($installOutput | Where-Object { $_ -match 'Kunoisback item recovery did not complete \(exit 3\)' }).Count -ge 1) 'Missing recovery source must warn without aborting.'
+Require (-not (Test-Path -LiteralPath (Join-Path $server 'world\goldclaim-recovery'))) 'Recovery marker written without a recovery.'
 Assert-Preserved $hashes
-Require (Test-Path -LiteralPath (Join-Path $server 'mods\goldclaim-1.0.35.jar')) 'New GoldClaim is missing.'
+Require (Test-Path -LiteralPath (Join-Path $server 'mods\goldclaim-1.0.36.jar')) 'New GoldClaim is missing.'
 Require (-not (Test-Path -LiteralPath (Join-Path $server 'mods\goldclaim-1.0.31.jar'))) 'Old GoldClaim remains.'
 Require (-not (Test-Path -LiteralPath (Join-Path $server 'mods\gangshop-1.0.8.jar'))) 'Old Gang Shop remains.'
 Require (-not (Test-Path -LiteralPath (Join-Path $server 'mods\YungsBetterEndIsland-1.20-Fabric-2.0.6.jar'))) 'Better End Island remains.'
@@ -193,6 +201,10 @@ Require ([IO.File]::ReadAllText((Join-Path $server 'config\lithium.properties'))
 $properties = [IO.File]::ReadAllText((Join-Path $server 'server.properties'))
 Require ($properties -match 'server-port=25588' -and $properties -match 'motd=Keep me') 'Unrelated server properties changed.'
 Require ($properties -match 'view-distance=6' -and $properties -match 'simulation-distance=6') 'Server policy was not applied.'
+Require ($properties -match '(?m)^difficulty=hard\r?$' -and ([regex]::Matches($properties, '(?m)^difficulty=')).Count -eq 1) 'Server difficulty was not set to hard.'
+Require ([IO.File]::ReadAllText((Join-Path $server 'config\multiworld\worlds\minecraft\overworld.yml')) -ceq "environment: NORMAL`r`ndifficulty: HARD`r`nseed: 0`r`n") 'Overworld Multiworld difficulty was not set to HARD.'
+Require ([IO.File]::ReadAllText((Join-Path $server 'config\multiworld\worlds\multiworld\rsw.yml')) -ceq "namespace: multiworld`npath: rsw`nenvironment: NORMAL`nseed: 42`ndifficulty: HARD`n") 'RSW Multiworld difficulty was not set to HARD.'
+Require ((Get-FileHash (Join-Path $server 'config\multiworld\portals.yml')).Hash -eq $portalsHash) 'Non-world Multiworld config changed.'
 foreach ($file in Get-ChildItem -LiteralPath (Join-Path $root 'server-update\mods') -Filter '*.jar' |
         Where-Object { $_.Name -match '^(supplementaries-|suppsquared-|EnderZoology-|better-cities-|better-end-|bclib-|mcw-|elytraslot-|gangshop-|goldclaim-)' }) {
     Require ((Get-FileHash (Join-Path $server ('mods\' + $file.Name))).Hash -eq

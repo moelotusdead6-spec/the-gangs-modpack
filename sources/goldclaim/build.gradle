@@ -69,6 +69,16 @@ tasks.register('legacyTeleportPurgeJar', Jar) {
 	exclude 'META-INF/*.SF', 'META-INF/*.RSA', 'META-INF/*.DSA', 'module-info.class'
 }
 
+tasks.register('playerRecoveryJar', Jar) {
+	archiveBaseName = 'gangs-player-recovery'
+	archiveVersion = '1.0.0'
+	manifest { attributes 'Main-Class': 'com.elysium.goldclaim.maintenance.PlayerRecovery' }
+	from sourceSets.maintenance.output
+	from { configurations.maintenanceRuntimeClasspath.collect { zipTree(it) } }
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+	exclude 'META-INF/*.SF', 'META-INF/*.RSA', 'META-INF/*.DSA', 'module-info.class'
+}
+
 loom {
 	mods {
 		goldclaim { sourceSet sourceSets.main }

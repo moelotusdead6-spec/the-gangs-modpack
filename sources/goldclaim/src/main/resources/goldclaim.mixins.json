@@ -24,7 +24,8 @@
     "FireBlockMixin",
     "AbstractFireBlockMixin",
     "NetherPortalBlockMixin",
-    "EndPortalBlockMixin"
+    "EndPortalBlockMixin",
+    "MinecraftServerDifficultyMixin"
   ],
   "injectors": {
     "defaultRequire": 1

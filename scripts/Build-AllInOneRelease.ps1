@@ -71,9 +71,11 @@ try {
     Copy-Entry 'docs/updates/v1.1.5.md' (Join-Path $repo 'docs\updates\v1.1.5.md')
     Copy-Entry 'docs/updates/v1.1.6.md' (Join-Path $repo 'docs\updates\v1.1.6.md')
     Copy-Entry 'docs/updates/v1.1.7.md' (Join-Path $repo 'docs\updates\v1.1.7.md')
+    Copy-Entry 'docs/updates/v1.1.8.md' (Join-Path $repo 'docs\updates\v1.1.8.md')
     Copy-Entry 'server-update/README.txt' (Join-Path $PSScriptRoot 'SERVER-UPDATE.txt')
-    Copy-Entry 'server-update/mods/goldclaim-1.0.35.jar' (Join-Path $repo 'artifacts\goldclaim-1.0.35.jar')
+    Copy-Entry 'server-update/mods/goldclaim-1.0.36.jar' (Join-Path $repo 'artifacts\goldclaim-1.0.36.jar')
     Copy-Entry 'server-update/tools/gangs-teleport-purge-1.0.0.jar' (Join-Path $repo 'artifacts\gangs-teleport-purge-1.0.0.jar')
+    Copy-Entry 'server-update/tools/gangs-player-recovery-1.0.0.jar' (Join-Path $repo 'artifacts\gangs-player-recovery-1.0.0.jar')
     Copy-Entry 'server-update/mods/gangshop-1.0.9.jar' (Join-Path $repo 'artifacts\gangshop-1.0.9.jar')
     $newPackMods = @(
         'EndsPhantasm-1.20.1-1.4.jar',
@@ -134,7 +136,7 @@ try {
         }
     }
     $instance = Read-Entry 'instance.cfg'
-    $instance = [regex]::Replace($instance, '(?m)^name=[^\r\n]*', 'name=The Gangs Modpack v1.1.7')
+    $instance = [regex]::Replace($instance, '(?m)^name=[^\r\n]*', 'name=The Gangs Modpack v1.1.8')
     $instance = Get-PrismAutoUpdateConfig $instance
     Write-Entry 'instance.cfg' ($utf8.GetBytes($instance))
     $options = [IO.File]::ReadAllText((Join-Path $repo 'config\defaultoptions\options.txt'))
@@ -161,7 +163,7 @@ try {
         throw 'Removed mod remains in the ZIP.'
     }
     $goldclaim = @($zip.Entries | Where-Object { $_.FullName -match '^server-update/mods/goldclaim-.*\.jar$' })
-    if ($goldclaim.Count -ne 1 -or $goldclaim[0].Name -ne 'goldclaim-1.0.35.jar') {
+    if ($goldclaim.Count -ne 1 -or $goldclaim[0].Name -ne 'goldclaim-1.0.36.jar') {
         throw 'Wrong or duplicate GoldClaim server-update jar.'
     }
     foreach ($name in @('server-update/mods/soulsbackpackscompat-1.1.0.jar',
@@ -225,7 +227,7 @@ try {
     $stream = $goldclaim[0].Open()
     try { $actual = [BitConverter]::ToString($hash.ComputeHash($stream)).Replace('-', '') }
     finally { $stream.Dispose(); $hash.Dispose() }
-    if ($actual -ne (Get-FileHash (Join-Path $repo 'artifacts\goldclaim-1.0.35.jar') -Algorithm SHA256).Hash) {
+    if ($actual -ne (Get-FileHash (Join-Path $repo 'artifacts\goldclaim-1.0.36.jar') -Algorithm SHA256).Hash) {
         throw 'Packaged GoldClaim does not match the built artifact.'
     }
     $utility = $zip.GetEntry('server-update/tools/gangs-teleport-purge-1.0.0.jar')
@@ -237,9 +239,19 @@ try {
     if ($actual -ne (Get-FileHash (Join-Path $repo 'artifacts\gangs-teleport-purge-1.0.0.jar') -Algorithm SHA256).Hash) {
         throw 'Packaged teleport cleanup tool does not match the built artifact.'
     }
+    $recovery = $zip.GetEntry('server-update/tools/gangs-player-recovery-1.0.0.jar')
+    if (-not $recovery) { throw 'Offline player recovery tool is missing.' }
+    $hash = [Security.Cryptography.SHA256]::Create()
+    $stream = $recovery.Open()
+    try { $actual = [BitConverter]::ToString($hash.ComputeHash($stream)).Replace('-', '') }
+    finally { $stream.Dispose(); $hash.Dispose() }
+    if ($actual -ne (Get-FileHash (Join-Path $repo 'artifacts\gangs-player-recovery-1.0.0.jar') -Algorithm SHA256).Hash) {
+        throw 'Packaged player recovery tool does not match the built artifact.'
+    }
     if (@($zip.Entries | Where-Object {
-        $_.FullName -match '^(minecraft|client-update)/.*gangs-teleport-purge'
-    }).Count) { throw 'Offline server cleanup tool must never ship on the client.' }
+        $_.FullName -match '^(minecraft|client-update)/.*(gangs-teleport-purge|gangs-player-recovery)' -or
+        $_.FullName -match '^config/.*gangs-player-recovery'
+    }).Count) { throw 'Offline server maintenance tools must never ship on the client.' }
     foreach ($mod in $newPackMods) {
         $metadata = @(Get-ChildItem -LiteralPath (Join-Path $repo 'mods') -Filter '*.pw.toml' |
             Where-Object { [IO.File]::ReadAllText($_.FullName).Contains('filename = "' + $mod + '"') })

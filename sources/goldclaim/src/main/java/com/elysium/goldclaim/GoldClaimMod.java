@@ -846,6 +846,9 @@ implements ModInitializer {
                     }
                 });
             this.rswEntrySearch.tick();
+            if (server.getTicks() % 20 == 0) {
+                DifficultySync.sync(server);
+            }
             boolean runPlayerMaintenance = false;
             if (++this.playerMaintenanceTicks >= 20) {
                 this.playerMaintenanceTicks = 0;
@@ -1044,7 +1047,7 @@ implements ModInitializer {
                 dimTypeId = new Identifier("minecraft", "overworld");
             }
             ServerWorld world = (ServerWorld)this.invokeStatic(multiworldClass, "create_world", dimensionId,
-                dimTypeId, generator, net.minecraft.world.Difficulty.NORMAL, seed);
+                dimTypeId, generator, server.getSaveProperties().getDifficulty(), seed);
             this.invokeStatic(createCommandClass, "make_config", world, generatorName, seed,
                 "VOID".equals(generatorName) ? generatorName : null);
         }
@@ -2185,6 +2188,43 @@ implements ModInitializer {
             return 1;
         }
         return this.rswEntrySearch.request(source, player, world, this.config.rswEntrySearchRadius);
+    }
+
+    /**
+     * Destination for any RSW End to RSW Overworld travel (exit portal, structure portals, mod items).
+     * Uses the player's valid RSW spawn point, otherwise schedules the safe-ground search near RSW 0,0.
+     * Returns null to keep the player in the End until a safe destination is ready.
+     */
+    public static net.minecraft.world.TeleportTarget rswEndExitTarget(ServerPlayerEntity player, ServerWorld rsw) {
+        if (INSTANCE == null) return null;
+        return INSTANCE.endExitTarget(player, rsw);
+    }
+
+    private net.minecraft.world.TeleportTarget endExitTarget(ServerPlayerEntity player, ServerWorld rsw) {
+        if (this.rswResetService.isClosed()) {
+            this.endExitMessage(player, "RSW is resetting or awaiting recovery and is temporarily closed.");
+            return null;
+        }
+        Vec3d spawn = RswEndExit.validSpawn(player, rsw);
+        if (spawn != null) {
+            this.loadDestinationArea(rsw, spawn.x, spawn.z);
+            return new net.minecraft.world.TeleportTarget(spawn, Vec3d.ZERO, player.getSpawnAngle(), 0.0f);
+        }
+        if (!this.rswEntrySearch.isPending(player.getUuid())) {
+            this.rswEntrySearch.requestDeferred(player.getCommandSource(), player, rsw, this.config.rswEntrySearchRadius);
+        }
+        return null;
+    }
+
+    private final Map<java.util.UUID, Long> endExitMessages = new HashMap<>();
+
+    private void endExitMessage(ServerPlayerEntity player, String message) {
+        long now = System.currentTimeMillis();
+        Long last = this.endExitMessages.get(player.getUuid());
+        if (last == null || now - last >= 5000L) {
+            this.endExitMessages.put(player.getUuid(), now);
+            player.sendMessage(Text.literal("[RSW] " + message), false);
+        }
     }
 
     private void completeRswEntry(RswEntrySearch.Entry entry) {

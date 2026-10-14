@@ -3,7 +3,7 @@
 ## Keep one Prism instance
 
 Keep the same Prism instance and press Play for normal client pack updates.
-New v1.1.7 imports have automatic client-only Packwiz updates enabled.
+New v1.1.8 imports have automatic client-only Packwiz updates enabled.
 The public ZIP is for new installations, not a replacement instance for
 every release.
 
@@ -97,3 +97,11 @@ players' activated lists. GoldClaim blocks entry there through teleport APIs
 and commands without an operator bypass; stranded players are sent to the hub.
 Wild Overworld and all RSW worlds remain available. No world reset or
 Sharestone-specific ban is introduced. See [v1.1.7 details](v1.1.7.md).
+
+v1.1.8 (GoldClaim 1.0.36) fixes RSW End exit portals, including the
+post-dragon pedestal and portals in modded structures, which dropped players
+into or under the Overworld bedrock. They now go to the player's RSW spawn
+point or to safe RSW ground near 0,0. Every world runs on HARD, and
+`/difficulty` applies to all worlds and is saved to `server.properties`.
+The stopped-server installer also restores Kunoisback's lost items once.
+The client update is metadata-only. See [v1.1.8 details](v1.1.8.md).
