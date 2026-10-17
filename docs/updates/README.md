@@ -3,7 +3,7 @@
 ## Keep one Prism instance
 
 Keep the same Prism instance and press Play for normal client pack updates.
-New v1.1.10 imports have automatic client-only Packwiz updates enabled.
+New v1.1.11 imports have automatic client-only Packwiz updates enabled.
 The public ZIP is for new installations, not a replacement instance for
 every release.
 
@@ -119,3 +119,10 @@ They now open as personal Lootr chests even when a duplicate legacy data pack
 hides the Lootr conversion tag. Clients receive no file changes. Stage the
 server jar for the next normal restart; publishing does not deploy it.
 See [v1.1.10 details and validation](v1.1.10.md).
+
+v1.1.11 (GoldClaim 1.0.42 + GoldClaim Map 1.0.0) draws every claim as a soft
+gold outline on JourneyMap's full-screen map, never the minimap. Hovering
+shows the owner's name. Clients receive one new client-only mod automatically
+when they press Play. Stage the server jar for the next normal restart;
+publishing does not deploy it.
+See [v1.1.11 details and validation](v1.1.11.md).

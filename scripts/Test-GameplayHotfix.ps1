@@ -18,8 +18,8 @@ function Fixture([string]$Name, [string]$PreviousVersion) {
     [IO.File]::WriteAllText((Join-Path $game 'config\paxi\datapacks\gangs_kits\data\gangs\loot_tables\kits\monthly.json'), 'old table')
     $existingHook = if ($PreviousVersion -eq '1.0.39') {
         "powershell -NoProfile -ExecutionPolicy Bypass -File `"%~dp0Install-PendingGameplayHotfix.ps1`" -GameDirectory `"%~dp0.`"`r`nif errorlevel 1 exit /b 1`r`n"
-    } elseif ($PreviousVersion -eq '1.0.40') {
-        "powershell -NoProfile -ExecutionPolicy Bypass -File `"%~dp0Install-PendingGameplayHotfix.ps1`" -GameDirectory `"%~dp0.`" -Version 1.0.40`r`nif errorlevel 1 exit /b 1`r`n"
+    } elseif ($PreviousVersion -in @('1.0.40', '1.0.41')) {
+        "powershell -NoProfile -ExecutionPolicy Bypass -File `"%~dp0Install-PendingGameplayHotfix.ps1`" -GameDirectory `"%~dp0.`" -Version $PreviousVersion`r`nif errorlevel 1 exit /b 1`r`n"
     } else { '' }
     $hash = (Get-FileHash -LiteralPath $jar -Algorithm SHA256).Hash
     $launcher = "@echo off`r`ngoto :gangs_launcher`r`nrem " + ('-' * 4000) + "`r`n:gangs_launcher`r`n" +
@@ -39,8 +39,8 @@ function Expect-Rejection([string]$Game, [string]$Version, [string]$PreviousVers
 }
 
 try {
-    foreach ($version in @('1.0.39', '1.0.40', '1.0.41')) {
-        $previousVersion = switch ($version) { '1.0.41' { '1.0.40' } '1.0.40' { '1.0.39' } default { '1.0.38' } }
+    foreach ($version in @('1.0.39', '1.0.40', '1.0.41', '1.0.42')) {
+        $previousVersion = switch ($version) { '1.0.42' { '1.0.41' } '1.0.41' { '1.0.40' } '1.0.40' { '1.0.39' } default { '1.0.38' } }
         $game = Fixture "success-$version" $previousVersion
         $original = [IO.File]::ReadAllText((Join-Path $game 'start.bat'))
         & (Join-Path $PSScriptRoot 'Stage-GameplayHotfix.ps1') -GameDirectory $game -Version $version

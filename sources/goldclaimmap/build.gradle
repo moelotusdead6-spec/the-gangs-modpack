@@ -1,0 +1,76 @@
+import java.security.MessageDigest
+import java.util.jar.JarInputStream
+import java.util.jar.JarOutputStream
+import java.util.zip.ZipFile
+
+plugins {
+	id 'fabric-loom' version '1.10-SNAPSHOT'
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+	archivesName = project.archives_base_name
+}
+
+repositories {
+	mavenCentral()
+}
+
+// JourneyMap publishes no 1.20.1 API artifact, and the API jar nested in the
+// mod declares a newer Loom than this project uses. Extract it from the
+// hash-verified mod jar without its manifest so Loom accepts it as compile-only.
+def journeyMapApi = file("${gradle.gradleUserHomeDir}/caches/goldclaimmap/journeymap-api-${project.journeymap_sha512.take(16)}.jar")
+if (!journeyMapApi.exists()) {
+	journeyMapApi.parentFile.mkdirs()
+	def modJar = new File(journeyMapApi.parentFile, 'journeymap.jar.tmp')
+	new URL(project.journeymap_url).withInputStream { input -> modJar.withOutputStream { it << input } }
+	def digest = MessageDigest.getInstance('SHA-512').digest(modJar.bytes).encodeHex().toString()
+	if (digest != project.journeymap_sha512) {
+		modJar.delete()
+		throw new GradleException("JourneyMap download hash mismatch: ${digest}")
+	}
+	def partial = new File(journeyMapApi.parentFile, journeyMapApi.name + '.tmp')
+	new ZipFile(modJar).withCloseable { zip ->
+		def entry = zip.getEntry(project.journeymap_api_entry)
+		if (entry == null) {
+			throw new GradleException("${project.journeymap_api_entry} not found in JourneyMap jar")
+		}
+		new JarInputStream(zip.getInputStream(entry)).withCloseable { input ->
+			new JarOutputStream(partial.newOutputStream()).withCloseable { output ->
+				for (def next = input.nextJarEntry; next != null; next = input.nextJarEntry) {
+					output.putNextEntry(new java.util.zip.ZipEntry(next.name))
+					output << input
+					output.closeEntry()
+				}
+			}
+		}
+	}
+	modJar.delete()
+	partial.renameTo(journeyMapApi)
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+	modCompileOnly files(journeyMapApi)
+}
+
+processResources {
+	inputs.property 'version', project.version
+	filesMatching('fabric.mod.json') {
+		expand 'version': project.version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 17
+}
+
+java {
+	sourceCompatibility = JavaVersion.VERSION_17
+	targetCompatibility = JavaVersion.VERSION_17
+}

@@ -1,13 +1,13 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $true)][string]$GameDirectory,
-    [ValidateSet('1.0.39', '1.0.40', '1.0.41')][string]$Version = '1.0.39'
+    [ValidateSet('1.0.39', '1.0.40', '1.0.41', '1.0.42')][string]$Version = '1.0.39'
 )
 
 $ErrorActionPreference = 'Stop'
 $game = (Resolve-Path -LiteralPath $GameDirectory).Path
 $repo = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
-$previousVersion = switch ($Version) { '1.0.41' { '1.0.40' } '1.0.40' { '1.0.39' } default { '1.0.38' } }
+$previousVersion = switch ($Version) { '1.0.42' { '1.0.41' } '1.0.41' { '1.0.40' } '1.0.40' { '1.0.39' } default { '1.0.38' } }
 $jar = Join-Path $repo "artifacts\goldclaim-$Version.jar"
 $table = Join-Path $repo 'config\paxi\datapacks\gangs_kits\data\gangs\loot_tables\kits\monthly.json'
 $collections = Join-Path $repo 'config\randomcollections\config.json'

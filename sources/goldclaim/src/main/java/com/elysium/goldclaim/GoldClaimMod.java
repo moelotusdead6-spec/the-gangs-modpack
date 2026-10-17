@@ -309,6 +309,7 @@ implements ModInitializer {
         this.config = GoldClaimConfig.load();
         Path claimsPath = Path.of("config", "goldclaim", "claims.json");
         this.claimManager = new ClaimManager(claimsPath, this.config);
+        new ClaimMapSync(this.claimManager).register();
         this.selectionManager = new SelectionManager();
         this.portalRegistry = new ClaimPortalRegistry(Path.of("config", "goldclaim", "claim-portals.json"), this.config);
         this.loadLastWildLocations();

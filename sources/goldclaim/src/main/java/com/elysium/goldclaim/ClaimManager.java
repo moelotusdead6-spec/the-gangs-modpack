@@ -42,6 +42,7 @@ public class ClaimManager {
     private final Path claimsPath;
     private final GoldClaimConfig config;
     private final List<Claim> claims = new ArrayList<Claim>();
+    private Runnable changeListener = () -> {};
 
     public ClaimManager(Path claimsPath, GoldClaimConfig config) {
         this.claimsPath = claimsPath;
@@ -134,6 +135,14 @@ public class ClaimManager {
         claim.maxZ = newMaxZ;
         this.save();
         return ExpandResult.ok(claim);
+    }
+
+    public synchronized List<Claim> getAllClaims() {
+        return new ArrayList<Claim>(this.claims);
+    }
+
+    public synchronized void setChangeListener(Runnable listener) {
+        this.changeListener = listener;
     }
 
     public synchronized Optional<Claim> getClaimAt(String dimension, int x, int z) {
@@ -380,6 +389,7 @@ public class ClaimManager {
         catch (IOException iOException) {
             // empty catch block
         }
+        this.changeListener.run();
     }
 
     /*

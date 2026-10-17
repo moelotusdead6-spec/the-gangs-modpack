@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "goldclaimmap",
+  "version": "${version}",
+  "name": "GoldClaim Map",
+  "description": "Draws GoldClaim claim borders on JourneyMap's full-screen map.",
+  "authors": [
+    "Elysium Days"
+  ],
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.elysium.goldclaimmap.GoldClaimMapClient"
+    ],
+    "journeymap": [
+      "com.elysium.goldclaimmap.GoldClaimJourneyMapPlugin"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.15.11",
+    "minecraft": "1.20.1",
+    "fabric-api": "*",
+    "journeymap": "*"
+  }
+}

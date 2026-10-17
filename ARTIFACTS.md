@@ -1,5 +1,26 @@
 # Published Artifacts
 
+## GoldClaim 1.0.42 and GoldClaim Map 1.0.0 - pack v1.1.11
+
+Packwiz's server-only GoldClaim entry and the v1.1.11 stopped-server payload
+both select `artifacts/goldclaim-1.0.42.jar`. The new client-only Packwiz entry
+`mods/goldclaimmap-direct.pw.toml` selects `artifacts/goldclaimmap-1.0.0.jar`.
+See [release details](docs/updates/v1.1.11.md).
+
+GoldClaim 1.0.42 keeps all 1.0.41 behavior. It also sends claim rectangles
+and owner names to clients that run GoldClaim Map. GoldClaim Map draws them on
+JourneyMap's full-screen map only. Sources: `sources/goldclaim` and
+`sources/goldclaimmap`.
+
+GoldClaim SHA256: `5cc35a49a08a95b5eeef6c3e8e2e06e7358bbad35c7162a10dce7f531d54db4a`.
+GoldClaim Map SHA256: `850f80ccf18c6930ede144d05eb830f9516d5ea121cf836bd16bbf2324d1e4ae`.
+
+Stage GoldClaim for the next normal restart:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\Stage-GameplayHotfix.ps1 -GameDirectory '<server directory>' -Version 1.0.42
+```
+
 ## GoldClaim 1.0.41 - pack v1.1.10
 
 Packwiz's server-only GoldClaim entry and the v1.1.10 stopped-server payload
