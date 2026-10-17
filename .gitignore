@@ -21,3 +21,4 @@ artifacts/gangs_hub_backup_*/
 sources/*/.gradle/
 sources/*/build/
 sources/*/bin/
+sources/*/logs/
