@@ -182,14 +182,14 @@ foreach ($relative in @('paxi\datapacks\gangs_kits\data\gangs\loot_tables\kits\m
         'randomcollections\config.json')) {
     Write-Fixture (Join-Path $server ('config\' + $relative)) '{"old":"reward-configuration"}'
 }
-$pending = Join-Path $server 'pending-gameplay-1.0.40'
+$pending = Join-Path $server 'pending-gameplay-1.0.41'
 New-Item -ItemType Directory -Path $pending | Out-Null
-Copy-Item -LiteralPath (Join-Path $root 'server-update\mods\goldclaim-1.0.40.jar') -Destination (Join-Path $pending 'goldclaim-1.0.40.jar.pending')
+Copy-Item -LiteralPath (Join-Path $root 'server-update\mods\goldclaim-1.0.41.jar') -Destination (Join-Path $pending 'goldclaim-1.0.41.jar.pending')
 Copy-Item -LiteralPath (Join-Path $root 'server-update\config\paxi\datapacks\gangs_kits\data\gangs\loot_tables\kits\monthly.json') -Destination (Join-Path $pending 'monthly.json')
 Copy-Item -LiteralPath (Join-Path $root 'server-update\config\randomcollections\config.json') -Destination (Join-Path $pending 'collections.json')
 @{
-    Version = '1.0.40'
-    JarSha256 = (Get-FileHash (Join-Path $pending 'goldclaim-1.0.40.jar.pending')).Hash
+    Version = '1.0.41'
+    JarSha256 = (Get-FileHash (Join-Path $pending 'goldclaim-1.0.41.jar.pending')).Hash
     MonthlySha256 = (Get-FileHash (Join-Path $pending 'monthly.json')).Hash
     CollectionsSha256 = (Get-FileHash (Join-Path $pending 'collections.json')).Hash
     PreviousJarSha256 = 'unused-previous-jar-already-removed'
@@ -197,7 +197,7 @@ Copy-Item -LiteralPath (Join-Path $root 'server-update\config\randomcollections\
     PreviousCollectionsSha256 = (Get-FileHash (Join-Path $server 'config\randomcollections\config.json')).Hash
 } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $pending 'manifest.json')
 $portalsHash = (Get-FileHash (Join-Path $server 'config\multiworld\portals.yml')).Hash
-$payloadJar = Join-Path $root 'server-update\mods\goldclaim-1.0.40.jar'
+$payloadJar = Join-Path $root 'server-update\mods\goldclaim-1.0.41.jar'
 $verifiedJar = $payloadJar + '.verified'
 Move-Item -LiteralPath $payloadJar -Destination $verifiedJar
 try {
@@ -206,7 +206,7 @@ try {
         & (Join-Path $root 'server-update\Install-ServerUpdate.ps1') -GameDirectory $server
         throw 'Corrupt GoldClaim payload was accepted.'
     } catch {
-        if ($_.Exception.Message -notmatch '^GoldClaim 1\.0\.40 payload checksum failed') { throw }
+        if ($_.Exception.Message -notmatch '^GoldClaim 1\.0\.41 payload checksum failed') { throw }
     }
     Assert-Preserved $hashes
     Require ([IO.File]::ReadAllText((Join-Path $server 'mods\goldclaim-1.0.31.jar')) -ceq
@@ -223,19 +223,19 @@ Require (@($installOutput | Where-Object { $_ -match 'Pinned pre-loss snapshot f
 Require (@($installOutput | Where-Object { $_ -match 'Kunoisback item recovery did not complete \(exit 3\)' }).Count -ge 1) 'Missing recovery source must warn without aborting.'
 Require (-not (Test-Path -LiteralPath (Join-Path $server 'world\goldclaim-recovery'))) 'Recovery marker written without a recovery.'
 Assert-Preserved $hashes
-Require (Test-Path -LiteralPath (Join-Path $server 'mods\goldclaim-1.0.40.jar')) 'New GoldClaim is missing.'
-Require ([IO.File]::ReadAllText((Join-Path $server 'start.bat')).Contains('goldclaim-1.0.40.jar')) 'Launcher retains an old jar pin.'
+Require (Test-Path -LiteralPath (Join-Path $server 'mods\goldclaim-1.0.41.jar')) 'New GoldClaim is missing.'
+Require ([IO.File]::ReadAllText((Join-Path $server 'start.bat')).Contains('goldclaim-1.0.41.jar')) 'Launcher retains an old jar pin.'
 Require ([IO.File]::ReadAllText((Join-Path $server 'start.bat')).Contains(
     (Get-FileHash $payloadJar).Hash)) 'Launcher retains an old checksum pin.'
 foreach ($relative in @('paxi\datapacks\gangs_kits\data\gangs\loot_tables\kits\monthly.json',
         'randomcollections\config.json')) {
     Require ((Get-FileHash (Join-Path $server ('config\' + $relative))).Hash -eq
         (Get-FileHash (Join-Path $root ('server-update\config\' + $relative))).Hash) "Reward repair missing: $relative"
-    $rewardBackup = @(Get-ChildItem (Join-Path $server 'backups') -Directory -Filter 'policy-v1.1.9-*')
+    $rewardBackup = @(Get-ChildItem (Join-Path $server 'backups') -Directory -Filter 'policy-v1.1.10-*')
     Require ([IO.File]::ReadAllText((Join-Path $rewardBackup[0].FullName ('config\' + $relative))) -ceq
         '{"old":"reward-configuration"}') "Original rewards were not backed up: $relative"
 }
-& (Join-Path $PSScriptRoot 'Install-PendingGameplayHotfix.ps1') -GameDirectory $server -Version 1.0.40
+& (Join-Path $PSScriptRoot 'Install-PendingGameplayHotfix.ps1') -GameDirectory $server -Version 1.0.41
 Require (Test-Path -LiteralPath (Join-Path $pending 'manifest.applied.json')) 'Previously staged startup hook cannot complete after full release installation.'
 Require (-not (Test-Path -LiteralPath (Join-Path $server 'mods\goldclaim-1.0.31.jar'))) 'Old GoldClaim remains.'
 Require (-not (Test-Path -LiteralPath (Join-Path $server 'mods\gangshop-1.0.8.jar'))) 'Old Gang Shop remains.'

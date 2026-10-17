@@ -3,6 +3,11 @@ package com.elysium.goldclaim;
 import com.elysium.goldclaim.mixin.ChestInventoryAccessor;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.ChestBlock;
+import net.minecraft.block.TrappedChestBlock;
+import net.minecraft.block.enums.ChestType;
+import net.minecraft.state.property.Property;
+import net.zestyblaze.lootr.init.ModBlocks;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.nbt.NbtElement;
@@ -39,9 +44,13 @@ public final class BetterEndLootrService {
         if (ConfigManager.isBlacklisted(table)) return false;
         BlockState replacement = ConfigManager.replacement(state);
         if (replacement == null) {
-            LOGGER.error("BetterEnd loot chest at {} cannot convert: {} is missing its Lootr conversion tag",
-                pos, Registries.BLOCK.getId(state.getBlock()));
-            throw new IllegalStateException("Missing Lootr replacement for BetterEnd chest at " + pos);
+            // The lootr:convert/chests tag can be shadowed by another datapack; plain chests still map safely.
+            replacement = fallbackReplacement(state);
+            if (replacement == null) {
+                LOGGER.warn("BetterEnd container at {} ({}) has no Lootr replacement; opening it normally",
+                    pos, Registries.BLOCK.getId(state.getBlock()));
+                return false;
+            }
         }
         // Lootr's background converter waits for 5x5 FULL chunks. Opening must not consume the table first.
         original.setLootTable(null, 0);
@@ -66,5 +75,19 @@ public final class BetterEndLootrService {
             throw failure;
         }
         return true;
+    }
+
+    static BlockState fallbackReplacement(BlockState state) {
+        if (!(state.getBlock() instanceof ChestBlock) || state.getBlock() instanceof TrappedChestBlock) return null;
+        BlockState replacement = ModBlocks.CHEST.getDefaultState();
+        for (Property<?> property : state.getProperties()) {
+            if (replacement.contains(property)) replacement = copy(replacement, state, property);
+        }
+        return replacement.contains(ChestBlock.CHEST_TYPE)
+            ? replacement.with(ChestBlock.CHEST_TYPE, ChestType.SINGLE) : replacement;
+    }
+
+    private static <T extends Comparable<T>> BlockState copy(BlockState target, BlockState source, Property<T> property) {
+        return target.with(property, source.get(property));
     }
 }

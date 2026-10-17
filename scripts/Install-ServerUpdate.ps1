@@ -71,7 +71,7 @@ $propertiesPath = Join-Path $game 'server.properties'
 $corePath = Join-Path $game 'config\sophisticatedcore-common.toml'
 $startPath = Join-Path $game 'start.bat'
 foreach ($path in @($propertiesPath, $corePath, (Join-Path $game 'config\global_packs.toml'),
-        (Join-Path $modsDir 'goldclaim-1.0.40.jar'),
+        (Join-Path $modsDir 'goldclaim-1.0.41.jar'),
         (Join-Path $modsDir 'gangshop-1.0.9.jar'),
         (Join-Path $modsDir 'soulsbackpackscompat-1.1.0.jar'),
         (Join-Path $modsDir 'gangscosmetics-2.0.2.jar'),
@@ -84,9 +84,9 @@ foreach ($path in @($propertiesPath, $corePath, (Join-Path $game 'config\global_
         (Join-Path $configDir 'randomcollections\config.json'))) {
     if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { throw "Required update/server file is missing: $path" }
 }
-if ((Get-FileHash -LiteralPath (Join-Path $modsDir 'goldclaim-1.0.40.jar')).Hash -ine
-        '3483ba91e7d89c0151c33e5cc1f31d19d11bc65b3d5cd411e9c956bdbb02b8ee') {
-    throw 'GoldClaim 1.0.40 payload checksum failed; update aborted.'
+if ((Get-FileHash -LiteralPath (Join-Path $modsDir 'goldclaim-1.0.41.jar')).Hash -ine
+        'fb680c2fd5b807a8e72afe8b1e1967f5bf45a4d07b45a10dea1b02d2b4df9116') {
+    throw 'GoldClaim 1.0.41 payload checksum failed; update aborted.'
 }
 $core = [IO.File]::ReadAllText($corePath)
 $arrays = [regex]::Matches($core, '(?ms)^[ \t]*enabledItems[ \t]*=[ \t]*\[.*?\]')
@@ -144,7 +144,7 @@ if (Test-Path -LiteralPath $backupRoot) {
         Remove-Item -LiteralPath $old.FullName -Recurse -Force
     }
 }
-$backup = Join-Path $game ('backups\policy-v1.1.9-' + (Get-Date -Format 'yyyyMMdd-HHmmss-ffff'))
+$backup = Join-Path $game ('backups\policy-v1.1.10-' + (Get-Date -Format 'yyyyMMdd-HHmmss-ffff'))
 New-Item -ItemType Directory -Path $backup | Out-Null
 & $JavaExecutable -jar $purgeTool --apply $game $backup
 if ($LASTEXITCODE -ne 0) { throw "Offline teleport purge failed. Protected originals are in $backup; do not start the server." }
@@ -172,11 +172,11 @@ foreach ($path in @($propertiesPath, $corePath, $startPath, (Join-Path $game 'co
 }
 if (Test-Path -LiteralPath $startPath) {
     $start = [IO.File]::ReadAllText($startPath)
-    $start = [regex]::Replace($start, 'goldclaim-\d+\.\d+\.\d+\.jar', 'goldclaim-1.0.40.jar')
+    $start = [regex]::Replace($start, 'goldclaim-\d+\.\d+\.\d+\.jar', 'goldclaim-1.0.41.jar')
     foreach ($oldJar in Get-ChildItem -LiteralPath (Join-Path $game 'mods') -Filter 'goldclaim-*.jar') {
         $oldHash = (Get-FileHash -LiteralPath $oldJar.FullName).Hash
         $start = [regex]::Replace($start, [regex]::Escape($oldHash),
-            '3483BA91E7D89C0151C33E5CC1F31D19D11BC65B3D5CD411E9C956BDBB02B8EE',
+            'FB680C2FD5B807A8E72AFE8B1E1967F5BF45A4D07B45A10DEA1B02D2B4DF9116',
             [Text.RegularExpressions.RegexOptions]::IgnoreCase)
     }
     $start = [regex]::Replace($start, 'gangscosmetics-\d+\.\d+\.\d+\.jar', 'gangscosmetics-2.0.2.jar')
@@ -197,7 +197,7 @@ if ($ResetRswEnd) {
         Write-Output 'Deleted only RSW End without a backup; it will regenerate on next start.'
     }
 }
-Copy-Item -LiteralPath (Join-Path $modsDir 'goldclaim-1.0.40.jar') -Destination $mods
+Copy-Item -LiteralPath (Join-Path $modsDir 'goldclaim-1.0.41.jar') -Destination $mods
 Copy-Item -LiteralPath (Join-Path $modsDir 'gangshop-1.0.9.jar') -Destination $mods
 Copy-Item -LiteralPath (Join-Path $modsDir 'soulsbackpackscompat-1.1.0.jar') -Destination $mods
 Copy-Item -LiteralPath (Join-Path $modsDir 'gangscosmetics-2.0.2.jar') -Destination $mods
@@ -317,8 +317,8 @@ if (Test-Path -LiteralPath $multiworldWorlds -PathType Container) {
 }
 & (Join-Path $PSScriptRoot 'Prune-ServerBackups.ps1') -GameDirectory $game
 & (Join-Path $PSScriptRoot 'Install-ResourcePackDefaults.ps1') -Target Server -GameDirectory $game
-if ((Get-FileHash (Join-Path $mods 'goldclaim-1.0.40.jar')).Hash -ne
-        (Get-FileHash (Join-Path $modsDir 'goldclaim-1.0.40.jar')).Hash) {
+if ((Get-FileHash (Join-Path $mods 'goldclaim-1.0.41.jar')).Hash -ne
+        (Get-FileHash (Join-Path $modsDir 'goldclaim-1.0.41.jar')).Hash) {
     throw 'Installed GoldClaim hash does not match the supplied update.'
 }
 if ((Get-FileHash (Join-Path $mods 'soulsbackpackscompat-1.1.0.jar')).Hash -ne
@@ -338,10 +338,10 @@ if (@(Get-ChildItem -LiteralPath $mods -File | Where-Object {
 }).Count) { throw 'Old Gang Shop jars remain installed.' }
 if (@(Get-ChildItem -LiteralPath $mods -File | Where-Object {
         $_.Name -match '^(NaturesCompass-.*\.jar|ExplorersCompass-.*\.jar|goldclaim-.*\.jar(?:\.pending)?|soulsbackpackscompat-.*\.jar(?:\.pending)?|gangshats-.*\.jar(?:\.pending)?|gangscosmetics-.*\.jar(?:\.pending)?|jei-.*\.jar|YungsBetterEndIsland-.*\.jar|grimac-.*\.jar(?:\.pending)?)$' -and
-                $_.Name -notin @('goldclaim-1.0.40.jar', 'soulsbackpackscompat-1.1.0.jar', 'gangscosmetics-2.0.2.jar')
+                $_.Name -notin @('goldclaim-1.0.41.jar', 'soulsbackpackscompat-1.1.0.jar', 'gangscosmetics-2.0.2.jar')
         }).Count) { throw 'Old or removed mod jars remain installed.' }
 Write-Output "Server policy update installed. Backup: $backup"
-Write-Output 'GoldClaim 1.0.40: kit rewards repaired, Enderman spawning restored, unopened BetterEnd city chests use Lootr; future RSW resets target 87.5% BetterEnd outer-island biomes and verify seven reachable cities before reopening. The current End generator is unchanged.'
+Write-Output 'GoldClaim 1.0.41: kit rewards repaired, Enderman spawning restored, unopened BetterEnd city chests open as personal Lootr chests even when the conversion tag is unavailable; future RSW resets target 87.5% BetterEnd outer-island biomes and verify seven reachable cities before reopening. The current End generator is unchanged.'
 if ($recoveryWarning) { Write-Warning $recoveryWarning }
 Write-Output 'GrimAC and its bundled PacketEvents removed; GrimAC cheat checks are disabled. BetterEnd, Lootr, GoldClaim protections, compatibility settings and backup limits remain. Active worlds, player data and the RSW journal were preserved unless an End reset was explicitly requested. Server remains stopped; start it yourself when ready.'
 Write-Output 'GrimAC and its bundled PacketEvents removed; GrimAC cheat checks are disabled. BetterEnd, Lootr, GoldClaim protections, compatibility settings and backup limits remain. Active worlds, player data and the RSW journal were preserved unless an End reset was explicitly requested. Server remains stopped; start it yourself when ready.'

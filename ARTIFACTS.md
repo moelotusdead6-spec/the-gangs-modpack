@@ -1,5 +1,23 @@
 # Published Artifacts
 
+## GoldClaim 1.0.41 - pack v1.1.10
+
+Packwiz's server-only GoldClaim entry and the v1.1.10 stopped-server payload
+both select this artifact. See [release details](docs/updates/v1.1.10.md).
+
+`artifacts/goldclaim-1.0.41.jar` supersedes 1.0.40 and keeps all 1.0.40
+behavior. When Lootr's tag-based lookup returns no replacement, it now
+converts unopened plain BetterEnd chests directly to Lootr's chest. If
+conversion fails, it opens the original chest instead of blocking it.
+
+SHA256: `fb680c2fd5b807a8e72afe8b1e1967f5bf45a4d07b45a10dea1b02d2b4df9116`.
+
+Stage for the next normal restart:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\Stage-GameplayHotfix.ps1 -GameDirectory '<server directory>' -Version 1.0.41
+```
+
 ## GoldClaim 1.0.40 - pack v1.1.9
 
 Packwiz's server-only GoldClaim entry and the v1.1.9 stopped-server payload

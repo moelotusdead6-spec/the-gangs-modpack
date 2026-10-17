@@ -72,9 +72,9 @@ try {
     Copy-Entry 'docs/updates/v1.1.6.md' (Join-Path $repo 'docs\updates\v1.1.6.md')
     Copy-Entry 'docs/updates/v1.1.7.md' (Join-Path $repo 'docs\updates\v1.1.7.md')
     Copy-Entry 'docs/updates/v1.1.8.md' (Join-Path $repo 'docs\updates\v1.1.8.md')
-    Copy-Entry 'docs/updates/v1.1.9.md' (Join-Path $repo 'docs\updates\v1.1.9.md')
+    Copy-Entry 'docs/updates/v1.1.10.md' (Join-Path $repo 'docs\updates\v1.1.10.md')
     Copy-Entry 'server-update/README.txt' (Join-Path $PSScriptRoot 'SERVER-UPDATE.txt')
-    Copy-Entry 'server-update/mods/goldclaim-1.0.40.jar' (Join-Path $repo 'artifacts\goldclaim-1.0.40.jar')
+    Copy-Entry 'server-update/mods/goldclaim-1.0.41.jar' (Join-Path $repo 'artifacts\goldclaim-1.0.41.jar')
     Copy-Entry 'server-update/tools/gangs-teleport-purge-1.0.1.jar' (Join-Path $repo 'artifacts\gangs-teleport-purge-1.0.1.jar')
     Copy-Entry 'server-update/tools/gangs-player-recovery-1.0.0.jar' (Join-Path $repo 'artifacts\gangs-player-recovery-1.0.0.jar')
     Copy-Entry 'server-update/mods/gangshop-1.0.9.jar' (Join-Path $repo 'artifacts\gangshop-1.0.9.jar')
@@ -137,7 +137,7 @@ try {
         }
     }
     $instance = Read-Entry 'instance.cfg'
-    $instance = [regex]::Replace($instance, '(?m)^name=[^\r\n]*', 'name=The Gangs Modpack v1.1.9')
+    $instance = [regex]::Replace($instance, '(?m)^name=[^\r\n]*', 'name=The Gangs Modpack v1.1.10')
     $instance = Get-PrismAutoUpdateConfig $instance
     Write-Entry 'instance.cfg' ($utf8.GetBytes($instance))
     $options = [IO.File]::ReadAllText((Join-Path $repo 'config\defaultoptions\options.txt'))
@@ -164,7 +164,7 @@ try {
         throw 'Removed mod remains in the ZIP.'
     }
     $goldclaim = @($zip.Entries | Where-Object { $_.FullName -match '^server-update/mods/goldclaim-.*\.jar$' })
-    if ($goldclaim.Count -ne 1 -or $goldclaim[0].Name -ne 'goldclaim-1.0.40.jar') {
+    if ($goldclaim.Count -ne 1 -or $goldclaim[0].Name -ne 'goldclaim-1.0.41.jar') {
         throw 'Wrong or duplicate GoldClaim server-update jar.'
     }
     foreach ($name in @('server-update/mods/soulsbackpackscompat-1.1.0.jar',
@@ -228,7 +228,7 @@ try {
     $stream = $goldclaim[0].Open()
     try { $actual = [BitConverter]::ToString($hash.ComputeHash($stream)).Replace('-', '') }
     finally { $stream.Dispose(); $hash.Dispose() }
-    if ($actual -ne (Get-FileHash (Join-Path $repo 'artifacts\goldclaim-1.0.40.jar') -Algorithm SHA256).Hash) {
+    if ($actual -ne (Get-FileHash (Join-Path $repo 'artifacts\goldclaim-1.0.41.jar') -Algorithm SHA256).Hash) {
         throw 'Packaged GoldClaim does not match the built artifact.'
     }
     $utility = $zip.GetEntry('server-update/tools/gangs-teleport-purge-1.0.1.jar')

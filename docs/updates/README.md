@@ -3,7 +3,7 @@
 ## Keep one Prism instance
 
 Keep the same Prism instance and press Play for normal client pack updates.
-New v1.1.9 imports have automatic client-only Packwiz updates enabled.
+New v1.1.10 imports have automatic client-only Packwiz updates enabled.
 The public ZIP is for new installations, not a replacement instance for
 every release.
 
@@ -113,3 +113,9 @@ generate/save at least seven reachable cities before reopening. The existing
 End and reset schedule are unchanged. Apply server files only while stopped
 at the next scheduled restart; publishing does not deploy them.
 See [v1.1.9 details and validation](v1.1.9.md).
+
+v1.1.10 (GoldClaim 1.0.41) fixes RSW End city chests that could not be opened.
+They now open as personal Lootr chests even when a duplicate legacy data pack
+hides the Lootr conversion tag. Clients receive no file changes. Stage the
+server jar for the next normal restart; publishing does not deploy it.
+See [v1.1.10 details and validation](v1.1.10.md).

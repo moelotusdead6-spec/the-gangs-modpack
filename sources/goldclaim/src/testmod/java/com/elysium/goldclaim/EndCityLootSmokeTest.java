@@ -54,7 +54,8 @@ final class EndCityLootSmokeTest {
             require(chests == 17, "Expected all 17 BetterEnd chests from actual city templates, got " + chests);
             verifyStorage(end);
             try {
-                Files.writeString(Path.of("city-loot-smoke-passed.txt"),
+                Files.writeString(Path.of(Boolean.getBoolean("goldclaim.cityLootUntagged")
+                        ? "city-loot-untagged-smoke-passed.txt" : "city-loot-smoke-passed.txt"),
                     "PASS: all 17 BetterEnd lacugrove chests in actual modded ship, tower and floor templates "
                     + "opened as Lootr before background conversion; original tables/seeds preserved; "
                     + "independent populated player inventories; already-opened and player storage untouched.\n");
@@ -84,6 +85,10 @@ final class EndCityLootSmokeTest {
             if (!Registries.BLOCK.getId(world.getBlockState(pos).getBlock()).toString()
                     .equals("betterend:lacugrove_chest")) continue;
             var before = ((LootableContainerBlockEntity)world.getBlockEntity(pos)).createNbt();
+            boolean untagged = ConfigManager.replacement(world.getBlockState(pos)) == null;
+            require(untagged == Boolean.getBoolean("goldclaim.cityLootUntagged"),
+                "City chest Lootr tag state does not match the fixture mode at " + pos);
+            var expectedFacing = world.getBlockState(pos).get(net.minecraft.block.ChestBlock.FACING);
             require(before.getString("LootTable").equals("minecraft:chests/end_city_treasure"),
                 "Real city marker lost its deferred treasure table: " + name + " " + pos + " " + before);
             List<GenericContainerScreenHandler> menus = new ArrayList<>();
@@ -99,6 +104,8 @@ final class EndCityLootSmokeTest {
                 menus.add((GenericContainerScreenHandler)player.currentScreenHandler);
             }
             require(world.getBlockEntity(pos) instanceof ILootBlockEntity, "City chest still uses a shared inventory");
+            require(world.getBlockState(pos).get(net.minecraft.block.ChestBlock.FACING) == expectedFacing,
+                "City chest orientation changed during Lootr conversion");
             var converted = (ILootBlockEntity)world.getBlockEntity(pos);
             require(converted.getTable().toString().equals(before.getString("LootTable"))
                 && converted.getSeed() == before.getLong("LootTableSeed"), "City chest loot table/seed changed");
