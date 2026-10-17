@@ -24,6 +24,7 @@ public class GoldClaimMapClient implements ClientModInitializer {
         ClientPlayNetworking.registerGlobalReceiver(CHANNEL, (client, handler, buf, sender) -> {
             List<ClaimRegion> claims = decode(buf);
             if (claims != null) {
+                LOGGER.info("Received {} claim regions from the server", claims.size());
                 client.execute(() -> GoldClaimJourneyMapPlugin.setClaims(claims));
             }
         });

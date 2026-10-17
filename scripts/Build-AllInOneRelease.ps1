@@ -73,7 +73,7 @@ try {
     Copy-Entry 'docs/updates/v1.1.6.md' (Join-Path $repo 'docs\updates\v1.1.6.md')
     Copy-Entry 'docs/updates/v1.1.7.md' (Join-Path $repo 'docs\updates\v1.1.7.md')
     Copy-Entry 'docs/updates/v1.1.8.md' (Join-Path $repo 'docs\updates\v1.1.8.md')
-    Copy-Entry 'docs/updates/v1.1.11.md' (Join-Path $repo 'docs\updates\v1.1.11.md')
+    Copy-Entry 'docs/updates/v1.1.12.md' (Join-Path $repo 'docs\updates\v1.1.12.md')
     Copy-Entry 'server-update/README.txt' (Join-Path $PSScriptRoot 'SERVER-UPDATE.txt')
     Copy-Entry 'server-update/mods/goldclaim-1.0.42.jar' (Join-Path $repo 'artifacts\goldclaim-1.0.42.jar')
     Copy-Entry 'server-update/tools/gangs-teleport-purge-1.0.1.jar' (Join-Path $repo 'artifacts\gangs-teleport-purge-1.0.1.jar')
@@ -121,7 +121,7 @@ try {
         $entry.Delete()
     }
     Copy-Entry 'minecraft/mods/rankbadges-1.0.2.jar' (Join-Path $repo 'artifacts\rankbadges-1.0.2.jar')
-    Copy-Entry 'minecraft/mods/goldclaimmap-1.0.0.jar' (Join-Path $repo 'artifacts\goldclaimmap-1.0.0.jar')
+    Copy-Entry 'minecraft/mods/goldclaimmap-1.0.1.jar' (Join-Path $repo 'artifacts\goldclaimmap-1.0.1.jar')
     Copy-Entry 'server-update/Install-ServerUpdate.ps1' (Join-Path $PSScriptRoot 'Install-ServerUpdate.ps1')
     Copy-Entry 'server-update/Prune-ServerBackups.ps1' (Join-Path $PSScriptRoot 'Prune-ServerBackups.ps1')
     Copy-Entry 'server-update/server-settings.properties' (Join-Path $PSScriptRoot 'server-settings.properties')
@@ -139,7 +139,7 @@ try {
         }
     }
     $instance = Read-Entry 'instance.cfg'
-    $instance = [regex]::Replace($instance, '(?m)^name=[^\r\n]*', 'name=The Gangs Modpack v1.1.11')
+    $instance = [regex]::Replace($instance, '(?m)^name=[^\r\n]*', 'name=The Gangs Modpack v1.1.12')
     $instance = Get-PrismAutoUpdateConfig $instance
     Write-Entry 'instance.cfg' ($utf8.GetBytes($instance))
     $options = [IO.File]::ReadAllText((Join-Path $repo 'config\defaultoptions\options.txt'))
@@ -201,14 +201,14 @@ try {
     if (@($zip.Entries | Where-Object {
             $_.FullName -match '^(minecraft|client-update|server-update)/mods/gangshats-.*\.jar$'
         }).Count) { throw 'Legacy Gangs Hats remains in the ZIP.' }
-    foreach ($name in @('minecraft/mods/goldclaimmap-1.0.0.jar')) {
+    foreach ($name in @('minecraft/mods/goldclaimmap-1.0.1.jar')) {
         $entry = $zip.GetEntry($name)
         if (-not $entry) { throw "Required claim map mod missing: $name" }
         $hash = [Security.Cryptography.SHA256]::Create()
         $stream = $entry.Open()
         try { $actual = [BitConverter]::ToString($hash.ComputeHash($stream)).Replace('-', '') }
         finally { $stream.Dispose(); $hash.Dispose() }
-        if ($actual -ne (Get-FileHash (Join-Path $repo 'artifacts\goldclaimmap-1.0.0.jar') -Algorithm SHA256).Hash) {
+        if ($actual -ne (Get-FileHash (Join-Path $repo 'artifacts\goldclaimmap-1.0.1.jar') -Algorithm SHA256).Hash) {
             throw "Packaged GoldClaim Map does not match the built artifact: $name"
         }
     }

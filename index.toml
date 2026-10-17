@@ -6,7 +6,7 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "3f9148bbe0e89a683c388e62ec3962ba62a4783af2121cc16541b848cd5e5082"
+hash = "baccd73f3efbe2c00d9e57f2fc0f54f079a0bac55b4a0a5a0b2c9442f614c395"
 
 [[files]]
 file = "README.md"
@@ -1301,7 +1301,7 @@ metafile = true
 
 [[files]]
 file = "mods/goldclaimmap-direct.pw.toml"
-hash = "ab02917480c1e646475b4169eab1419b7fcb50f5cf3731688abaec96624a2852"
+hash = "95135246628239a0dee0226d7101ea6c14a79a76568cc25eee3a6107be5bee4f"
 metafile = true
 
 [[files]]

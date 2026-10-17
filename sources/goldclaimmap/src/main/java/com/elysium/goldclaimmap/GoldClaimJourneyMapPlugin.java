@@ -38,6 +38,7 @@ public class GoldClaimJourneyMapPlugin implements IClientPlugin {
     @Override
     public void initialize(IClientAPI clientApi) {
         api = clientApi;
+        LOGGER.info("JourneyMap claim overlay plugin initialized");
         refresh();
     }
 

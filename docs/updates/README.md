@@ -3,7 +3,7 @@
 ## Keep one Prism instance
 
 Keep the same Prism instance and press Play for normal client pack updates.
-New v1.1.11 imports have automatic client-only Packwiz updates enabled.
+New v1.1.11 imports and later have automatic client-only Packwiz updates enabled.
 The public ZIP is for new installations, not a replacement instance for
 every release.
 
@@ -126,3 +126,8 @@ shows the owner's name. Clients receive one new client-only mod automatically
 when they press Play. Stage the server jar for the next normal restart;
 publishing does not deploy it.
 See [v1.1.11 details and validation](v1.1.11.md).
+
+v1.1.12 updates only GoldClaim Map to 1.0.1. It prevents an incompatible legacy
+JourneyMap plugin from blocking discovery of every valid map plugin. Restart
+Minecraft and press Play to receive it; no server restart is required.
+See [v1.1.12 details and validation](v1.1.12.md).

@@ -1,5 +1,15 @@
 # Published Artifacts
 
+## GoldClaim Map 1.0.1 - pack v1.1.12
+
+Client-only hotfix: isolate incompatible JourneyMap entrypoints so Waystones'
+legacy API plugin cannot prevent GoldClaim Map from initializing. Packwiz
+selects `artifacts/goldclaimmap-1.0.1.jar`; GoldClaim stays at 1.0.42.
+Existing players restart Minecraft and press Play. No server restart or
+deployment is required. See [release details](docs/updates/v1.1.12.md).
+
+SHA256: `c88067141a4c7b731bf676b2dee8b31049552de72e95832f65b6efaf189f5afd`.
+
 ## GoldClaim 1.0.42 and GoldClaim Map 1.0.0 - pack v1.1.11
 
 Packwiz's server-only GoldClaim entry and the v1.1.11 stopped-server payload
