@@ -440,7 +440,6 @@
         }
       ],
       "entries": [
-        {"type": "minecraft:item", "name": "doapi:standard"},
         {"type": "minecraft:item", "name": "bakery:bakery_standard"},
         {"type": "minecraft:item", "name": "beachparty:beachparty_banner"},
         {"type": "minecraft:item", "name": "bloomingnature:bloomingnature_banner"},

@@ -217,6 +217,8 @@ implements ModInitializer {
     private SelectionManager selectionManager;
     private final KitService kitService = new KitService();
     private final RswResetService rswResetService = new RswResetService();
+    private final RswEndCityService rswEndCities = new RswEndCityService();
+    private ChunkGenerator rswEndGenerator;
     private final RswEntrySearch rswEntrySearch = new RswEntrySearch(
         this.rswResetService, this::isSafeRandomTeleportDestination, this::completeRswEntry);
     private ServerWorld configuredPvpDaylightWorld;
@@ -299,6 +301,9 @@ implements ModInitializer {
 
     public void onInitialize() {
         INSTANCE = this;
+        if (hasBetterEnd()) {
+            RswEndBiomeSource.registerCodec();
+        }
         BannedContent.register();
         WaystonePolicy.register();
         this.config = GoldClaimConfig.load();
@@ -310,6 +315,10 @@ implements ModInitializer {
         this.loadPlayerHomes();
         ServerLifecycleEvents.SERVER_STARTING.register(this::ensureCustomGenerators);
         ServerWorldEvents.LOAD.register((server, world) -> {
+            if (world.getRegistryKey() == World.END && hasBetterEnd()
+                    && net.fabricmc.loader.api.FabricLoader.getInstance().isModLoaded("multiworld")) {
+                this.registerRswEndGenerator(world);
+            }
             if (world.getRegistryKey() == World.NETHER) {
                 this.ensureCustomGenerators(server);
             }
@@ -830,7 +839,8 @@ implements ModInitializer {
                 (activeServer, seed) -> {
                     this.createMultiworld(activeServer, RSW_DIMENSION, "NORMAL", seed);
                     this.createMultiworld(activeServer, RSW_NETHER_DIMENSION, "NETHER", seed);
-                    this.createMultiworld(activeServer, RSW_THE_END_DIMENSION, "THE_END", seed);
+                    this.createMultiworld(activeServer, RSW_THE_END_DIMENSION, "THE_END", seed,
+                        hasBetterEnd() ? RswEndBiomeSource.GENERATOR_ID : null);
                 },
                 activeServer -> {
                     for (String rswDim : RSW_DIMENSIONS) {
@@ -844,6 +854,7 @@ implements ModInitializer {
                     if (rswEnd != null) {
                         RswDragonFightService.ensureDragonFight(rswEnd);
                     }
+                    return rswEnd != null && this.rswEndCities.prepare(rswEnd);
                 });
             this.rswEntrySearch.tick();
             if (server.getTicks() % 20 == 0) {
@@ -937,6 +948,23 @@ implements ModInitializer {
                 }
             }
         });
+    }
+
+    private static boolean hasBetterEnd() {
+        var loader = net.fabricmc.loader.api.FabricLoader.getInstance();
+        return loader.isModLoaded("betterend") && loader.isModLoaded("bclib");
+    }
+
+    private void registerRswEndGenerator(ServerWorld end) {
+        try {
+            if (this.rswEndGenerator == null) {
+                this.rswEndGenerator = RswEndBiomeSource.createGenerator(end);
+            }
+            this.invokeStatic(Class.forName("me.isaiah.multiworld.command.CreateCommand"),
+                "registerCustomGenerator", new Identifier(RswEndBiomeSource.GENERATOR_ID), this.rswEndGenerator);
+        } catch (ReflectiveOperationException failure) {
+            throw new IllegalStateException("Cannot register the RSW-only BetterEnd biome generator", failure);
+        }
     }
 
     private void ensureCustomGenerators(MinecraftServer server) {
@@ -1034,13 +1062,23 @@ implements ModInitializer {
     }
 
     private void createMultiworld(MinecraftServer server, String dimensionId, String generatorName, long seed) {
+        this.createMultiworld(server, dimensionId, generatorName, seed, null);
+    }
+
+    private void createMultiworld(MinecraftServer server, String dimensionId, String generatorName, long seed,
+                                 String customGenerator) {
         try {
             Class<?> createCommandClass = Class.forName("me.isaiah.multiworld.command.CreateCommand");
             Class<?> multiworldClass = Class.forName("me.isaiah.multiworld.MultiworldMod");
             this.ensureCustomGenerators(server);
-            Object generator = this.invokeStatic(createCommandClass, "get_chunk_gen", server, generatorName);
+            Object generator = this.invokeStatic(createCommandClass, "get_chunk_gen", server,
+                customGenerator == null ? generatorName : customGenerator);
             if (generator == null) {
                 throw new IllegalStateException("Unknown Multiworld generator: " + generatorName);
+            }
+            if (customGenerator != null && customGenerator.equals(RswEndBiomeSource.GENERATOR_ID)
+                    && !(((ChunkGenerator)generator).getBiomeSource() instanceof RswEndBiomeSource)) {
+                throw new IllegalStateException("RSW BetterEnd generator was not registered");
             }
             Identifier dimTypeId = (Identifier) this.invokeStatic(createCommandClass, "get_dim_id", generatorName);
             if (dimTypeId == null) {
@@ -1049,7 +1087,7 @@ implements ModInitializer {
             ServerWorld world = (ServerWorld)this.invokeStatic(multiworldClass, "create_world", dimensionId,
                 dimTypeId, generator, server.getSaveProperties().getDifficulty(), seed);
             this.invokeStatic(createCommandClass, "make_config", world, generatorName, seed,
-                "VOID".equals(generatorName) ? generatorName : null);
+                customGenerator != null ? customGenerator : ("VOID".equals(generatorName) ? generatorName : null));
         }
         catch (ReflectiveOperationException | RuntimeException e) {
             LOGGER.error("Could not create {} with Multiworld generator {}.", dimensionId, generatorName, e);

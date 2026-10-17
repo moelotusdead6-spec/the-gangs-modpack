@@ -159,7 +159,7 @@ public final class KitService {
         }
         String name = player.getGameProfile().getName();
         if ((this.reconcile(source.getServer(), name, player.getUuid()) & (1 << kit)) == 0) {
-            source.sendError(Text.literal("This kit is not available in your current 30-day cycle."));
+            player.sendMessage(Text.literal("[Kits] This kit is not available in your current 30-day cycle."), false);
             return 0;
         }
         try {
@@ -198,7 +198,7 @@ public final class KitService {
                     }
                 }
                 if (!remaining.isEmpty()) {
-                    source.sendError(Text.literal("Not enough inventory space for the complete kit. Your claim remains available."));
+                    player.sendMessage(Text.literal("[Kits] Not enough inventory space for the complete kit. Your claim remains available."), false);
                     return 0;
                 }
             }
@@ -213,7 +213,7 @@ public final class KitService {
             return 1;
         } catch (RuntimeException failure) {
             LOGGER.error("Kit {} could not be generated for {}; no rewards were delivered and no claim consumed.", TABLES[kit], name, failure);
-            source.sendError(Text.literal("Kit rewards could not be loaded. Your claim remains available; please notify an admin."));
+            player.sendMessage(Text.literal("[Kits] Kit rewards could not be loaded. Your claim remains available; please notify an admin."), false);
             return 0;
         }
     }

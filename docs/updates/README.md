@@ -3,7 +3,7 @@
 ## Keep one Prism instance
 
 Keep the same Prism instance and press Play for normal client pack updates.
-New v1.1.8 imports have automatic client-only Packwiz updates enabled.
+New v1.1.9 imports have automatic client-only Packwiz updates enabled.
 The public ZIP is for new installations, not a replacement instance for
 every release.
 
@@ -105,3 +105,11 @@ point or to safe RSW ground near 0,0. Every world runs on HARD, and
 `/difficulty` applies to all worlds and is saved to `server.properties`.
 The stopped-server installer also restores Kunoisback's lost items once.
 The client update is metadata-only. See [v1.1.8 details](v1.1.8.md).
+
+v1.1.9 (GoldClaim 1.0.40) repairs kit rewards, restores original Enderman
+spawning, and makes unopened BetterEnd city chests use Lootr on first opening.
+Future RSW resets target 87.5% BetterEnd outer-island biome selection and
+generate/save at least seven reachable cities before reopening. The existing
+End and reset schedule are unchanged. Apply server files only while stopped
+at the next scheduled restart; publishing does not deploy them.
+See [v1.1.9 details and validation](v1.1.9.md).

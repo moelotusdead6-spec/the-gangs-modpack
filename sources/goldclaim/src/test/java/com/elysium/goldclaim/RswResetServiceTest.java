@@ -20,6 +20,16 @@ public class RswResetServiceTest {
     }
 
     @Test
+    public void persistedSeedsAcceptBothYamlIntegerWidthsButNeverTruncateOtherValues() {
+        assertEquals(12345L, RswResetService.persistedSeed(12345));
+        assertEquals(Long.MIN_VALUE, RswResetService.persistedSeed(Long.MIN_VALUE));
+        assertEquals(Long.MAX_VALUE, RswResetService.persistedSeed(Long.MAX_VALUE));
+        assertThrows(IllegalArgumentException.class, () -> RswResetService.persistedSeed(12345.5));
+        assertThrows(IllegalArgumentException.class, () -> RswResetService.persistedSeed("12345"));
+        assertThrows(IllegalArgumentException.class, () -> RswResetService.persistedSeed(null));
+    }
+
+    @Test
     public void resetStagingIsOutsideWorldAndCleanupIsScopedAndRepeatable() throws Exception {
         Path world = temporary.getRoot().toPath().resolve("world");
         Path staging = RswResetService.resetStaging(world, "reset-123");

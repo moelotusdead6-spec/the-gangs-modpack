@@ -6,7 +6,7 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "fe01eda64f0d8ff723372bcf871527e06784288bf692e500ea7c5c1eb5267451"
+hash = "09c0b580dbb6bf0b9d3be2fac7148408d7e9d67931d4b1fc420cbd6337154269"
 
 [[files]]
 file = "README.md"
@@ -226,7 +226,7 @@ hash = "1b36be33c8276868a8754e394d3b10dacfd18839923a84da20afded95195fe16"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs/loot_tables/kits/monthly.json"
-hash = "21a086fbe6919c3ffedac245ff6af984571057073abe31e0d981c31c4e178ce1"
+hash = "966da7af8efc6862e78b004ec2b335f09315509e80593f7a2c9ffb32c9a68cf7"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs/loot_tables/kits/non_curse_book.json"
@@ -502,7 +502,7 @@ hash = "d0aaf3172f34275479f0669aa5b0a94b85788ae638f3062b948ec49d31c38293"
 
 [[files]]
 file = "config/randomcollections/config.json"
-hash = "d5aea07732818ffebfd926630dcc772af469d82b3fced7a62b9195c69fd58120"
+hash = "5d243ca31e84cc7bf36abefd5773f639f596575243c0cfebc7a220d43002cc12"
 
 [[files]]
 file = "config/serverhats.json"
@@ -1296,7 +1296,7 @@ metafile = true
 
 [[files]]
 file = "mods/goldclaim-direct.pw.toml"
-hash = "ce1c51cefbeec7808e22a0dabe5e7b31728f52d49474a297d2e56d940514c293"
+hash = "8a7fecce19cadce746f8172883995885aa1db963fe12a3deaa18346f1ff87b2f"
 metafile = true
 
 [[files]]

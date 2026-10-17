@@ -1,4 +1,24 @@
-The Gangs Modpack v1.1.8 - server update
+The Gangs Modpack v1.1.9 - server update
+
+v1.1.9 (GoldClaim 1.0.40):
+- Repairs Monthly kit and bonus reward item IDs, with visible claim errors.
+  Existing unlocks, cooldowns and claim scores are preserved.
+- Restores original Enderman spawning; existing mobs are not changed.
+- Unopened natural BetterEnd chests in RSW End convert to Lootr before
+  the first opening consumes their loot table. Already-opened/shared chests,
+  player storage and existing Lootr identities are not reset or refilled.
+- Future RSW resets target 87.5% BetterEnd outer-island biome selection
+  and generate/save at least seven reachable natural cities before reopening.
+  Border, terrain settings, central island and reset schedule are unchanged.
+- The current End generator stays unchanged. Chest repairs activate on the
+  next normal start; biome dominance on the next RSW reset after that.
+  Do NOT pass -ResetRswEnd for this update.
+- Installs and backs up only the Monthly loot table and Random Collections
+  reward config alongside existing policy changes, not the whole config tree.
+  A previously staged identical 1.0.40 startup hotfix remains compatible.
+- After a reset saves custom_generator: gangs:rsw_end, retain 1.0.40 or
+  arrange a compatible generator migration before downgrading.
+Detailed behavior and validation: docs/updates/v1.1.9.md in the public ZIP.
 
 v1.1.8 (GoldClaim 1.0.36):
 - RSW End exit portals (the main-island pedestal after the dragon and End
@@ -37,7 +57,7 @@ STOP THE SERVER and keep a world backup before applying this update.
 Run PowerShell:
   powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Install-ServerUpdate.ps1 -GameDirectory "C:\path\to\server"
 
-The installer requires Java 17+ and installs GoldClaim 1.0.36.
+The installer requires Java 17+ and installs GoldClaim 1.0.40.
 If Java is not on PATH, add -JavaExecutable "C:\path\to\java.exe".
 It backs up touched files, purges original Nether/End teleport destinations,
 removes YUNG's Better End Island and routes the retained True Ending

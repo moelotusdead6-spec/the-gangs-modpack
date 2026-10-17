@@ -29,6 +29,10 @@ dependencies {
 	compileOnly "net.luckperms:api:5.4"
 	modCompileOnly 'maven.modrinth:balm:sWBQARQL'
 	modCompileOnly 'waystones-pinned:waystones-fabric-1.20.1-14.1.20:14.1.20@jar'
+	modCompileOnly 'maven.modrinth:betterend:7QwyTILr'
+	modCompileOnly 'maven.modrinth:bclib:TPC86Pyz'
+	modCompileOnly 'maven.modrinth:lootr:nj1zDLc6'
+	modCompileOnly 'maven.modrinth:cloth-config:2xQdCMyG'
 	testImplementation 'junit:junit:4.13.2'
 	testRuntimeOnly "net.luckperms:api:5.4"
 	if (project.hasProperty('smokePlushieJar')) {
@@ -50,6 +54,20 @@ sourceSets {
 		compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
 		runtimeClasspath += output + compileClasspath + sourceSets.main.runtimeClasspath
 	}
+}
+
+tasks.register('smokeJar', Jar) {
+	archiveBaseName = 'goldclaim-policy-smoke'
+	archiveVersion = '1.0.0'
+	from sourceSets.testmod.output
+}
+
+tasks.register('remapSmokeJar', net.fabricmc.loom.task.RemapJarTask) {
+	dependsOn tasks.named('smokeJar')
+	inputFile = tasks.named('smokeJar').flatMap { it.archiveFile }
+	archiveBaseName = 'goldclaim-policy-smoke'
+	archiveVersion = '1.0.0'
+	archiveClassifier = 'production'
 }
 
 dependencies {
@@ -90,6 +108,8 @@ loom {
 			name 'Isolated GoldClaim policy smoke test'
 			source sourceSets.testmod
 			runDir '../../tmp/goldclaim-policy-smoke'
+			vmArg '-Xmx2G'
+			vmArg '-XX:ActiveProcessorCount=4'
 			programArg 'nogui'
 		}
 		rswSmoke {
@@ -182,9 +202,44 @@ generator-settings={"layers":[{"block":"minecraft:bedrock","height":1},{"block":
 		if (result.exists() && !result.delete()) {
 			throw new GradleException('Cannot clear the previous policy smoke-test result.')
 		}
+		if (System.getenv('GOLDCLAIM_CITY_SMOKE') == 'true') {
+			def properties = new File(directory, 'server.properties')
+			properties.text = properties.text.replace('generate-structures=false', 'generate-structures=true')
+			    .replace('level-name=smoke-world', 'level-name=city-smoke-world')
+			delete new File(directory, 'city-smoke-world')
+			for (entry in [rsw: 'NORMAL', rsw_nether: 'NETHER', rsw_the_end: 'THE_END']) {
+			    def config = new File(directory, "config/multiworld/worlds/multiworld/${entry.key}.yml")
+			    config.parentFile.mkdirs()
+			    config.text = "namespace: multiworld\npath: ${entry.key}\nenvironment: ${entry.value}\nseed: 12345\n"
+			}
+			def reset = new File(directory, 'config/goldclaim/rsw-reset.json')
+			reset.parentFile.mkdirs()
+			reset.text = '{"nextResetAtMs":' + (System.currentTimeMillis() + 86400000L) + ',"phase":"IDLE"}'
+		}
+		if (System.getenv('GOLDCLAIM_KIT_SMOKE') == 'true') {
+			copy {
+				from '../../config/paxi/datapacks/gangs_kits'
+				into new File(directory, 'smoke-world/datapacks/gangs_kits')
+			}
+			copy {
+				from '../../config/skieskits'
+				into new File(directory, 'config/skieskits')
+			}
+		}
 		copy {
 			from '../../config/randomcollections/config.json'
 			into new File(directory, 'config/randomcollections')
+		}
+		if (System.getenv('GOLDCLAIM_END_LOOT_SMOKE') == 'true') {
+			copy {
+				from '../../config/paxi/datapacks/gangs_fixes'
+				into new File(directory, 'smoke-world/datapacks/gangs_fixes')
+			}
+		}
+	}
+	doLast {
+		if (!file('../../tmp/goldclaim-policy-smoke/policy-smoke-passed.txt').exists()) {
+			throw new GradleException('Policy/gateway verification did not produce a passing result.')
 		}
 	}
 }

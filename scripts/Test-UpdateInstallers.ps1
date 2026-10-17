@@ -134,6 +134,8 @@ Write-Fixture (Join-Path $server 'config\global_packs.toml') "[resourcepacks]`r`
 Write-Fixture (Join-Path $server 'config\c2me.toml') "[threadedWorldGen]`nenabled = `"default`"`nother = true`n[ioSystem]`nenabled = true`n"
 Write-Fixture (Join-Path $server 'config\lithium.properties') "mixin.util.block_tracking=true`nmixin.math.sine_lut=false`n"
 Write-Fixture (Join-Path $server 'mods\goldclaim-1.0.31.jar') 'old-fixture-jar'
+Add-Content -LiteralPath (Join-Path $server 'start.bat') -Value (
+    "`r`nrem SHA256 " + (Get-FileHash (Join-Path $server 'mods\goldclaim-1.0.31.jar')).Hash)
 Write-Fixture (Join-Path $server 'mods\gangshop-1.0.8.jar') 'old-shop-jar'
 Write-Fixture (Join-Path $server 'mods\YungsBetterEndIsland-1.20-Fabric-2.0.6.jar') 'removed-island-mod'
 Write-Fixture (Join-Path $server 'mods\tru.e-ending-v1.1.0c.jar') 'preserved-dragon-overhaul'
@@ -173,14 +175,68 @@ foreach ($relative in @('config\gangshop\prices.json', 'config\gangshop\category
 Write-Fixture (Join-Path $server 'config\multiworld\worlds\minecraft\overworld.yml') "environment: NORMAL`r`ndifficulty: EASY`r`nseed: 0`r`n"
 Write-Fixture (Join-Path $server 'config\multiworld\worlds\multiworld\rsw.yml') "namespace: multiworld`npath: rsw`nenvironment: NORMAL`nseed: 42`n"
 Write-Fixture (Join-Path $server 'config\multiworld\portals.yml') "portals:`n"
+Write-Fixture (Join-Path $server 'config\multiworld\worlds\multiworld\rsw_the_end.yml') "environment: THE_END`ncustom_generator: gangs:rsw_end`ndifficulty: HARD`nseed: 42`n"
+$endConfig = Join-Path $server 'config\multiworld\worlds\multiworld\rsw_the_end.yml'
+$hashes[$endConfig] = (Get-FileHash $endConfig).Hash
+foreach ($relative in @('paxi\datapacks\gangs_kits\data\gangs\loot_tables\kits\monthly.json',
+        'randomcollections\config.json')) {
+    Write-Fixture (Join-Path $server ('config\' + $relative)) '{"old":"reward-configuration"}'
+}
+$pending = Join-Path $server 'pending-gameplay-1.0.40'
+New-Item -ItemType Directory -Path $pending | Out-Null
+Copy-Item -LiteralPath (Join-Path $root 'server-update\mods\goldclaim-1.0.40.jar') -Destination (Join-Path $pending 'goldclaim-1.0.40.jar.pending')
+Copy-Item -LiteralPath (Join-Path $root 'server-update\config\paxi\datapacks\gangs_kits\data\gangs\loot_tables\kits\monthly.json') -Destination (Join-Path $pending 'monthly.json')
+Copy-Item -LiteralPath (Join-Path $root 'server-update\config\randomcollections\config.json') -Destination (Join-Path $pending 'collections.json')
+@{
+    Version = '1.0.40'
+    JarSha256 = (Get-FileHash (Join-Path $pending 'goldclaim-1.0.40.jar.pending')).Hash
+    MonthlySha256 = (Get-FileHash (Join-Path $pending 'monthly.json')).Hash
+    CollectionsSha256 = (Get-FileHash (Join-Path $pending 'collections.json')).Hash
+    PreviousJarSha256 = 'unused-previous-jar-already-removed'
+    PreviousMonthlySha256 = (Get-FileHash (Join-Path $server 'config\paxi\datapacks\gangs_kits\data\gangs\loot_tables\kits\monthly.json')).Hash
+    PreviousCollectionsSha256 = (Get-FileHash (Join-Path $server 'config\randomcollections\config.json')).Hash
+} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $pending 'manifest.json')
 $portalsHash = (Get-FileHash (Join-Path $server 'config\multiworld\portals.yml')).Hash
+$payloadJar = Join-Path $root 'server-update\mods\goldclaim-1.0.40.jar'
+$verifiedJar = $payloadJar + '.verified'
+Move-Item -LiteralPath $payloadJar -Destination $verifiedJar
+try {
+    Write-Fixture $payloadJar 'corrupt-payload'
+    try {
+        & (Join-Path $root 'server-update\Install-ServerUpdate.ps1') -GameDirectory $server
+        throw 'Corrupt GoldClaim payload was accepted.'
+    } catch {
+        if ($_.Exception.Message -notmatch '^GoldClaim 1\.0\.40 payload checksum failed') { throw }
+    }
+    Assert-Preserved $hashes
+    Require ([IO.File]::ReadAllText((Join-Path $server 'mods\goldclaim-1.0.31.jar')) -ceq
+        'old-fixture-jar') 'Payload preflight failure removed the active jar.'
+    Require ([IO.File]::ReadAllText((Join-Path $server 'config\randomcollections\config.json')) -ceq
+        '{"old":"reward-configuration"}') 'Payload preflight failure replaced reward configuration.'
+} finally {
+    Remove-Item -LiteralPath $payloadJar
+    Move-Item -LiteralPath $verifiedJar -Destination $payloadJar
+}
 $installOutput = @(& (Join-Path $root 'server-update\Install-ServerUpdate.ps1') -GameDirectory $server -ResetRswEnd 3>&1 | ForEach-Object { "$_" })
 $installOutput | Write-Output
 Require (@($installOutput | Where-Object { $_ -match 'Pinned pre-loss snapshot for Kunoisback was not found' }).Count -eq 1) 'Recovery tool did not run or report the missing source.'
 Require (@($installOutput | Where-Object { $_ -match 'Kunoisback item recovery did not complete \(exit 3\)' }).Count -ge 1) 'Missing recovery source must warn without aborting.'
 Require (-not (Test-Path -LiteralPath (Join-Path $server 'world\goldclaim-recovery'))) 'Recovery marker written without a recovery.'
 Assert-Preserved $hashes
-Require (Test-Path -LiteralPath (Join-Path $server 'mods\goldclaim-1.0.36.jar')) 'New GoldClaim is missing.'
+Require (Test-Path -LiteralPath (Join-Path $server 'mods\goldclaim-1.0.40.jar')) 'New GoldClaim is missing.'
+Require ([IO.File]::ReadAllText((Join-Path $server 'start.bat')).Contains('goldclaim-1.0.40.jar')) 'Launcher retains an old jar pin.'
+Require ([IO.File]::ReadAllText((Join-Path $server 'start.bat')).Contains(
+    (Get-FileHash $payloadJar).Hash)) 'Launcher retains an old checksum pin.'
+foreach ($relative in @('paxi\datapacks\gangs_kits\data\gangs\loot_tables\kits\monthly.json',
+        'randomcollections\config.json')) {
+    Require ((Get-FileHash (Join-Path $server ('config\' + $relative))).Hash -eq
+        (Get-FileHash (Join-Path $root ('server-update\config\' + $relative))).Hash) "Reward repair missing: $relative"
+    $rewardBackup = @(Get-ChildItem (Join-Path $server 'backups') -Directory -Filter 'policy-v1.1.9-*')
+    Require ([IO.File]::ReadAllText((Join-Path $rewardBackup[0].FullName ('config\' + $relative))) -ceq
+        '{"old":"reward-configuration"}') "Original rewards were not backed up: $relative"
+}
+& (Join-Path $PSScriptRoot 'Install-PendingGameplayHotfix.ps1') -GameDirectory $server -Version 1.0.40
+Require (Test-Path -LiteralPath (Join-Path $pending 'manifest.applied.json')) 'Previously staged startup hook cannot complete after full release installation.'
 Require (-not (Test-Path -LiteralPath (Join-Path $server 'mods\goldclaim-1.0.31.jar'))) 'Old GoldClaim remains.'
 Require (-not (Test-Path -LiteralPath (Join-Path $server 'mods\gangshop-1.0.8.jar'))) 'Old Gang Shop remains.'
 Require (-not (Test-Path -LiteralPath (Join-Path $server 'mods\YungsBetterEndIsland-1.20-Fabric-2.0.6.jar'))) 'Better End Island remains.'

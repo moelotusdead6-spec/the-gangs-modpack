@@ -43,6 +43,30 @@ import net.minecraft.util.hit.BlockHitResult;
 public final class PolicySmokeTest implements ModInitializer {
     @Override
     public void onInitialize() {
+        if ("true".equals(System.getenv("GOLDCLAIM_CITY_LOOT_SMOKE"))) {
+            EndCityLootSmokeTest.register();
+            return;
+        }
+        if ("true".equals(System.getenv("GOLDCLAIM_BIOME_SMOKE"))) {
+            RswEndBiomeSmokeTest.register();
+            return;
+        }
+        if ("true".equals(System.getenv("GOLDCLAIM_KIT_SMOKE"))) {
+            KitRewardSmokeTest.register();
+            return;
+        }
+        if ("true".equals(System.getenv("GOLDCLAIM_CITY_SMOKE"))) {
+            EndCitySmokeTest.register();
+            return;
+        }
+        if ("true".equals(System.getenv("GOLDCLAIM_END_LOOT_SMOKE"))) {
+            BetterEndLootSmokeTest.register();
+            return;
+        }
+        if ("true".equals(System.getenv("GOLDCLAIM_GATEWAY_SMOKE"))) {
+            EndGatewaySmokeTest.register();
+            return;
+        }
         if ("true".equals(System.getenv("GOLDCLAIM_RSW_SMOKE"))) {
             RswDragonSmokeTest.register();
             return;

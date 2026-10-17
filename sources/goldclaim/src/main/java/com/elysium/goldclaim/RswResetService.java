@@ -19,6 +19,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.MinecraftServer;
@@ -186,7 +187,7 @@ final class RswResetService {
     }
 
     void tick(MinecraftServer server, Consumer<ServerPlayerEntity> evacuate,
-              BiConsumer<MinecraftServer, Long> create, Consumer<MinecraftServer> ready) {
+              BiConsumer<MinecraftServer, Long> create, Predicate<MinecraftServer> ready) {
         if (!this.initialized || System.currentTimeMillis() < this.retryAt) {
             return;
         }
@@ -320,13 +321,15 @@ final class RswResetService {
                     }
                     Object configuration = Class.forName("me.isaiah.multiworld.config.FileConfiguration")
                         .getConstructor(java.io.File.class).newInstance(config.toFile());
-                    long persistedSeed = ((Number)configuration.getClass().getMethod("getLong", String.class)
-                        .invoke(configuration, "seed")).longValue();
+                    long persistedSeed = persistedSeed(configuration.getClass().getMethod("getObject", String.class)
+                        .invoke(configuration, "seed"));
                     if (persistedSeed != this.state.seed) {
                         throw new IOException("Persisted Multiworld seed for " + sub + " does not match the new RSW seed");
                     }
                 }
-                ready.accept(server);
+                if (!ready.test(server)) {
+                    return;
+                }
                 clearResetStaging(server.getSavePath(WorldSavePath.ROOT), this.state.backup);
                 State completed = completedState(this.state, now);
                 this.save(completed);
@@ -349,6 +352,12 @@ final class RswResetService {
         }
     }
 
+    static long persistedSeed(Object value) {
+        if (value instanceof Long seed) return seed;
+        if (value instanceof Integer seed) return seed.longValue();
+        throw new IllegalArgumentException("Persisted Multiworld seed is not a signed integer: " + value);
+    }
+
     void tick(MinecraftServer server, ServerWorld world, Consumer<ServerPlayerEntity> evacuate,
               BiConsumer<MinecraftServer, Long> create, Consumer<ServerWorld> ready) {
         this.tick(server, evacuate, create, s -> {
@@ -356,6 +365,7 @@ final class RswResetService {
             if (w != null) {
                 ready.accept(w);
             }
+            return w != null;
         });
     }
 

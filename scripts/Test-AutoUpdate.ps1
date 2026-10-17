@@ -63,7 +63,8 @@ hash = "$hash"
 "@
     }
     $hashes = @{}
-    foreach ($relative in @('options.txt', 'servers.dat', 'servers.dat_old', 'defaultoptions.journal.json', 'config\personal-mod.json',
+    foreach ($relative in @('options.txt', 'optionsof.txt', 'optionsshaders.txt', 'servers.dat', 'servers.dat_old',
+            'defaultoptions.journal.json', 'config\defaultoptions\defaultoptions.journal.json', 'config\personal-mod.json',
             'mods\player-added-client-mod.jar')) {
         $path = Join-Path $game $relative
         Write-Fixture $path "personal-$relative"
@@ -86,7 +87,16 @@ hash = "$hash"
             Remove-Item -LiteralPath $grimMetadata
         }
         Write-Fixture (Join-Path $published 'config\defaultoptions\options.txt') "generation:$generation"
+        Write-Fixture (Join-Path $published 'config\defaultoptions\keybindings.txt') "key_key.forward:generation-$generation"
         Write-Fixture (Join-Path $published 'config\defaultoptions\servers.dat') "default-server-generation-$generation"
+        foreach ($relative in @('config\paxi\datapacks\gangs_kits\data\gangs\loot_tables\kits\monthly.json',
+                'config\randomcollections\config.json')) {
+            if ($generation -eq 1) {
+                Write-Fixture (Join-Path $published $relative) '{"old":"managed-reward-config"}'
+            } else {
+                Copy-Item -LiteralPath (Join-Path $repo $relative) -Destination (Join-Path $published $relative)
+            }
+        }
         Push-Location $published
         try {
             & packwiz refresh
@@ -131,6 +141,12 @@ hash = "$hash"
             Require ((Get-FileHash $path).Hash -ceq $hashes[$path]) "Automatic update replaced personal data: $path"
         }
         Require ([IO.File]::ReadAllText((Join-Path $game 'config\defaultoptions\options.txt')) -ceq "generation:$generation") 'Managed defaults did not update.'
+        Require ([IO.File]::ReadAllText((Join-Path $game 'config\defaultoptions\keybindings.txt')) -ceq "key_key.forward:generation-$generation") 'Managed keybinding defaults did not update.'
+        foreach ($relative in @('config\paxi\datapacks\gangs_kits\data\gangs\loot_tables\kits\monthly.json',
+                'config\randomcollections\config.json')) {
+            Require ((Get-FileHash (Join-Path $game $relative)).Hash -eq
+                (Get-FileHash (Join-Path $published $relative)).Hash) "Managed reward config did not update: $relative"
+        }
         Require (Test-Path -LiteralPath (Join-Path $game 'mods\client-fixture.jar')) 'Client mod was not installed.'
         Require (-not (Test-Path -LiteralPath (Join-Path $game 'mods\server-fixture.jar'))) 'Automatic client update installed a server-only mod.'
         Require ((Test-Path -LiteralPath (Join-Path $game 'mods\YungsBetterEndIsland-fixture.jar')) -eq ($generation -eq 1)) 'Automatic update did not remove the previously managed island mod.'
