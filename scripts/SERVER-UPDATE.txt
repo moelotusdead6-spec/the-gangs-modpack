@@ -1,4 +1,17 @@
-The Gangs Modpack v1.1.9 - server update
+The Gangs Modpack v1.1.13 - server update
+
+v1.1.13 (GoldClaim 1.0.43):
+- Includes all previous pending repairs plus grave-owner recovery and
+  tick-spread /tpa, /tpahere and /rtp terrain preparation.
+- The already-staged GoldClaim 1.0.43 startup hotfix remains compatible.
+  If it is already staged, the next normal start is sufficient; do not run
+  the stopped-server installer against a running server.
+- No early RSW reset is needed. Do NOT pass -ResetRswEnd.
+- Client JEI cleanup is separate: use client-update\Remove-ClientJei.ps1
+  while Minecraft and Prism are closed. REI is retained.
+- OpenBlocks Elevator 0.0.3 already centers both directions at X/Z + 0.5.
+  It has no centerPlayerOnTeleport property; no ineffective config was added.
+Detailed notes: docs/updates/v1.1.13.md in the ZIP.
 
 v1.1.9 (GoldClaim 1.0.40):
 - Repairs Monthly kit and bonus reward item IDs, with visible claim errors.
@@ -57,7 +70,7 @@ STOP THE SERVER and keep a world backup before applying this update.
 Run PowerShell:
   powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Install-ServerUpdate.ps1 -GameDirectory "C:\path\to\server"
 
-The installer requires Java 17+ and installs GoldClaim 1.0.40.
+The installer requires Java 17+ and installs GoldClaim 1.0.43.
 If Java is not on PATH, add -JavaExecutable "C:\path\to\java.exe".
 It backs up touched files, purges original Nether/End teleport destinations,
 removes YUNG's Better End Island and routes the retained True Ending

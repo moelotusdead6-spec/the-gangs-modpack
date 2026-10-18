@@ -6,7 +6,7 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "baccd73f3efbe2c00d9e57f2fc0f54f079a0bac55b4a0a5a0b2c9442f614c395"
+hash = "8da782c6acf3ad992630eb482bd6638a9add1423a07d34dd4ea3c78aa196e1fb"
 
 [[files]]
 file = "README.md"
@@ -538,7 +538,7 @@ hash = "d022c03cd1366878024d932aca7e3eda35a9f19e87bac7fc11bf8e1521d36ac7"
 
 [[files]]
 file = "index.html"
-hash = "8d17891157b28dac78d7198ade0da0cef1b62cf29fcfe10819c2f0535f8d23c3"
+hash = "748f55333c36a9c2000c70ceaf88fc1aa023a1fb1229f01a9ee080ffd5f7cf22"
 
 [[files]]
 file = "mods/.gitkeep"
@@ -1296,7 +1296,7 @@ metafile = true
 
 [[files]]
 file = "mods/goldclaim-direct.pw.toml"
-hash = "2619e0615116df790df88ff97098feceb0ae21d1b76d5dad24252d8edd5695c3"
+hash = "5ae5318c58dc7bd671fd6d3de74cb85490aac3b094bce12effcfe9d851723e5a"
 metafile = true
 
 [[files]]

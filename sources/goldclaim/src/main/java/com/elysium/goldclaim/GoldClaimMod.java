@@ -217,6 +217,7 @@ implements ModInitializer {
     private SelectionManager selectionManager;
     private final KitService kitService = new KitService();
     private final RswResetService rswResetService = new RswResetService();
+    private final TeleportPreparation teleportPreparation = new TeleportPreparation(this.rswResetService);
     private final RswEndCityService rswEndCities = new RswEndCityService();
     private ChunkGenerator rswEndGenerator;
     private final RswEntrySearch rswEntrySearch = new RswEntrySearch(
@@ -482,6 +483,9 @@ implements ModInitializer {
                     this.deny(serverPlayer, "This portal base is locked. Use /claim portal remove <id> as an op.");
                 }
                 return false;
+            }
+            if (player instanceof ServerPlayerEntity serverPlayer && this.isUniversalGraveOwner(serverPlayer, world, pos)) {
+                return true;
             }
             boolean allowed = this.claimManager.canModify(player.getUuid(), player.getGameProfile().getName(), player.hasPermissionLevel(2), dimensionId, pos.getX(), pos.getZ());
             if (!allowed && player instanceof ServerPlayerEntity) {
@@ -858,6 +862,7 @@ implements ModInitializer {
                     return rswEnd != null && this.rswEndCities.prepare(rswEnd);
                 });
             this.rswEntrySearch.tick();
+            this.teleportPreparation.tick();
             if (server.getTicks() % 20 == 0) {
                 DifficultySync.sync(server);
             }
@@ -1388,12 +1393,27 @@ implements ModInitializer {
         }
         ServerPlayerEntity teleportingPlayer = request.requestType == TeleportRequestType.REQUESTER_TO_TARGET ? requester : target;
         ServerPlayerEntity destinationPlayer = request.requestType == TeleportRequestType.REQUESTER_TO_TARGET ? target : requester;
-        ServerWorld destinationWorld = destinationPlayer.getServerWorld();
-        this.loadDestinationArea(destinationWorld, destinationPlayer.getX(), destinationPlayer.getZ());
-        teleportingPlayer.teleport(destinationWorld, destinationPlayer.getX(), destinationPlayer.getY(), destinationPlayer.getZ(), destinationPlayer.getYaw(), destinationPlayer.getPitch());
+        if (!this.preparePlayerTeleport(teleportingPlayer, destinationPlayer)) return 0;
         requester.sendMessage((Text)Text.literal((String)(target.getName().getString() + " accepted your teleport request.")), false);
         target.sendMessage((Text)Text.literal((String)("You accepted " + requester.getName().getString() + "'s teleport request.")), false);
         return 1;
+    }
+
+    boolean preparePlayerTeleport(ServerPlayerEntity teleportingPlayer, ServerPlayerEntity destinationPlayer) {
+        ServerWorld destinationWorld = destinationPlayer.getServerWorld();
+        if (LegacyDimensionPolicy.deny(teleportingPlayer, destinationWorld)) return false;
+        Vec3d destination = destinationPlayer.getPos();
+        float yaw = destinationPlayer.getYaw();
+        float pitch = destinationPlayer.getPitch();
+        return this.teleportPreparation.request(teleportingPlayer, destinationWorld,
+            () -> new TeleportPreparation.Destination(BlockPos.ofFloored(destination),
+                () -> {
+                    teleportingPlayer.teleport(destinationWorld, destination.x, destination.y, destination.z, yaw, pitch);
+                    return true;
+                }),
+            () -> !destinationPlayer.isDisconnected() && destinationPlayer.isAlive() && !destinationPlayer.isRemoved()
+                && destinationPlayer.getServerWorld() == destinationWorld,
+            "Teleported to " + destinationPlayer.getName().getString() + ".");
     }
 
     private int declineTeleportRequest(ServerCommandSource source) {
@@ -1801,10 +1821,11 @@ implements ModInitializer {
             if (grave == null) {
                 return false;
             }
-            Method isOwner = grave.getClass().getMethod("isOwner", ServerPlayerEntity.class);
-            return Boolean.TRUE.equals(isOwner.invoke(grave, player));
+            Object profile = grave.getClass().getMethod("getProfile").invoke(grave);
+            return profile instanceof GameProfile owner && player.getUuid().equals(owner.getId());
         }
         catch (ReflectiveOperationException e) {
+            LOGGER.error("Could not check Universal Graves ownership at {} for {}.", pos, player.getUuid(), e);
             return false;
         }
     }
@@ -2291,12 +2312,7 @@ implements ModInitializer {
             source.sendError((Text)Text.literal((String)"Only players can run this command."));
             return 0;
         }
-        if (!this.randomTeleport(player)) {
-            return 0;
-        }
-        String label = RSW_DIMENSION.equals(player.getServerWorld().getRegistryKey().getValue().toString()) ? "RSW" : "the overworld";
-        source.sendFeedback(() -> Text.literal("Randomly teleported in " + label + "."), false);
-        return 1;
+        return this.randomTeleport(player) ? 1 : 0;
     }
 
     static int minimumRtpCoordinate(double borderEdge, int margin) {
@@ -2344,24 +2360,24 @@ implements ModInitializer {
             player.sendMessage(Text.literal("RSW's border is too small for safe random teleport."), false);
             return false;
         }
-        for (int attempt = 0; attempt < attempts; ++attempt) {
+        int[] remaining = {attempts};
+        return this.teleportPreparation.request(player, targetWorld, () -> {
+            if (remaining[0]-- <= 0) return null;
             double angle = random.nextDouble(Math.PI * 2.0);
             double distance = Math.sqrt(random.nextDouble()) * (double)radius;
             int x = inRsw ? random.nextInt(minX, maxX + 1) : spawn.getX() + (int)Math.round(Math.cos(angle) * distance);
             int z = inRsw ? random.nextInt(minZ, maxZ + 1) : spawn.getZ() + (int)Math.round(Math.sin(angle) * distance);
-            targetWorld.getChunk(Math.floorDiv(x, 16), Math.floorDiv(z, 16));
-            int y = targetWorld.getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, x, z);
-            BlockPos feetPos = new BlockPos(x, y, z);
-            if (!this.isSafeRandomTeleportDestination(targetWorld, feetPos)) {
-                continue;
-            }
-            this.pendingHubTeleports.remove(player.getUuid());
-            player.teleport(targetWorld, (double)x + 0.5, (double)y, (double)z + 0.5, player.getYaw(), player.getPitch());
-            this.syncPlayerBorder(player);
-            return true;
-        }
-        player.sendMessage((Text)Text.literal((String)"Could not find a safe random teleport location. Try again."));
-        return false;
+            return new TeleportPreparation.Destination(new BlockPos(x, 0, z), () -> {
+                int y = targetWorld.getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, x, z);
+                BlockPos feetPos = new BlockPos(x, y, z);
+                if (!targetWorld.isInBuildLimit(feetPos.up())
+                        || !border.contains(feetPos) || !this.isSafeRandomTeleportDestination(targetWorld, feetPos)) return false;
+                this.pendingHubTeleports.remove(player.getUuid());
+                player.teleport(targetWorld, x + 0.5, y, z + 0.5, player.getYaw(), player.getPitch());
+                this.syncPlayerBorder(player);
+                return true;
+            });
+        }, () -> true, "Randomly teleported in " + (inRsw ? "RSW" : "the overworld") + ".");
     }
 
     private boolean isSafeRandomTeleportDestination(ServerWorld world, BlockPos feetPos) {

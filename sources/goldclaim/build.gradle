@@ -38,7 +38,7 @@ dependencies {
 	if (project.hasProperty('smokePlushieJar')) {
 		modRuntimeOnly files(project.property('smokePlushieJar'))
 	}
-	for (propertyName in ['smokeMultiworldJar', 'smokeTrueEndingJar', 'smokeFantasyJar']) {
+	for (propertyName in ['smokeMultiworldJar', 'smokeTrueEndingJar', 'smokeFantasyJar', 'smokeGravesJar']) {
 		if (project.hasProperty(propertyName)) {
 			modRuntimeOnly files(project.property(propertyName))
 		}

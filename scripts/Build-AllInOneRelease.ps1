@@ -74,8 +74,9 @@ try {
     Copy-Entry 'docs/updates/v1.1.7.md' (Join-Path $repo 'docs\updates\v1.1.7.md')
     Copy-Entry 'docs/updates/v1.1.8.md' (Join-Path $repo 'docs\updates\v1.1.8.md')
     Copy-Entry 'docs/updates/v1.1.12.md' (Join-Path $repo 'docs\updates\v1.1.12.md')
+    Copy-Entry 'docs/updates/v1.1.13.md' (Join-Path $repo 'docs\updates\v1.1.13.md')
     Copy-Entry 'server-update/README.txt' (Join-Path $PSScriptRoot 'SERVER-UPDATE.txt')
-    Copy-Entry 'server-update/mods/goldclaim-1.0.42.jar' (Join-Path $repo 'artifacts\goldclaim-1.0.42.jar')
+    Copy-Entry 'server-update/mods/goldclaim-1.0.43.jar' (Join-Path $repo 'artifacts\goldclaim-1.0.43.jar')
     Copy-Entry 'server-update/tools/gangs-teleport-purge-1.0.1.jar' (Join-Path $repo 'artifacts\gangs-teleport-purge-1.0.1.jar')
     Copy-Entry 'server-update/tools/gangs-player-recovery-1.0.0.jar' (Join-Path $repo 'artifacts\gangs-player-recovery-1.0.0.jar')
     Copy-Entry 'server-update/mods/gangshop-1.0.9.jar' (Join-Path $repo 'artifacts\gangshop-1.0.9.jar')
@@ -129,6 +130,7 @@ try {
         Copy-Entry ($prefix + 'Install-ResourcePackDefaults.ps1') (Join-Path $PSScriptRoot 'Install-ResourcePackDefaults.ps1')
     }
     Copy-Entry 'client-update/Install-ClientUpdate.ps1' (Join-Path $PSScriptRoot 'Install-ClientUpdate.ps1')
+    Copy-Entry 'client-update/Remove-ClientJei.ps1' (Join-Path $PSScriptRoot 'Remove-ClientJei.ps1')
     Copy-Entry 'client-update/Get-PrismAutoUpdateConfig.ps1' (Join-Path $PSScriptRoot 'Get-PrismAutoUpdateConfig.ps1')
     Copy-Entry 'client-update/Repair-PrismAutoUpdate.ps1' (Join-Path $PSScriptRoot 'Repair-PrismAutoUpdate.ps1')
     Copy-Entry 'client-update/README.txt' (Join-Path $PSScriptRoot 'CLIENT-UPDATE.txt')
@@ -139,7 +141,7 @@ try {
         }
     }
     $instance = Read-Entry 'instance.cfg'
-    $instance = [regex]::Replace($instance, '(?m)^name=[^\r\n]*', 'name=The Gangs Modpack v1.1.12')
+    $instance = [regex]::Replace($instance, '(?m)^name=[^\r\n]*', 'name=The Gangs Modpack v1.1.13')
     $instance = Get-PrismAutoUpdateConfig $instance
     Write-Entry 'instance.cfg' ($utf8.GetBytes($instance))
     $options = [IO.File]::ReadAllText((Join-Path $repo 'config\defaultoptions\options.txt'))
@@ -166,7 +168,7 @@ try {
         throw 'Removed mod remains in the ZIP.'
     }
     $goldclaim = @($zip.Entries | Where-Object { $_.FullName -match '^server-update/mods/goldclaim-.*\.jar$' })
-    if ($goldclaim.Count -ne 1 -or $goldclaim[0].Name -ne 'goldclaim-1.0.42.jar') {
+    if ($goldclaim.Count -ne 1 -or $goldclaim[0].Name -ne 'goldclaim-1.0.43.jar') {
         throw 'Wrong or duplicate GoldClaim server-update jar.'
     }
     foreach ($name in @('server-update/mods/soulsbackpackscompat-1.1.0.jar',
@@ -244,7 +246,7 @@ try {
     $stream = $goldclaim[0].Open()
     try { $actual = [BitConverter]::ToString($hash.ComputeHash($stream)).Replace('-', '') }
     finally { $stream.Dispose(); $hash.Dispose() }
-    if ($actual -ne (Get-FileHash (Join-Path $repo 'artifacts\goldclaim-1.0.42.jar') -Algorithm SHA256).Hash) {
+    if ($actual -ne (Get-FileHash (Join-Path $repo 'artifacts\goldclaim-1.0.43.jar') -Algorithm SHA256).Hash) {
         throw 'Packaged GoldClaim does not match the built artifact.'
     }
     $utility = $zip.GetEntry('server-update/tools/gangs-teleport-purge-1.0.1.jar')
@@ -296,7 +298,8 @@ try {
     }
     foreach ($name in @('minecraft/config/defaultoptions/options.txt', 'minecraft/config/defaultoptions/keybindings.txt',
             'minecraft/config/defaultoptions/servers.dat', 'packwiz-installer-bootstrap.jar',
-            'client-update/Install-ClientUpdate.ps1', 'server-update/Install-ServerUpdate.ps1')) {
+            'client-update/Install-ClientUpdate.ps1', 'client-update/Remove-ClientJei.ps1',
+            'server-update/Install-ServerUpdate.ps1')) {
         if (-not $zip.GetEntry($name)) { throw "Required release entry missing: $name" }
     }
     if ($zip.GetEntry('minecraft/options.txt') -or $zip.GetEntry('minecraft/servers.dat')) {

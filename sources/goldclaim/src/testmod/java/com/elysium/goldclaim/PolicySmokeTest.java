@@ -43,6 +43,14 @@ import net.minecraft.util.hit.BlockHitResult;
 public final class PolicySmokeTest implements ModInitializer {
     @Override
     public void onInitialize() {
+        if ("true".equals(System.getenv("GOLDCLAIM_TELEPORT_SMOKE"))) {
+            TeleportSmokeTest.register();
+            return;
+        }
+        if ("true".equals(System.getenv("GOLDCLAIM_GRAVE_SMOKE"))) {
+            GraveClaimSmokeTest.register();
+            return;
+        }
         if ("true".equals(System.getenv("GOLDCLAIM_CITY_LOOT_SMOKE"))) {
             EndCityLootSmokeTest.register();
             return;

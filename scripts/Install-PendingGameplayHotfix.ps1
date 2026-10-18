@@ -1,12 +1,12 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $true)][string]$GameDirectory,
-    [ValidateSet('1.0.39', '1.0.40', '1.0.41', '1.0.42')][string]$Version = '1.0.39'
+    [ValidateSet('1.0.39', '1.0.40', '1.0.41', '1.0.42', '1.0.43')][string]$Version = '1.0.39'
 )
 
 $ErrorActionPreference = 'Stop'
 $game = (Resolve-Path -LiteralPath $GameDirectory).Path
-$previousVersion = switch ($Version) { '1.0.42' { '1.0.41' } '1.0.41' { '1.0.40' } '1.0.40' { '1.0.39' } default { '1.0.38' } }
+$previousVersion = switch ($Version) { '1.0.43' { '1.0.42' } '1.0.42' { '1.0.41' } '1.0.41' { '1.0.40' } '1.0.40' { '1.0.39' } default { '1.0.38' } }
 $pending = Join-Path $game "pending-gameplay-$Version"
 $manifestPath = Join-Path $pending 'manifest.json'
 if (-not (Test-Path -LiteralPath $manifestPath -PathType Leaf)) { return }

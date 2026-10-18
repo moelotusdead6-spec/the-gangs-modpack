@@ -1,4 +1,12 @@
-The Gangs Modpack v1.1.3 - automatic client updates
+The Gangs Modpack v1.1.13 - automatic client updates and JEI cleanup
+
+JEI CLEANUP FOR EXISTING AUTO-UPDATING CLIENTS:
+Close Minecraft and Prism, then run the small, standalone cleanup:
+  powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Remove-ClientJei.ps1 -GameDirectory "C:\path\to\your\existing\instance\minecraft"
+It moves JEI jars (including .jar.pending files) into a dated backup outside
+mods. REI, other mods, launcher configuration and personal settings are unchanged.
+The full setup below also removes JEI. Do not run both unless desired.
+A server restart cannot remove a client's leftover, unmanaged JEI jar.
 
 EXISTING PLAYERS: Close Minecraft and Prism Launcher. Extract this ZIP somewhere outside your
 instance, then run this ONE-TIME setup against the existing Prism game root

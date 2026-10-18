@@ -1,5 +1,17 @@
 # Updating The Gangs Modpack
 
+## v1.1.13 restart bundle and JEI cleanup
+
+The v1.1.13 bundle includes the pending GoldClaim 1.0.43 hotfix. Normal
+auto-updating Prism clients keep their instance and press Play; Packwiz removes
+previously managed JEI. For leftover unmanaged JEI, close Minecraft and Prism, then
+run `client-update/Remove-ClientJei.ps1 -GameDirectory '<existing game directory>'`
+from the extracted bundle, or use the full client installer. REI and personal
+settings are preserved. A server restart alone cannot remove client JEI.
+OpenBlocks Elevator already centers both directions and does not expose the
+suggested boolean; the reported in-game issue is not yet reproduced.
+See [v1.1.13 details](v1.1.13.md).
+
 ## Keep one Prism instance
 
 Keep the same Prism instance and press Play for normal client pack updates.

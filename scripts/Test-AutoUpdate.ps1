@@ -77,14 +77,17 @@ hash = "$hash"
     foreach ($generation in 1..2) {
         $islandMetadata = Join-Path $published 'mods\removed-island.pw.toml'
         $grimMetadata = Join-Path $published 'mods\grimac.pw.toml'
+        $jeiMetadata = Join-Path $published 'mods\jei.pw.toml'
         if ($generation -eq 1) {
             $island = [IO.File]::ReadAllText((Join-Path $published 'mods\client.pw.toml'))
             Write-Fixture $islandMetadata ($island.Replace('client-fixture.jar', 'YungsBetterEndIsland-fixture.jar'))
             $grim = $island.Replace('client-fixture.jar', 'grimac-fabric-fixture.jar').Replace('side = "client"', 'side = "both"')
             Write-Fixture $grimMetadata $grim
+            Write-Fixture $jeiMetadata ($island.Replace('client-fixture.jar', 'jei-fabric-fixture.jar'))
         } else {
             Remove-Item -LiteralPath $islandMetadata
             Remove-Item -LiteralPath $grimMetadata
+            Remove-Item -LiteralPath $jeiMetadata
         }
         Write-Fixture (Join-Path $published 'config\defaultoptions\options.txt') "generation:$generation"
         Write-Fixture (Join-Path $published 'config\defaultoptions\keybindings.txt') "key_key.forward:generation-$generation"
@@ -151,7 +154,8 @@ hash = "$hash"
         Require (-not (Test-Path -LiteralPath (Join-Path $game 'mods\server-fixture.jar'))) 'Automatic client update installed a server-only mod.'
         Require ((Test-Path -LiteralPath (Join-Path $game 'mods\YungsBetterEndIsland-fixture.jar')) -eq ($generation -eq 1)) 'Automatic update did not remove the previously managed island mod.'
         Require ((Test-Path -LiteralPath (Join-Path $game 'mods\grimac-fabric-fixture.jar')) -eq ($generation -eq 1)) 'Automatic update did not remove the previously managed GrimAC mod.'
+        Require ((Test-Path -LiteralPath (Join-Path $game 'mods\jei-fabric-fixture.jar')) -eq ($generation -eq 1)) 'Automatic update did not remove previously managed JEI.'
     }
-    Write-Output 'PASS: two real headless Packwiz updates; managed defaults updated, personal options/server lists and player-added mod jars stayed byte-identical, root preference exclusions worked, and server-only mods were skipped.'
+    Write-Output 'PASS: two real headless Packwiz updates; previously managed JEI removed, managed defaults updated, personal options/server lists and player-added mod jars stayed byte-identical, root preference exclusions worked, and server-only mods were skipped.'
 } finally { $listener.Stop(); $listener.Close() }
 Remove-Item -LiteralPath $root -Recurse

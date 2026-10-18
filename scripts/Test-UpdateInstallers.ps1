@@ -58,6 +58,11 @@ $personal = @{
 }
 $hashes = @{}
 Write-Fixture (Join-Path $game 'mods\grimac-fabric-2.3.74-fixture.jar') 'removed-client-anticheat'
+Write-Fixture (Join-Path $game 'mods\jei-1.20.1-fabric-fixture.jar') 'removed-client-jei'
+Write-Fixture (Join-Path $game 'mods\JEI-fixture.jar.pending') 'removed-pending-client-jei'
+Write-Fixture (Join-Path $game 'mods\RoughlyEnoughItems-fixture.jar') 'preserved-client-rei'
+$hashes[(Join-Path $game 'mods\RoughlyEnoughItems-fixture.jar')] =
+    (Get-FileHash (Join-Path $game 'mods\RoughlyEnoughItems-fixture.jar')).Hash
 Write-Fixture (Join-Path $game 'mods\badpackets-fabric-fixture.jar') 'unrelated-client-library'
 $hashes[(Join-Path $game 'mods\badpackets-fabric-fixture.jar')] =
     (Get-FileHash (Join-Path $game 'mods\badpackets-fabric-fixture.jar')).Hash
@@ -70,7 +75,7 @@ function Get-CimInstance {
     param([string]$ClassName)
     [pscustomobject]@{ Name = 'prismlauncher.exe'; ProcessId = 1; CommandLine = '' }
 }
-foreach ($script in @('Install-ClientUpdate.ps1', 'Repair-PrismAutoUpdate.ps1')) {
+foreach ($script in @('Install-ClientUpdate.ps1', 'Repair-PrismAutoUpdate.ps1', 'Remove-ClientJei.ps1')) {
     $before = (Get-FileHash (Join-Path $instance 'instance.cfg')).Hash
     try {
         & (Join-Path $root ('client-update\' + $script)) -GameDirectory $game
@@ -81,6 +86,7 @@ foreach ($script in @('Install-ClientUpdate.ps1', 'Repair-PrismAutoUpdate.ps1'))
     Require ((Get-FileHash (Join-Path $instance 'instance.cfg')).Hash -ceq $before) 'Open-launcher rejection changed configuration.'
     Assert-Preserved $hashes
     Require (Test-Path (Join-Path $game 'mods\grimac-fabric-2.3.74-fixture.jar')) 'Open-launcher rejection removed a mod.'
+    Require (Test-Path (Join-Path $game 'mods\jei-1.20.1-fabric-fixture.jar')) 'Open-launcher rejection removed JEI.'
 }
 # The disposable instance is not owned by the user's running Prism process.
 function Get-CimInstance {
@@ -91,7 +97,29 @@ foreach ($run in 1..2) {
     & (Join-Path $root 'client-update\Install-ClientUpdate.ps1') -GameDirectory $game
     Assert-Preserved $hashes
     Require (-not (Test-Path (Join-Path $game 'mods\grimac-fabric-2.3.74-fixture.jar'))) 'Manual client installer retained GrimAC.'
+    Require (-not @(Get-ChildItem (Join-Path $game 'mods') -File | Where-Object {
+        $_.Name -match '^jei-.*\.jar(?:\.pending)?$'
+    }).Count) 'Manual client installer retained JEI.'
 }
+$jeiBackups = @(Get-ChildItem (Join-Path $game 'backups') -Recurse -File | Where-Object {
+    $_.Name -match '^jei-.*\.jar(?:\.pending)?$'
+})
+Require ($jeiBackups.Count -eq 2) 'Manual client installer did not back up both JEI files.'
+Write-Fixture (Join-Path $game 'mods\jei-standalone.jar') 'standalone-jei'
+Write-Fixture (Join-Path $game 'mods\jei-standalone.jar.pending') 'standalone-pending-jei'
+$beforeCleanupConfig = (Get-FileHash (Join-Path $instance 'instance.cfg')).Hash
+foreach ($run in 1..2) {
+    & (Join-Path $root 'client-update\Remove-ClientJei.ps1') -GameDirectory $game
+    Assert-Preserved $hashes
+    Require ((Get-FileHash (Join-Path $instance 'instance.cfg')).Hash -eq $beforeCleanupConfig) 'JEI cleanup modified Prism configuration.'
+    Require (-not @(Get-ChildItem (Join-Path $game 'mods') -File | Where-Object {
+        $_.Name -match '^jei-.*\.jar(?:\.pending)?$'
+    }).Count) 'Standalone cleanup retained JEI.'
+}
+$standaloneBackups = @(Get-ChildItem (Join-Path $game 'backups') -Directory -Filter 'client-jei-removal-*')
+Require ($standaloneBackups.Count -eq 1) 'Repeated JEI cleanup should not create another backup.'
+Require ([IO.File]::ReadAllText((Join-Path $standaloneBackups[0].FullName 'jei-standalone.jar')) -ceq 'standalone-jei') 'Standalone JEI backup changed.'
+Require ([IO.File]::ReadAllText((Join-Path $standaloneBackups[0].FullName 'jei-standalone.jar.pending')) -ceq 'standalone-pending-jei') 'Pending JEI backup changed.'
 $cfg = [IO.File]::ReadAllText((Join-Path $instance 'instance.cfg'))
 Require ($cfg -match '(?ms)^\[General\]\s+OverrideCommands=true\s+PreLaunchCommand=.* -s client .*?\s+PreLaunchCommandIgnoreExitCode=false') 'Prism auto-update keys are not in [General].'
 Require ([regex]::Matches($cfg, '(?m)^PreLaunchCommand=').Count -eq 1) 'Duplicate prelaunch commands.'
@@ -182,14 +210,14 @@ foreach ($relative in @('paxi\datapacks\gangs_kits\data\gangs\loot_tables\kits\m
         'randomcollections\config.json')) {
     Write-Fixture (Join-Path $server ('config\' + $relative)) '{"old":"reward-configuration"}'
 }
-$pending = Join-Path $server 'pending-gameplay-1.0.42'
+$pending = Join-Path $server 'pending-gameplay-1.0.43'
 New-Item -ItemType Directory -Path $pending | Out-Null
-Copy-Item -LiteralPath (Join-Path $root 'server-update\mods\goldclaim-1.0.42.jar') -Destination (Join-Path $pending 'goldclaim-1.0.42.jar.pending')
+Copy-Item -LiteralPath (Join-Path $root 'server-update\mods\goldclaim-1.0.43.jar') -Destination (Join-Path $pending 'goldclaim-1.0.43.jar.pending')
 Copy-Item -LiteralPath (Join-Path $root 'server-update\config\paxi\datapacks\gangs_kits\data\gangs\loot_tables\kits\monthly.json') -Destination (Join-Path $pending 'monthly.json')
 Copy-Item -LiteralPath (Join-Path $root 'server-update\config\randomcollections\config.json') -Destination (Join-Path $pending 'collections.json')
 @{
-    Version = '1.0.42'
-    JarSha256 = (Get-FileHash (Join-Path $pending 'goldclaim-1.0.42.jar.pending')).Hash
+    Version = '1.0.43'
+    JarSha256 = (Get-FileHash (Join-Path $pending 'goldclaim-1.0.43.jar.pending')).Hash
     MonthlySha256 = (Get-FileHash (Join-Path $pending 'monthly.json')).Hash
     CollectionsSha256 = (Get-FileHash (Join-Path $pending 'collections.json')).Hash
     PreviousJarSha256 = 'unused-previous-jar-already-removed'
@@ -197,7 +225,7 @@ Copy-Item -LiteralPath (Join-Path $root 'server-update\config\randomcollections\
     PreviousCollectionsSha256 = (Get-FileHash (Join-Path $server 'config\randomcollections\config.json')).Hash
 } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $pending 'manifest.json')
 $portalsHash = (Get-FileHash (Join-Path $server 'config\multiworld\portals.yml')).Hash
-$payloadJar = Join-Path $root 'server-update\mods\goldclaim-1.0.42.jar'
+$payloadJar = Join-Path $root 'server-update\mods\goldclaim-1.0.43.jar'
 $verifiedJar = $payloadJar + '.verified'
 Move-Item -LiteralPath $payloadJar -Destination $verifiedJar
 try {
@@ -206,7 +234,7 @@ try {
         & (Join-Path $root 'server-update\Install-ServerUpdate.ps1') -GameDirectory $server
         throw 'Corrupt GoldClaim payload was accepted.'
     } catch {
-        if ($_.Exception.Message -notmatch '^GoldClaim 1\.0\.42 payload checksum failed') { throw }
+        if ($_.Exception.Message -notmatch '^GoldClaim 1\.0\.43 payload checksum failed') { throw }
     }
     Assert-Preserved $hashes
     Require ([IO.File]::ReadAllText((Join-Path $server 'mods\goldclaim-1.0.31.jar')) -ceq
@@ -223,8 +251,8 @@ Require (@($installOutput | Where-Object { $_ -match 'Pinned pre-loss snapshot f
 Require (@($installOutput | Where-Object { $_ -match 'Kunoisback item recovery did not complete \(exit 3\)' }).Count -ge 1) 'Missing recovery source must warn without aborting.'
 Require (-not (Test-Path -LiteralPath (Join-Path $server 'world\goldclaim-recovery'))) 'Recovery marker written without a recovery.'
 Assert-Preserved $hashes
-Require (Test-Path -LiteralPath (Join-Path $server 'mods\goldclaim-1.0.42.jar')) 'New GoldClaim is missing.'
-Require ([IO.File]::ReadAllText((Join-Path $server 'start.bat')).Contains('goldclaim-1.0.42.jar')) 'Launcher retains an old jar pin.'
+Require (Test-Path -LiteralPath (Join-Path $server 'mods\goldclaim-1.0.43.jar')) 'New GoldClaim is missing.'
+Require ([IO.File]::ReadAllText((Join-Path $server 'start.bat')).Contains('goldclaim-1.0.43.jar')) 'Launcher retains an old jar pin.'
 Require ([IO.File]::ReadAllText((Join-Path $server 'start.bat')).Contains(
     (Get-FileHash $payloadJar).Hash)) 'Launcher retains an old checksum pin.'
 foreach ($relative in @('paxi\datapacks\gangs_kits\data\gangs\loot_tables\kits\monthly.json',
@@ -235,7 +263,7 @@ foreach ($relative in @('paxi\datapacks\gangs_kits\data\gangs\loot_tables\kits\m
     Require ([IO.File]::ReadAllText((Join-Path $rewardBackup[0].FullName ('config\' + $relative))) -ceq
         '{"old":"reward-configuration"}') "Original rewards were not backed up: $relative"
 }
-& (Join-Path $PSScriptRoot 'Install-PendingGameplayHotfix.ps1') -GameDirectory $server -Version 1.0.42
+& (Join-Path $PSScriptRoot 'Install-PendingGameplayHotfix.ps1') -GameDirectory $server -Version 1.0.43
 Require (Test-Path -LiteralPath (Join-Path $pending 'manifest.applied.json')) 'Previously staged startup hook cannot complete after full release installation.'
 Require (-not (Test-Path -LiteralPath (Join-Path $server 'mods\goldclaim-1.0.31.jar'))) 'Old GoldClaim remains.'
 Require (-not (Test-Path -LiteralPath (Join-Path $server 'mods\gangshop-1.0.8.jar'))) 'Old Gang Shop remains.'

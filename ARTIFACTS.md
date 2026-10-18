@@ -1,5 +1,73 @@
 # Published Artifacts
 
+## GoldClaim 1.0.43 - grave recovery and teleport tick-stall hotfix
+
+The server-only Packwiz entry selects `artifacts/goldclaim-1.0.43.jar`,
+superseding 1.0.42. Grave owners can right-click or break their own Universal
+Graves grave inside another player's claim without claim trust. Ownership is
+checked using the grave's `getProfile()` UUID: the pinned Universal Graves
+3.0.3 has no `isOwner(ServerPlayerEntity)` method, so the previous reflective
+check silently denied the exception. API lookup failures now produce an error
+log and do not bypass protection.
+
+Other players' graves, ordinary blocks and inventories keep their existing
+claim protections. Claim trust is not changed. PVP block-breaking restrictions
+and locked portal bases still take precedence. Universal Graves retains its
+own recovery rules; this exception only bypasses GoldClaim's claim checks.
+
+Accepted `/tpa` and `/tpahere` requests and `/rtp` now prepare a ticketed 3x3
+destination chunk area across server ticks rather than synchronously loading or
+generating it inside the command handler. Players remain in their original
+world until terrain is ready. Random candidates retain the existing attempt
+limit, safety checks, dimension restrictions and 250-block RSW border inset;
+unsafe candidates are retried across ticks. Success is announced only after
+arrival. Terrain generation can still take time and consume CPU; this change
+removes the blocking command-side wait, not all sources of server lag.
+
+Only one preparation per player is allowed. Preparation cancels on player
+death/disconnect, a source-world change, destination-world replacement or an
+RSW reset/generation change, and times out explicitly after 120 seconds. For
+accepted player requests, the destination player's accepted position/rotation
+is retained. Either player may walk while terrain loads without cancelling
+`/tpa` or `/tpahere`: arrival stays at the accepted location, not the destination
+player's latest position. Destination death, disconnect or a world change
+still cancels the request. Held chunk tickets are released after completion,
+cancellation, exhausted candidates or failure. Other teleport routes are
+unchanged.
+
+SHA256: `8bb60d17a06799a9f0847b4b1b31972cf010c85d6625418c6c4fee3aa192bec7`.
+
+Stage for the next normal restart (does not hot-load the mod):
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\Stage-GameplayHotfix.ps1 -GameDirectory '<server directory>' -Version 1.0.43
+```
+
+The grave regression fixture runs against the real pinned Graves jar and checks
+owner recovery permissions, UUID/name impersonation, unrelated grave protection,
+ordinary block/inventory protection, and unchanged claim trust. From
+`sources/goldclaim`, with the accepted fixture EULA and extracted nested Graves
+dependencies plus the existing smoke-test dependencies:
+
+```powershell
+$env:GOLDCLAIM_GRAVE_SMOKE = 'true'
+.\gradlew.bat runPolicySmoke "-PsmokeGravesJar=<Graves 3.0.3 jar>" "-PsmokeModsDir=<smoke dependencies directory>" --console=plain
+```
+
+The production-remapped teleport fixture uses `GOLDCLAIM_TELEPORT_SMOKE=true`
+and the same smoke mod, with Multiworld, BetterEnd, the real Teleport Optimizer
+and their dependencies. It checks cold cross-world RSW End arrival, continued
+server ticks during generation, enqueue latency below 250ms, preparation ticks
+below 1000ms, duplicate rejection, movement without cancellation or destination
+tracking, target death cancellation, and the
+actual RSW `/rtp` command's safe, border-inset landing.
+
+Final movement-policy production fixture: cold End enqueue 3.13ms, 79
+continuing server ticks, and longest preparation tick 344.54ms on the shared
+test machine. Both players walking still arrives at the accepted location.
+The combined hotfix also passed the real Graves ownership regression before
+the movement-only adjustment and eight existing gameplay policy unit tests.
+
 ## GoldClaim Map 1.0.1 - pack v1.1.12
 
 Client-only hotfix: isolate incompatible JourneyMap entrypoints so Waystones'

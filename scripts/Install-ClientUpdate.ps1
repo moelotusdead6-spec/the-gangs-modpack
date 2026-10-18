@@ -38,6 +38,7 @@ $removed = @(Get-ChildItem -LiteralPath $mods -File | Where-Object {
         $_.Name -match '^soulsbackpackscompat-.*\.jar(?:\.pending)?$' -or
         $_.Name -match '^defaultoptions-.*\.jar(?:\.pending)?$' -or
         $_.Name -match '^gangscosmetics-.*\.jar(?:\.pending)?$' -or
+        $_.Name -match '^jei-.*\.jar(?:\.pending)?$' -or
         $_.Name -match '^grimac-.*\.jar(?:\.pending)?$'
 })
 if ($removed.Count) {
