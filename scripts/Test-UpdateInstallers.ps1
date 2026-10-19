@@ -146,7 +146,7 @@ try {
     foreach ($key in @('name', 'ip')) {
         Require ($reader.ReadByte() -eq 8) 'Expected NBT string tag.'
         Require ((Read-NbtString) -ceq $key) 'Unexpected server NBT key.'
-        $expected = if ($key -eq 'name') { 'The Gangs Modded Adventure' } else { 'gangs-adventure.playit.plus' }
+        $expected = if ($key -eq 'name') { 'The Gangs Modded Adventure' } else { 'tgma.dedimc.io' }
         Require ((Read-NbtString) -ceq $expected) 'Wrong public server default.'
     }
     Require ($reader.ReadByte() -eq 0 -and $reader.ReadByte() -eq 0) 'Missing NBT compound terminators.'

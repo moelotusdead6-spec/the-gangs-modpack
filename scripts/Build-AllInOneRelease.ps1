@@ -122,7 +122,7 @@ try {
         $entry.Delete()
     }
     Copy-Entry 'minecraft/mods/rankbadges-1.0.2.jar' (Join-Path $repo 'artifacts\rankbadges-1.0.2.jar')
-    Copy-Entry 'minecraft/mods/goldclaimmap-1.0.1.jar' (Join-Path $repo 'artifacts\goldclaimmap-1.0.1.jar')
+    Copy-Entry 'minecraft/mods/goldclaimmap-1.0.2.jar' (Join-Path $repo 'artifacts\goldclaimmap-1.0.2.jar')
     Copy-Entry 'server-update/Install-ServerUpdate.ps1' (Join-Path $PSScriptRoot 'Install-ServerUpdate.ps1')
     Copy-Entry 'server-update/Prune-ServerBackups.ps1' (Join-Path $PSScriptRoot 'Prune-ServerBackups.ps1')
     Copy-Entry 'server-update/server-settings.properties' (Join-Path $PSScriptRoot 'server-settings.properties')
@@ -203,14 +203,14 @@ try {
     if (@($zip.Entries | Where-Object {
             $_.FullName -match '^(minecraft|client-update|server-update)/mods/gangshats-.*\.jar$'
         }).Count) { throw 'Legacy Gangs Hats remains in the ZIP.' }
-    foreach ($name in @('minecraft/mods/goldclaimmap-1.0.1.jar')) {
+    foreach ($name in @('minecraft/mods/goldclaimmap-1.0.2.jar')) {
         $entry = $zip.GetEntry($name)
         if (-not $entry) { throw "Required claim map mod missing: $name" }
         $hash = [Security.Cryptography.SHA256]::Create()
         $stream = $entry.Open()
         try { $actual = [BitConverter]::ToString($hash.ComputeHash($stream)).Replace('-', '') }
         finally { $stream.Dispose(); $hash.Dispose() }
-        if ($actual -ne (Get-FileHash (Join-Path $repo 'artifacts\goldclaimmap-1.0.1.jar') -Algorithm SHA256).Hash) {
+        if ($actual -ne (Get-FileHash (Join-Path $repo 'artifacts\goldclaimmap-1.0.2.jar') -Algorithm SHA256).Hash) {
             throw "Packaged GoldClaim Map does not match the built artifact: $name"
         }
     }

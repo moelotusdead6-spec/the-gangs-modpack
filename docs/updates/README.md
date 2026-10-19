@@ -1,5 +1,18 @@
 # Updating The Gangs Modpack
 
+## v1.1.14 hosted server address
+
+The server has moved to DedicatedMC at `tgma.dedimc.io`. Close Minecraft and
+press Play in the same auto-updating Prism instance. GoldClaim Map 1.0.2 also
+maintains the pack's public server entry: it replaces the old Playit address
+(including explicit default port), or adds the new address if absent.
+Existing names, icons, resource-pack choices and unrelated servers are preserved.
+Before changing an existing list it creates a `servers.dat.before-tgma-*.bak`
+backup in the game directory. Subsequent launches do not rewrite an already
+updated list. This client-only update needs no server restart or world reset.
+Clients without automatic updates must enable them using the setup below or
+manually add `tgma.dedimc.io`.
+
 ## v1.1.13 restart bundle and JEI cleanup
 
 The v1.1.13 bundle includes the pending GoldClaim 1.0.43 hotfix. Normal
@@ -46,12 +59,13 @@ update; Packwiz's pre-launch hook manages pack files, not Prism components.
 ## Personal settings
 
 Personal `options.txt`, keybindings, resource-pack selections and
-`servers.dat` are not replaced by updates. Personal mod config files that
+`servers.dat` are not replaced by Packwiz updates. The v1.1.14 client migration
+only updates/adds the pack's public address as described above. Personal mod config files that
 are not part of the pack remain untouched. Pack-supplied mod configs are
 managed by Packwiz and may change when a release changes those configs.
 
 Default Options 18.0.6 supplies starting options/keybindings and the public
-server `gangs-adventure.playit.plus` only when the corresponding saved files
+server `tgma.dedimc.io` only when the corresponding saved files
 are missing. Existing settings take precedence.
 
 Default Options is not cloud backup and cannot transfer settings between

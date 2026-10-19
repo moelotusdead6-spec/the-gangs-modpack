@@ -30,11 +30,11 @@ hash = "56d21101bef0761f9382b0a527dfc17b6e7f2874442fde2e58c0956e0afe3a99"
 
 [[files]]
 file = "config/defaultoptions/servers.dat"
-hash = "ff377d77af63f1b325a08aa64be23156695bc934052ce6c5a79decccf5066155"
+hash = "105f94abedf529f4120a457752ca157cf7f3eef7dc49e978494d4168093d27aa"
 
 [[files]]
 file = "config/defaultoptions/servers.json"
-hash = "6bcc106359561add90cb7438ed662b96bdfaf64d7499922bdbaa5d4652f188d2"
+hash = "0a0899bc4552d8da8b72df83a8435c666f9f31652ec977bde1fd33328c828111"
 
 [[files]]
 file = "config/fancymenu/assets/2025-11-20_16.49.42.png"
@@ -538,7 +538,7 @@ hash = "d022c03cd1366878024d932aca7e3eda35a9f19e87bac7fc11bf8e1521d36ac7"
 
 [[files]]
 file = "index.html"
-hash = "748f55333c36a9c2000c70ceaf88fc1aa023a1fb1229f01a9ee080ffd5f7cf22"
+hash = "c0b10275718136a8de25c3a1bf88b980dc9e011a5c39a728cc1418e53aad25ff"
 
 [[files]]
 file = "mods/.gitkeep"
@@ -1301,7 +1301,7 @@ metafile = true
 
 [[files]]
 file = "mods/goldclaimmap-direct.pw.toml"
-hash = "95135246628239a0dee0226d7101ea6c14a79a76568cc25eee3a6107be5bee4f"
+hash = "3efa796f0591f86d11b1fbac96117f1f0dd6fc91b14689940b86852732bbb9d0"
 metafile = true
 
 [[files]]

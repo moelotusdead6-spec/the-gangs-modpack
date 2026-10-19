@@ -5,6 +5,7 @@ import java.util.List;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
@@ -21,6 +22,8 @@ public class GoldClaimMapClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        ClientLifecycleEvents.CLIENT_STARTED.register(client ->
+                PublicServerAddress.update(client.runDirectory.toPath()));
         ClientPlayNetworking.registerGlobalReceiver(CHANNEL, (client, handler, buf, sender) -> {
             List<ClaimRegion> claims = decode(buf);
             if (claims != null) {
