@@ -1,5 +1,15 @@
 # Updating The Gangs Modpack
 
+## v1.1.15 Halloween client appearance
+
+FancyMenu uses its built-in **Spooky Season** interface theme. The title
+screen adds orange string lights and a light autumn-leaves overlay; the
+custom wallpaper, menu buttons, music and multiplayer layouts are unchanged.
+This is a client-pack change, not a server setting. Players receive it by
+closing Minecraft and pressing Play in the same auto-updating Prism instance.
+Older instances must enable automatic updates using the setup below.
+No server restart or replacement instance is needed.
+
 ## v1.1.14 hosted server address
 
 The server has moved to DedicatedMC at `tgma.dedimc.io`. Close Minecraft and

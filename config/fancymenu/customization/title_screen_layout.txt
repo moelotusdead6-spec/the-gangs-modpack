@@ -219,7 +219,7 @@ decoration_overlay {
 decoration_overlay {
   overlay_type = string_lights
   instance_identifier = 5f56bde3-24eb-4591-9b8b-388922bc7582-1785451001859
-  show_decoration_overlay = false
+  show_decoration_overlay = true
   string_lights_scale = 1.0
   string_lights_wind_strength = 1.0
   string_lights_flicker_speed = 1.0
@@ -239,11 +239,11 @@ decoration_overlay {
   string_lights_bottom_left_to_bottom_right_christmas_mode = false
   string_lights_loose_left_top_christmas_mode = false
   string_lights_loose_right_top_christmas_mode = false
-  string_lights_left_center_to_top_center_color_hex = #FFD27A
-  string_lights_right_center_to_top_center_color_hex = #FFD27A
+  string_lights_left_center_to_top_center_color_hex = #FF8C24
+  string_lights_right_center_to_top_center_color_hex = #FF8C24
   string_lights_bottom_left_to_top_center_color_hex = #FFD27A
   string_lights_bottom_right_to_top_center_color_hex = #FFD27A
-  string_lights_top_left_to_top_right_color_hex = #FFD27A
+  string_lights_top_left_to_top_right_color_hex = #FF8C24
   string_lights_bottom_left_to_bottom_right_color_hex = #FFD27A
   string_lights_loose_left_top_color_hex = #FFD27A
   string_lights_loose_right_top_color_hex = #FFD27A
@@ -299,14 +299,14 @@ decoration_overlay {
 decoration_overlay {
   overlay_type = leaves
   instance_identifier = 4ea92d90-3317-4af1-bc53-a2c06d8a35dc-1787259693072
-  show_decoration_overlay = false
-  leaves_density = 1.0
+  show_decoration_overlay = true
+  leaves_density = 0.5
   leaves_wind_intensity = 1.0
   leaves_wind_blows = true
   leaves_fall_speed = 1.0
   leaves_scale = 1.0
-  leaves_color_start_hex = #7BA84F
-  leaves_color_end_hex = #D58A3B
+  leaves_color_start_hex = #FF8C24
+  leaves_color_end_hex = #B84C18
 }
 
 decoration_overlay {
@@ -1378,4 +1378,3 @@ vanilla_button {
   automated_button_clicks = 0
   is_hidden = false
 }
-
