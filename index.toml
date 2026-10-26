@@ -2,7 +2,7 @@ hash-format = "sha256"
 
 [[files]]
 file = "config/packetfixer.properties"
-hash = "f7eb7c0fa8000937fc3a681f93a93add2ece5a8c58b8f77eedb442e1b07b9181"
+hash = "668a3583c0903840d9e566edf34a57da2f57b6b5b1894adb60d55fea028ee9c0"
 
 [[files]]
 file = "mods/packet-fixer.pw.toml"
