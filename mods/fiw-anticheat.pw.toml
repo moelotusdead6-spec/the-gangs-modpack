@@ -1,0 +1,13 @@
+name = "Fiw AntiCheat"
+filename = "fiw-anticheat-fabric-1.20.1-2.2.0.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/BUXFUwPg/versions/Nxl73bNY/fiw-anticheat-fabric-1.20.1-2.2.0.jar"
+hash-format = "sha512"
+hash = "5629d32d731316259bfb49b2e0bb46e3030881bc229154c461ca76b92d2103f018e7d29cef677f4d00788fad55c11b0d57f18683f5dc736743c3d4039390956b"
+
+[update]
+[update.modrinth]
+mod-id = "BUXFUwPg"
+version = "Nxl73bNY"

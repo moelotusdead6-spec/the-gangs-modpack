@@ -1230,6 +1230,11 @@ hash = "ce6cd93fd774550cbe2b71ff9580ff43cae26c3dfbd900fa74364492a5156a73"
 metafile = true
 
 [[files]]
+file = "mods/fiw-anticheat.pw.toml"
+hash = "c3105769279cd3d2d1a36a3db8bd5fbd8b45ce4525dd646440419b8d682e7795"
+metafile = true
+
+[[files]]
 file = "mods/flowerymooblooms-fabric-mc1.20.1-2.0.2.pw.toml"
 hash = "b812e7eac4638dcec078c9526db18e2a31468c372c67fccce3012a57a05d06f1"
 metafile = true
