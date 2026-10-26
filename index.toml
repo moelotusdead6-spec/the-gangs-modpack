@@ -1,6 +1,15 @@
 hash-format = "sha256"
 
 [[files]]
+file = "config/packetfixer.properties"
+hash = "f7eb7c0fa8000937fc3a681f93a93add2ece5a8c58b8f77eedb442e1b07b9181"
+
+[[files]]
+file = "mods/packet-fixer.pw.toml"
+hash = "9b831ebbf7075dc09a490877f9cd0a8fc62fbe7775179145c1f19c64c938ea52"
+metafile = true
+
+[[files]]
 file = ".nojekyll"
 hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
