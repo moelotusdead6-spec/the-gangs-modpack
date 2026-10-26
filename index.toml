@@ -1231,7 +1231,7 @@ metafile = true
 
 [[files]]
 file = "mods/fiw-anticheat.pw.toml"
-hash = "c3105769279cd3d2d1a36a3db8bd5fbd8b45ce4525dd646440419b8d682e7795"
+hash = "be3aa5ae48ed40cb925b33e711d199f5f02d7d21fc8a69325203104d80fb4f8e"
 metafile = true
 
 [[files]]
