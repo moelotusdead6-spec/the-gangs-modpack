@@ -1,15 +1,6 @@
 hash-format = "sha256"
 
 [[files]]
-file = "config/packetfixer.properties"
-hash = "668a3583c0903840d9e566edf34a57da2f57b6b5b1894adb60d55fea028ee9c0"
-
-[[files]]
-file = "mods/packet-fixer.pw.toml"
-hash = "9b831ebbf7075dc09a490877f9cd0a8fc62fbe7775179145c1f19c64c938ea52"
-metafile = true
-
-[[files]]
 file = ".nojekyll"
 hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
@@ -100,6 +91,10 @@ hash = "9794ababce25204ea58d2095d2fd616f3e664c4d4e803814c670939da1a831d0"
 [[files]]
 file = "config/options.txt"
 hash = "35b7cfda687dfab8ec9aef8a1fb8a13a8337535e390ad4085bdd9764a4b43d40"
+
+[[files]]
+file = "config/packetfixer.properties"
+hash = "668a3583c0903840d9e566edf34a57da2f57b6b5b1894adb60d55fea028ee9c0"
 
 [[files]]
 file = "config/paxi/datapack_load_order.json"
@@ -970,7 +965,7 @@ metafile = true
 
 [[files]]
 file = "mods/bclib.pw.toml"
-hash = "ab1e22cc66189067e002a204c70c553cc7cc0e738bd602f405d7cc37561260be"
+hash = "d653a3256959ed8d801b69c0ef305811409a19a980744e41e8744e415ef70afc"
 metafile = true
 
 [[files]]
@@ -1000,7 +995,7 @@ metafile = true
 
 [[files]]
 file = "mods/betterend.pw.toml"
-hash = "dd8057c40ff94e9a21a121583884f71c9a6b1eaa6f913ef46c5d1f9b37fe487f"
+hash = "fdfce692e21fa05498c5243d1c39bf8a1128535dcdeb9e8db083ef88735d3034"
 metafile = true
 
 [[files]]
@@ -1571,6 +1566,11 @@ metafile = true
 [[files]]
 file = "mods/owo-lib-0.11.2_1.20.pw.toml"
 hash = "d48b7e82e21bd1e152f9aea979a3dd09b26636bfb73e7c9b7c7b73371e9c0f5a"
+metafile = true
+
+[[files]]
+file = "mods/packet-fixer.pw.toml"
+hash = "9b831ebbf7075dc09a490877f9cd0a8fc62fbe7775179145c1f19c64c938ea52"
 metafile = true
 
 [[files]]

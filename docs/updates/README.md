@@ -1,5 +1,14 @@
 # Updating The Gangs Modpack
 
+## v1.1.16 End library updates
+
+BCLib updates to **3.0.16** and Better End to **4.0.12** for Fabric 1.20.1.
+Close Minecraft and press Play in the same auto-updating Prism instance.
+Packwiz downloads the new jars and replaces the previously managed versions;
+no new instance or manual ZIP installation is needed.
+Instances without automatic updates must enable them using the setup below.
+The matching server update is prepared for the owner's next normal restart.
+
 ## v1.1.15 Halloween client appearance
 
 FancyMenu uses its built-in **Spooky Season** interface theme. The title
