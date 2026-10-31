@@ -75,6 +75,7 @@ try {
     Copy-Entry 'docs/updates/v1.1.8.md' (Join-Path $repo 'docs\updates\v1.1.8.md')
     Copy-Entry 'docs/updates/v1.1.12.md' (Join-Path $repo 'docs\updates\v1.1.12.md')
     Copy-Entry 'docs/updates/v1.1.13.md' (Join-Path $repo 'docs\updates\v1.1.13.md')
+    Copy-Entry 'docs/updates/v1.1.17.md' (Join-Path $repo 'docs\updates\v1.1.17.md')
     Copy-Entry 'server-update/README.txt' (Join-Path $PSScriptRoot 'SERVER-UPDATE.txt')
     Copy-Entry 'server-update/mods/goldclaim-1.0.43.jar' (Join-Path $repo 'artifacts\goldclaim-1.0.43.jar')
     Copy-Entry 'server-update/tools/gangs-teleport-purge-1.0.1.jar' (Join-Path $repo 'artifacts\gangs-teleport-purge-1.0.1.jar')
@@ -104,6 +105,9 @@ try {
     foreach ($mod in $newPackMods) {
         Copy-Entry ("minecraft/mods/$mod") (Join-Path $repo "artifacts\$mod")
         Copy-Entry ("server-update/mods/$mod") (Join-Path $repo "artifacts\$mod")
+    }
+    foreach ($prefix in @('minecraft/', 'client-update/', 'server-update/')) {
+        Copy-Entry ($prefix + 'mods/neon-wall-wonders-gwbzt3mk (10).jar') (Join-Path $repo 'artifacts\neon-wall-wonders-gwbzt3mk (10).jar')
     }
     Copy-Entry 'server-update/mods/soulsbackpackscompat-1.1.0.jar' (Join-Path $repo 'artifacts\soulsbackpackscompat-1.1.0.jar')
     Copy-Entry 'minecraft/mods/soulsbackpackscompat-1.1.0.jar' (Join-Path $repo 'artifacts\soulsbackpackscompat-1.1.0.jar')
