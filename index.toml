@@ -17,10 +17,6 @@ file = "config/EssentialCommands.properties"
 hash = "4fa98d5b3df8897256e321b6937eab0e4dc382197c61d817f7cc86d0f3cbed1f"
 
 [[files]]
-file = "config/antixray.toml"
-hash = "241c40f4519464449d6bdee199dd547facb63e110c6657af2c8697e7c02cd136"
-
-[[files]]
 file = "config/bcc.json"
 hash = "d5fe406368e27abebf69930effee725fd4836e16178da9ebcfc944d08e869733"
 
