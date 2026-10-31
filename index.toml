@@ -6,7 +6,7 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "8da782c6acf3ad992630eb482bd6638a9add1423a07d34dd4ea3c78aa196e1fb"
+hash = "c92d3cea5c013d073e34e95279b633a28e1dc196739d218023693cadc3b42fd0"
 
 [[files]]
 file = "README.md"
@@ -1550,7 +1550,7 @@ metafile = true
 
 [[files]]
 file = "mods/neon-wall-wonders.pw.toml"
-hash = "4d37c103a665d395ba8747d6bcc4a3282f4e2125f011bfce0bf1cfd9717385a6"
+hash = "6cecada9b97a1ec71f8281282aa8d34ef5f5517bc81df2a57e4e956d36f365fb"
 metafile = true
 
 [[files]]

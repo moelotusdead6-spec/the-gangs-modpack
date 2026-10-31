@@ -1,5 +1,17 @@
 # Published Artifacts
 
+## Neon Wall Wonders 8.0.0
+
+Original, unmodified `artifacts/neon-wall-wonders-gwbzt3mk (10).jar`.
+SHA-256: `a0b36248530bfcbc398167b8cb7cade47d494053167822f33d2abe17d42158cc`.
+The v1.1.17 update ZIP preserves this original filename in its `mods/` folder.
+Packwiz installs the identical file on both server and clients.
+
+Created by oux_y using [CreativeMode.net](https://creativemode.net).
+[Official mod page](https://creativemode.net/mod/neon-wall-wonders-gwbzt3mk).
+[CreativeMode Mods License](https://creativemode.net/mod-license).
+Shared free of charge with the embedded license and notices preserved.
+
 ## GoldClaim 1.0.43 - grave recovery and teleport tick-stall hotfix
 
 The server-only Packwiz entry selects `artifacts/goldclaim-1.0.43.jar`,
