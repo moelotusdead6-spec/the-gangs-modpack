@@ -1,5 +1,13 @@
 # Updating The Gangs Modpack
 
+## v1.1.17 Neon Wall Wonders
+
+Adds **Neon Wall Wonders 8.0.0** to both server and clients. The server jar
+is staged for the next normal restart; no restart or reload is needed to
+stage it. Close Minecraft and press Play in the same auto-updating Prism
+instance before rejoining after restart. No replacement instance is needed.
+See [installation, attribution and rollback](v1.1.17.md).
+
 ## v1.1.16 End library updates
 
 BCLib updates to **3.0.16** and Better End to **4.0.12** for Fabric 1.20.1.

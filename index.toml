@@ -10,7 +10,7 @@ hash = "8da782c6acf3ad992630eb482bd6638a9add1423a07d34dd4ea3c78aa196e1fb"
 
 [[files]]
 file = "README.md"
-hash = "10006af7661ff85f6385f56205d2cf7404faac415b0dc7a6a7c3abbad1c9bf00"
+hash = "e413b408c46f34b844192b068e103cc6f44e4f05bd18fb4a9dd991a2d513db3d"
 
 [[files]]
 file = "config/EssentialCommands.properties"
@@ -542,11 +542,11 @@ hash = "d022c03cd1366878024d932aca7e3eda35a9f19e87bac7fc11bf8e1521d36ac7"
 
 [[files]]
 file = "index.html"
-hash = "c0b10275718136a8de25c3a1bf88b980dc9e011a5c39a728cc1418e53aad25ff"
+hash = "89df25c318c895533a09e03a493610bcfc6c266b330bcfbb9949e6cfaa458ae1"
 
 [[files]]
 file = "mods/.gitkeep"
-hash = "94e12306f82d6edb52221ef9749648848ab8bde5c31d6f5f06b1b04e5f115bac"
+hash = "337d0493968221383db93fdaf60298ecd585e466952852720affa4817f0f72fb"
 
 [[files]]
 file = "mods/AmbientEnvironment-fabric-1.20.1-11.0.0.1.pw.toml"
@@ -1546,6 +1546,11 @@ metafile = true
 [[files]]
 file = "mods/necronomicon-direct.pw.toml"
 hash = "3c6072797b750217a438dd9a89368926385fdd368029476758c527b27b929fc8"
+metafile = true
+
+[[files]]
+file = "mods/neon-wall-wonders.pw.toml"
+hash = "4d37c103a665d395ba8747d6bcc4a3282f4e2125f011bfce0bf1cfd9717385a6"
 metafile = true
 
 [[files]]

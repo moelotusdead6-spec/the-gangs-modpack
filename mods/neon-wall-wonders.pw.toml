@@ -1,0 +1,8 @@
+name = "Neon Wall Wonders"
+filename = "neon-wall-wonders-gwbzt3mk (10).jar"
+side = "both"
+
+[download]
+url = "https://github.com/moelotusdead6-spec/the-gangs-modpack/releases/download/v1.1.17/neon-wall-wonders-gwbzt3mk%20%2810%29.jar"
+hash-format = "sha256"
+hash = "a0b36248530bfcbc398167b8cb7cade47d494053167822f33d2abe17d42158cc"

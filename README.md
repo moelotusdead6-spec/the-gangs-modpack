@@ -16,3 +16,15 @@ This modpack is built around friendship, discovery, and those “you had to be t
 - **Download:** [Latest release](https://github.com/moelotusdead6-spec/the-gangs-modpack/releases/latest). Import the all-in-one ZIP into Prism Launcher.
 - **Updating:** See the [update guide](docs/updates/README.md).
 - **Resource packs:** Enable or disable them in Options > Resource Packs.
+
+## Neon Wall Wonders
+
+Neon Wall Wonders **8.0.0** adds 60 glowing wall signs on both server and
+clients. Close Minecraft and press Play in the existing auto-updating Prism
+instance before joining after the server's next restart.
+
+Created by oux_y using [CreativeMode.net](https://creativemode.net).
+The original, unmodified `neon-wall-wonders-gwbzt3mk (10).jar` is distributed
+for free with its embedded notices preserved.
+[Official mod page](https://creativemode.net/mod/neon-wall-wonders-gwbzt3mk)
+and [CreativeMode Mods License](https://creativemode.net/mod-license).
