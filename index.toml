@@ -94,7 +94,7 @@ hash = "35b7cfda687dfab8ec9aef8a1fb8a13a8337535e390ad4085bdd9764a4b43d40"
 
 [[files]]
 file = "config/packetfixer.properties"
-hash = "f7eb7c0fa8000937fc3a681f93a93add2ece5a8c58b8f77eedb442e1b07b9181"
+hash = "668a3583c0903840d9e566edf34a57da2f57b6b5b1894adb60d55fea028ee9c0"
 
 [[files]]
 file = "config/paxi/datapack_load_order.json"
