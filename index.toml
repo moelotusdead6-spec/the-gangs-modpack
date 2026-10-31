@@ -542,11 +542,11 @@ hash = "d022c03cd1366878024d932aca7e3eda35a9f19e87bac7fc11bf8e1521d36ac7"
 
 [[files]]
 file = "index.html"
-hash = "89df25c318c895533a09e03a493610bcfc6c266b330bcfbb9949e6cfaa458ae1"
+hash = "c0b10275718136a8de25c3a1bf88b980dc9e011a5c39a728cc1418e53aad25ff"
 
 [[files]]
 file = "mods/.gitkeep"
-hash = "337d0493968221383db93fdaf60298ecd585e466952852720affa4817f0f72fb"
+hash = "94e12306f82d6edb52221ef9749648848ab8bde5c31d6f5f06b1b04e5f115bac"
 
 [[files]]
 file = "mods/AmbientEnvironment-fabric-1.20.1-11.0.0.1.pw.toml"
