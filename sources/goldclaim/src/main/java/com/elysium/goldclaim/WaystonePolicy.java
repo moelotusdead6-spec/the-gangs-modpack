@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -13,7 +12,6 @@ import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.api.WaystoneActivatedEvent;
 import net.blay09.mods.waystones.api.WaystoneTeleportEvent;
 import net.blay09.mods.waystones.api.WaystonesAPI;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
@@ -39,7 +37,6 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.WorldSavePath;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.chunk.WorldChunk;
 import net.minecraft.world.dimension.DimensionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +44,6 @@ import org.slf4j.LoggerFactory;
 public final class WaystonePolicy {
     private static final Logger LOGGER = LoggerFactory.getLogger("GoldClaim/Waystones");
     private static final String MESSAGE = "Waystones are disabled in all RSW dimensions.";
-    private static final ChunkCleanupQueue<ServerWorld, WorldChunk> CHUNKS = new ChunkCleanupQueue<>();
     private static final ArrayDeque<UUID> PENDING = new ArrayDeque<>();
     private static final Set<UUID> ACTIVATED = new HashSet<>();
     private static final Set<ServerWorld> CHANGED_WORLDS = new HashSet<>();
@@ -103,16 +99,9 @@ public final class WaystonePolicy {
         });
         ServerLifecycleEvents.SERVER_STARTED.register(WaystonePolicy::prepareCleanup);
         ServerLifecycleEvents.SERVER_STARTED.register(WaystonePolicy::prepareLegacyCleanup);
-        ServerChunkEvents.CHUNK_LOAD.register((world, chunk) -> {
-            if (isRsw(world)) CHUNKS.enqueue(world, chunk);
-        });
-        ServerChunkEvents.CHUNK_UNLOAD.register(CHUNKS::cancel);
-        ServerTickEvents.END_WORLD_TICK.register(world ->
-            CHUNKS.drain(world, 1, chunk -> removeRswWaystones(world, chunk)));
         ServerTickEvents.END_SERVER_TICK.register(WaystonePolicy::tickCleanup);
         ServerTickEvents.END_SERVER_TICK.register(WaystonePolicy::tickLegacyCleanup);
         ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
-            CHUNKS.clear();
             PENDING.clear();
             ACTIVATED.clear();
             CHANGED_WORLDS.clear();
@@ -243,15 +232,6 @@ public final class WaystonePolicy {
             finishing = false;
             CHANGED_WORLDS.clear();
             LOGGER.info("Existing unused Wild waystone cleanup completed. Backups: {}", backup);
-        }
-    }
-
-    private static void removeRswWaystones(ServerWorld world, WorldChunk chunk) {
-        if (backup == null) return;
-        for (BlockPos pos : new ArrayList<>(chunk.getBlockEntities().keySet())) {
-            if (isWaystone(chunk.getBlockState(pos))) {
-                removeStone(world, pos, WaystonesAPI.getWaystoneAt(world, pos).orElse(null));
-            }
         }
     }
 

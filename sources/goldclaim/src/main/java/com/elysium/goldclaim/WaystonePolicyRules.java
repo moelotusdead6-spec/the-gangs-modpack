@@ -11,8 +11,7 @@ final class WaystonePolicyRules {
     private WaystonePolicyRules() {}
 
     static boolean shouldRemove(String dimension, UUID id, Set<UUID> activated) {
-        return GoldClaimMod.RSW_DIMENSIONS.contains(dimension)
-            || ("minecraft:overworld".equals(dimension) && !activated.contains(id));
+        return "minecraft:overworld".equals(dimension) && !activated.contains(id);
     }
 
     static void collectActivated(NbtElement element, Set<UUID> activated) {

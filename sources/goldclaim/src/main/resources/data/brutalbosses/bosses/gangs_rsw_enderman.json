@@ -1,0 +1,26 @@
+{
+  "entity": "minecraft:enderman",
+  "name": "Uzsahe the Endborn",
+  "experience": 300,
+  "protect_treasure": false,
+  "attributes": {
+    "generic.max_health": 90,
+    "generic.follow_range": 50,
+    "generic.knockback_resistance": 1,
+    "generic.attack_damage": 7
+  },
+  "ai-goals": {
+    "minecraft:target": {},
+    "brutalbosses:aftercombatregen": { "amount": 1 },
+    "brutalbosses:whirlwind": { "knockback": 4, "cooldown": 200 },
+    "brutalbosses:itemshootgoal": {
+      "item": "{id: \"minecraft:ender_pearl\", Count: 1b}",
+      "projectile_count": 1,
+      "teleport": true,
+      "damage": 3,
+      "projectile_interval": 100,
+      "projectile_aoe": false,
+      "projectile_distance": 40
+    }
+  }
+}

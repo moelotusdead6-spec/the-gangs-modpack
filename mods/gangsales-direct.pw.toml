@@ -1,8 +1,8 @@
 name = "GangSales"
-filename = "gangsales-1.0.0.jar"
+filename = "gangsales-1.0.3.jar"
 side = "server"
 
 [download]
-url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/gangsales-1.0.0.jar"
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/gangsales-1.0.3.jar"
 hash-format = "sha256"
-hash = "61b92c0a8184b8f96fa53540b2205bc37fdae4e2d68bb98fdd3f8a5e7d773087"
+hash = "e1281a5c5541b0409d2b18babc7fc511f5c44b9e7dc2d5611a2a5266af2cf253"

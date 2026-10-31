@@ -155,6 +155,7 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
@@ -240,6 +241,8 @@ implements ModInitializer {
     public static final String RSW_NETHER_DIMENSION = "multiworld:rsw_nether";
     public static final String RSW_THE_END_DIMENSION = "multiworld:rsw_the_end";
     public static final List<String> RSW_DIMENSIONS = List.of(RSW_DIMENSION, RSW_NETHER_DIMENSION, RSW_THE_END_DIMENSION);
+    static final double RSW_OVERWORLD_BORDER = 7000.0;
+    private static final double RSW_OTHER_BORDER = 10000.0;
     private int worldMaintenanceTicks;
     private int playerMaintenanceTicks;
     private boolean initializeTestingWorlds;
@@ -306,8 +309,10 @@ implements ModInitializer {
             RswEndBiomeSource.registerCodec();
         }
         BannedContent.register();
+        RankService.register();
         WaystonePolicy.register();
         this.config = GoldClaimConfig.load();
+        HubTeleportPolicy.register();
         Path claimsPath = Path.of("config", "goldclaim", "claims.json");
         this.claimManager = new ClaimManager(claimsPath, this.config);
         new ClaimMapSync(this.claimManager).register();
@@ -324,7 +329,7 @@ implements ModInitializer {
             if (world.getRegistryKey() == World.NETHER) {
                 this.ensureCustomGenerators(server);
             }
-            applyRswFireRule(world.getRegistryKey().getValue().toString(), world.getGameRules(), server);
+            applyFireSpreadRule(world.getGameRules(), server);
         });
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
             this.ensureCustomGenerators(server);
@@ -356,6 +361,10 @@ implements ModInitializer {
         this.registerCommands();
         this.registerDisconnectCleanup();
         this.registerTickHandlers();
+        GroundCleanup.register();
+        if (net.fabricmc.loader.api.FabricLoader.getInstance().isModLoaded("enhancedcelestials")) {
+            CelestialPolicy.register();
+        }
         this.registerJoinHandler();
     }
 
@@ -547,7 +556,11 @@ implements ModInitializer {
                 .then(CommandManager.literal("weekly_1").executes(ctx -> this.kitService.claim(ctx.getSource(), 0)))
                 .then(CommandManager.literal("weekly_2").executes(ctx -> this.kitService.claim(ctx.getSource(), 1)))
                 .then(CommandManager.literal("weekly_3").executes(ctx -> this.kitService.claim(ctx.getSource(), 2)))
-                .then(CommandManager.literal("monthly").executes(ctx -> this.kitService.claim(ctx.getSource(), 3))));
+                .then(CommandManager.literal("monthly").executes(ctx -> this.kitService.claim(ctx.getSource(), 3)))
+                .then(CommandManager.literal("event").requires(source -> source.hasPermissionLevel(2))
+                    .then(CommandManager.argument("targets", net.minecraft.command.argument.EntityArgumentType.players())
+                        .executes(ctx -> this.kitService.giveEvent(ctx.getSource(),
+                            net.minecraft.command.argument.EntityArgumentType.getPlayers(ctx, "targets"))))));
             dispatcher.register(CommandManager.literal("claim")
                 .then(CommandManager.literal("trust")
                     .then(CommandManager.literal("all").executes(ctx -> this.setPublicTrust(ctx.getSource(), Claim.TrustLevel.FULL, true)))
@@ -597,8 +610,8 @@ implements ModInitializer {
             dispatcher.register((LiteralArgumentBuilder)((LiteralArgumentBuilder)((LiteralArgumentBuilder)CommandManager.literal((String)"delhome").executes(ctx -> this.sendDelHomeUsage((ServerCommandSource)ctx.getSource()))).then(CommandManager.literal((String)"confirm").then(CommandManager.argument((String)"name", (ArgumentType)StringArgumentType.greedyString()).suggests(this::suggestOwnHomeNames).executes(ctx -> this.confirmDeleteHome((ServerCommandSource)ctx.getSource(), StringArgumentType.getString((CommandContext)ctx, (String)"name")))))).then(CommandManager.argument((String)"name", (ArgumentType)StringArgumentType.greedyString()).suggests(this::suggestOwnHomeNames).executes(ctx -> this.promptDeleteHome((ServerCommandSource)ctx.getSource(), StringArgumentType.getString((CommandContext)ctx, (String)"name")))));
             dispatcher.register((LiteralArgumentBuilder)((LiteralArgumentBuilder)((LiteralArgumentBuilder)((LiteralArgumentBuilder)((LiteralArgumentBuilder)this.publicCommand("home").executes(ctx -> this.sendHomeUsage((ServerCommandSource)ctx.getSource()))).then(CommandManager.literal((String)"list").requires(PUBLIC_COMMAND).executes(ctx -> this.listHomes((ServerCommandSource)ctx.getSource())))).then(CommandManager.literal((String)"public").requires(PUBLIC_COMMAND).then(CommandManager.argument((String)"name", (ArgumentType)StringArgumentType.greedyString()).suggests(this::suggestOwnHomeNames).executes(ctx -> this.setHomeVisibility((ServerCommandSource)ctx.getSource(), StringArgumentType.getString((CommandContext)ctx, (String)"name"), true))))).then(CommandManager.literal((String)"private").requires(PUBLIC_COMMAND).then(CommandManager.argument((String)"name", (ArgumentType)StringArgumentType.greedyString()).suggests(this::suggestOwnHomeNames).executes(ctx -> this.setHomeVisibility((ServerCommandSource)ctx.getSource(), StringArgumentType.getString((CommandContext)ctx, (String)"name"), false))))).then(CommandManager.argument((String)"name", (ArgumentType)StringArgumentType.greedyString()).suggests(this::suggestOwnHomeNames).executes(ctx -> this.teleportToHome((ServerCommandSource)ctx.getSource(), StringArgumentType.getString((CommandContext)ctx, (String)"name")))));
             dispatcher.register((LiteralArgumentBuilder)((LiteralArgumentBuilder)((LiteralArgumentBuilder)CommandManager.literal((String)"phome").executes(ctx -> this.sendPublicHomeUsage((ServerCommandSource)ctx.getSource()))).then(CommandManager.literal((String)"list").executes(ctx -> this.listPublicHomes((ServerCommandSource)ctx.getSource())))).then(CommandManager.argument((String)"name", (ArgumentType)StringArgumentType.greedyString()).executes(ctx -> this.teleportToPublicHome((ServerCommandSource)ctx.getSource(), StringArgumentType.getString((CommandContext)ctx, (String)"name")))));
-            dispatcher.register((LiteralArgumentBuilder)((LiteralArgumentBuilder)CommandManager.literal((String)"tpa").executes(ctx -> this.sendTpaUsage((ServerCommandSource)ctx.getSource()))).then(CommandManager.argument((String)"player", (ArgumentType)StringArgumentType.word()).suggests(this::suggestOnlinePlayerNames).executes(ctx -> this.requestTeleportToPlayer((ServerCommandSource)ctx.getSource(), StringArgumentType.getString((CommandContext)ctx, (String)"player")))));
-            dispatcher.register((LiteralArgumentBuilder)((LiteralArgumentBuilder)CommandManager.literal((String)"tpahere").executes(ctx -> this.sendTpaHereUsage((ServerCommandSource)ctx.getSource()))).then(CommandManager.argument((String)"player", (ArgumentType)StringArgumentType.word()).suggests(this::suggestOnlinePlayerNames).executes(ctx -> this.requestTeleportPlayerHere((ServerCommandSource)ctx.getSource(), StringArgumentType.getString((CommandContext)ctx, (String)"player")))));
+            dispatcher.register((LiteralArgumentBuilder)((LiteralArgumentBuilder)CommandManager.literal((String)"tpa").executes(ctx -> this.sendTpaUsage((ServerCommandSource)ctx.getSource()))).then(CommandManager.argument((String)"player", (ArgumentType)StringArgumentType.word()).suggests(this::suggestTeleportPlayerNames).executes(ctx -> this.requestTeleportToPlayer((ServerCommandSource)ctx.getSource(), StringArgumentType.getString((CommandContext)ctx, (String)"player")))));
+            dispatcher.register((LiteralArgumentBuilder)((LiteralArgumentBuilder)CommandManager.literal((String)"tpahere").executes(ctx -> this.sendTpaHereUsage((ServerCommandSource)ctx.getSource()))).then(CommandManager.argument((String)"player", (ArgumentType)StringArgumentType.word()).suggests(this::suggestTeleportPlayerNames).executes(ctx -> this.requestTeleportPlayerHere((ServerCommandSource)ctx.getSource(), StringArgumentType.getString((CommandContext)ctx, (String)"player")))));
             dispatcher.register((LiteralArgumentBuilder)CommandManager.literal((String)"tpaccept").executes(ctx -> this.acceptTeleportRequest((ServerCommandSource)ctx.getSource())));
             dispatcher.register((LiteralArgumentBuilder)CommandManager.literal((String)"tpdecline").executes(ctx -> this.declineTeleportRequest((ServerCommandSource)ctx.getSource())));
             dispatcher.register((LiteralArgumentBuilder)this.publicCommand("tpdeny").executes(ctx -> this.declineTeleportRequest((ServerCommandSource)ctx.getSource())));
@@ -672,7 +685,9 @@ implements ModInitializer {
 
     private void runGangsFixesLoad(MinecraftServer server) {
         server.getGameRules().get(GameRules.KEEP_INVENTORY).set(false, server);
-        server.getGameRules().get(GameRules.DO_FIRE_TICK).set(false, server);
+        for (ServerWorld world : server.getWorlds()) {
+            applyFireSpreadRule(world.getGameRules(), server);
+        }
 
         ServerScoreboard scoreboard = server.getScoreboard();
         for (String teamName : new String[]{"rankbadges_owner", "rankbadges_mod", "rankbadges_player", "owner", "mod", "player"}) {
@@ -765,32 +780,7 @@ implements ModInitializer {
     }
 
     private void assignDefaultRankTeam(ServerPlayerEntity player, MinecraftServer server) {
-        ServerScoreboard scoreboard = server.getScoreboard();
-        Team ownerTeam = this.getOrCreateRankTeam((Scoreboard)scoreboard, "owner", Formatting.BLUE, (Text)Text.literal((String)"[OWNER] ").formatted(new Formatting[]{Formatting.BLUE, Formatting.BOLD}));
-        Team modTeam = this.getOrCreateRankTeam((Scoreboard)scoreboard, "mod", Formatting.GREEN, (Text)Text.literal((String)"[MOD] ").formatted(new Formatting[]{Formatting.GREEN, Formatting.BOLD}));
-        Team playerTeam = this.getOrCreateRankTeam((Scoreboard)scoreboard, "player", Formatting.WHITE, (Text)Text.literal((String)"[PLAYER] ").formatted(Formatting.GRAY));
-        String playerName = player.getGameProfile().getName();
-        if ("Oux_y".equalsIgnoreCase(playerName)) {
-            scoreboard.addPlayerToTeam(playerName, ownerTeam);
-            return;
-        }
-        if ("Rootamiss".equalsIgnoreCase(playerName)) {
-            scoreboard.addPlayerToTeam(playerName, modTeam);
-            return;
-        }
-        if (scoreboard.getPlayerTeam(playerName) == null) {
-            scoreboard.addPlayerToTeam(player.getName().getString(), playerTeam);
-        }
-    }
-
-    private Team getOrCreateRankTeam(Scoreboard scoreboard, String name, Formatting color, Text prefix) {
-        Team team = scoreboard.getTeam(name);
-        if (team == null) {
-            team = scoreboard.addTeam(name);
-        }
-        team.setColor(Formatting.RESET);
-        team.setPrefix(prefix);
-        return team;
+        RankService.apply(player, server);
     }
 
     private boolean isFirstJoin(ServerPlayerEntity player, MinecraftServer server) {
@@ -851,9 +841,9 @@ implements ModInitializer {
                     for (String rswDim : RSW_DIMENSIONS) {
                         ServerWorld rswWorld = this.getWorld(activeServer, rswDim);
                         if (rswWorld != null) {
-                            applyRswFireRule(rswDim, rswWorld.getGameRules(), activeServer);
+                            applyFireSpreadRule(rswWorld.getGameRules(), activeServer);
                         }
-                        this.applyWorldBorder(activeServer, rswDim, 10000.0);
+                        this.applyWorldBorder(activeServer, rswDim, rswBorder(rswDim));
                     }
                     ServerWorld rswEnd = this.getWorld(activeServer, RSW_THE_END_DIMENSION);
                     if (rswEnd != null) {
@@ -907,6 +897,8 @@ implements ModInitializer {
                         pendingIterator.remove();
                         continue;
                     }
+                    // Fiw restores pre-verification coordinates, even after a dimension change.
+                    if (LoginVerification.isPending(player.getUuid())) continue;
                     int ticksRemaining = entry.getValue() - 1;
                     if (ticksRemaining > 0) {
                         entry.setValue(ticksRemaining);
@@ -942,6 +934,21 @@ implements ModInitializer {
                     if (isRswWorld(dimensionId) && this.rswResetService.isClosed()) {
                         this.teleportToHub(player2, false, false);
                         continue;
+                    }
+                    if (RSW_DIMENSION.equals(dimensionId)
+                            && !player2.getServerWorld().getWorldBorder().contains(player2.getBoundingBox())) {
+                        if (this.rswEntrySearch.isPending(player2.getUuid())) continue;
+                        ServerWorld rswWorld = player2.getServerWorld();
+                        Vec3d inside = this.borderReturnTarget(rswWorld, player2, player2.getX(), player2.getZ());
+                        if (inside == null) {
+                            this.rswEntrySearch.requestDeferred(player2.getCommandSource(), player2, rswWorld,
+                                this.config.rswEntrySearchRadius);
+                            continue;
+                        }
+                        player2.teleport(rswWorld, inside.x, inside.y, inside.z, player2.getYaw(), player2.getPitch());
+                        player2.fallDistance = 0.0f;
+                        this.syncPlayerBorder(player2);
+                        player2.sendMessage(Text.literal("You were outside the RSW border and were moved back inside it."), false);
                     }
                     if (PVP_DIMENSION.equals(dimensionId)) {
                         if (this.playersInPvp.add(player2.getUuid())) {
@@ -1002,10 +1009,10 @@ implements ModInitializer {
         }
         this.applyWorldBorder(server, PVP_DIMENSION, 1000.0);
         for (String rswDim : RSW_DIMENSIONS) {
-            this.applyWorldBorder(server, rswDim, 10000.0);
+            this.applyWorldBorder(server, rswDim, rswBorder(rswDim));
             ServerWorld rswWorld = this.getWorld(server, rswDim);
             if (rswWorld != null) {
-                applyRswFireRule(rswDim, rswWorld.getGameRules(), server);
+                applyFireSpreadRule(rswWorld.getGameRules(), server);
             }
         }
         ServerWorld rswEnd = this.getWorld(server, RSW_THE_END_DIMENSION);
@@ -1015,10 +1022,8 @@ implements ModInitializer {
         this.applyPvpWorldRules(server);
     }
 
-    static void applyRswFireRule(String dimensionId, GameRules rules, MinecraftServer server) {
-        if (isRswWorld(dimensionId)) {
-            rules.get(GameRules.DO_FIRE_TICK).set(false, server);
-        }
+    static void applyFireSpreadRule(GameRules rules, MinecraftServer server) {
+        rules.get(GameRules.DO_FIRE_TICK).set(false, server);
     }
 
     private void applyPvpWorldRules(MinecraftServer server) {
@@ -1110,6 +1115,10 @@ implements ModInitializer {
             }
         }
         throw new NoSuchMethodException(owner.getName() + "." + methodName);
+    }
+
+    static double rswBorder(String dimensionId) {
+        return RSW_DIMENSION.equals(dimensionId) ? RSW_OVERWORLD_BORDER : RSW_OTHER_BORDER;
     }
 
     private void applyWorldBorder(MinecraftServer server, String dimensionId, double size) {
@@ -1344,15 +1353,16 @@ implements ModInitializer {
         if ((replacedIncoming = this.removeTeleportRequestByTarget(target.getUuid())) != null && (previousRequester = source.getServer().getPlayerManager().getPlayer(replacedIncoming.requesterUuid)) != null) {
             previousRequester.sendMessage((Text)Text.literal((String)(target.getName().getString() + " already had a pending request. Yours was replaced.")), false);
         }
-        TeleportRequest request = new TeleportRequest(requester.getUuid(), requester.getName().getString(), target.getUuid(), target.getName().getString(), requestType, System.currentTimeMillis());
+        ServerPlayerEntity destinationPlayer = requestType == TeleportRequestType.REQUESTER_TO_TARGET ? target : requester;
+        TeleportRequest request = new TeleportRequest(requester.getUuid(), requester.getName().getString(), target.getUuid(), target.getName().getString(), requestType, System.currentTimeMillis(), destinationPlayer, this.rswResetService.generation());
         this.pendingTeleportRequestsByTarget.put(target.getUuid(), request);
         this.pendingTeleportRequestTargetByRequester.put(requester.getUuid(), target.getUuid());
         if (requestType == TeleportRequestType.REQUESTER_TO_TARGET) {
             requester.sendMessage((Text)Text.literal((String)("Teleport request sent to " + target.getName().getString() + ".")), false);
-            this.sendTeleportRequestPrompt(target, request, Text.literal((String)(requester.getName().getString() + " wants to teleport to you. ")));
+            this.sendTeleportRequestPrompt(target, request, Text.literal((String)(requester.getName().getString() + " wants to teleport to your exact position and facing when you accept. ")));
         } else {
             requester.sendMessage((Text)Text.literal((String)("Teleport-here request sent to " + target.getName().getString() + ".")), false);
-            this.sendTeleportRequestPrompt(target, request, Text.literal((String)(requester.getName().getString() + " wants you to teleport to them. ")));
+            this.sendTeleportRequestPrompt(target, request, Text.literal((String)(requester.getName().getString() + " wants you to teleport to their saved position and facing from when they sent this request. ")));
         }
         return 1;
     }
@@ -1393,26 +1403,33 @@ implements ModInitializer {
         }
         ServerPlayerEntity teleportingPlayer = request.requestType == TeleportRequestType.REQUESTER_TO_TARGET ? requester : target;
         ServerPlayerEntity destinationPlayer = request.requestType == TeleportRequestType.REQUESTER_TO_TARGET ? target : requester;
-        if (!this.preparePlayerTeleport(teleportingPlayer, destinationPlayer)) return 0;
+        if (!this.preparePlayerTeleport(teleportingPlayer, destinationPlayer, request)) return 0;
         requester.sendMessage((Text)Text.literal((String)(target.getName().getString() + " accepted your teleport request.")), false);
         target.sendMessage((Text)Text.literal((String)("You accepted " + requester.getName().getString() + "'s teleport request.")), false);
         return 1;
     }
 
-    boolean preparePlayerTeleport(ServerPlayerEntity teleportingPlayer, ServerPlayerEntity destinationPlayer) {
-        ServerWorld destinationWorld = destinationPlayer.getServerWorld();
+    private boolean preparePlayerTeleport(ServerPlayerEntity teleportingPlayer, ServerPlayerEntity destinationPlayer, TeleportRequest request) {
+        boolean captureAtAcceptance = request.requestType == TeleportRequestType.REQUESTER_TO_TARGET;
+        ServerWorld destinationWorld = captureAtAcceptance ? destinationPlayer.getServerWorld() : request.destinationWorld;
+        long destinationGeneration = captureAtAcceptance ? this.rswResetService.generation() : request.destinationGeneration;
+        if (destinationWorld.getServer().getWorld(destinationWorld.getRegistryKey()) != destinationWorld
+                || (RSW_DIMENSIONS.contains(destinationWorld.getRegistryKey().getValue().toString())
+                    && destinationGeneration != this.rswResetService.generation())) {
+            teleportingPlayer.sendMessage(Text.literal("Teleport destination changed since the request. Send a new request."), false);
+            return false;
+        }
         if (LegacyDimensionPolicy.deny(teleportingPlayer, destinationWorld)) return false;
-        Vec3d destination = destinationPlayer.getPos();
-        float yaw = destinationPlayer.getYaw();
-        float pitch = destinationPlayer.getPitch();
+        Vec3d destination = captureAtAcceptance ? destinationPlayer.getPos() : request.destination;
+        float yaw = captureAtAcceptance ? destinationPlayer.getYaw() : request.yaw;
+        float pitch = captureAtAcceptance ? destinationPlayer.getPitch() : request.pitch;
         return this.teleportPreparation.request(teleportingPlayer, destinationWorld,
             () -> new TeleportPreparation.Destination(BlockPos.ofFloored(destination),
                 () -> {
                     teleportingPlayer.teleport(destinationWorld, destination.x, destination.y, destination.z, yaw, pitch);
                     return true;
                 }),
-            () -> !destinationPlayer.isDisconnected() && destinationPlayer.isAlive() && !destinationPlayer.isRemoved()
-                && destinationPlayer.getServerWorld() == destinationWorld,
+            () -> !destinationPlayer.isDisconnected() && destinationPlayer.isAlive() && !destinationPlayer.isRemoved(),
             "Teleported to " + destinationPlayer.getName().getString() + ".");
     }
 
@@ -1857,6 +1874,12 @@ implements ModInitializer {
         return CommandSource.suggestMatching(names, builder);
     }
 
+    private CompletableFuture<Suggestions> suggestTeleportPlayerNames(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) {
+        return CommandSource.suggestMatching(context.getSource().getServer().getPlayerManager().getPlayerList().stream()
+            .filter(player -> player != context.getSource().getEntity())
+            .map(player -> player.getGameProfile().getName()), builder);
+    }
+
     private String normalizeHomeName(String homeName) {
         return homeName == null ? "" : homeName.trim();
     }
@@ -2208,7 +2231,7 @@ implements ModInitializer {
             }
             LOGGER.info("Manual RSW reset requested by {}; deadline={}", source.getName(), this.rswResetService.resetAt());
             source.getServer().getPlayerManager().broadcast(Text.literal(
-                "[RSW] RSW will reset in 15:00 (operator request). Reset may take up to 15 minutes (estimate)."), false);
+                "[RSW] RSW will reset in 15:00 (operator request). Central Overworld pregeneration may take a few hours; other worlds stay open."), false);
             source.sendFeedback(() -> Text.literal("RSW reset scheduled; the normal 15-minute countdown has started."), true);
             return 1;
         } catch (IOException | IllegalStateException failure) {
@@ -2229,21 +2252,42 @@ implements ModInitializer {
             source.sendError(Text.literal("RSW is not loaded."));
             return 0;
         }
-        if (player.getServerWorld() == world) {
+        boolean alreadyInRsw = player.getServerWorld() == world;
+        if (alreadyInRsw && RswLanding.isSafe(world, player.getPos(), player.getWidth(),
+                Math.max(1.8, player.getHeight()))) {
             rememberRswLocation(player);
             source.sendFeedback(() -> Text.literal("You are already at your current RSW location."), false);
             return 1;
         }
-        RswResetService.Location saved = this.rswResetService.location(player.getUuid());
+        RswResetService.Location saved = alreadyInRsw
+            ? new RswResetService.Location(player.getX(), player.getY(), player.getZ(), player.getYaw(), player.getPitch())
+            : this.rswResetService.location(player.getUuid());
         if (saved != null) {
-            BlockPos feet = BlockPos.ofFloored(saved.x(), saved.y(), saved.z());
-            if (!world.getWorldBorder().contains(feet) || !world.isInBuildLimit(feet)) {
-                source.sendError(Text.literal("Your saved RSW position is outside the world's current limits. Please notify an operator."));
-                return 0;
+            double x = saved.x();
+            double y = saved.y();
+            double z = saved.z();
+            var border = world.getWorldBorder();
+            double[] clamped = BorderClamp.inside(x, z, border.getBoundWest(), border.getBoundEast(),
+                border.getBoundNorth(), border.getBoundSouth(), BorderClamp.MARGIN);
+            this.loadDestinationArea(world, clamped[0], clamped[1]);
+            if (clamped[0] != x || clamped[1] != z
+                    || !RswLanding.isSafe(world, new Vec3d(x, y, z), player.getWidth(),
+                        Math.max(1.8, player.getHeight()))) {
+                Vec3d inside = this.borderReturnTarget(world, player, x, z);
+                if (inside == null) {
+                    source.sendFeedback(() -> Text.literal(
+                        "Your previous RSW position is unsafe; finding safe ground near 0,0."), false);
+                    return this.rswEntrySearch.request(source, player, world, this.config.rswEntrySearchRadius);
+                }
+                x = inside.x;
+                y = inside.y;
+                z = inside.z;
+                player.sendMessage(Text.literal("Your last RSW position was unsafe; you were moved to safe ground inside the border."), false);
             }
-            this.loadDestinationArea(world, saved.x(), saved.z());
-            player.teleport(world, saved.x(), saved.y(), saved.z(), saved.yaw(), saved.pitch());
+            player.teleport(world, x, y, z, saved.yaw(), saved.pitch());
+            player.fallDistance = 0.0f;
             this.syncPlayerBorder(player);
+            rememberRswLocation(player);
             this.sendHubWildTitle(player, "RSW");
             return 1;
         }
@@ -2295,7 +2339,9 @@ implements ModInitializer {
         double z = origin.getZ() + 0.5;
         this.loadDestinationArea(world, x, z);
         player.teleport(world, x, origin.getY(), z, world.getSpawnAngle(), 0.0f);
+        player.fallDistance = 0.0f;
         this.syncPlayerBorder(player);
+        rememberRswLocation(player);
         this.sendHubWildTitle(player, "RSW");
         if (origin.getX() != 0 || origin.getZ() != 0) {
             entry.source.sendFeedback(() -> Text.literal("RSW 0,0 is unsafe; landed on the nearest safe ground at "
@@ -2396,6 +2442,27 @@ implements ModInitializer {
         player.networkHandler.sendPacket((Packet)new TitleS2CPacket((Text)titleText));
     }
 
+    /** No unchecked fallback: callers must use the safe entry search when nearby ground is unsafe. */
+    static Vec3d borderReturnTarget(ServerWorld world, ServerPlayerEntity player, double x, double z) {
+        var border = world.getWorldBorder();
+        double[] clamped = BorderClamp.inside(x, z, border.getBoundWest(), border.getBoundEast(),
+            border.getBoundNorth(), border.getBoundSouth(), BorderClamp.MARGIN);
+        double length = Math.hypot(clamped[0], clamped[1]);
+        for (int step = 0; step <= 64; step += 4) {
+            double scale = length <= step ? 0.0 : (length - step) / length;
+            int bx = MathHelper.floor(clamped[0] * scale);
+            int bz = MathHelper.floor(clamped[1] * scale);
+            world.getChunk(bx >> 4, bz >> 4);
+            int y = world.getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, bx, bz);
+            Vec3d candidate = new Vec3d(bx + 0.5, y, bz + 0.5);
+            if (RswLanding.isSafe(world, candidate, player.getWidth(), Math.max(1.8, player.getHeight()))) {
+                return candidate;
+            }
+            if (scale == 0.0) break;
+        }
+        return null;
+    }
+
     private void loadDestinationArea(ServerWorld world, double x, double z) {
         int centerChunkX = Math.floorDiv((int)Math.floor(x), 16);
         int centerChunkZ = Math.floorDiv((int)Math.floor(z), 16);
@@ -2464,6 +2531,11 @@ implements ModInitializer {
 
     public static GoldClaimMod getInstance() {
         return INSTANCE;
+    }
+
+    public boolean hasClaimAt(World world, BlockPos pos) {
+        return this.claimManager.getClaimAt(world.getRegistryKey().getValue().toString(),
+            pos.getX(), pos.getZ()).isPresent();
     }
 
     public void identifyClaim(ServerPlayerEntity player, BlockPos pos) {
@@ -3010,14 +3082,24 @@ implements ModInitializer {
         private final String targetName;
         private final TeleportRequestType requestType;
         private final long createdAtMs;
+        private final ServerWorld destinationWorld;
+        private final Vec3d destination;
+        private final float yaw;
+        private final float pitch;
+        private final long destinationGeneration;
 
-        private TeleportRequest(UUID requesterUuid, String requesterName, UUID targetUuid, String targetName, TeleportRequestType requestType, long createdAtMs) {
+        private TeleportRequest(UUID requesterUuid, String requesterName, UUID targetUuid, String targetName, TeleportRequestType requestType, long createdAtMs, ServerPlayerEntity destinationPlayer, long destinationGeneration) {
             this.requesterUuid = requesterUuid;
             this.requesterName = requesterName;
             this.targetUuid = targetUuid;
             this.targetName = targetName;
             this.requestType = requestType;
             this.createdAtMs = createdAtMs;
+            this.destinationWorld = destinationPlayer.getServerWorld();
+            this.destination = destinationPlayer.getPos();
+            this.yaw = destinationPlayer.getYaw();
+            this.pitch = destinationPlayer.getPitch();
+            this.destinationGeneration = destinationGeneration;
         }
     }
 

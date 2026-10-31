@@ -20,6 +20,24 @@ public class RswResetServiceTest {
     }
 
     @Test
+    public void pregenerationAndSavedCompletionRemainClosedAcrossRestart() throws Exception {
+        for (String phase : java.util.List.of("PREGENERATING", "FINALIZING")) {
+            var state = new RswResetService.State();
+            state.phase = phase;
+            state.backup = "reset-123";
+            state.seed = 123;
+            state.nextResetAtMs = NOW;
+            Files.writeString(journal(), GSON.toJson(state));
+            var service = new RswResetService(journal());
+            service.initialize(NOW);
+            assertTrue(service.isClosed());
+            assertEquals(0, service.generation());
+            assertThrows(IllegalStateException.class, () -> service.requestManualReset(NOW));
+            assertEquals(phase, GSON.fromJson(Files.readString(journal()), RswResetService.State.class).phase);
+        }
+    }
+
+    @Test
     public void persistedSeedsAcceptBothYamlIntegerWidthsButNeverTruncateOtherValues() {
         assertEquals(12345L, RswResetService.persistedSeed(12345));
         assertEquals(Long.MIN_VALUE, RswResetService.persistedSeed(Long.MIN_VALUE));
@@ -197,7 +215,7 @@ public class RswResetServiceTest {
         assertFalse(service.isClosed());
         assertEquals(deadline, service.resetAt());
         var state = GSON.fromJson(Files.readString(journal()), RswResetService.State.class);
-        assertEquals(3, state.schemaVersion);
+        assertEquals(4, state.schemaVersion);
         assertTrue(state.locations.isEmpty());
     }
 

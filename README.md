@@ -28,3 +28,14 @@ The original, unmodified `neon-wall-wonders-gwbzt3mk (10).jar` is distributed
 for free with its embedded notices preserved.
 [Official mod page](https://creativemode.net/mod/neon-wall-wonders-gwbzt3mk)
 and [CreativeMode Mods License](https://creativemode.net/mod-license).
+
+## Published server and compatibility fixes
+
+**v1.1.18** publishes the installed GoldClaim 1.0.62, GangSales 1.0.3,
+Ledger compatibility repair and Biolith concurrency fix. Rank Badges 1.0.3
+orders the tab list by rank before game mode. Close Minecraft and press Play
+in the existing auto-updating Prism instance for the two client-side updates
+(Biolith and Rank Badges). Server-only mods stay off clients.
+See [versions, source, update instructions and rollback](docs/updates/v1.1.18.md).
+The local-only pending-login damage fix and restart installers are not
+included in this publication.

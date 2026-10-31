@@ -43,6 +43,7 @@ final class RswResetService {
     private long lastRemaining = Long.MAX_VALUE;
     private long retryAt;
     private boolean delayAnnounced;
+    private RswPregenerator pregenerator;
 
     RswResetService() {
         this(Path.of("config", "goldclaim", "rsw-reset.json"));
@@ -53,7 +54,7 @@ final class RswResetService {
     }
 
     static final class State {
-        int schemaVersion = 3;
+        int schemaVersion = 4;
         long nextResetAtMs;
         long startedAtMs;
         long seed;
@@ -97,7 +98,7 @@ final class RswResetService {
                 }
             }
             this.lastRemaining = this.state.nextResetAtMs - now;
-            this.state.schemaVersion = 3;
+            this.state.schemaVersion = 4;
             this.save();
             this.initialized = true;
         } catch (IOException | RuntimeException failure) {
@@ -171,7 +172,7 @@ final class RswResetService {
     }
 
     static void validate(State state) {
-        if (!java.util.Set.of("IDLE", "UNLOADING", "ARCHIVING", "CREATING").contains(state.phase)) {
+        if (!java.util.Set.of("IDLE", "UNLOADING", "ARCHIVING", "CREATING", "PREGENERATING", "FINALIZING").contains(state.phase)) {
             throw new IllegalArgumentException("Unknown RSW reset phase: " + state.phase);
         }
         if (!state.phase.equals("IDLE") && (state.backup == null || !state.backup.matches("reset-[0-9]+"))) {
@@ -206,7 +207,7 @@ final class RswResetService {
                         this.state.warningMask |= 1 << index;
                         this.save();
                         long seconds = (remaining + 999) / 1000;
-                        broadcast(server, String.format("RSW will reset in %02d:%02d. Reset may take up to 15 minutes (estimate).", seconds / 60, seconds % 60));
+                        broadcast(server, String.format("RSW will reset in %02d:%02d. Central Overworld pregeneration may take a few hours; other worlds stay open.", seconds / 60, seconds % 60));
                         break;
                     }
                 }
@@ -214,6 +215,8 @@ final class RswResetService {
                 if (remaining > 0) {
                     return;
                 }
+                RswPregenerator.requireNoRunningTasks();
+                this.pregenerator = null;
                 this.state.startedAtMs = now;
                 ServerWorld mainWorld = server.getWorld(RegistryKey.of(RegistryKeys.WORLD, new Identifier("multiworld", "rsw")));
                 this.state.previousSeed = mainWorld == null ? this.state.seed : mainWorld.getSeed();
@@ -289,7 +292,7 @@ final class RswResetService {
                 this.state.phase = "CREATING";
                 this.save();
             }
-            if (this.state.phase.equals("CREATING")) {
+            if (java.util.Set.of("CREATING", "PREGENERATING", "FINALIZING").contains(this.state.phase)) {
                 boolean wrongSeed = false;
                 for (String sub : RSW_SUB_DIMENSIONS) {
                     ServerWorld w = server.getWorld(RegistryKey.of(RegistryKeys.WORLD, new Identifier("multiworld", sub)));
@@ -299,6 +302,9 @@ final class RswResetService {
                     }
                 }
                 if (wrongSeed) {
+                    if (this.pregenerator != null) {
+                        throw new IllegalStateException("RSW seed changed during pregeneration; refusing to unload an active Chunky world.");
+                    }
                     this.state.phase = "UNLOADING";
                     this.save();
                     return;
@@ -329,6 +335,19 @@ final class RswResetService {
                 }
                 if (!ready.test(server)) {
                     return;
+                }
+                if (this.state.phase.equals("CREATING")) {
+                    this.state.phase = "PREGENERATING";
+                    this.save();
+                    broadcast(server, "RSW worlds recreated. Chunky is pregenerating the central RSW Overworld before RSW reopens; other worlds remain available.");
+                }
+                if (this.state.phase.equals("PREGENERATING")) {
+                    if (this.pregenerator == null) this.pregenerator = new RswPregenerator();
+                    ServerWorld overworld = server.getWorld(RegistryKey.of(RegistryKeys.WORLD,
+                        new Identifier("multiworld", "rsw")));
+                    if (!this.pregenerator.prepare(overworld)) return;
+                    this.state.phase = "FINALIZING";
+                    this.save();
                 }
                 clearResetStaging(server.getSavePath(WorldSavePath.ROOT), this.state.backup);
                 State completed = completedState(this.state, now);

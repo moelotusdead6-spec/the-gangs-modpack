@@ -19,12 +19,57 @@ public class BannedContentTest {
     public void onlyTheExactRestrictedItemsAreBanned() {
         assertTrue(BannedContent.isBanned(new Identifier("furniture:bin")));
         assertTrue(BannedContent.isBanned(new Identifier(BannedContent.INCEPTION_UPGRADE)));
+        assertTrue(BannedContent.isBanned(new Identifier(BannedContent.EARTHDIVE_SPEAR)));
+        assertTrue(BannedContent.isBanned(new Identifier(BannedContent.WITHERED_WABBAJACK)));
+        assertFalse(BannedContent.isBanned(new Identifier("soulsweapons:moonlight_greatsword")));
+        assertFalse(BannedContent.isBanned(new Identifier("another_mod:withered_wabbajack")));
+        assertFalse(BannedContent.isBanned(new Identifier("bosses_of_mass_destruction:blazing_eye")));
         assertFalse(BannedContent.isBanned(new Identifier("sophisticatedbackpacks:backpack")));
         assertFalse(BannedContent.isBanned(new Identifier("sophisticatedbackpacks:stack_upgrade_tier_4")));
         assertFalse(BannedContent.isBanned(new Identifier("furniture:trash_bag")));
         assertFalse(BannedContent.isBanned(new Identifier("furniture:oak_cabinet")));
         assertFalse(BannedContent.isBanned(new Identifier("another_furniture:bin")));
         assertFalse(BannedContent.isBanned((Identifier)null));
+    }
+
+    @Test
+    public void wabbajackRecipesAndNestedStacksAreRemovedWithoutRemovingOtherWeapons() {
+        for (String result : new String[]{"\"" + BannedContent.WITHERED_WABBAJACK + "\"",
+                "{\"item\":\"" + BannedContent.WITHERED_WABBAJACK + "\"}",
+                "{\"id\":\"" + BannedContent.WITHERED_WABBAJACK + "\"}"}) {
+            assertTrue(BannedContent.isBannedRecipe(JsonParser.parseString("{\"result\":" + result + "}")));
+        }
+        assertFalse(BannedContent.isBannedRecipe(JsonParser.parseString(
+            "{\"result\":{\"item\":\"soulsweapons:moonlight_greatsword\"}}")));
+        NbtCompound backpack = stack("sophisticatedbackpacks:backpack");
+        NbtCompound tag = new NbtCompound();
+        NbtList contents = new NbtList();
+        contents.add(stack(BannedContent.WITHERED_WABBAJACK));
+        contents.add(stack("soulsweapons:moonlight_greatsword"));
+        tag.put("Items", contents);
+        backpack.put("tag", tag);
+        assertEquals(1, BannedContent.sanitize(backpack));
+        assertEquals(1, contents.size());
+        assertEquals("soulsweapons:moonlight_greatsword", contents.getCompound(0).getString("id"));
+        NbtCompound held = stack(BannedContent.WITHERED_WABBAJACK);
+        assertEquals(1, BannedContent.sanitize(held));
+        assertEquals("minecraft:air", held.getString("id"));
+        assertEquals(0, held.getByte("Count"));
+    }
+
+    @Test
+    public void earthdiveRecipesAndNestedSavedStacksAreRemovedWithoutTouchingOtherLoot() {
+        for (String result : new String[]{"\"" + BannedContent.EARTHDIVE_SPEAR + "\"",
+                "{\"item\":\"" + BannedContent.EARTHDIVE_SPEAR + "\"}",
+                "{\"id\":\"" + BannedContent.EARTHDIVE_SPEAR + "\"}"}) {
+            assertTrue(BannedContent.isBannedRecipe(JsonParser.parseString("{\"result\":" + result + "}")));
+        }
+        var items = new NbtList();
+        items.add(stack(BannedContent.EARTHDIVE_SPEAR));
+        items.add(stack("minecraft:diamond"));
+        assertEquals(1, BannedContent.sanitize(items));
+        assertEquals(1, items.size());
+        assertEquals("minecraft:diamond", items.getCompound(0).getString("id"));
     }
 
     @Test

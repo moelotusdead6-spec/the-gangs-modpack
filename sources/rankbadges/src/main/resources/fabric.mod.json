@@ -3,21 +3,17 @@
   "id": "rankbadges",
   "version": "${version}",
   "name": "Rank Badges",
-  "description": "Displays owner, moderator, and player badges in chat and the player list.",
+  "description": "Orders GoldClaim tab ranks before game mode: Owner, Mod, Gang, Drifters.",
   "authors": [
     "Prof_it",
     "GitHub Copilot"
   ],
   "license": "CC-BY-4.0",
   "environment": "*",
-  "entrypoints": {
-    "main": [
-      "com.gangs.rankbadges.RankBadgesMod"
-    ]
-  },
+  "mixins": ["rankbadges.mixins.json"],
   "depends": {
     "fabricloader": ">=0.15.11",
-    "fabric": "*",
+    "fabric-api": "*",
     "minecraft": "~1.20.1",
     "java": ">=17"
   }

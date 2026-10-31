@@ -1,5 +1,26 @@
 # Published Artifacts
 
+## v1.1.18 installed server and supporting fixes
+
+GoldClaim 1.0.62, GangSales 1.0.3, Command Limits 1.0.1, Ledger
+1.2.8+gangs.compat.1, Biolith endfix-concurrency and Rank Badges 1.0.3
+are published with checksum-pinned Packwiz metadata.
+[Versions, checksums, source, update instructions and rollback](docs/updates/v1.1.18.md).
+The exact server binaries were verified against hosted download readback.
+Only Biolith and Rank Badges are client mod replacements in this release.
+
+Ledger is LGPL-3.0; its complete corresponding-source bundle, including
+upstream source, patch/build tools and license, is published alongside the jar:
+`artifacts/ledger-1.2.8+gangs.compat.1-corresponding-source.zip`.
+
+Biolith by TerraformersMC and gniftygnome is LGPL-3.0.
+[Upstream source](https://github.com/TerraformersMC/Biolith).
+The complete modified source is
+`sources/biolith-fabric-1.0.1-beta.1-endfix-concurrency-source.zip`.
+The targeted project in `sources/biolith-concurrency` compiles the concurrency
+fix against the unchanged End-fix base and preserves unrelated jar entries.
+See `artifacts/biolith-ATTRIBUTION.txt` for attribution and source links.
+
 ## Neon Wall Wonders 8.0.0
 
 Original, unmodified `artifacts/neon-wall-wonders-gwbzt3mk (10).jar`.

@@ -1,5 +1,15 @@
 # Updating The Gangs Modpack
 
+## v1.1.18 installed server and supporting fixes
+
+Publishes the installed GoldClaim 1.0.62, GangSales 1.0.3, Ledger repair,
+Biolith concurrency fix, Command Limits 1.0.1 and Rank Badges 1.0.3.
+Close Minecraft and press Play in the existing auto-updating Prism instance.
+Only Biolith and Rank Badges are new client mod replacements in this release;
+Neon Wall Wonders and the v1.1.16 End libraries remain included.
+No live server restart, reload or installation is part of this publication.
+[Details and rollback](v1.1.18.md).
+
 ## v1.1.17 Neon Wall Wonders
 
 Adds **Neon Wall Wonders 8.0.0** to both server and clients. The server jar

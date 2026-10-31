@@ -6,15 +6,19 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "c92d3cea5c013d073e34e95279b633a28e1dc196739d218023693cadc3b42fd0"
+hash = "8b4e68e0aed4d77dd522a9eee67edd5937e0f9fa492710b1237477e5b74f0499"
 
 [[files]]
 file = "README.md"
-hash = "e413b408c46f34b844192b068e103cc6f44e4f05bd18fb4a9dd991a2d513db3d"
+hash = "b64d2847372723365fe5b0bb23c42b9485b075e79ab9ce120deef75c6fe61d6a"
 
 [[files]]
 file = "config/EssentialCommands.properties"
 hash = "4fa98d5b3df8897256e321b6937eab0e4dc382197c61d817f7cc86d0f3cbed1f"
+
+[[files]]
+file = "config/antixray.toml"
+hash = "241c40f4519464449d6bdee199dd547facb63e110c6657af2c8697e7c02cd136"
 
 [[files]]
 file = "config/bcc.json"
@@ -94,7 +98,7 @@ hash = "35b7cfda687dfab8ec9aef8a1fb8a13a8337535e390ad4085bdd9764a4b43d40"
 
 [[files]]
 file = "config/packetfixer.properties"
-hash = "668a3583c0903840d9e566edf34a57da2f57b6b5b1894adb60d55fea028ee9c0"
+hash = "f7eb7c0fa8000937fc3a681f93a93add2ece5a8c58b8f77eedb442e1b07b9181"
 
 [[files]]
 file = "config/paxi/datapack_load_order.json"
@@ -190,7 +194,7 @@ hash = "8b64135156579344342634b886c16eaf044d88aebb014efb4183b775c3baef77"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_hub/data/gangs_hub/functions/assign_ranks.mcfunction"
-hash = "b21efb460af930d00438fc670aa99a630686162569a9b2fa35d2f16d259c2296"
+hash = "940efc6d3b4cc89e514c8f8e0bd0d991ac04a0327b0eb7df0e06689ab2ea5d73"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_hub/data/gangs_hub/functions/init.mcfunction"
@@ -202,7 +206,7 @@ hash = "14346b1960598c5b82248b002b0626cbf8e2e452f0097f8e6d4946e66e5fbcc9"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_hub/data/gangs_hub/functions/setup_ranks.mcfunction"
-hash = "bbb6372df69f8c54874df573af6983b6700907fe5332e3e6102bc5eba65afeba"
+hash = "30dcb503c9c10e724b82362bd60c91206070543c21b8018d33222bbea424eb04"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_hub/data/minecraft/tags/functions/load.json"
@@ -542,11 +546,11 @@ hash = "d022c03cd1366878024d932aca7e3eda35a9f19e87bac7fc11bf8e1521d36ac7"
 
 [[files]]
 file = "index.html"
-hash = "c0b10275718136a8de25c3a1bf88b980dc9e011a5c39a728cc1418e53aad25ff"
+hash = "89df25c318c895533a09e03a493610bcfc6c266b330bcfbb9949e6cfaa458ae1"
 
 [[files]]
 file = "mods/.gitkeep"
-hash = "94e12306f82d6edb52221ef9749648848ab8bde5c31d6f5f06b1b04e5f115bac"
+hash = "337d0493968221383db93fdaf60298ecd585e466952852720affa4817f0f72fb"
 
 [[files]]
 file = "mods/AmbientEnvironment-fabric-1.20.1-11.0.0.1.pw.toml"
@@ -904,6 +908,11 @@ hash = "3194761af5154bf796d925ea7c78a63685c7c2c8779ee699266f8c1bc5e0eeb6"
 metafile = true
 
 [[files]]
+file = "mods/antixray.pw.toml"
+hash = "022933f7c0f9b55861bdf8b60e70a3978947b659b4624b4cd301a4190dd15a47"
+metafile = true
+
+[[files]]
 file = "mods/archers-direct.pw.toml"
 hash = "c9031520916a866d914fe0a8d76789fc17fa6feebe5ede23d4479b0326b99c7c"
 metafile = true
@@ -1000,7 +1009,7 @@ metafile = true
 
 [[files]]
 file = "mods/biolith-direct.pw.toml"
-hash = "312a52949b010562a6aa401b3834de49dc3e9189adf9862116aeab516cb1f644"
+hash = "965e2303a433f1646855af639db914a375e15f15e1bd91139756421f455582a1"
 metafile = true
 
 [[files]]
@@ -1050,7 +1059,7 @@ metafile = true
 
 [[files]]
 file = "mods/commandlimits-direct.pw.toml"
-hash = "434ae2a3f757f8cb398cbbcc3494a360eb41c5411fc1f3f976613b937ef87cc0"
+hash = "b8ff0e69e485d4e2feb0f1ea7086485b95548be94a2d97a2b90e7be2fca88383"
 metafile = true
 
 [[files]]
@@ -1275,7 +1284,7 @@ metafile = true
 
 [[files]]
 file = "mods/gangsales-direct.pw.toml"
-hash = "455d0100010a96c0b2683a115ac1098e8ee04c6a04d8e2af64bce28d0abd5636"
+hash = "3497cc81555ec33d9fc033d2c408b3b7c9dc2665566104bf1b1f2988754fd54c"
 metafile = true
 
 [[files]]
@@ -1305,7 +1314,7 @@ metafile = true
 
 [[files]]
 file = "mods/goldclaim-direct.pw.toml"
-hash = "e6a58f971773bc9ea1b361fdfd574d683c50a398479986ec14ef71ac565bbd69"
+hash = "899c54a89f4a2aa3a01c6bab1025742bd834c9ad6a57adc957220df6cab9722d"
 metafile = true
 
 [[files]]
@@ -1360,7 +1369,7 @@ metafile = true
 
 [[files]]
 file = "mods/ledger.pw.toml"
-hash = "56094cd33726792df84e8991bf1e9e3d69383a65793d47aab66bf2cac3f9acfb"
+hash = "6d40ba4d289a9993eddc7d0e193a6864a81a0facd5b4557ac8c396f40f250919"
 metafile = true
 
 [[files]]
@@ -1635,7 +1644,7 @@ metafile = true
 
 [[files]]
 file = "mods/rankbadges-direct.pw.toml"
-hash = "40fa8107cbefd4b04aa97231e583573982fbb74b132d963ee648934ca953a433"
+hash = "97dae001ac4c481e4b825dbcc7bdf90c0d6a074060874bd770d55d7ee76fc820"
 metafile = true
 
 [[files]]

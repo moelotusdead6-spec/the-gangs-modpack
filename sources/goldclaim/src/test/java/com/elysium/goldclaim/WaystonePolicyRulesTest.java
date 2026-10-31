@@ -11,12 +11,12 @@ import static org.junit.Assert.*;
 
 public class WaystonePolicyRulesTest {
     @Test
-    public void allRswDimensionsAreBannedButActivatedWildStonesAndOtherWorldsArePreserved() {
+    public void existingRswStonesArePreservedAlongsideActivatedWildStonesAndOtherWorlds() {
         UUID known = UUID.randomUUID();
         UUID unused = UUID.randomUUID();
         for (String dimension : GoldClaimMod.RSW_DIMENSIONS) {
-            assertTrue(WaystonePolicyRules.shouldRemove(dimension, known, Set.of(known)));
-            assertTrue(WaystonePolicyRules.shouldRemove(dimension, unused, Set.of(known)));
+            assertFalse(WaystonePolicyRules.shouldRemove(dimension, known, Set.of(known)));
+            assertFalse(WaystonePolicyRules.shouldRemove(dimension, unused, Set.of(known)));
         }
         assertFalse(WaystonePolicyRules.shouldRemove("minecraft:overworld", known, Set.of(known)));
         assertTrue(WaystonePolicyRules.shouldRemove("minecraft:overworld", unused, Set.of(known)));

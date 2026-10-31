@@ -1,0 +1,54 @@
+plugins {
+    id 'fabric-loom' version '1.10-SNAPSHOT'
+}
+
+version = '1.0.1-beta.1-endfix-concurrency'
+group = 'com.terraformersmc'
+
+loom {
+    accessWidenerPath = file('src/main/resources/biolith.accesswidener')
+}
+
+dependencies {
+    minecraft 'com.mojang:minecraft:1.20.1'
+    mappings 'net.fabricmc:yarn:1.20.1+build.10:v2'
+    modImplementation 'net.fabricmc:fabric-loader:0.16.14'
+    modImplementation files('../../artifacts/biolith-fabric-1.0.1-beta.1-endfix.jar')
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 17
+}
+
+tasks.register('verifyBase') {
+    doLast {
+        def original = file('../../artifacts/biolith-fabric-1.0.1-beta.1-endfix.jar')
+        def hash = java.security.MessageDigest.getInstance('SHA-256').digest(original.bytes).encodeHex().toString()
+        if (hash != 'eea2f3816d6d6d39e1e1d0ababcaa77b54dba3ba15e00958574df513efe80d92') {
+            throw new GradleException('Biolith End-fix base differs from the tested artifact.')
+        }
+    }
+}
+
+tasks.register('patchedJar', Zip) {
+    dependsOn remapJar, verifyBase
+    archiveFileName = 'biolith-fabric-1.0.1-beta.1-endfix-concurrency.jar'
+    destinationDirectory = file('../../artifacts')
+    from(zipTree('../../artifacts/biolith-fabric-1.0.1-beta.1-endfix.jar')) {
+        exclude 'com/terraformersmc/biolith/impl/biome/DimensionBiomePlacement*.class'
+    }
+    from(remapJar.archiveFile.map { zipTree(it) }) {
+        include 'com/terraformersmc/biolith/impl/biome/DimensionBiomePlacement*.class'
+    }
+}
+
+tasks.register('patchedSources', Zip) {
+    archiveFileName = 'biolith-fabric-1.0.1-beta.1-endfix-concurrency-source.zip'
+    destinationDirectory = file('..')
+    from(zipTree('../biolith-fabric-1.0.1-beta.1-endfix-source.zip')) {
+        exclude 'common/src/main/java/com/terraformersmc/biolith/impl/biome/DimensionBiomePlacement.java'
+    }
+    into('common/src/main/java') {
+        from 'src/main/java'
+    }
+}

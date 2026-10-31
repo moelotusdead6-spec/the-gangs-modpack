@@ -19,6 +19,12 @@ repositories {
 		metadataSources { artifact() }
 		content { includeGroup 'waystones-pinned' }
 	}
+	ivy {
+		url 'https://mediafilez.forgecdn.net/files/7654/713'
+		patternLayout { artifact '[artifact].[ext]' }
+		metadataSources { artifact() }
+		content { includeGroup 'brutalbosses-pinned' }
+	}
 }
 
 dependencies {
@@ -33,8 +39,17 @@ dependencies {
 	modCompileOnly 'maven.modrinth:bclib:TPC86Pyz'
 	modCompileOnly 'maven.modrinth:lootr:nj1zDLc6'
 	modCompileOnly 'maven.modrinth:cloth-config:2xQdCMyG'
+	compileOnly 'maven.modrinth:fiw-anticheat:Nxl73bNY'
 	testImplementation 'junit:junit:4.13.2'
 	testRuntimeOnly "net.luckperms:api:5.4"
+	modImplementation files('../../artifacts/Chunky-1.3.146.jar')
+	modCompileOnly 'brutalbosses-pinned:brutalbosses-fabric-1.20.1-8.5:8.5@jar'
+	modCompileOnly 'maven.modrinth:supplementaries:hsHs7Gle'
+	modCompileOnly 'maven.modrinth:moonlight:IYl8kNb4'
+	modCompileOnly 'maven.modrinth:enhanced-celestials:bGoMMYXA'
+	modCompileOnly 'maven.modrinth:data-anchor:PnfBedfn'
+	modCompileOnly files(project.findProperty('smokeBiolithJar')
+		?: '../../artifacts/biolith-fabric-1.0.1-beta.1-endfix.jar')
 	if (project.hasProperty('smokePlushieJar')) {
 		modRuntimeOnly files(project.property('smokePlushieJar'))
 	}
@@ -45,6 +60,9 @@ dependencies {
 	}
 	if (project.hasProperty('smokeModsDir')) {
 		modRuntimeOnly fileTree(dir: project.property('smokeModsDir'), include: '*.jar')
+	}
+	if (project.hasProperty('smokeLibrariesDir')) {
+		runtimeOnly fileTree(dir: project.property('smokeLibrariesDir'), include: '*.jar')
 	}
 }
 
@@ -121,6 +139,55 @@ loom {
 			vmArg '-XX:ActiveProcessorCount=4'
 			environmentVariable 'GOLDCLAIM_RSW_SMOKE', 'true'
 			programArg 'nogui'
+		}
+		restartSmoke {
+			server()
+			name 'Isolated restart policy integration test'
+			source sourceSets.testmod
+			runDir '../../tmp/goldclaim-restart-smoke'
+			vmArg '-Xmx2G'
+			vmArg '-XX:ActiveProcessorCount=2'
+			vmArg '-Dchunky.maxWorkingCount=8'
+			environmentVariable 'GOLDCLAIM_RESTART_SMOKE', 'true'
+			programArg 'nogui'
+		}
+	}
+
+	tasks.named('runRestartSmoke') {
+		doFirst {
+			def directory = file('../../tmp/goldclaim-restart-smoke')
+			def eula = new File(directory, 'eula.txt')
+			if (!eula.exists() || !(eula.text =~ /(?m)^eula=true\s*$/).find()) {
+				throw new GradleException('Copy your accepted eula.txt into tmp/goldclaim-restart-smoke first.')
+			}
+			new File(directory, 'server.properties').text = '''server-ip=127.0.0.1
+	server-port=0
+	online-mode=false
+	enable-query=false
+	enable-rcon=false
+	level-name=smoke-world
+	level-type=minecraft:flat
+	generate-structures=false
+	view-distance=2
+	simulation-distance=2
+	max-tick-time=60000
+	generator-settings={"layers":[{"block":"minecraft:bedrock","height":1},{"block":"minecraft:dirt","height":2},{"block":"minecraft:grass_block","height":1}],"biome":"minecraft:plains"}
+	'''
+			def result = new File(directory, 'restart-smoke-passed.txt')
+			if (result.exists() && !result.delete()) throw new GradleException('Cannot clear prior restart smoke result.')
+			new File(directory, 'config/goldclaim/rsw-reset.json').with {
+				parentFile.mkdirs()
+				text = '{"phase":"IDLE","nextResetAtMs":0}'
+			}
+			copy {
+				from '../../config/randomcollections/config.json'
+				into new File(directory, 'config/randomcollections')
+			}
+		}
+		doLast {
+			if (!file('../../tmp/goldclaim-restart-smoke/restart-smoke-passed.txt').exists()) {
+				throw new GradleException('Restart integration tests did not produce a passing result.')
+			}
 		}
 	}
 
@@ -226,6 +293,13 @@ generator-settings={"layers":[{"block":"minecraft:bedrock","height":1},{"block":
 				into new File(directory, 'config/skieskits')
 			}
 		}
+		if (System.getenv('GOLDCLAIM_TELEPORT_SMOKE') == 'true'
+				|| System.getenv('GOLDCLAIM_REQUEST_SMOKE') == 'true'
+				|| System.getenv('GOLDCLAIM_WAYSTONE_SMOKE') == 'true') {
+			def reset = new File(directory, 'config/goldclaim/rsw-reset.json')
+			reset.parentFile.mkdirs()
+			reset.text = '{"phase":"IDLE","nextResetAtMs":0}'
+		}
 		copy {
 			from '../../config/randomcollections/config.json'
 			into new File(directory, 'config/randomcollections')
@@ -234,6 +308,34 @@ generator-settings={"layers":[{"block":"minecraft:bedrock","height":1},{"block":
 			copy {
 				from '../../config/paxi/datapacks/gangs_fixes'
 				into new File(directory, 'smoke-world/datapacks/gangs_fixes')
+			}
+		}
+		if (System.getenv('GOLDCLAIM_OCT22_SMOKE') == 'true') {
+			copy {
+				from '../../config/gangshop/overrides.json'
+				into new File(directory, 'config/gangshop')
+			}
+		}
+		if (System.getenv('GOLDCLAIM_PROJECTILE_SMOKE') == 'true') {
+			copy {
+				from '../../config/paxi/datapacks/gangs_fixes'
+				into new File(directory, 'smoke-world/datapacks/gangs_fixes')
+			}
+			def reset = new File(directory, 'config/goldclaim/rsw-reset.json')
+			reset.parentFile.mkdirs()
+			reset.text = '{"phase":"IDLE","nextResetAtMs":0}'
+		}
+		if (System.getenv('GOLDCLAIM_PERFORMANCE_SMOKE') == 'true') {
+			// The universal mod contains unused Java 25 classes that Loom cannot remap.
+			// Load its unmodified datapack below Paxi, as Fabric does in production.
+			copy {
+				from '../../artifacts/spawnanimations-v1.11.5-mc1.17-26.2.9-mod.jar'
+				into new File(directory, 'smoke-world/datapacks')
+				rename { 'spawnanimations.zip' }
+			}
+			copy {
+				from '../../artifacts/gangs-performance-pause-1.0.0.zip'
+				into new File(directory, 'config/paxi/datapacks')
 			}
 		}
 	}
