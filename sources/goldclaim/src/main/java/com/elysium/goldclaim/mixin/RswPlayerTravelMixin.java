@@ -1,6 +1,7 @@
 package com.elysium.goldclaim.mixin;
 
 import com.elysium.goldclaim.GoldClaimMod;
+import com.elysium.goldclaim.HubTeleportPolicy;
 import com.elysium.goldclaim.LegacyDimensionPolicy;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -40,7 +41,7 @@ public abstract class RswPlayerTravelMixin {
     private void goldclaim$rememberBeforeTeleport(ServerWorld target, double x, double y, double z,
                                                  float yaw, float pitch, CallbackInfo ci) {
         ServerPlayerEntity player = (ServerPlayerEntity)(Object)this;
-        if (LegacyDimensionPolicy.deny(player, target)) {
+        if (HubTeleportPolicy.denyItemTeleport(player, target) || LegacyDimensionPolicy.deny(player, target)) {
             ci.cancel();
             return;
         }
@@ -53,7 +54,10 @@ public abstract class RswPlayerTravelMixin {
         at = @At("HEAD"), cancellable = true)
     private void goldclaim$denyLegacyCommandTeleport(ServerWorld target, double x, double y, double z,
             Set<PositionFlag> flags, float yaw, float pitch, CallbackInfoReturnable<Boolean> cir) {
-        if (LegacyDimensionPolicy.deny((ServerPlayerEntity)(Object)this, target)) cir.setReturnValue(false);
+        ServerPlayerEntity player = (ServerPlayerEntity)(Object)this;
+        if (HubTeleportPolicy.denyItemTeleport(player, target) || LegacyDimensionPolicy.deny(player, target)) {
+            cir.setReturnValue(false);
+        }
     }
 
     @Inject(method = "setSpawnPoint", at = @At("HEAD"), cancellable = true)

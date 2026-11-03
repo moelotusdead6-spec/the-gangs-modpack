@@ -9,22 +9,30 @@ import static org.junit.Assert.*;
 
 public class GameplayPolicyTest {
     @Test
-    public void rswFireSpreadIsDisabledForEveryGenerationWithoutChangingOtherRules() {
+    public void fireSpreadIsDisabledInEveryWorldWithoutChangingOtherRules() {
         for (int generation = 0; generation < 3; generation++) {
-            for (String rswDim : new String[]{"multiworld:rsw", "multiworld:rsw_nether", "multiworld:rsw_the_end"}) {
-                GameRules rules = new GameRules();
-                GoldClaimMod.applyRswFireRule(rswDim, rules, null);
-                assertFalse(rules.getBoolean(GameRules.DO_FIRE_TICK));
-                assertTrue(rules.getBoolean(GameRules.DO_DAYLIGHT_CYCLE));
-                assertTrue(rules.getBoolean(GameRules.DO_WEATHER_CYCLE));
-                assertFalse(rules.getBoolean(GameRules.KEEP_INVENTORY));
-            }
-        }
-        for (String dimension : new String[]{"minecraft:overworld", "minecraft:the_nether", "multiworld:pvp"}) {
             GameRules rules = new GameRules();
-            GoldClaimMod.applyRswFireRule(dimension, rules, null);
-            assertTrue(rules.getBoolean(GameRules.DO_FIRE_TICK));
+            GoldClaimMod.applyFireSpreadRule(rules, null);
+            assertFalse(rules.getBoolean(GameRules.DO_FIRE_TICK));
+            assertTrue(rules.getBoolean(GameRules.DO_DAYLIGHT_CYCLE));
+            assertTrue(rules.getBoolean(GameRules.DO_WEATHER_CYCLE));
+            assertFalse(rules.getBoolean(GameRules.KEEP_INVENTORY));
         }
+    }
+
+    @Test
+    public void pendingHubTransferProtectsPlayersBeforeTeleport() {
+        assertFalse(GoldClaimMod.shouldAllowPlayerDamage(true, false, false, false, false));
+        assertFalse(GoldClaimMod.shouldAllowPlayerDamage(true, false, true, true, true));
+    }
+
+    @Test
+    public void existingHubDamageAndPvpRulesRemainUnchanged() {
+        assertFalse(GoldClaimMod.shouldAllowPlayerDamage(false, true, true, false, false));
+        assertFalse(GoldClaimMod.shouldAllowPlayerDamage(false, false, true, true, true));
+        assertTrue(GoldClaimMod.shouldAllowPlayerDamage(false, false, true, false, false));
+        assertTrue(GoldClaimMod.shouldAllowPlayerDamage(false, false, true, true, false));
+        assertTrue(GoldClaimMod.shouldAllowPlayerDamage(false, false, false, true, true));
     }
 
     @Test

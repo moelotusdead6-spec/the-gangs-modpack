@@ -6,15 +6,43 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "8da782c6acf3ad992630eb482bd6638a9add1423a07d34dd4ea3c78aa196e1fb"
+hash = "b16b063b0f4de0edbce66f749e9a234c1e79c4e84bf88099493d6ef2f8079b29"
 
 [[files]]
 file = "README.md"
-hash = "10006af7661ff85f6385f56205d2cf7404faac415b0dc7a6a7c3abbad1c9bf00"
+hash = "1e4da14d630f13acd4d9b3cae9baabdedf7830635cdd1d213bb518cdd6b216bc"
 
 [[files]]
 file = "config/EssentialCommands.properties"
 hash = "4fa98d5b3df8897256e321b6937eab0e4dc382197c61d817f7cc86d0f3cbed1f"
+
+[[files]]
+file = "config/alexscaves_biome_generation/abyssal_chasm.json"
+hash = "2c396a28273974b17b1b7afc05ac89c84c2edc1b6f1ce373683504bbec61a6bd"
+
+[[files]]
+file = "config/alexscaves_biome_generation/candy_cavity.json"
+hash = "7e64edb89144038a5ff88736033486bfa0de031cd11e8120d0c086c431752a29"
+
+[[files]]
+file = "config/alexscaves_biome_generation/forlorn_hollows.json"
+hash = "66a06aed2bbcdb4f56c9e40ac62cf9d0869bb0f9007bb483faa0623addf07e7c"
+
+[[files]]
+file = "config/alexscaves_biome_generation/magnetic_caves.json"
+hash = "1489cfe4e53770e51e37ab7fab47b7012fa0ba151c2d0ba366e9f49a391aadd4"
+
+[[files]]
+file = "config/alexscaves_biome_generation/primordial_caves.json"
+hash = "a991d5786f443fbb0223010d7803a8c55187016bec1f1cfdb9e8a8911ab3153f"
+
+[[files]]
+file = "config/alexscaves_biome_generation/toxic_caves.json"
+hash = "5952f6151e6ce38899a807329d7995ff6932df3879172bf4bcd17b2575695a06"
+
+[[files]]
+file = "config/antixray.toml"
+hash = "241c40f4519464449d6bdee199dd547facb63e110c6657af2c8697e7c02cd136"
 
 [[files]]
 file = "config/bcc.json"
@@ -77,8 +105,20 @@ file = "config/fancymenu/options.txt"
 hash = "d5dff20bac1237ed80bde9cec9b23a137d48ff68630005cf78bff6cc1345bed7"
 
 [[files]]
+file = "config/fiw-mods-api/config.json"
+hash = "c481fb4576afb643d1079f6b8ac488e991089915124e9df27b84fc5f49f85512"
+
+[[files]]
 file = "config/gangscosmetics.json"
 hash = "c613e5d46cb558a9f240b189bc341ed8a4f71c60c57b0e2013035a593b4b43df"
+
+[[files]]
+file = "config/gangshop/overrides.json"
+hash = "c668f7a9b9ceaa916d3b80b55fb8d1ab5156f5b98d167041fb3792ec7aed1570"
+
+[[files]]
+file = "config/gangshop/prices.json"
+hash = "45f577dee51aeaff47f9183e675642a0ed03950e19d2004d97f7b87cafe28da5"
 
 [[files]]
 file = "config/global_packs.toml"
@@ -93,16 +133,168 @@ file = "config/options.txt"
 hash = "35b7cfda687dfab8ec9aef8a1fb8a13a8337535e390ad4085bdd9764a4b43d40"
 
 [[files]]
+file = "config/packetfixer.properties"
+hash = "f7eb7c0fa8000937fc3a681f93a93add2ece5a8c58b8f77eedb442e1b07b9181"
+
+[[files]]
 file = "config/paxi/datapack_load_order.json"
 hash = "d0aaf3172f34275479f0669aa5b0a94b85788ae638f3062b948ec49d31c38293"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/c/tags/items/glass_blocks.json"
+hash = "192b8bcc14f16b10f59c0da049a7b87376765cf7f4a7d488e956720eeb784cdd"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/c/tags/items/ingots/netherite.json"
+hash = "f3320f5fa11d74544489db892f76555dd2cede0c6c6354c8d06e2efb798c5f30"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/c/tags/items/nuggets/iron.json"
+hash = "2411e9cebb605969c5b2dd41abc33eb187c48f3edfea2e4bb9bb3fbf1270c0fb"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/c/tags/items/rods/wooden.json"
+hash = "f7ac5df68628137739550188d14cd351cb6297771bdd80e8f3cda12edf1e5ce8"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/conditional/recipes/farm_and_charm/mincer/cobbled_limestone_from_mincer.json"
+hash = "e557bab630ed9ff94a226f588b2277d35a5f950dc0c392f0e3399522c767dab6"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_fixes/data/enhancedcelestials/enhancedcelestials/lunar/event/blood_moon.json"
 hash = "4ce54088a04d8617c3d9858d7bea0919e4cf9ba7f1e6ccdcdbe3b02f70e22853"
 
 [[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/enhancedcelestials/enhancedcelestials/lunar/event/blue_moon.json"
+hash = "7922ee3d4ac267af2217e0329d638e76798d348ec3d9a29e277f684bf99556ec"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/enhancedcelestials/enhancedcelestials/lunar/event/harvest_moon.json"
+hash = "685ea0d1a8df89ea148b9941d8bf36c86eec2c942e9b5c4e4a87a10b807ccf09"
+
+[[files]]
 file = "config/paxi/datapacks/gangs_fixes/data/enhancedcelestials/enhancedcelestials/lunar/event/super_blood_moon.json"
 hash = "82d0a1f96e45acd119d49260ef4caa1ce388941df8b658d82afdb169f4c8e719"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/enhancedcelestials/enhancedcelestials/lunar/event/super_blue_moon.json"
+hash = "ebca3e0cb37f95b2872d09ff07b69b5c10a9780e6123de8992ba6ef73da2f74b"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/enhancedcelestials/enhancedcelestials/lunar/event/super_harvest_moon.json"
+hash = "25ea75b68d781eda3045f0772f981dbc3cf986cd0b73376095732c84877a0fdd"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/enhancedcelestials/enhancedcelestials/lunar/event/super_moon.json"
+hash = "9c0f18130a23b19df812f22a6951ba923a5824dbc370d1c163edb0ccc9f5ccf6"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/farm_and_charm/recipes/mincer/cobblestone.json"
+hash = "94ce104893159f7ae4257e4593497f504a99437e185f03cd7365167042addf17"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/farm_and_charm/recipes/mincer/raw_copper_from_copper_ingot.json"
+hash = "31e102770c1eea197ee47aae91ba45ef52592056cacf1fb53d3400b3964d72a5"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/forge/tags/items/barrels/wooden.json"
+hash = "a064f27a23dce393173cb9cfd2ab956220255ba18069ef7728359dc487dd202c"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/forge/tags/items/concrete.json"
+hash = "a0074208c29b0794a66a6f1c545b8f153d575ac4b23026dd5cd7e979ae60aba6"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/forge/tags/items/dyes/black.json"
+hash = "cd542e2888cd3246311029d19d152c8d3c8f93adcdf566b971ba54d5301d5887"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/forge/tags/items/dyes/blue.json"
+hash = "c83d2593d2aea7410075905dce6de925661ca7b0ffab7049580a9ea9d731e7c6"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/forge/tags/items/dyes/brown.json"
+hash = "c3ce422314366ce9b38d8ef065c64264629976e8e83f7b07bf21e7b1899e89c6"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/forge/tags/items/dyes/cyan.json"
+hash = "991bb0f5defdd6136ed27b794b38d753d86827e4cb19dd2f2dd4ff6a2c712884"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/forge/tags/items/dyes/gray.json"
+hash = "213b6e816b8dda26570ff7397dcb0358055fe1746135df7460c9b5b3fb059e41"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/forge/tags/items/dyes/green.json"
+hash = "88a1508d5e44a7779b451f582b643cf3bd9674b2bde7cd1578b155f86e8e33ed"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/forge/tags/items/dyes/light_blue.json"
+hash = "3a1e278a63ec4e4089a11e9c8b71fcce17c56b14c6ac9cb0d164baff9ecda3c0"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/forge/tags/items/dyes/light_gray.json"
+hash = "3502b6cd50be4af70606ec082e12811983da80ed0ccb1cff420179a7015b6c2f"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/forge/tags/items/dyes/lime.json"
+hash = "25d5d7bf1db39f81ed81664daf1b874261782fb0c81c2e387b5d9c65168bb043"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/forge/tags/items/dyes/magenta.json"
+hash = "24b57871e84906f604f51c6598531dabd4019a2114950c870b8d8b30a8d7641a"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/forge/tags/items/dyes/orange.json"
+hash = "f4f5a04e78ea575e5b923d989aa91c1aa35b03f7148e995b0443918b0d8c8b4a"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/forge/tags/items/dyes/pink.json"
+hash = "e7e6e531dfa20f589ee7cf11b8142589bf611ca908100c4519a24774e14b18e6"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/forge/tags/items/dyes/purple.json"
+hash = "133187887e3b33ab03a671d22c299b0b627324d51ba454febb9c7a7b4774e994"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/forge/tags/items/dyes/red.json"
+hash = "fbb0b0e9fcc3ac571730a18ea7647bebf2d6ae982908f66eed2dc52e486aaea0"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/forge/tags/items/dyes/white.json"
+hash = "eac3af5615b86366eda87127a24811adbaed60d67b9c0b2ce66156115e4f039a"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/forge/tags/items/dyes/yellow.json"
+hash = "16158d1d1e79421565cfdac9a2be13156eae76a8759291dcc6210c1a6cf52967"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/forge/tags/items/gems/diamond.json"
+hash = "a72758e4b648320e48c94684052aa6f1e8f5e4e0d8d75c614ec75def7d6f48a4"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/forge/tags/items/glass/colorless.json"
+hash = "192b8bcc14f16b10f59c0da049a7b87376765cf7f4a7d488e956720eeb784cdd"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/forge/tags/items/gravel.json"
+hash = "8ce3062093dfc316b0c3898643b7c84e56ecb3c42bb9e41da6ee5173f8ac8a93"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/forge/tags/items/nuggets/gold.json"
+hash = "57166a9cf02b7840a0e2e0a374b9271d814263e3b828379ed9d5c2fc5e0ac1a9"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/forge/tags/items/rods/wooden.json"
+hash = "1198a0a2a3c9649132695d318ed7a8b1283744f5c0ba61f3eab89e666a0d5b2c"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/forge/tags/items/storage_blocks/gold.json"
+hash = "7e4d78a82a7d3e9e10f94456cb061d60443db8328807aee324488d2fe7bcb08d"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/forge/tags/items/storage_blocks/redstone.json"
+hash = "ecbcd7d04683108c162140f12d132d92ff0025c6a56c27a4f670b8014c2a2e27"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_fixes/data/furniture/loot_tables/blocks/bin.json"
@@ -186,7 +378,7 @@ hash = "8b64135156579344342634b886c16eaf044d88aebb014efb4183b775c3baef77"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_hub/data/gangs_hub/functions/assign_ranks.mcfunction"
-hash = "b21efb460af930d00438fc670aa99a630686162569a9b2fa35d2f16d259c2296"
+hash = "940efc6d3b4cc89e514c8f8e0bd0d991ac04a0327b0eb7df0e06689ab2ea5d73"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_hub/data/gangs_hub/functions/init.mcfunction"
@@ -198,7 +390,7 @@ hash = "14346b1960598c5b82248b002b0626cbf8e2e452f0097f8e6d4946e66e5fbcc9"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_hub/data/gangs_hub/functions/setup_ranks.mcfunction"
-hash = "bbb6372df69f8c54874df573af6983b6700907fe5332e3e6102bc5eba65afeba"
+hash = "30dcb503c9c10e724b82362bd60c91206070543c21b8018d33222bbea424eb04"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_hub/data/minecraft/tags/functions/load.json"
@@ -225,8 +417,12 @@ file = "config/paxi/datapacks/gangs_kits/data/alexscaves/recipes/nuclear_bomb.js
 hash = "1b36be33c8276868a8754e394d3b10dacfd18839923a84da20afded95195fe16"
 
 [[files]]
+file = "config/paxi/datapacks/gangs_kits/data/gangs/loot_tables/events/reward.json"
+hash = "b04611a3e977393e504b7ac14fa41869103d2299fa041f0658b10504d73465eb"
+
+[[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs/loot_tables/kits/monthly.json"
-hash = "966da7af8efc6862e78b004ec2b335f09315509e80593f7a2c9ffb32c9a68cf7"
+hash = "7d3db08239dbfc8ee0b94107c20056a5c6239aee64c2f6ecddccd56a9f18776a"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs/loot_tables/kits/non_curse_book.json"
@@ -234,15 +430,19 @@ hash = "04bcaeebfdc406eec4837e33e9afc392ad01bb7ed7130949285396e6e7db9c8e"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs/loot_tables/kits/weekly_1.json"
-hash = "e5faa5cb525e6466e0d93c5aa308f21771eb6060b27cde2d7cb15154bf43a762"
+hash = "5ed012ea353b57104913bc5e33bb6f23ea7b997c3b78e7fc88af58700ec3e60b"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs/loot_tables/kits/weekly_2.json"
-hash = "e5faa5cb525e6466e0d93c5aa308f21771eb6060b27cde2d7cb15154bf43a762"
+hash = "5ed012ea353b57104913bc5e33bb6f23ea7b997c3b78e7fc88af58700ec3e60b"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs/loot_tables/kits/weekly_3.json"
-hash = "e5faa5cb525e6466e0d93c5aa308f21771eb6060b27cde2d7cb15154bf43a762"
+hash = "5ed012ea353b57104913bc5e33bb6f23ea7b997c3b78e7fc88af58700ec3e60b"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_kits/data/gangs/tags/items/neon_signs.json"
+hash = "65e946b23a275a1ccb63135a405e04eb20ba4cf92b507370dec4f6eaf3aced11"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_kits/data/gangs_kits/functions/check_join_notify.mcfunction"
@@ -497,12 +697,24 @@ file = "config/paxi/datapacks/gangs_kits/pack.mcmeta"
 hash = "16e65284c5a6a75cf4cb94ab24c020946f5d1aa68b1687c2e7fc53002d63b9e4"
 
 [[files]]
+file = "config/paxi/datapacks/gangs_performance_pause/data/spawnanimations/functions/loop.mcfunction"
+hash = "2d191d65e9cb78867d2fb1b904d5544c4ca7fdbf38b96e76b6e32101fd1ae106"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_performance_pause/data/spawnanimations/functions/main.mcfunction"
+hash = "9bf50483a67327ebc3ad7b40a7c799606ae1740af3bcdc5436d3a87541acfb29"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_performance_pause/pack.mcmeta"
+hash = "6fbb86df45d74170f011ea4ce106ed70db41bec058f68812b0f3e30c82b71b14"
+
+[[files]]
 file = "config/paxi/resourcepack_load_order.json"
 hash = "d0aaf3172f34275479f0669aa5b0a94b85788ae638f3062b948ec49d31c38293"
 
 [[files]]
 file = "config/randomcollections/config.json"
-hash = "5d243ca31e84cc7bf36abefd5773f639f596575243c0cfebc7a220d43002cc12"
+hash = "1c13a1332ade83697f1ffab860a174c43d717f9f291e20f3ec79c78a6cfaaa5d"
 
 [[files]]
 file = "config/serverhats.json"
@@ -900,6 +1112,11 @@ hash = "3194761af5154bf796d925ea7c78a63685c7c2c8779ee699266f8c1bc5e0eeb6"
 metafile = true
 
 [[files]]
+file = "mods/antixray.pw.toml"
+hash = "6da02b9f6399f38c23aa273a2bece7590f4d117f63e8bd5548a52127321bab5a"
+metafile = true
+
+[[files]]
 file = "mods/archers-direct.pw.toml"
 hash = "c9031520916a866d914fe0a8d76789fc17fa6feebe5ede23d4479b0326b99c7c"
 metafile = true
@@ -961,7 +1178,7 @@ metafile = true
 
 [[files]]
 file = "mods/bclib.pw.toml"
-hash = "ab1e22cc66189067e002a204c70c553cc7cc0e738bd602f405d7cc37561260be"
+hash = "d653a3256959ed8d801b69c0ef305811409a19a980744e41e8744e415ef70afc"
 metafile = true
 
 [[files]]
@@ -991,12 +1208,12 @@ metafile = true
 
 [[files]]
 file = "mods/betterend.pw.toml"
-hash = "dd8057c40ff94e9a21a121583884f71c9a6b1eaa6f913ef46c5d1f9b37fe487f"
+hash = "fdfce692e21fa05498c5243d1c39bf8a1128535dcdeb9e8db083ef88735d3034"
 metafile = true
 
 [[files]]
 file = "mods/biolith-direct.pw.toml"
-hash = "312a52949b010562a6aa401b3834de49dc3e9189adf9862116aeab516cb1f644"
+hash = "965e2303a433f1646855af639db914a375e15f15e1bd91139756421f455582a1"
 metafile = true
 
 [[files]]
@@ -1046,7 +1263,7 @@ metafile = true
 
 [[files]]
 file = "mods/commandlimits-direct.pw.toml"
-hash = "434ae2a3f757f8cb398cbbcc3494a360eb41c5411fc1f3f976613b937ef87cc0"
+hash = "b8ff0e69e485d4e2feb0f1ea7086485b95548be94a2d97a2b90e7be2fca88383"
 metafile = true
 
 [[files]]
@@ -1106,7 +1323,7 @@ metafile = true
 
 [[files]]
 file = "mods/dynamiclights-v1.9.3-mc1.17-26.2.9-mod.pw.toml"
-hash = "aff03b37ce0e81b7bfd6ae14d5e1a9bb537e46ca881ec0d5e1fb45be7c6a2e96"
+hash = "f5be583f48f5568454a222e6bf57537ca515cc6d5992213b9a6baba293668fda"
 metafile = true
 
 [[files]]
@@ -1230,6 +1447,11 @@ hash = "ce6cd93fd774550cbe2b71ff9580ff43cae26c3dfbd900fa74364492a5156a73"
 metafile = true
 
 [[files]]
+file = "mods/fiw-anticheat.pw.toml"
+hash = "c3105769279cd3d2d1a36a3db8bd5fbd8b45ce4525dd646440419b8d682e7795"
+metafile = true
+
+[[files]]
 file = "mods/flowerymooblooms-fabric-mc1.20.1-2.0.2.pw.toml"
 hash = "b812e7eac4638dcec078c9526db18e2a31468c372c67fccce3012a57a05d06f1"
 metafile = true
@@ -1266,7 +1488,7 @@ metafile = true
 
 [[files]]
 file = "mods/gangsales-direct.pw.toml"
-hash = "455d0100010a96c0b2683a115ac1098e8ee04c6a04d8e2af64bce28d0abd5636"
+hash = "3497cc81555ec33d9fc033d2c408b3b7c9dc2665566104bf1b1f2988754fd54c"
 metafile = true
 
 [[files]]
@@ -1296,7 +1518,7 @@ metafile = true
 
 [[files]]
 file = "mods/goldclaim-direct.pw.toml"
-hash = "5ae5318c58dc7bd671fd6d3de74cb85490aac3b094bce12effcfe9d851723e5a"
+hash = "103ff2acadb3564e71e77af7c1c78575ef39aed4f3b084cb115f720e2241c13d"
 metafile = true
 
 [[files]]
@@ -1351,7 +1573,7 @@ metafile = true
 
 [[files]]
 file = "mods/ledger.pw.toml"
-hash = "56094cd33726792df84e8991bf1e9e3d69383a65793d47aab66bf2cac3f9acfb"
+hash = "6d40ba4d289a9993eddc7d0e193a6864a81a0facd5b4557ac8c396f40f250919"
 metafile = true
 
 [[files]]
@@ -1540,6 +1762,11 @@ hash = "3c6072797b750217a438dd9a89368926385fdd368029476758c527b27b929fc8"
 metafile = true
 
 [[files]]
+file = "mods/neon-wall-wonders.pw.toml"
+hash = "6cecada9b97a1ec71f8281282aa8d34ef5f5517bc81df2a57e4e956d36f365fb"
+metafile = true
+
+[[files]]
 file = "mods/noisiumed-fabric-3.0.6_mc1.20-1.20.1.pw.toml"
 hash = "a27b1d5d813bd7e269c372b75f6cd7152640df427619eff58d5541e3b2b538d1"
 metafile = true
@@ -1557,6 +1784,11 @@ metafile = true
 [[files]]
 file = "mods/owo-lib-0.11.2_1.20.pw.toml"
 hash = "d48b7e82e21bd1e152f9aea979a3dd09b26636bfb73e7c9b7c7b73371e9c0f5a"
+metafile = true
+
+[[files]]
+file = "mods/packet-fixer.pw.toml"
+hash = "9b831ebbf7075dc09a490877f9cd0a8fc62fbe7775179145c1f19c64c938ea52"
 metafile = true
 
 [[files]]
@@ -1616,7 +1848,7 @@ metafile = true
 
 [[files]]
 file = "mods/rankbadges-direct.pw.toml"
-hash = "40fa8107cbefd4b04aa97231e583573982fbb74b132d963ee648934ca953a433"
+hash = "97dae001ac4c481e4b825dbcc7bdf90c0d6a074060874bd770d55d7ee76fc820"
 metafile = true
 
 [[files]]

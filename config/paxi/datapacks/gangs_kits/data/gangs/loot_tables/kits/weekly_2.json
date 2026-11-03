@@ -314,6 +314,16 @@
         {"type": "minecraft:item", "name": "sophisticatedbackpacks:stack_upgrade_tier_1"},
         {"type": "minecraft:item", "name": "sophisticatedbackpacks:stack_upgrade_tier_2"}
       ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:tag",
+          "name": "gangs:neon_signs",
+          "expand": true
+        }
+      ]
     }
   ]
 }

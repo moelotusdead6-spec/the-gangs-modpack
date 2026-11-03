@@ -7,12 +7,13 @@ import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.node.Node;
@@ -38,6 +39,10 @@ public final class KitService {
     static final long CYCLE_SECONDS = 30L * 86400L;
     private static final String[] KEYS = {"w1", "w2", "w3", "m"};
     private static final String[] TABLES = {"weekly_1", "weekly_2", "weekly_3", "monthly"};
+    static final Identifier EVENT_TABLE = new Identifier("gangs", "events/reward");
+    static final String[] EVENT_COLLECTIONS = {"event_bow_staff", "event_trinket_gem_totem"};
+    // Fresh OS-backed seed per roll so no two players (or reloads) ever share a world-seeded loot sequence.
+    private static final SecureRandom RANDOM = new SecureRandom();
     private final Map<UUID, Integer> permissionStates = new HashMap<>();
     private final Map<String, UUID> knownPlayers = new HashMap<>();
     private JsonObject collections;
@@ -163,21 +168,9 @@ public final class KitService {
             return 0;
         }
         try {
-            LootTable table = source.getServer().getLootManager().getLootTable(new Identifier("gangs", "kits/" + TABLES[kit]));
-            if (table == LootTable.EMPTY) {
-                throw new IllegalStateException("Missing or invalid kit loot table: " + TABLES[kit]);
-            }
-            LootContextParameterSet context = new LootContextParameterSet.Builder(player.getServerWorld())
-                .add(LootContextParameters.ORIGIN, player.getPos()).add(LootContextParameters.THIS_ENTITY, player)
-                .luck(player.getLuck()).build(LootContextTypes.CHEST);
-            List<ItemStack> rewards = new ArrayList<>(table.generateLoot(context));
-            if (rewards.isEmpty()) {
-                throw new IllegalStateException("Kit loot table generated no rewards");
-            }
-            if (kit == 3) {
-                this.addCollection(rewards, "monthly_bow_staff");
-                this.addCollection(rewards, "monthly_trinket_gem_totem");
-            }
+            List<ItemStack> rewards = kit == 3
+                ? this.roll(player, new Identifier("gangs", "kits/" + TABLES[kit]), "monthly_bow_staff", "monthly_trinket_gem_totem")
+                : this.roll(player, new Identifier("gangs", "kits/" + TABLES[kit]));
             List<ItemStack> inventory = new ArrayList<>();
             for (int slot = 0; slot < 36; slot++) {
                 inventory.add(player.getInventory().getStack(slot).copy());
@@ -218,6 +211,49 @@ public final class KitService {
         }
     }
 
+    public int giveEvent(ServerCommandSource source, Collection<ServerPlayerEntity> players) {
+        int given = 0;
+        for (ServerPlayerEntity player : players) {
+            String name = player.getGameProfile().getName();
+            List<ItemStack> rewards;
+            try {
+                rewards = this.roll(player, EVENT_TABLE, EVENT_COLLECTIONS);
+            } catch (RuntimeException failure) {
+                LOGGER.error("Event reward could not be generated for {}; nothing was given.", name, failure);
+                source.sendError(Text.literal("[Event] Reward could not be generated for " + name + " (see server log)."));
+                continue;
+            }
+            for (ItemStack reward : rewards) {
+                player.getInventory().offerOrDrop(reward.copy());
+            }
+            player.currentScreenHandler.sendContentUpdates();
+            player.sendMessage(Text.literal("[Event] You received an event reward! Check your inventory."), false);
+            LOGGER.info("Event reward for {}: {}", name, rewards);
+            given++;
+        }
+        int total = given;
+        source.sendFeedback(() -> Text.literal("[Event] Gave individually rolled rewards to " + total + " player(s)."), true);
+        return total;
+    }
+
+    List<ItemStack> roll(ServerPlayerEntity player, Identifier id, String... collections) {
+        LootTable table = player.getServer().getLootManager().getLootTable(id);
+        if (table == LootTable.EMPTY) {
+            throw new IllegalStateException("Missing or invalid reward loot table: " + id);
+        }
+        LootContextParameterSet context = new LootContextParameterSet.Builder(player.getServerWorld())
+            .add(LootContextParameters.ORIGIN, player.getPos()).add(LootContextParameters.THIS_ENTITY, player)
+            .luck(player.getLuck()).build(LootContextTypes.CHEST);
+        List<ItemStack> rewards = new ArrayList<>(table.generateLoot(context, RANDOM.nextLong()));
+        if (rewards.isEmpty()) {
+            throw new IllegalStateException("Reward loot table generated no rewards: " + id);
+        }
+        for (String collection : collections) {
+            this.addCollection(rewards, collection);
+        }
+        return rewards;
+    }
+
     private void addCollection(List<ItemStack> rewards, String key) {
         if (this.collections == null || !this.collections.has(key)) {
             throw new IllegalStateException("Missing reward collection " + key);
@@ -230,7 +266,7 @@ public final class KitService {
                 parseReward(command.getAsString());
             }
         }
-        int roll = ThreadLocalRandom.current().nextInt(total);
+        int roll = RANDOM.nextInt(total);
         for (JsonElement option : options) {
             JsonObject value = option.getAsJsonObject();
             roll -= value.get("weight").getAsInt();

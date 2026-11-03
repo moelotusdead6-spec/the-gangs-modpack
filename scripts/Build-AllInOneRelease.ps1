@@ -75,8 +75,11 @@ try {
     Copy-Entry 'docs/updates/v1.1.8.md' (Join-Path $repo 'docs\updates\v1.1.8.md')
     Copy-Entry 'docs/updates/v1.1.12.md' (Join-Path $repo 'docs\updates\v1.1.12.md')
     Copy-Entry 'docs/updates/v1.1.13.md' (Join-Path $repo 'docs\updates\v1.1.13.md')
+    Copy-Entry 'docs/updates/v1.1.17.md' (Join-Path $repo 'docs\updates\v1.1.17.md')
     Copy-Entry 'server-update/README.txt' (Join-Path $PSScriptRoot 'SERVER-UPDATE.txt')
-    Copy-Entry 'server-update/mods/goldclaim-1.0.43.jar' (Join-Path $repo 'artifacts\goldclaim-1.0.43.jar')
+    Copy-Entry 'server-update/mods/goldclaim-1.0.44.jar' (Join-Path $repo 'artifacts\goldclaim-1.0.44.jar')
+    Copy-Entry 'server-update/mods/Chunky-1.3.146.jar' (Join-Path $repo 'artifacts\Chunky-1.3.146.jar')
+    Copy-Entry 'docs/updates/next-restart.md' (Join-Path $repo 'docs\updates\next-restart.md')
     Copy-Entry 'server-update/tools/gangs-teleport-purge-1.0.1.jar' (Join-Path $repo 'artifacts\gangs-teleport-purge-1.0.1.jar')
     Copy-Entry 'server-update/tools/gangs-player-recovery-1.0.0.jar' (Join-Path $repo 'artifacts\gangs-player-recovery-1.0.0.jar')
     Copy-Entry 'server-update/mods/gangshop-1.0.9.jar' (Join-Path $repo 'artifacts\gangshop-1.0.9.jar')
@@ -105,6 +108,9 @@ try {
         Copy-Entry ("minecraft/mods/$mod") (Join-Path $repo "artifacts\$mod")
         Copy-Entry ("server-update/mods/$mod") (Join-Path $repo "artifacts\$mod")
     }
+    foreach ($prefix in @('minecraft/', 'client-update/', 'server-update/')) {
+        Copy-Entry ($prefix + 'mods/neon-wall-wonders-gwbzt3mk (10).jar') (Join-Path $repo 'artifacts\neon-wall-wonders-gwbzt3mk (10).jar')
+    }
     Copy-Entry 'server-update/mods/soulsbackpackscompat-1.1.0.jar' (Join-Path $repo 'artifacts\soulsbackpackscompat-1.1.0.jar')
     Copy-Entry 'minecraft/mods/soulsbackpackscompat-1.1.0.jar' (Join-Path $repo 'artifacts\soulsbackpackscompat-1.1.0.jar')
     Copy-Entry 'client-update/mods/soulsbackpackscompat-1.1.0.jar' (Join-Path $repo 'artifacts\soulsbackpackscompat-1.1.0.jar')
@@ -117,11 +123,13 @@ try {
     Copy-Entry 'server-update/mods/gangscosmetics-2.0.2.jar' (Join-Path $repo 'artifacts\gangscosmetics-2.0.2.jar')
     Copy-Entry 'client-update/mods/gangscosmetics-2.0.2.jar' (Join-Path $repo 'artifacts\gangscosmetics-2.0.2.jar')
     foreach ($entry in @($zip.Entries | Where-Object {
-            $_.FullName -match '^minecraft/mods/rankbadges-.*\.jar$'
+            $_.FullName -match '^(minecraft|client-update|server-update)/mods/rankbadges-.*\.jar$'
         })) {
         $entry.Delete()
     }
-    Copy-Entry 'minecraft/mods/rankbadges-1.0.2.jar' (Join-Path $repo 'artifacts\rankbadges-1.0.2.jar')
+    foreach ($prefix in @('minecraft/', 'client-update/', 'server-update/')) {
+        Copy-Entry ($prefix + 'mods/rankbadges-1.0.3.jar') (Join-Path $repo 'artifacts\rankbadges-1.0.3.jar')
+    }
     Copy-Entry 'minecraft/mods/goldclaimmap-1.0.2.jar' (Join-Path $repo 'artifacts\goldclaimmap-1.0.2.jar')
     Copy-Entry 'server-update/Install-ServerUpdate.ps1' (Join-Path $PSScriptRoot 'Install-ServerUpdate.ps1')
     Copy-Entry 'server-update/Prune-ServerBackups.ps1' (Join-Path $PSScriptRoot 'Prune-ServerBackups.ps1')
@@ -168,7 +176,7 @@ try {
         throw 'Removed mod remains in the ZIP.'
     }
     $goldclaim = @($zip.Entries | Where-Object { $_.FullName -match '^server-update/mods/goldclaim-.*\.jar$' })
-    if ($goldclaim.Count -ne 1 -or $goldclaim[0].Name -ne 'goldclaim-1.0.43.jar') {
+    if ($goldclaim.Count -ne 1 -or $goldclaim[0].Name -ne 'goldclaim-1.0.44.jar') {
         throw 'Wrong or duplicate GoldClaim server-update jar.'
     }
     foreach ($name in @('server-update/mods/soulsbackpackscompat-1.1.0.jar',
@@ -246,7 +254,7 @@ try {
     $stream = $goldclaim[0].Open()
     try { $actual = [BitConverter]::ToString($hash.ComputeHash($stream)).Replace('-', '') }
     finally { $stream.Dispose(); $hash.Dispose() }
-    if ($actual -ne (Get-FileHash (Join-Path $repo 'artifacts\goldclaim-1.0.43.jar') -Algorithm SHA256).Hash) {
+    if ($actual -ne (Get-FileHash (Join-Path $repo 'artifacts\goldclaim-1.0.44.jar') -Algorithm SHA256).Hash) {
         throw 'Packaged GoldClaim does not match the built artifact.'
     }
     $utility = $zip.GetEntry('server-update/tools/gangs-teleport-purge-1.0.1.jar')

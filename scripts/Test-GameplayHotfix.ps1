@@ -18,7 +18,7 @@ function Fixture([string]$Name, [string]$PreviousVersion) {
     [IO.File]::WriteAllText((Join-Path $game 'config\paxi\datapacks\gangs_kits\data\gangs\loot_tables\kits\monthly.json'), 'old table')
     $existingHook = if ($PreviousVersion -eq '1.0.39') {
         "powershell -NoProfile -ExecutionPolicy Bypass -File `"%~dp0Install-PendingGameplayHotfix.ps1`" -GameDirectory `"%~dp0.`"`r`nif errorlevel 1 exit /b 1`r`n"
-    } elseif ($PreviousVersion -in @('1.0.40', '1.0.41', '1.0.42')) {
+    } elseif ($PreviousVersion -in @('1.0.40', '1.0.41', '1.0.42', '1.0.43')) {
         "powershell -NoProfile -ExecutionPolicy Bypass -File `"%~dp0Install-PendingGameplayHotfix.ps1`" -GameDirectory `"%~dp0.`" -Version $PreviousVersion`r`nif errorlevel 1 exit /b 1`r`n"
     } else { '' }
     $hash = (Get-FileHash -LiteralPath $jar -Algorithm SHA256).Hash
@@ -26,6 +26,8 @@ function Fixture([string]$Name, [string]$PreviousVersion) {
         $existingHook + "rem goldclaim-$PreviousVersion.jar GoldClaim $PreviousVersion $hash`r`n" +
         '"%JAVA_EXE%" @%JVM_ARGS_FILE% -jar fabric-server-launch.jar nogui' + "`r`npause`r`npopd`r`n"
     [IO.File]::WriteAllText((Join-Path $game 'start.bat'), $launcher, [Text.Encoding]::ASCII)
+    Copy-Item -LiteralPath (Join-Path $repo 'artifacts\Chunky-1.3.146.jar') -Destination (Join-Path $game 'mods')
+    [IO.File]::WriteAllText((Join-Path $game 'mods\rankbadges-1.0.2.jar'), 'old rank jar')
     return $game
 }
 
@@ -39,8 +41,8 @@ function Expect-Rejection([string]$Game, [string]$Version, [string]$PreviousVers
 }
 
 try {
-    foreach ($version in @('1.0.39', '1.0.40', '1.0.41', '1.0.42', '1.0.43')) {
-        $previousVersion = switch ($version) { '1.0.43' { '1.0.42' } '1.0.42' { '1.0.41' } '1.0.41' { '1.0.40' } '1.0.40' { '1.0.39' } default { '1.0.38' } }
+    foreach ($version in @('1.0.39', '1.0.40', '1.0.41', '1.0.42', '1.0.43', '1.0.44')) {
+        $previousVersion = switch ($version) { '1.0.44' { '1.0.43' } '1.0.43' { '1.0.42' } '1.0.42' { '1.0.41' } '1.0.41' { '1.0.40' } '1.0.40' { '1.0.39' } default { '1.0.38' } }
         $game = Fixture "success-$version" $previousVersion
         $original = [IO.File]::ReadAllText((Join-Path $game 'start.bat'))
         & (Join-Path $PSScriptRoot 'Stage-GameplayHotfix.ps1') -GameDirectory $game -Version $version
@@ -54,6 +56,12 @@ try {
         & (Join-Path $PSScriptRoot 'Install-PendingGameplayHotfix.ps1') -GameDirectory $game -Version $version
         Require (-not (Test-Path (Join-Path $game "mods\goldclaim-$previousVersion.jar"))) 'Old jar still active.'
         Require (Test-Path (Join-Path $game "mods\goldclaim-$version.jar")) 'New jar missing.'
+        if ($version -eq '1.0.44') {
+            Require (Test-Path (Join-Path $game 'mods\rankbadges-1.0.3.jar')) 'New tab-order jar missing.'
+            Require (-not (Test-Path (Join-Path $game 'mods\rankbadges-1.0.2.jar'))) 'Old rank assignment jar remains active.'
+            Require ([IO.File]::ReadAllText((Join-Path $game 'config\paxi\datapacks\gangs_hub\data\gangs_hub\functions\setup_ranks.mcfunction')).Contains('03_drifters')) 'New rank teams missing.'
+            Require (Test-Path (Join-Path $game 'mod-backups\gameplay-1.0.44\rankbadges-1.0.2.jar')) 'Old rank jar backup missing.'
+        }
         Require (Test-Path (Join-Path $game "mod-backups\gameplay-$version\goldclaim-$previousVersion.jar")) 'Jar rollback backup missing.'
         Require (Test-Path (Join-Path $game "mod-backups\gameplay-$version\monthly.json")) 'Table rollback backup missing.'
         Require (Test-Path (Join-Path $game "mod-backups\gameplay-$version\collections.json")) 'Collection rollback backup missing.'
@@ -67,6 +75,22 @@ try {
         [IO.File]::WriteAllText((Join-Path $game 'config\randomcollections\config.json'), 'admin edit after staging')
         Expect-Rejection $game $version $previousVersion
     }
+    foreach ($file in @('mods\Chunky-1.3.146.jar', 'pending-gameplay-1.0.44\setup_ranks.mcfunction',
+            'pending-gameplay-1.0.44\rankbadges-1.0.3.jar.pending')) {
+        $game = Fixture ([IO.Path]::GetFileName($file) + '-corrupt') '1.0.43'
+        & (Join-Path $PSScriptRoot 'Stage-GameplayHotfix.ps1') -GameDirectory $game -Version '1.0.44'
+        [IO.File]::WriteAllText((Join-Path $game $file), 'corrupted')
+        Expect-Rejection $game '1.0.44' '1.0.43'
+    }
+    $game = Fixture 'missing-chunky' '1.0.43'
+    Remove-Item -LiteralPath (Join-Path $game 'mods\Chunky-1.3.146.jar')
+    try {
+        & (Join-Path $PSScriptRoot 'Stage-GameplayHotfix.ps1') -GameDirectory $game -Version '1.0.44'
+        throw 'Missing Chunky was accepted.'
+    } catch {
+        if ($_.Exception.Message -notmatch '^GoldClaim 1\.0\.44 requires') { throw }
+    }
+    Require (-not (Test-Path (Join-Path $game 'pending-gameplay-1.0.44'))) 'Staging changed files before rejecting missing Chunky.'
     Write-Host 'PASS: staging leaves active files unchanged; launcher offsets preserved; verified install, backups and repeat start pass; corruption and post-stage config edits abort before replacing active files.'
 } finally {
     Remove-Item -LiteralPath $root -Recurse -Force

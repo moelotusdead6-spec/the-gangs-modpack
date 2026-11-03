@@ -1,0 +1,91 @@
+Gangs Cosmetics 2.1.0-test - isolated test build
+================================================
+
+STATUS
+This is not installed on the live server or published through Packwiz.
+The production pack continues to use 2.0.2.
+In-game visual and multi-client validation is still required.
+
+INSTALL
+1. Back up a test copy of the world and the existing cosmetics jar.
+2. Stop that test server and close the test clients.
+3. Replace the older Gangs Cosmetics jar with gangscosmetics-2.1.0-test.jar
+   in the mods folder of BOTH the test server and every test client.
+   Do not keep two versions or install it alongside the old Gangs Hats mod.
+4. Start the test server and clients normally with Fabric 1.20.1 / Java 17.
+   No new runtime dependency mods are required.
+
+ADMIN CATALOG
+Run /cosmetics admin as an OP with permission level 2 or higher.
+Every action is authorized again by the server; hiding a GUI is not the gate.
+
+Published: select a cosmetic, then Remove Selected or Enable Selected.
+Removal hides it from the wardrobe and key pool and clears equipped selections.
+Ownership and authenticated vouchers are retained. Re-enable to restore access.
+The four unsupported shields are not restored by this build.
+
+Local Imports: select test_crown.json and Publish Selected Import.
+Opening the admin GUI creates this original CC0 sample in the SERVER's
+config\gangscosmetics-imports folder. The copy included in this bundle is identical.
+Publication adds the crown to the catalog and Cosmetic Key pool.
+Additional permitted static model packages can be placed in that server folder.
+The test importer does not directly accept arbitrary PNGs, .bbmodel, or .cos files.
+Do not claim redistributionAllowed unless the asset's actual terms permit it.
+Published packages cannot be overwritten; use a new key for a different asset.
+
+Night.design: type a search, press Search Online, select a result, then
+Open Source Website. Next/Previous browse additional results.
+Only the server fetches metadata. This tab is BROWSE-ONLY, not an asset downloader.
+Night.design's download terms restrict modification/redistribution; their API's
+allow_downloads flag is not blanket permission to send assets to game clients.
+No accounts, credentials, website scripts, or third-party assets are bundled.
+
+PLAYER PREVIEWS
+Open /cosmetics.
+Left-click a LOCKED cosmetic to try it on only in the GUI.
+Right-click any cosmetic to preview without equipping.
+Left-click an OWNED cosmetic to equip/unequip through the server.
+RESET PREVIEW restores the preview to equipped selections.
+Closing the wardrobe clears preview choices.
+Weapon previews show even with an empty hand without changing the held stack.
+
+TEST CHECKLIST
+1. Publish test_crown.json as an OP.
+2. Before granting it, use an ordinary player account to preview Test Crown
+   under Hats. Close the wardrobe: it must not appear in third person or
+   on a second player's client.
+3. Grant ownership:
+   /cosmetic grant YourName gangscosmetics:custom_test_crown
+   Replace YourName with the actual player's username.
+   Equip the owned crown. Confirm another client sees it.
+4. Remove it as an OP. Confirm it disappears from every wardrobe and player.
+   Re-enable it and verify the previous owner can equip it again.
+5. Restart the test server and reconnect. Check publication, removals,
+   ownership, selections, keys and vouchers persist.
+6. De-op an admin while their catalog GUI is open. Subsequent actions must fail.
+   Non-OP /cosmetics admin must be unavailable.
+7. Search christmas online. Check paging and source-link confirmation.
+   Network failures should report an error without freezing server ticks.
+
+LIMITS AND STORAGE
+Static head/body/wings models only. No scripts, Molang animations, executable
+files, remote textures, archives, or unrestricted download URLs.
+Maximum 32 imported cosmetics, 128 KiB UTF-8 per package, 512x512 PNG textures,
+64 bones and 256 cubes. See the generated sample for the package structure.
+Approved packages are saved in the overworld's data\gangscosmetics_catalog.dat.
+They are synchronized to client memory over the game connection.
+Models/textures are discarded on disconnect; no external player catalog access
+is re-enabled. Admin publications and removals are logged on the server.
+
+SOURCE
+Source and full format/test documentation remain in the external project:
+..\gangs-morecosmetics\mod
+..\gangs-morecosmetics\docs\commands.md
+
+Build/test command from that mod directory:
+  .\gradlew.bat test build --console=plain
+
+ROLLBACK
+Stop the test server and clients. Restore the previous jar on both sides.
+Restore the backed-up test world data for a full rollback.
+Do not copy the experimental catalog/world into production before validation.

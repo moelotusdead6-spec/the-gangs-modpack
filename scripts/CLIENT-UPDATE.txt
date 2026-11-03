@@ -1,4 +1,11 @@
-The Gangs Modpack v1.1.13 - automatic client updates and JEI cleanup
+The Gangs Modpack - automatic client updates
+
+NEXT-RESTART TAB RANKS:
+Rank Badges 1.0.3 keeps Owner > Mod > Gang > Drifters even when a higher
+rank is in spectator mode. GoldClaim on the server supplies the badges and
+gray/gold name colors. Update the existing client after publication; a
+server restart cannot replace client jars. The client installer backs up
+and replaces older Rank Badges jars.
 
 JEI CLEANUP FOR EXISTING AUTO-UPDATING CLIENTS:
 Close Minecraft and Prism, then run the small, standalone cleanup:

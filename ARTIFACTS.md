@@ -1,5 +1,353 @@
 # Published Artifacts
 
+## v1.1.18 installed server and supporting fixes
+
+GoldClaim 1.0.62, GangSales 1.0.3, Command Limits 1.0.1, Ledger
+1.2.8+gangs.compat.1, Biolith endfix-concurrency and Rank Badges 1.0.3
+are published with checksum-pinned Packwiz metadata and corresponding source.
+[Versions, checksums, source, update instructions and rollback](docs/updates/v1.1.18.md).
+The exact server binaries were verified against hosted download readback.
+Only Biolith and Rank Badges are client mod replacements in this release.
+
+## Neon Wall Wonders 8.0.0
+
+Original, unmodified `artifacts/neon-wall-wonders-gwbzt3mk (10).jar`.
+SHA-256: `a0b36248530bfcbc398167b8cb7cade47d494053167822f33d2abe17d42158cc`.
+The v1.1.17 update ZIP preserves this original filename in its `mods/` folder.
+Packwiz installs the identical file on both server and clients.
+
+Created by oux_y using [CreativeMode.net](https://creativemode.net).
+[Official mod page](https://creativemode.net/mod/neon-wall-wonders-gwbzt3mk).
+[CreativeMode Mods License](https://creativemode.net/mod-license).
+Shared free of charge with the embedded license and notices preserved.
+
+## Prepared: GoldClaim 1.0.62 gameplay and End library update
+
+- `artifacts/goldclaim-1.0.62.jar`:
+  `adb06111a1cdcde6961a8e062bd03a74fd9117d6c00d43bacfc0e344952042f9`.
+- `artifacts/gangs-gameplay-restart-1.0.62.jar`:
+  `819df708acd9b85551c86d11739a242f252da8ba37981eb8a5762373113c7237`.
+- `artifacts/The-Gangs-End-Client-Update-20261030.zip`:
+  `6b413c22b0c9eb1a78865bf2608112f0eca91567b97918edb75924a22c3f0eb9`.
+- BCLib 3.0.16 (official, unmodified):
+  `9266bcebcd2bf30adf569912736aa0ddb07c5e7f7580b1b9784d89d8cb6c01d3`.
+- Better End 4.0.12 (official, unmodified):
+  `9cc67d456953f853fee879ad697e8d1d1cf93c6536f31bddfd1d28b9f62fbba1`.
+- Online player-name completion, double sponge absorption budget,
+  current-border enforcement for shattered dimensional portals and
+  UUID-scoped Fiw verification bypasses for two approved accounts.
+- Production-mapped gameplay tests, original/new sponge measurements,
+  updated-library startup and isolated restart installer regressions pass.
+- The client ZIP contains only the two updated End libraries and replacement
+  instructions. Deployment and rollback: [next restart](docs/updates/next-restart.md).
+- Host upload checksum and persisted startup selection are verified.
+  The live server was not restarted or reloaded; installation is deferred
+  until the owner's next normal restart.
+- Rebuild the remapped GoldClaim jar into `artifacts/`, download the two
+  pinned upstream jars into `tmp/gameplay-smoke-dependencies/`, and run
+  `scripts/hosted/Build-GameplayRestart.ps1`.
+
+## Staged: GoldClaim 1.0.60 teleport destinations and player autofill
+
+- `artifacts/goldclaim-1.0.60.jar`:
+  `c08d6b91cc051066d425b946e9d08203c46deb83313aecaedf8ab77db1eb1574`.
+- `artifacts/gangs-alex-weapon-restart-1.0.60.jar`:
+  `f1379b4231e048643bb6f152f90e533a5d95687549d48dddc10a05d70cfcd3ae`.
+- `/tpa` captures the destination's exact dimension, position and facing
+  at acceptance; `/tpahere` retains the sender's request-time destination.
+  Neither searches for safe ground or offsets the saved landing space.
+  Both commands autocomplete other online players with prefix filtering.
+- The real-command teleport fixture passes, including cross-dimension
+  movement, exact yaw/pitch, asynchronous preparation, duplicate/death
+  cancellation and player autocomplete. Cold enqueue took 17.1059 ms;
+  36 ticks continued, with the longest preparation tick 196.7562 ms.
+- Installer regressions pass for both the original pending update and
+  upgrading an already-applied 1.0.59 installation, including exact backups,
+  repeat/resumed starts, world locks, conflicting files and duplicate mods.
+- Host readback verified all 39 baseline/payload files. The saved startup
+  selection is the 1.0.60 installer; no restart, reload or console command
+  was sent. Active GoldClaim remains 1.0.59 until the next normal restart.
+  See [deployment and rollback](docs/updates/next-restart.md).
+
+## Staged: GoldClaim 1.0.59 and combined next-restart installer
+
+- `artifacts/goldclaim-1.0.59.jar`:
+  `c212e89e0700dcbb3a84b9c5fcc173e17eb5de0d9c4901888f47a9ada055a808`.
+- `artifacts/commandlimits-1.0.1.jar`:
+  `871099548cf2117676566173d8e3afbc300ced11daa538b311882dab60a5f5be`.
+- `artifacts/gangs-alex-weapon-restart-1.0.59.jar`:
+  `9866cbe15ebe5c6927f129c47502ac3f9eec5a17d3dda5c6c4bbabad33694cac`.
+- GoldClaim adds the Withered Wabbajack to the existing recipe/command/stack
+  ban, including saved nested storage. Other weapons remain allowed.
+- GoldClaim also gates restored vanilla `/locate` to staff/operators and
+  protects six coastal biomes from Expanded Ecosphere's sea-level air cut.
+  The upstream Ecosphere jar is unchanged.
+- The dedicated next-start installer embeds both mods, the Wabbajack shop
+  exclusion, 29 additive Alex recipe tags and six RSW-enabled cave configs.
+  It pins the current host's launcher, old mods, shop and cave configs;
+  backs up original files; refuses conflicts
+  or a locked world; and starts original Fabric only after verification.
+- Rebuild: build `sources/goldclaim`, copy its 1.0.59 remapped jar into
+  `artifacts/`, then run `scripts/hosted/Build-AlexWeaponRestart.ps1`.
+  The build runs isolated installer regression fixtures and removes them.
+- All 79 GoldClaim unit tests pass. Recipe checks scan 551 recipes and
+  resolve 118 common-tag references. Isolated production-mapped runtime checks
+  pass 288 surface-rule evaluations and restored locate registration.
+  Host upload checksum and saved startup
+  selection verified; no live activation or power action was performed.
+- Deployment status and rollback: [next restart](docs/updates/next-restart.md).
+  These artifacts are staged on the host, not a new public modpack release.
+
+## Ledger 1.2.8+gangs.compat.1 - dimension logging / Kotlin compatibility
+
+- `artifacts/ledger-1.2.8+gangs.compat.1.jar`:
+  `849cbd30aab935b71828c644d074c599aecd7a57c1c4931ff3ee11b5b27416ca`.
+- LGPL corresponding source, original source, reproducible modification/build
+  source and notices:
+  `artifacts/ledger-1.2.8+gangs.compat.1-corresponding-source.zip`.
+- Preserves existing database schema/IDs. Missing dimension registrations are
+  inserted in the logging transaction; both removed experimental Kotlin
+  Duration calls use stable APIs. No database reset or runtime downgrade.
+- Actual block actions and Ledger queries passed across vanilla/Multiworld
+  dimensions, including restart retention of 802 historical records, SQLite
+  integrity checks and both nonempty-queue shutdown paths.
+- Does not recover actions previously dropped by the original logging failure.
+
+## GoldClaim 1.0.57 - nonblocking RSW entry
+
+- `artifacts/goldclaim-1.0.57.jar`:
+  `1bd258dbf520758c7a58ffab43ded0c2e3a190331a82a822c1541b3093bab581`.
+- Reuses the ticketed asynchronous teleport-area loader for RSW entry rather
+  than the blocking `getChunkFutureSyncOnMainThread` call. Commands only queue
+  work; cancellation, failure, timeout and completion release chunk tickets.
+- Retains the 1.0.56 verified-login fix and all previous gameplay policies.
+- All 76 unit tests pass. Production Fabric cold-entry test: enqueue <250ms,
+  120 waiting ticks, longest preparation 89.64ms (<1000ms), exactly one safe
+  cross-world arrival, duplicate rejection and deferred death cancellation.
+
+## GoldClaim 1.0.56 - verified-login hub transfer
+
+Server-only hotfix; no client update is required.
+
+- `artifacts/goldclaim-1.0.56.jar`:
+  `5227f39e47aedb447270e47892c788d1b4ef1eb8e514051e8a5816285cfee447`.
+- Automatic login transfers wait for Fiw's freeze to end before the existing
+  20-tick settling delay. Without Fiw, the existing delay is unchanged.
+- All 76 unit tests pass. Production-mapped Fabric tests pass with the original
+  Fiw 2.2.0 jar and without Fiw: no transfer while frozen, exactly one transfer
+  to the configured spawn in another dimension, stable final position and
+  server chunk tracking.
+- Installed while stopped and SHA-256 readback verified. Exact previous jar:
+  `mods/goldclaim-1.0.55.jar.disabled-before-1.0.56` on the host.
+- After restart, the user confirmed Rootamiss rejoins at hub spawn with terrain
+  rendering. Server logs confirm verification completes before the hub transfer.
+
+## GoldClaim 1.0.53 - restart-loop hotfix
+
+- `artifacts/goldclaim-1.0.53.jar`:
+  `0a5820f381d5e6d2d65fea9c836fcd2a0df8c452ba5de322191508349802bdfe`.
+  It is identical to 1.0.52, except that the lunar policy defers instead of crashing
+  when a world has no Enhanced Celestials forecast. Installed live; the
+  1.0.52 launcher is no longer the startup jar.
+
+## GoldClaim 1.0.52 - next-restart cleanup, cannon protection and RSW moons
+
+Server-only patch; public Packwiz/client manifests are unchanged.
+Fifteen-minute ground cleanup, per-block Supplementaries bomb/cannonball claim
+protection, all seven RSW lunar events and preserved non-blood Wild moons.
+Includes one-time saved-forecast migration, not a world reset.
+
+- `artifacts/goldclaim-1.0.52.jar`:
+  `743a81154fec5e668ef37ae50bd22dec9c80ac3682d482c61d73d026d664bd4c`.
+- Embedded next-start installer `artifacts/gangs-claim-lunar-restart-1.0.52.jar`:
+  `c34f1478c75ef75c9fbdf59f58104445cd6b87b61144e707e1ff09a46a6dada5`.
+- All 76 unit tests, native and production-mapped Fabric projectile/lunar
+  integration tests, and safe offline installer tests pass.
+- Original 1.0.51 is backed up before replacement on the next normal start.
+  No live restart or datapack reload is part of staging.
+
+See [scope, validation, startup staging and rollback](docs/updates/next-restart.md).
+
+## Vanish 1.5.5+1.20.1 - installed while stopped
+
+The user's downloaded, unmodified Drex Vanish jar (MIT; server-only,
+`melius-vanish`) was installed on the hosted server after the user stopped it
+on 2026-10-23. Pending upload and final active jar were read back and SHA-256
+verified. No permissions, configuration, worlds, other mods or startup settings
+were changed. Not added to public Packwiz manifests. Server left offline;
+no start/restart was sent. Production behavior awaits the next normal start.
+
+- `artifacts/vanish-1.5.5+1.20.1.jar`:
+  `80615c026bffc24832616b99ad44c2a74c17d2fdf0eaaca9c85aa77b51f23010`.
+- Minecraft 1.20.1 / Java 17 / Fabric dependency checks pass.
+- Isolated Fabric test with GoldClaim 1.0.51, GangSales 1.0.3 and LuckPerms
+  passes actual command toggle, permission denial/grant, observer visibility,
+  view permission, command-tree serialization and configuration generation.
+- Keep bundled libraries inside the jar in production; do not separately
+  install test-extracted libraries.
+- Preserve upstream defaults: operator level 2 fallback or explicit
+  permission grants. No client mod is required.
+
+See [installation and validation details](docs/updates/next-restart.md).
+
+## GoldClaim 1.0.51 / GangSales 1.0.3 - installed hosted hotfix
+
+Installed and read-back SHA-256 verified with the hosted server offline on
+2026-10-23. Includes the command/request-time teleport recovery below, blocks
+future Waystones generation and use in all three RSWs, and disables existing
+RSW Waystone cleanup per the user's selected preservation scope. Existing
+blocks and registered destinations are untouched. Other-world policy remains
+unchanged. Public Packwiz manifests are unchanged.
+
+- `artifacts/goldclaim-1.0.51.jar`:
+  `42d7878c3c550bcb3f8a6053f087bdb69df8b5ade60cc8dbd04ce46a9c7bd3d5`
+- `artifacts/gangsales-1.0.3.jar`:
+  `e1281a5c5541b0409d2b18babc7fc511f5c44b9e7dc2d5611a2a5266af2cf253`
+- Rollback jars: `mods/goldclaim-1.0.49.jar.disabled-before-1.0.51` and
+  `mods/gangsales-1.0.2.jar.disabled-before-1.0.3`, verified against their
+  original hashes.
+- Native Waystones generation/use/travel/preservation fixture passes in all
+  three RSWs; outside-RSW generation/placement is preserved. All 76 unit tests,
+  real LuckPerms command tests and final request/accept regressions pass.
+- Biolith concurrency jar and normal Fabric startup are unchanged.
+  **Server left offline; no start/restart sent.** See
+  [installation and validation details](docs/updates/next-restart.md).
+
+## GoldClaim 1.0.50 / GangSales 1.0.3 - command and teleport recovery
+
+Historical locally prepared build, superseded on the host by GoldClaim 1.0.51
+above; not selected by the public Packwiz manifest. Restore public-by-default `/gs`
+commands while respecting explicit LuckPerms denies, share personal ender-chest
+handling between `/ec` and `/enderchest`, and capture `/tpa` / `/tpahere`
+destinations at request creation rather than acceptance. Existing terrain
+preparation and RSW reset protections remain enabled.
+See [installation and regression details](docs/updates/next-restart.md).
+
+- `artifacts/gangsales-1.0.3.jar`:
+  `e1281a5c5541b0409d2b18babc7fc511f5c44b9e7dc2d5611a2a5266af2cf253`
+- `artifacts/goldclaim-1.0.50.jar`:
+  `c762ee9a5e6541014d7ac2ccb0acee8d6f33dc46114a6885eff363a9f9af44a7`
+
+Validation: both builds and GoldClaim's 76 unit tests pass. Real
+Fabric/LuckPerms command availability/execution and focused request/accept
+regressions pass. Request enqueue was 44.6753 ms; 61 server ticks continued
+during preparation; the longest preparation tick was 304.2362 ms.
+The broader `/rtp` smoke test exceeded its separate 1-second whole-tick
+limit; that check is retained and documented rather than marked passing.
+
+## Biolith End-fix concurrency hotfix - hosted server only
+
+Installed with the hosted server confirmed offline after the 2026-10-22
+RSW Overworld chunk-generation crash. Replacement and sub-biome lists are
+rebuilt privately and published as immutable, volatile snapshots; writers are
+serialized without locking normal biome reads. The existing End fix, biome
+rates, saved ordering and all other jar entries are preserved. This is not a
+public client release; the pack manifest remains unchanged.
+
+- `artifacts/biolith-fabric-1.0.1-beta.1-endfix-concurrency.jar`:
+  `6092613e0b6c4fa0df01e850a819e6766fa6cae48e2e3725463a79fb9cbeb497`
+- Complete modified LGPL-3.0 source:
+  `sources/biolith-fabric-1.0.1-beta.1-endfix-concurrency-source.zip`
+  (`e16d3cba5eb04312f65552bcc3f1bdb791e2a35d979de24f4212cfc03026338d`).
+- Targeted build source: `sources/biolith-concurrency`.
+- Original hosted jar retained as
+  `mods/biolith-fabric-1.0.1-beta.1-endfix.jar.disabled-before-concurrency`.
+- Native Fabric regression: original fails unsafe-publication assertion;
+  patched jar passes blocked/failed rebuild checks, 100 seeds x 1,001
+  unchanged selections, and 800,000 parallel selection pairs during 2,000
+  world reinitializations. Hosted hashes verified; server left offline.
+
+## GangSales 1.0.2 - login permission recovery
+
+Installed on the hosted server while stopped at the user's request. Uses the
+typed LuckPerms API instead of an invalid reflective `Optional` cast during
+login command-tree construction. Retains the 1.0.1 sold-item-name fix.
+Real Fabric/LuckPerms permission allow/deny, command-tree serialization and
+player chunk-position checks passed. Production login confirmation is pending.
+
+- `artifacts/gangsales-1.0.2.jar`:
+  `78049ad4c246730824ff72862f8af0fdb18768f7583a83c8b9fffd5be4579a09`
+- Previous hosted jar retained as
+  `mods/gangsales-1.0.1.jar.disabled-before-1.0.2`.
+- Normal `fabric-server-launch.jar` startup restored; completed 1.0.49
+  installer is historical and must not be reused against this hotfix.
+
+## GoldClaim 1.0.49 / GangSales 1.0.1 - prepared server-only update
+
+Staged for the next normal DedicatedMC restart, not a public client release.
+Hub short-range teleport protection; 1% roaming bosses across the three RSWs
+without changing chest rates; Oux_y's shulker-item/bin shop exclusions;
+`Clean-up in 10` through `Clean-up in 1` with a final item total; correct
+ordinary/custom item names in seller notifications. No restart was sent.
+Keeps Teleport Optimizer enabled and pauses Spawn Animations via a
+Paxi override; its original mod/settings and saved-mob recovery remain.
+See [behavior and validation](docs/updates/next-restart.md).
+
+- `artifacts/goldclaim-1.0.49.jar`:
+  `d48f42f137b7474ad470e16c52cb7da1f2ab5dfe3f5c7f0fad063f0bc95fdcd3`
+- `artifacts/gangsales-1.0.1.jar`:
+  `e71ca9a5f0894dd389c7ec9daf72fb57dd8f8fba1806511791427c124033b5dd`
+- `config/gangshop/overrides.json`:
+  `96844b2537dc763d4e190d651b160e1b88647e206b65d59cedea57dd30b7ef89`
+- Embedded-payload installer `artifacts/gangs-next-restart-1.0.49.jar`:
+  `43e12b92440d7e69f612c811568f74522d57d66de877ac0eccd520844320fa51`
+- `artifacts/gangs-performance-pause-1.0.0.zip`:
+  `4ad553daf027e6f9da202bac560b9abba6ba16843b5aa77dcb0ad358de9ff4ef`
+- Pinned compile-only Brutal Bosses 8.5 is the existing server mod, not a new
+  runtime mod or an upgrade.
+
+## GoldClaim 1.0.48 - RSW landing safety hotfix (applied)
+
+Server-only hotfix over 1.0.47. Validates saved `/rsw` destinations for collision,
+standing clearance, fluids and border bounds; removes the unsafe heightmap
+fallback from border recovery. Falls back to safe ground near 0,0 if needed.
+Installed and hash verified on 2026-10-21; no RSW reset.
+
+- `artifacts/goldclaim-1.0.48.jar`:
+  `e5aa5123210110f23d06079936706306ca5212b304c23be061c9c5c6e852b9f3`
+- Installer `gangs-next-restart-1.0.48.jar`:
+  `71daca425e5862f5331608ef939027148648a972cd6fcb8dc29af789fb3bc5c0`
+
+## GoldClaim 1.0.47 - RSW border return instead of hub
+
+Server-only next-start update over the live 1.0.46. Players outside the RSW
+Overworld border are moved just inside it rather than to the hub, and `/rsw`
+to a saved position outside the border lands just inside it.
+
+- `artifacts/goldclaim-1.0.47.jar`:
+  `b726759535bc16cd49cdb70387f83d763a650fd48d3c20a2cb73d36b19fe8677`
+- Installer `gangs-next-restart-1.0.47.jar` (uploaded, hash verified):
+  `5b2e74bfe464d462dc341c923f6ce78a8218e973ee139439f5d51f3fa1a7cbf0`
+
+## GoldClaim 1.0.46 - staged RSW size, mob cap and ground cleanup update
+
+Server-only next-start update that supersedes the unused 1.0.45 staging and
+includes its fixes. RSW Overworld border 7,000 blocks (Nether/End 10,000);
+Chunky pregenerates the central 60% of the area (radius 2,711); natural mob
+caps cut 12.5%; dropped items are cleared every 5 minutes with countdown.
+
+GoldClaim SHA-256:
+`d697694195712ba23c7ae5f7076b5051e4b36236dc0fab5876cc4e1cf3805185`.
+Installer `gangs-next-restart-1.0.46.jar` (uploaded, hash verified):
+`ddeb50748e4c6612eda3bb583bfeb9024dab767b457df54e01087d7bac4e7dfb`.
+See [staging details](docs/updates/next-restart.md).
+
+## GoldClaim 1.0.45 - staged RSW generation reliability hotfix (superseded)
+
+Server-only next-start update, not a published modpack release. Fixes the
+off-thread world RNG access in chunk population, requests each FULL chunk
+once with ticket cleanup, and stops an owned failed Chunky task.
+RSW borders, coverage and reset schedules are unchanged.
+
+GoldClaim SHA-256:
+`eb4d46afaf752f6e4e8b913df7aa5ec9292a7a82a0290ab4555ee519a25d9316`.
+
+The hosted next-start installer was uploaded and its hash verified:
+`a42abe94538bdb8992e691ccc0ee0288777ebce30efddedf4cec074a7ebc5168`.
+Startup selects `gangs-next-restart-1.0.45.jar` and adds
+`-Dchunky.maxWorkingCount=8`. No restart or world mutation was performed.
+See [staging details, incident evidence and validation](docs/updates/next-restart.md).
+
 ## GoldClaim 1.0.43 - grave recovery and teleport tick-stall hotfix
 
 The server-only Packwiz entry selects `artifacts/goldclaim-1.0.43.jar`,
@@ -369,6 +717,17 @@ passing result marker. It does not start or modify the live server.
 `artifacts/gangsboots-1.0.7.jar` is a first-party Gangs Boots build with one 2.5% chance per player's first personal Lootr chest loot generation. Reopening saved personal loot does not reroll; shared or automated container fills do not roll. Its required CC-BY 4.0 attribution is in `artifacts/gangsboots-ATTRIBUTION.txt`.
 
 `artifacts/gangscosmetics-2.0.2.jar` is the current Gangs Cosmetics build. It retains the server-authoritative MoreCosmetics wardrobe, bundled immutable models, persistent selections, tradeable keys/vouchers, and GoldClaim kit rewards from 2.0.0. It suppresses the custom nametag renderer for the local player so third-person view does not show a duplicate moving self-nameplate; other players' custom nametags remain unchanged. Weekly kit claims award one key and monthly claims award three. Players receive ownership rather than physical wearable items; duplicate key rolls create a voucher. Its source is maintained in the external `gangs-morecosmetics` project.
+
+`artifacts/gangscosmetics-2.1.0-test.zip` is an experimental, manually installed
+test bundle, not a production Packwiz update. It contains the matching
+client/server test jar, an original CC0 crown import, and
+[test instructions](artifacts/gangscosmetics-2.1.0-test-INSTRUCTIONS.txt).
+It adds an OP-level-2 admin catalog with persistent enable/remove controls,
+restricted static model imports, live Night.design metadata search (browse-only,
+not third-party asset redistribution), and render-scoped wardrobe previews for
+locked cosmetics. The unsupported shields stay excluded. Both sides need the
+test jar; visual/multi-client tests are required before production deployment.
+The production manifests and update installers remain pinned to 2.0.2.
 
 `artifacts/polymer-bundled-0.5.20+1.20.1.jar` is the user-supplied official Polymer bundle used on both client and server for server-driven resources.
 

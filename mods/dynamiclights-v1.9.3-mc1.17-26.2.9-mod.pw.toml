@@ -1,6 +1,6 @@
 name = "[Mod] Release v1.9.3"
 filename = "dynamiclights-v1.9.3-mc1.17-26.2.9-mod.jar"
-side = "both"
+side = "client"
 
 [download]
 url = "https://cdn.modrinth.com/data/7YjclEGc/versions/XAsq3xsq/dynamiclights-v1.9.3-mc1.17-26.2.9-mod.jar"

@@ -45,9 +45,9 @@ final class KitRewardSmokeTest {
 
     private static void verify(MinecraftServer server) {
         List<String> missing = new ArrayList<>();
-        Path tables = Path.of("smoke-world", "datapacks", "gangs_kits", "data", "gangs", "loot_tables", "kits");
-        try (var files = Files.list(tables)) {
-            for (Path file : files.toList()) {
+        Path tables = Path.of("smoke-world", "datapacks", "gangs_kits", "data", "gangs", "loot_tables");
+        try (var files = Files.walk(tables)) {
+            for (Path file : files.filter(Files::isRegularFile).toList()) {
                 validateItems(JsonParser.parseString(Files.readString(file)), missing);
             }
         } catch (IOException failure) {
@@ -104,8 +104,49 @@ final class KitRewardSmokeTest {
         require(scoreboard.getPlayerScore(name, scoreboard.getNullableObjective("gangs_claimed_w1")).getScore() == 0,
             "Failed claim consumed");
         require(messages.stream().anyMatch(message -> message.contains("inventory space")), "Silent inventory error");
+        verifyEvent(server, service, player, messages);
         server.getPlayerManager().getPlayerList().remove(player);
         server.getOverworld().removePlayer(player, net.minecraft.entity.Entity.RemovalReason.DISCARDED);
+    }
+
+    private static void verifyEvent(MinecraftServer server, KitService service, ServerPlayerEntity player, List<String> messages) {
+        require(server.getLootManager().getLootTable(KitService.EVENT_TABLE) != LootTable.EMPTY, "Missing event table");
+        int pool = 64;
+        int rolls = pool * 100;
+        Map<String, Integer> weapons = new java.util.TreeMap<>();
+        String last = null;
+        int repeats = 0;
+        for (int roll = 0; roll < rolls; roll++) {
+            List<String> rolled = new java.util.ArrayList<>();
+            for (ItemStack stack : service.roll(player, KitService.EVENT_TABLE, KitService.EVENT_COLLECTIONS)) {
+                String id = Registries.ITEM.getId(stack.getItem()).toString();
+                if ((id.startsWith("simplyswords:") || id.startsWith("simplymore:"))
+                        && !id.endsWith("_gem") && !id.equals("simplyswords:empowered_remnant")) {
+                    rolled.add(id);
+                }
+            }
+            require(rolled.size() == 1, "Event roll must contain exactly one unique weapon: " + rolled);
+            weapons.merge(rolled.get(0), 1, Integer::sum);
+            if (rolled.get(0).equals(last)) repeats++;
+            last = rolled.get(0);
+        }
+        double expected = (double) rolls / pool;
+        double chiSquare = weapons.values().stream().mapToDouble(count -> Math.pow(count - expected, 2) / expected).sum();
+        System.out.println("[KitRewardSmokeTest] Event weapon distribution over " + rolls + " rolls (expected "
+            + expected + " each, chi-square " + String.format("%.1f", chiSquare) + " for " + (pool - 1)
+            + " d.f., back-to-back repeats " + repeats + " vs ~" + (rolls / pool) + " expected): " + weapons);
+        require(weapons.size() == pool, "Not every unique weapon appeared: " + weapons.size() + " of " + pool);
+        require(weapons.values().stream().allMatch(count -> count < expected * 2),
+            "A unique weapon is heavily over-represented: " + weapons);
+        require(chiSquare < 120, "Unique weapon distribution is not uniform (chi-square " + chiSquare + ")");
+        player.getInventory().clear();
+        messages.clear();
+        int given = service.giveEvent(server.getCommandSource().withSilent(), List.of(player));
+        require(given == 1 && !player.getInventory().isEmpty(), "Event reward not delivered");
+        require(messages.stream().anyMatch(message -> message.contains("event reward")), "No event message");
+        for (int slot = 0; slot < 36; slot++) player.getInventory().setStack(slot, new ItemStack(Items.STONE, 64));
+        require(service.giveEvent(server.getCommandSource().withSilent(), List.of(player)) == 1,
+            "Full-inventory event reward rejected instead of dropped");
     }
 
     private static void dispatchKit(String key, ServerPlayerEntity player) {

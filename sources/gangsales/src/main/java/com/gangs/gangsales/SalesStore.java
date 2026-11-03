@@ -89,12 +89,13 @@ public final class SalesStore {
 		ItemStack stack = listing.getStack();
 		if (!hasRoomFor(buyer, stack)) return PurchaseResult.INVENTORY_FULL;
 		if (!GangShopMod.ECONOMY.subtract(buyer.getUuid(), listing.getPrice())) return PurchaseResult.INSUFFICIENT_FUNDS;
+		String soldItemName = stack.getName().getString();
 		buyer.getInventory().insertStack(stack);
 		buyer.getInventory().markDirty();
 		GangShopMod.ECONOMY.add(listing.getSellerId(), listing.getPrice());
 		listing.complete(buyer.getUuid(), buyer.getName().getString(), System.currentTimeMillis());
 		ServerPlayerEntity seller = buyer.getServer().getPlayerManager().getPlayer(listing.getSellerId());
-		if (seller != null) seller.sendMessage(net.minecraft.text.Text.literal(buyer.getName().getString() + " has bought your " + stack.getName().getString() + " for " + listing.getPrice() + " Gang Bucks."), false);
+		if (seller != null) seller.sendMessage(net.minecraft.text.Text.literal(buyer.getName().getString() + " has bought your " + soldItemName + " for " + listing.getPrice() + " Gang Bucks."), false);
 		save();
 		return PurchaseResult.SUCCESS;
 	}

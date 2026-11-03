@@ -1,8 +1,8 @@
-name = "Biolith (End biome null-tree fix)"
-filename = "biolith-fabric-1.0.1-beta.1-endfix.jar"
+name = "Biolith (End lookup and concurrency fixes)"
+filename = "biolith-fabric-1.0.1-beta.1-endfix-concurrency.jar"
 side = "both"
 
 [download]
-url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/biolith-fabric-1.0.1-beta.1-endfix.jar"
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/biolith-fabric-1.0.1-beta.1-endfix-concurrency.jar"
 hash-format = "sha256"
-hash = "eea2f3816d6d6d39e1e1d0ababcaa77b54dba3ba15e00958574df513efe80d92"
+hash = "6092613e0b6c4fa0df01e850a819e6766fa6cae48e2e3725463a79fb9cbeb497"

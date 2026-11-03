@@ -58,6 +58,7 @@ $personal = @{
 }
 $hashes = @{}
 Write-Fixture (Join-Path $game 'mods\grimac-fabric-2.3.74-fixture.jar') 'removed-client-anticheat'
+Write-Fixture (Join-Path $game 'mods\rankbadges-1.0.2.jar') 'old-rank-assignment'
 Write-Fixture (Join-Path $game 'mods\jei-1.20.1-fabric-fixture.jar') 'removed-client-jei'
 Write-Fixture (Join-Path $game 'mods\JEI-fixture.jar.pending') 'removed-pending-client-jei'
 Write-Fixture (Join-Path $game 'mods\RoughlyEnoughItems-fixture.jar') 'preserved-client-rei'
@@ -96,6 +97,8 @@ function Get-CimInstance {
 foreach ($run in 1..2) {
     & (Join-Path $root 'client-update\Install-ClientUpdate.ps1') -GameDirectory $game
     Assert-Preserved $hashes
+    Require (Test-Path (Join-Path $game 'mods\rankbadges-1.0.3.jar')) 'Client tab-order mod missing.'
+    Require (-not (Test-Path (Join-Path $game 'mods\rankbadges-1.0.2.jar'))) 'Old client Rank Badges remains.'
     Require (-not (Test-Path (Join-Path $game 'mods\grimac-fabric-2.3.74-fixture.jar'))) 'Manual client installer retained GrimAC.'
     Require (-not @(Get-ChildItem (Join-Path $game 'mods') -File | Where-Object {
         $_.Name -match '^jei-.*\.jar(?:\.pending)?$'
@@ -162,6 +165,7 @@ Write-Fixture (Join-Path $server 'config\global_packs.toml') "[resourcepacks]`r`
 Write-Fixture (Join-Path $server 'config\c2me.toml') "[threadedWorldGen]`nenabled = `"default`"`nother = true`n[ioSystem]`nenabled = true`n"
 Write-Fixture (Join-Path $server 'config\lithium.properties') "mixin.util.block_tracking=true`nmixin.math.sine_lut=false`n"
 Write-Fixture (Join-Path $server 'mods\goldclaim-1.0.31.jar') 'old-fixture-jar'
+Write-Fixture (Join-Path $server 'mods\rankbadges-1.0.2.jar') 'old-rank-assignment'
 Add-Content -LiteralPath (Join-Path $server 'start.bat') -Value (
     "`r`nrem SHA256 " + (Get-FileHash (Join-Path $server 'mods\goldclaim-1.0.31.jar')).Hash)
 Write-Fixture (Join-Path $server 'mods\gangshop-1.0.8.jar') 'old-shop-jar'
@@ -212,7 +216,7 @@ foreach ($relative in @('paxi\datapacks\gangs_kits\data\gangs\loot_tables\kits\m
 }
 $pending = Join-Path $server 'pending-gameplay-1.0.43'
 New-Item -ItemType Directory -Path $pending | Out-Null
-Copy-Item -LiteralPath (Join-Path $root 'server-update\mods\goldclaim-1.0.43.jar') -Destination (Join-Path $pending 'goldclaim-1.0.43.jar.pending')
+Copy-Item -LiteralPath (Join-Path $repo 'artifacts\goldclaim-1.0.43.jar') -Destination (Join-Path $pending 'goldclaim-1.0.43.jar.pending')
 Copy-Item -LiteralPath (Join-Path $root 'server-update\config\paxi\datapacks\gangs_kits\data\gangs\loot_tables\kits\monthly.json') -Destination (Join-Path $pending 'monthly.json')
 Copy-Item -LiteralPath (Join-Path $root 'server-update\config\randomcollections\config.json') -Destination (Join-Path $pending 'collections.json')
 @{
@@ -225,7 +229,7 @@ Copy-Item -LiteralPath (Join-Path $root 'server-update\config\randomcollections\
     PreviousCollectionsSha256 = (Get-FileHash (Join-Path $server 'config\randomcollections\config.json')).Hash
 } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $pending 'manifest.json')
 $portalsHash = (Get-FileHash (Join-Path $server 'config\multiworld\portals.yml')).Hash
-$payloadJar = Join-Path $root 'server-update\mods\goldclaim-1.0.43.jar'
+$payloadJar = Join-Path $root 'server-update\mods\goldclaim-1.0.44.jar'
 $verifiedJar = $payloadJar + '.verified'
 Move-Item -LiteralPath $payloadJar -Destination $verifiedJar
 try {
@@ -234,7 +238,7 @@ try {
         & (Join-Path $root 'server-update\Install-ServerUpdate.ps1') -GameDirectory $server
         throw 'Corrupt GoldClaim payload was accepted.'
     } catch {
-        if ($_.Exception.Message -notmatch '^GoldClaim 1\.0\.43 payload checksum failed') { throw }
+        if ($_.Exception.Message -notmatch '^GoldClaim 1\.0\.44 payload checksum failed') { throw }
     }
     Assert-Preserved $hashes
     Require ([IO.File]::ReadAllText((Join-Path $server 'mods\goldclaim-1.0.31.jar')) -ceq
@@ -251,8 +255,11 @@ Require (@($installOutput | Where-Object { $_ -match 'Pinned pre-loss snapshot f
 Require (@($installOutput | Where-Object { $_ -match 'Kunoisback item recovery did not complete \(exit 3\)' }).Count -ge 1) 'Missing recovery source must warn without aborting.'
 Require (-not (Test-Path -LiteralPath (Join-Path $server 'world\goldclaim-recovery'))) 'Recovery marker written without a recovery.'
 Assert-Preserved $hashes
-Require (Test-Path -LiteralPath (Join-Path $server 'mods\goldclaim-1.0.43.jar')) 'New GoldClaim is missing.'
-Require ([IO.File]::ReadAllText((Join-Path $server 'start.bat')).Contains('goldclaim-1.0.43.jar')) 'Launcher retains an old jar pin.'
+Require (Test-Path -LiteralPath (Join-Path $server 'mods\goldclaim-1.0.44.jar')) 'New GoldClaim is missing.'
+Require (Test-Path -LiteralPath (Join-Path $server 'mods\rankbadges-1.0.3.jar')) 'Server Rank Badges replacement missing.'
+Require (-not (Test-Path -LiteralPath (Join-Path $server 'mods\rankbadges-1.0.2.jar'))) 'Old server rank assignment remains.'
+Require (Test-Path -LiteralPath (Join-Path $server 'mods\Chunky-1.3.146.jar')) 'Required Chunky jar missing.'
+Require ([IO.File]::ReadAllText((Join-Path $server 'start.bat')).Contains('goldclaim-1.0.44.jar')) 'Launcher retains an old jar pin.'
 Require ([IO.File]::ReadAllText((Join-Path $server 'start.bat')).Contains(
     (Get-FileHash $payloadJar).Hash)) 'Launcher retains an old checksum pin.'
 foreach ($relative in @('paxi\datapacks\gangs_kits\data\gangs\loot_tables\kits\monthly.json',
@@ -264,7 +271,8 @@ foreach ($relative in @('paxi\datapacks\gangs_kits\data\gangs\loot_tables\kits\m
         '{"old":"reward-configuration"}') "Original rewards were not backed up: $relative"
 }
 & (Join-Path $PSScriptRoot 'Install-PendingGameplayHotfix.ps1') -GameDirectory $server -Version 1.0.43
-Require (Test-Path -LiteralPath (Join-Path $pending 'manifest.applied.json')) 'Previously staged startup hook cannot complete after full release installation.'
+Require (Test-Path -LiteralPath (Join-Path $pending 'manifest.json.superseded')) 'Older staged update was not retired after full installation.'
+Require (Test-Path -LiteralPath (Join-Path $server 'mods\goldclaim-1.0.44.jar')) 'Older staged update replaced the newer full installation.'
 Require (-not (Test-Path -LiteralPath (Join-Path $server 'mods\goldclaim-1.0.31.jar'))) 'Old GoldClaim remains.'
 Require (-not (Test-Path -LiteralPath (Join-Path $server 'mods\gangshop-1.0.8.jar'))) 'Old Gang Shop remains.'
 Require (-not (Test-Path -LiteralPath (Join-Path $server 'mods\YungsBetterEndIsland-1.20-Fabric-2.0.6.jar'))) 'Better End Island remains.'

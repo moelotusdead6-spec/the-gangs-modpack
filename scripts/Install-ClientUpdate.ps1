@@ -26,9 +26,10 @@ foreach ($required in @($instanceConfig, $bootstrap)) {
 $updatedInstanceConfig = Get-PrismAutoUpdateConfig ([IO.File]::ReadAllText($instanceConfig))
 $compat = Join-Path $PSScriptRoot 'mods\soulsbackpackscompat-1.1.0.jar'
 $cosmetics = Join-Path $PSScriptRoot 'mods\gangscosmetics-2.0.2.jar'
+$ranks = Join-Path $PSScriptRoot 'mods\rankbadges-1.0.3.jar'
 $defaultsMod = Join-Path $PSScriptRoot 'mods\defaultoptions-fabric-1.20.1-18.0.6.jar'
 $defaults = Join-Path $PSScriptRoot 'config\defaultoptions'
-foreach ($required in @($compat, $cosmetics, $defaultsMod,
+foreach ($required in @($compat, $cosmetics, $ranks, $defaultsMod,
         (Join-Path $defaults 'options.txt'), (Join-Path $defaults 'keybindings.txt'),
         (Join-Path $defaults 'servers.dat'))) {
     if (-not (Test-Path -LiteralPath $required -PathType Leaf)) { throw "Client update jar not found: $required" }
@@ -38,6 +39,7 @@ $removed = @(Get-ChildItem -LiteralPath $mods -File | Where-Object {
         $_.Name -match '^soulsbackpackscompat-.*\.jar(?:\.pending)?$' -or
         $_.Name -match '^defaultoptions-.*\.jar(?:\.pending)?$' -or
         $_.Name -match '^gangscosmetics-.*\.jar(?:\.pending)?$' -or
+        $_.Name -match '^rankbadges-.*\.jar(?:\.pending)?$' -or
         $_.Name -match '^jei-.*\.jar(?:\.pending)?$' -or
         $_.Name -match '^grimac-.*\.jar(?:\.pending)?$'
 })
@@ -48,6 +50,7 @@ if ($removed.Count) {
 }
 Copy-Item -LiteralPath $compat -Destination $mods
 Copy-Item -LiteralPath $cosmetics -Destination $mods
+Copy-Item -LiteralPath $ranks -Destination $mods
 Copy-Item -LiteralPath $defaultsMod -Destination $mods
 $defaultsTarget = Join-Path $game 'config\defaultoptions'
 New-Item -ItemType Directory -Path $defaultsTarget -Force | Out-Null
@@ -64,6 +67,8 @@ if ((Get-FileHash (Join-Path $mods 'soulsbackpackscompat-1.1.0.jar')).Hash -ne
         (Get-FileHash $compat).Hash) { throw 'Installed compatibility jar does not match the supplied update.' }
 if ((Get-FileHash (Join-Path $mods 'gangscosmetics-2.0.2.jar')).Hash -ne
         (Get-FileHash $cosmetics).Hash) { throw 'Installed cosmetics jar does not match the supplied update.' }
+if ((Get-FileHash (Join-Path $mods 'rankbadges-1.0.3.jar')).Hash -ne
+        (Get-FileHash $ranks).Hash) { throw 'Installed tab-order jar does not match the supplied update.' }
 & (Join-Path $PSScriptRoot 'Install-ResourcePackDefaults.ps1') -Target Client -GameDirectory $game
 Copy-Item -LiteralPath $instanceConfig -Destination ($instanceConfig + '.backup-' + (Get-Date -Format 'yyyyMMdd-HHmmss-ffff'))
 [IO.File]::WriteAllText($instanceConfig, $updatedInstanceConfig, [Text.UTF8Encoding]::new($false))

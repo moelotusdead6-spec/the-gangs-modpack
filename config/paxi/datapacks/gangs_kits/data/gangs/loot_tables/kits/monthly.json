@@ -461,6 +461,16 @@
       "entries": [
         {"type": "minecraft:item", "name": "waystones:waystone"}
       ]
+    },
+    {
+      "rolls": 2,
+      "entries": [
+        {
+          "type": "minecraft:tag",
+          "name": "gangs:neon_signs",
+          "expand": true
+        }
+      ]
     }
   ]
 }

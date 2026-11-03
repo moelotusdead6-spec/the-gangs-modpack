@@ -43,7 +43,66 @@ import net.minecraft.util.hit.BlockHitResult;
 public final class PolicySmokeTest implements ModInitializer {
     @Override
     public void onInitialize() {
-        if ("true".equals(System.getenv("GOLDCLAIM_TELEPORT_SMOKE"))) {
+        if ("true".equals(System.getenv("GOLDCLAIM_GAMEPLAY_SMOKE"))
+                || Files.exists(Path.of("gameplay-smoke.enabled"))) {
+            GameplaySmokeTest.register();
+            return;
+        }
+        if (Files.exists(Path.of("worldgen-smoke.enabled"))) {
+            ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+                try {
+                    net.minecraft.world.gen.surfacebuilder.BeachRuleSmoke.verify(server);
+                    Files.writeString(Path.of("worldgen-smoke-passed.txt"), "PASS: beach surface rules and vanilla staff locate tree.\n");
+                } catch (Exception failure) {
+                    throw new IllegalStateException("Worldgen compatibility smoke failed", failure);
+                }
+                server.stop(false);
+            });
+            return;
+        }
+        if (Boolean.getBoolean("goldclaim.rswEntrySmoke")) {
+            RswEntrySmokeTest.register();
+            return;
+        }
+        if ("true".equals(System.getenv("GOLDCLAIM_JOIN_SMOKE"))
+                || Boolean.getBoolean("goldclaim.joinSmoke")) {
+            JoinTeleportSmokeTest.register();
+            return;
+        }
+        if ("true".equals(System.getenv("GOLDCLAIM_PROJECTILE_SMOKE"))) {
+            ProjectileClaimSmokeTest.register();
+            return;
+        }
+        if ("true".equals(System.getenv("GOLDCLAIM_VANISH_SMOKE"))) {
+            VanishSmokeTest.register();
+            return;
+        }
+        if ("true".equals(System.getenv("GOLDCLAIM_WAYSTONE_SMOKE"))) {
+            RswWaystoneSmokeTest.register();
+            return;
+        }
+        if ("true".equals(System.getenv("GOLDCLAIM_BIOLITH_CONCURRENCY_SMOKE"))) {
+            com.terraformersmc.biolith.impl.biome.BiolithConcurrencySmokeTest.register();
+            return;
+        }
+        if ("true".equals(System.getenv("GOLDCLAIM_LOGIN_SMOKE"))) {
+            LoginPermissionSmokeTest.register();
+            return;
+        }
+        if ("true".equals(System.getenv("GOLDCLAIM_PERFORMANCE_SMOKE"))) {
+            PerformancePauseSmokeTest.register();
+            return;
+        }
+        if ("true".equals(System.getenv("GOLDCLAIM_OCT22_SMOKE"))) {
+            OctoberSmokeTest.register();
+            return;
+        }
+        if ("true".equals(System.getenv("GOLDCLAIM_RESTART_SMOKE"))) {
+            RestartSmokeTest.register();
+            return;
+        }
+        if ("true".equals(System.getenv("GOLDCLAIM_TELEPORT_SMOKE"))
+                || "true".equals(System.getenv("GOLDCLAIM_REQUEST_SMOKE"))) {
             TeleportSmokeTest.register();
             return;
         }

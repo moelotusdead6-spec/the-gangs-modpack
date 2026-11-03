@@ -1,13 +1,8 @@
 name = "Ledger"
-filename = "ledger-1.2.8.jar"
+filename = "ledger-1.2.8+gangs.compat.1.jar"
 side = "server"
 
 [download]
-url = "https://cdn.modrinth.com/data/LVN9ygNV/versions/pOxgWfwI/ledger-1.2.8.jar"
-hash-format = "sha512"
-hash = "8230ae7ef5495dd43b6ebc19fb212b7ffb10dc571fc586ecc7e2cc8177989daa41c102ac386d82586c83a0b48b9dba29f095ffa4b8d78e34d715e25830117f8d"
-
-[update]
-[update.modrinth]
-mod-id = "LVN9ygNV"
-version = "pOxgWfwI"
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/ledger-1.2.8%2Bgangs.compat.1.jar"
+hash-format = "sha256"
+hash = "849cbd30aab935b71828c644d074c599aecd7a57c1c4931ff3ee11b5b27416ca"

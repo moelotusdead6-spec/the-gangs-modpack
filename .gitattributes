@@ -3,4 +3,6 @@
 *.toml text eol=lf
 *.txt text eol=lf
 *.md text eol=lf
+*.html text eol=lf
+/mods/.gitkeep text eol=lf
 config/** text=auto eol=lf

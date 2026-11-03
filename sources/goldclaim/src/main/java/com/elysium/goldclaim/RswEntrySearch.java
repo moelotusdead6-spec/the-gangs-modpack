@@ -1,23 +1,19 @@
 package com.elysium.goldclaim;
 
-import com.mojang.datafixers.util.Either;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ChunkHolder;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Heightmap;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.ChunkStatus;
 import org.slf4j.LoggerFactory;
 
 final class RswEntrySearch {
@@ -36,7 +32,8 @@ final class RswEntrySearch {
         final RswEntryLocator.Search search;
         BlockPos column;
         BlockPos landing;
-        CompletableFuture<Either<Chunk, ChunkHolder.Unloaded>> chunk;
+        final long started = System.nanoTime();
+        TeleportChunkArea area;
 
         Entry(ServerCommandSource source, ServerPlayerEntity player, ServerWorld world, long generation, int radius) {
             this.source = source;
@@ -68,11 +65,9 @@ final class RswEntrySearch {
             source.sendError(Text.literal(invalidConfiguration.getMessage()));
             return 0;
         }
-        if (!this.advance(entry)) {
-            this.pending.put(player.getUuid(), entry);
-            source.sendFeedback(() -> Text.literal("Finding safe RSW ground near 0,0. You will teleport when it is ready."), false);
-        }
-        return entry.landing != null || this.pending.containsKey(player.getUuid()) ? 1 : 0;
+        this.pending.put(player.getUuid(), entry);
+        source.sendFeedback(() -> Text.literal("Finding safe RSW ground near 0,0. You will teleport when it is ready."), false);
+        return 1;
     }
 
     boolean isPending(UUID player) {
@@ -98,15 +93,33 @@ final class RswEntrySearch {
         Iterator<Entry> iterator = this.pending.values().iterator();
         while (iterator.hasNext()) {
             Entry entry = iterator.next();
-            if (entry.player.isDisconnected()) {
-                iterator.remove();
-            } else if (this.resets.isClosed() || this.resets.generation() != entry.generation
-                    || entry.player.getServerWorld() != entry.previousWorld
-                    || entry.player.isRemoved() || !entry.player.isAlive()) {
-                entry.source.sendError(Text.literal("RSW entry cancelled because the world or your destination changed."));
-                iterator.remove();
-            } else if (this.advance(entry)) {
-                iterator.remove();
+            boolean finished = false;
+            try {
+                if (entry.player.isDisconnected()) {
+                    finished = true;
+                } else if (this.resets.isClosed() || this.resets.generation() != entry.generation
+                        || entry.world.getServer().getWorld(entry.world.getRegistryKey()) != entry.world
+                        || entry.player.getServerWorld() != entry.previousWorld
+                        || entry.player.isRemoved() || !entry.player.isAlive()) {
+                    entry.source.sendError(Text.literal("RSW entry cancelled because the world or your destination changed."));
+                    finished = true;
+                } else if (System.nanoTime() - entry.started > 120_000_000_000L) {
+                    LoggerFactory.getLogger("GoldClaim/RSW").warn("Entry terrain timed out for {}",
+                        entry.player.getUuid());
+                    entry.source.sendError(Text.literal("RSW terrain loading timed out. Try again."));
+                    finished = true;
+                } else {
+                    finished = this.advance(entry);
+                }
+            } catch (CompletionException | IllegalStateException failure) {
+                LoggerFactory.getLogger("GoldClaim/RSW").error("Entry terrain loading failed", failure);
+                entry.source.sendError(Text.literal("RSW terrain loading failed. Please notify an operator."));
+                finished = true;
+            } finally {
+                if (finished) {
+                    if (entry.area != null) entry.area.close();
+                    iterator.remove();
+                }
             }
         }
     }
@@ -127,34 +140,20 @@ final class RswEntrySearch {
             }
             int x = entry.column.getX();
             int z = entry.column.getZ();
-            if (entry.world.getChunkManager().getWorldChunk(Math.floorDiv(x, 16), Math.floorDiv(z, 16)) == null) {
-                if (entry.chunk == null) {
-                    entry.chunk = entry.world.getChunkManager().getChunkFutureSyncOnMainThread(
-                        Math.floorDiv(x, 16), Math.floorDiv(z, 16), ChunkStatus.FULL, true);
-                }
-                if (!entry.chunk.isDone()) {
-                    return false;
-                }
-                try {
-                    if (entry.chunk.join().left().isEmpty()) {
-                        entry.source.sendError(Text.literal("RSW terrain could not be loaded safely. Try again."));
-                        return true;
-                    }
-                } catch (CompletionException failure) {
-                    LoggerFactory.getLogger("GoldClaim/RSW").error("Entry terrain loading failed", failure);
-                    entry.source.sendError(Text.literal("RSW terrain loading failed. Please notify an operator."));
-                    return true;
-                }
-            }
+            if (entry.area == null) entry.area = new TeleportChunkArea(entry.world, x, z, 1);
+            if (!entry.area.ready()) return false;
             int y = entry.world.getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, x, z);
             BlockPos feet = new BlockPos(x, y, z);
-            if (entry.world.isInBuildLimit(feet.up()) && this.safe.test(entry.world, feet)) {
+            if (entry.world.isInBuildLimit(feet.up()) && this.safe.test(entry.world, feet)
+                    && RswLanding.isSafe(entry.world, new Vec3d(x + 0.5, y, z + 0.5),
+                        entry.player.getWidth(), Math.max(1.8, entry.player.getHeight()))) {
                 entry.landing = feet;
                 this.teleport.accept(entry);
                 return true;
             }
             entry.column = null;
-            entry.chunk = null;
+            entry.area.close();
+            entry.area = null;
         }
         return false;
     }

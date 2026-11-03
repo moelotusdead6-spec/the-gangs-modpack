@@ -7,3 +7,16 @@ The End biome lookup in VanillaCompat is patched to fall back to the selected
 biome when the End search tree has not been initialized. Complete modified
 source, based on upstream tag 1.0.1-beta.1, is available at
 sources/biolith-fabric-1.0.1-beta.1-endfix-source.zip.
+
+The hosted-server endfix-concurrency variant additionally patches
+DimensionBiomePlacement to rebuild replacement and sub-biome lists privately
+and publish immutable snapshots with volatile visibility. Writers are serialized;
+normal biome reads remain lock-free. Biome rates and saved ordering are unchanged.
+The existing VanillaCompat End fix and all unrelated jar entries are retained.
+
+Complete modified source:
+sources/biolith-fabric-1.0.1-beta.1-endfix-concurrency-source.zip
+Targeted compilation/packaging project:
+sources/biolith-concurrency
+Build and regression instructions:
+docs/updates/next-restart.md

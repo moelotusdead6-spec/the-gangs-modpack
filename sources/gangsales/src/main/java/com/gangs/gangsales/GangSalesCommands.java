@@ -3,7 +3,9 @@ package com.gangs.gangsales;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.LongArgumentType;
-import java.util.Optional;
+import net.fabricmc.loader.api.FabricLoader;
+import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.util.Tristate;
 
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.server.command.CommandManager;
@@ -24,6 +26,9 @@ public final class GangSalesCommands {
 	}
 
 	public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment environment) {
+		dispatcher.register(CommandManager.literal("enderchest")
+				.requires(source -> hasPermission(source, EC_PERMISSION))
+				.executes(context -> openEnderChest(context.getSource())));
 		dispatcher.register(CommandManager.literal("ec")
 				.requires(source -> hasPermission(source, EC_PERMISSION))
 				.executes(context -> openEnderChest(context.getSource())));
@@ -48,37 +53,20 @@ public final class GangSalesCommands {
 			return true;
 		}
 
-		try {
-			Class<?> providerClass = Class.forName("net.luckperms.api.LuckPermsProvider");
-			Object luckPerms = providerClass.getMethod("get").invoke(null);
-			Object userManager = luckPerms.getClass().getMethod("getUserManager").invoke(luckPerms);
-			Object user = userManager.getClass().getMethod("getUser", java.util.UUID.class).invoke(userManager, player.getUuid());
-			if (user == null) {
-				return true;
-			}
-			Object cachedData = user.getClass().getMethod("getCachedData").invoke(user);
-			Object permissionData = getPermissionData(luckPerms, cachedData, player);
-			Object result = permissionData.getClass().getMethod("checkPermission", String.class).invoke(permissionData, permission);
-			return (Boolean) result.getClass().getMethod("asBoolean").invoke(result);
-		} catch (ReflectiveOperationException | LinkageError ignored) {
+		if (!FabricLoader.getInstance().isModLoaded("luckperms")) {
 			return true;
 		}
-	}
-
-	private static Object getPermissionData(Object luckPerms, Object cachedData, ServerPlayerEntity player) throws ReflectiveOperationException {
 		try {
-			Class<?> queryOptionsClass = Class.forName("net.luckperms.api.query.QueryOptions");
-			Object contextManager = luckPerms.getClass().getMethod("getContextManager").invoke(luckPerms);
-			Optional<?> queryOptions = (Optional<?>) contextManager.getClass().getMethod("getQueryOptions", Object.class).invoke(contextManager, player);
-			Object options = queryOptions.orElse(null);
-			if (options == null) {
-				options = queryOptionsClass.getMethod("defaultContextualOptions").invoke(null);
+			var user = LuckPermsProvider.get().getUserManager().getUser(player.getUuid());
+			if (user == null) {
+				GangSalesMod.LOGGER.warn("Cannot check {}: LuckPerms user {} is not loaded", permission, player.getUuid());
+				return false;
 			}
-			return cachedData.getClass().getMethod("getPermissionData", queryOptionsClass).invoke(cachedData, options);
-		} catch (NoSuchMethodException ignored) {
+			return user.getCachedData().getPermissionData(user.getQueryOptions()).checkPermission(permission) != Tristate.FALSE;
+		} catch (IllegalStateException failure) {
+			GangSalesMod.LOGGER.error("LuckPerms permission check failed for {} ({})", player.getUuid(), permission, failure);
+			return false;
 		}
-
-		return cachedData.getClass().getMethod("getPermissionData").invoke(cachedData);
 	}
 
 	private static int open(ServerCommandSource source) throws com.mojang.brigadier.exceptions.CommandSyntaxException {

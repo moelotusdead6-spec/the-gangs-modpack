@@ -1,0 +1,50 @@
+{
+  "mode": "blacklist",
+  "timeout_seconds": 120,
+  "kick_message": "You are using a mod not allowed on this server.",
+  "timeout_message": "Mod verification timed out. Please rejoin.",
+  "detection": {
+    "preset": "balanced",
+    "monitor_only": true,
+    "alert_staff": true,
+    "block": {
+      "cheat_clients": true,
+      "xray": true,
+      "fullbright": true,
+      "freecam": true,
+      "replay": false,
+      "minimap": false,
+      "autoclicker": true,
+      "schematic_printer": true,
+      "tweakeroo_utility": false,
+      "damage_indicators": false,
+      "zoom": false
+    },
+    "allow_overrides": [],
+    "banned_mods": []
+  },
+  "resource_packs": {
+    "log": true,
+    "kick_on_banned": false,
+    "banned_packs": [],
+    "banned_fingerprints": []
+  },
+  "exemptions": {
+    "floodgate_auto": true,
+    "bypass_players": [
+      "3b3c1ca0-9968-4257-9105-cd17dc7843cf",
+      "3637a9fb-d4fe-4eee-a7c8-24517b22e064"
+    ],
+    "player_overrides": {},
+    "escalation_rules": []
+  },
+  "profiling": {
+    "enabled": true,
+    "max_history": 200,
+    "retention_days": 0
+  },
+  "whitelist": {
+    "require_all": true,
+    "official_mods": []
+  }
+}

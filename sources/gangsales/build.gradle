@@ -11,6 +11,7 @@ base {
 }
 
 repositories {
+	mavenCentral()
 	flatDir {
 		dirs '../../artifacts'
 	}
@@ -22,6 +23,7 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 	modImplementation files('../../artifacts/gangshop-1.0.0.jar')
+	compileOnly "net.luckperms:api:5.4"
 }
 
 processResources {

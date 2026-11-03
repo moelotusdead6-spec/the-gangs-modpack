@@ -1,5 +1,23 @@
 # Updating The Gangs Modpack
 
+## v1.1.18 installed server and supporting fixes
+
+Publishes the installed GoldClaim 1.0.62, GangSales 1.0.3, Ledger repair,
+Biolith concurrency fix, Command Limits 1.0.1 and Rank Badges 1.0.3.
+Close Minecraft and press Play in the existing auto-updating Prism instance.
+Only Biolith and Rank Badges are new client mod replacements in this release;
+Neon Wall Wonders and the v1.1.16 End libraries remain included.
+No live server restart, reload or installation is part of this publication.
+[Details and rollback](v1.1.18.md).
+
+## v1.1.17 Neon Wall Wonders
+
+Adds **Neon Wall Wonders 8.0.0** to both server and clients. The server jar
+is staged for the next normal restart; no restart or reload is needed to
+stage it. Close Minecraft and press Play in the same auto-updating Prism
+instance before rejoining after restart. No replacement instance is needed.
+See [installation, attribution and rollback](v1.1.17.md).
+
 ## v1.1.15 Halloween client appearance
 
 FancyMenu uses its built-in **Spooky Season** interface theme. The title
@@ -9,6 +27,40 @@ This is a client-pack change, not a server setting. Players receive it by
 closing Minecraft and pressing Play in the same auto-updating Prism instance.
 Older instances must enable automatic updates using the setup below.
 No server restart or replacement instance is needed.
+
+## Prepared next-restart changes
+
+The **2026-10-24 server-only patch** prepares GoldClaim **1.0.52**:
+15-minute ground cleanup, claimed-block protection against Supplementaries
+bombs/cannonballs, all lunar events in RSW Overworld, and Blue/Harvest moons
+preserved in Wild without Blood Moons. Persisted forecasts are migrated once.
+The checksum-verified next-start launcher installs before normal Fabric startup;
+staging does not restart the running server or require client updates.
+See [current patch, tests and rollback](next-restart.md).
+
+After the subsequent Biolith concurrent-modification crash, a targeted
+**End-fix concurrency hotfix** was tested and installed while offline.
+The prior jar is retained for rollback; no world reset or server start was
+sent. Teleport Optimizer, movement checks and flight speed are unchanged.
+See [crash fix, tests and restart status](next-restart.md).
+
+The gameplay bundle below has now been installed. GangSales **1.0.2** was
+subsequently installed while stopped to fix a LuckPerms exception interrupting
+login command-tree construction. Normal Fabric startup was restored; do not
+reuse the completed installer that pins GangSales 1.0.1.
+See [login recovery and validation](next-restart.md).
+
+GoldClaim 1.0.49 / GangSales 1.0.1 block short-range hub teleportation,
+restore occasional roaming RSW bosses, update cleanup messages and correct
+seller item names. Shop exclusions cover the 56 items inspected in Oux_y's
+three shulkers plus the disabled furniture bin.
+The same next-start installer keeps Teleport Optimizer enabled and
+temporarily pauses Spawn Animations while keeping its mod/settings and saved-mob
+recovery. Flight speed and movement protections are unchanged.
+See [next-restart details and validation](next-restart.md).
+Hosted next-start staging installs the update only when the server is next
+started; it does not change the running game. See the DedicatedMC section in
+the notes before changing startup settings.
 
 ## v1.1.14 hosted server address
 

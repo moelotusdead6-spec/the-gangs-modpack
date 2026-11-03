@@ -29,7 +29,9 @@ import org.slf4j.LoggerFactory;
 public final class BannedContent {
     public static final String BIN = "furniture:bin";
     public static final String INCEPTION_UPGRADE = "sophisticatedbackpacks:inception_upgrade";
-    private static final Set<String> BANNED_ITEMS = Set.of(BIN, INCEPTION_UPGRADE);
+    public static final String EARTHDIVE_SPEAR = "bosses_of_mass_destruction:earthdive_spear";
+    public static final String WITHERED_WABBAJACK = "soulsweapons:withered_wabbajack";
+    private static final Set<String> BANNED_ITEMS = Set.of(BIN, INCEPTION_UPGRADE, EARTHDIVE_SPEAR, WITHERED_WABBAJACK);
     private static final Logger LOGGER = LoggerFactory.getLogger("GoldClaim/ContentPolicy");
     private static final Set<String> REPORTED = ConcurrentHashMap.newKeySet();
     private static final int CHUNKS_PER_TICK = 4;
@@ -90,7 +92,7 @@ public final class BannedContent {
 
     public static void report(String reason) {
         if (REPORTED.add(reason)) {
-            LOGGER.info("Banned-content policy enforced (furniture bin / inception upgrade): {}. Further occurrences of this route are suppressed.", reason);
+            LOGGER.info("Banned-content policy enforced (furniture bin / inception upgrade / Earthdive Spear / Withered Wabbajack): {}. Further occurrences of this route are suppressed.", reason);
         }
     }
 

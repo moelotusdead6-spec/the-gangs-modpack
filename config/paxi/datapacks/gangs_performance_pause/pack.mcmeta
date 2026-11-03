@@ -1,0 +1,6 @@
+{
+  "pack": {
+    "pack_format": 15,
+    "description": "Temporarily pause Spawn Animations; retain recovery for saved mobs."
+  }
+}

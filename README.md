@@ -16,3 +16,44 @@ This modpack is built around friendship, discovery, and those “you had to be t
 - **Download:** [Latest release](https://github.com/moelotusdead6-spec/the-gangs-modpack/releases/latest). Import the all-in-one ZIP into Prism Launcher.
 - **Updating:** See the [update guide](docs/updates/README.md).
 - **Resource packs:** Enable or disable them in Options > Resource Packs.
+
+## Neon Wall Wonders
+
+Neon Wall Wonders **8.0.0** adds 60 glowing wall signs on both server and
+clients. Close Minecraft and press Play in the existing auto-updating Prism
+instance before joining after the server's next restart.
+
+Created by oux_y using [CreativeMode.net](https://creativemode.net).
+The original, unmodified `neon-wall-wonders-gwbzt3mk (10).jar` is distributed
+for free with its embedded notices preserved.
+[Official mod page](https://creativemode.net/mod/neon-wall-wonders-gwbzt3mk)
+and [CreativeMode Mods License](https://creativemode.net/mod-license).
+
+## Server protection
+
+- **Published v1.1.18:** The installed GoldClaim 1.0.62, GangSales 1.0.3,
+  Command Limits 1.0.1, Ledger repair, Biolith concurrency fix and Rank Badges
+  1.0.3 now have published source and checksum-pinned pack metadata.
+  Close Minecraft and press Play in the same auto-updating Prism instance
+  for the matching Biolith/Rank Badges client update.
+  No live power action was sent; local-only login-damage protection and
+  restart installers remain unpublished. See [details](docs/updates/v1.1.18.md).
+
+- **Prepared for next restart:** GoldClaim 1.0.62 adds missing player-name completion, doubles sponge absorption budgets, and stops Alex's Mobs shattered dimensional portals inside the current world border. BCLib 3.0.16 and Better End 4.0.12 require matching client updates. Oux_y and Rootamiss receive UUID-scoped Fiw verification exemptions only; other protections remain enforced. See [activation and rollback](docs/updates/next-restart.md).
+- **Staged for next restart:** GoldClaim 1.0.59 removes the Withered Wabbajack, restores staff-only `/locate`, and protects future beach terrain from Expanded Ecosphere's sea-level air cut. Additive tags repair Alex's recipes, including Straddleboard; six cave configs enable Alex's Caves in newly generated RSW Overworld chunks. Existing terrain and other Soulslike weapons remain unchanged. No live restart or reload; see [activation and rollback](docs/updates/next-restart.md).
+- **Resource-world travel:** GoldClaim 1.0.57 prepares new RSW arrival terrain asynchronously instead of waiting for generation in `/rsw` on the main server thread. Preparation has a two-minute timeout and releases its chunk tickets when finished or cancelled.
+- **Audit logging:** The server uses Ledger `1.2.8+gangs.compat.1` to repair missing-world registration during logging and compatibility with the installed Kotlin runtime. Existing audit records and database IDs are preserved; previously dropped actions cannot be reconstructed. The jar and LGPL corresponding source bundle are listed in [ARTIFACTS.md](ARTIFACTS.md).
+- **X-ray:** AntiXray obfuscates vanilla and modded ores on the server. It is configured for the Overworld, Nether, and RSW worlds; clients do not need the AntiXray mod.
+- **Cheat-mod monitoring:** [Fiw AntiCheat by Fi3w0](https://modrinth.com/mod/fiw-anticheat) reports known x-ray and autoclicker mod signatures and audits reported resource packs. Monitoring is enabled; detections alert online staff and are logged, but do not automatically kick or ban. Install the same modpack update on clients before updating the server; clients without Fiw are kicked when verification times out, even in monitor-only mode. Fully close Minecraft and relaunch after updating. GoldClaim 1.0.56 waits until Fiw releases the player before starting the automatic hub-transfer delay. This prevents Fiw's saved login coordinates from overriding the hub spawn after a dimension change. Server position corrections remain allowed; item-triggered short-range teleports in the hub remain blocked.
+- **Large Fiw reports:** Server-side Packet Fixer 3.3.2 raises the client-report payload allowance from 32 KiB to a bounded 1 MiB. Keep `config/packetfixer.properties` with `allSizesUnlimited=false`; the unlimited upstream default is not used. No additional client mod is needed for this incoming-packet fix.
+- **Join verification allowance:** Fiw allows 120 seconds for the client report (`config/fiw-mods-api/config.json`, `timeout_seconds`). Earlier 10- and 60-second limits caused verification-timeout kicks, including players who passed on retry. Verification remains required; this does not exempt missing or incompatible clients.
+- **Reviewing reports:** Use `/fiwmods profile <player>` to inspect a player's reported mods and resource packs. A mod report is not proof that a player used a cheat; custom clients can also evade reporting.
+- **Manual ban reason:** Staff can use `/ban <player> Banned for cheating! Visit Discord to apeal.` after reviewing evidence.
+- **Fire spread:** Disabled in all loaded worlds, including `/pvp`, and applied again when a world loads.
+  This requires the updated GoldClaim on the server. On older builds, stand in each
+  Multiworld world and use `/mw gamerule doFireTick false`, then query
+  `/mw gamerule doFireTick`. Vanilla `/gamerule` uses the server's main rules even
+  under `execute in`, so it does not verify or change PvP's separate rules.
+  The rule stops ordinary fire propagation regardless of what ignited the flame,
+  and lava ignition, but does not stop items, spells, or explosions from placing
+  new fire directly.

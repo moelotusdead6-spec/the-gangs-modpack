@@ -1,13 +1,13 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $true)][string]$GameDirectory,
-    [ValidateSet('1.0.39', '1.0.40', '1.0.41', '1.0.42', '1.0.43')][string]$Version = '1.0.39'
+    [ValidateSet('1.0.39', '1.0.40', '1.0.41', '1.0.42', '1.0.43', '1.0.44')][string]$Version = '1.0.44'
 )
 
 $ErrorActionPreference = 'Stop'
 $game = (Resolve-Path -LiteralPath $GameDirectory).Path
 $repo = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
-$previousVersion = switch ($Version) { '1.0.43' { '1.0.42' } '1.0.42' { '1.0.41' } '1.0.41' { '1.0.40' } '1.0.40' { '1.0.39' } default { '1.0.38' } }
+$previousVersion = switch ($Version) { '1.0.44' { '1.0.43' } '1.0.43' { '1.0.42' } '1.0.42' { '1.0.41' } '1.0.41' { '1.0.40' } '1.0.40' { '1.0.39' } default { '1.0.38' } }
 $jar = Join-Path $repo "artifacts\goldclaim-$Version.jar"
 $table = Join-Path $repo 'config\paxi\datapacks\gangs_kits\data\gangs\loot_tables\kits\monthly.json'
 $collections = Join-Path $repo 'config\randomcollections\config.json'
@@ -16,6 +16,31 @@ $previousTable = Join-Path $game 'config\paxi\datapacks\gangs_kits\data\gangs\lo
 $previousCollections = Join-Path $game 'config\randomcollections\config.json'
 $installer = Join-Path $PSScriptRoot 'Install-PendingGameplayHotfix.ps1'
 $launcherPath = Join-Path $game 'start.bat'
+$rankExtras = @()
+$oldRanks = @()
+if ($Version -eq '1.0.44') {
+    $chunky = Join-Path $game 'mods\Chunky-1.3.146.jar'
+    if (-not (Test-Path -LiteralPath $chunky -PathType Leaf) -or
+        (Get-FileHash -LiteralPath $chunky -Algorithm SHA256).Hash -ine
+        'ae7fb9d35a3a9d9d4f2104aeae7b31a901c5e5842891e2edd9ddcc42c2646a38') {
+        throw 'GoldClaim 1.0.44 requires the pinned Chunky 1.3.146 jar already installed. No files were staged.'
+    }
+    $rankExtras = @(
+        @{ Source = 'artifacts\rankbadges-1.0.3.jar'; Pending = 'rankbadges-1.0.3.jar.pending'; Target = 'mods\rankbadges-1.0.3.jar' },
+        @{ Source = 'config\paxi\datapacks\gangs_hub\data\gangs_hub\functions\setup_ranks.mcfunction'; Pending = 'setup_ranks.mcfunction'; Target = 'config\paxi\datapacks\gangs_hub\data\gangs_hub\functions\setup_ranks.mcfunction' },
+        @{ Source = 'config\paxi\datapacks\gangs_hub\data\gangs_hub\functions\assign_ranks.mcfunction'; Pending = 'assign_ranks.mcfunction'; Target = 'config\paxi\datapacks\gangs_hub\data\gangs_hub\functions\assign_ranks.mcfunction' }
+    )
+    foreach ($entry in $rankExtras) {
+        if (-not (Test-Path -LiteralPath (Join-Path $repo $entry.Source) -PathType Leaf)) { throw "Rank hotfix source missing: $($entry.Source)" }
+        $entry.Sha256 = (Get-FileHash -LiteralPath (Join-Path $repo $entry.Source)).Hash
+        $target = Join-Path $game $entry.Target
+        $entry.PreviousSha256 = if (Test-Path -LiteralPath $target) { (Get-FileHash -LiteralPath $target).Hash } else { $null }
+    }
+    $oldRanks = @(Get-ChildItem -LiteralPath (Join-Path $game 'mods') -Filter 'rankbadges-*.jar')
+    if (@($oldRanks | Where-Object { $_.Name -ne 'rankbadges-1.0.2.jar' }).Count) {
+        throw 'Expected only Rank Badges 1.0.2 (or none) before staging 1.0.3.'
+    }
+}
 foreach ($path in @($jar, $table, $collections, $previousJar, $previousTable, $previousCollections, $installer, $launcherPath)) {
     if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { throw "Required hotfix file missing: $path" }
 }
@@ -64,6 +89,12 @@ New-Item -ItemType Directory -Path $pending | Out-Null
 Copy-Item -LiteralPath $jar -Destination (Join-Path $pending "goldclaim-$Version.jar.pending")
 Copy-Item -LiteralPath $table -Destination (Join-Path $pending 'monthly.json')
 Copy-Item -LiteralPath $collections -Destination (Join-Path $pending 'collections.json')
+foreach ($entry in $rankExtras) {
+    Copy-Item -LiteralPath (Join-Path $repo $entry.Source) -Destination (Join-Path $pending $entry.Pending)
+    if ((Get-FileHash -LiteralPath (Join-Path $pending $entry.Pending)).Hash -ine $entry.Sha256) {
+        throw "Staged rank checksum failed: $($entry.Pending). The launcher was not changed."
+    }
+}
 Copy-Item -LiteralPath $installer -Destination (Join-Path $game 'Install-PendingGameplayHotfix.ps1')
 foreach ($entry in @(
     @("goldclaim-$Version.jar.pending", $jarHash),
@@ -81,6 +112,8 @@ $manifest = [ordered]@{
     PreviousJarSha256 = (Get-FileHash -LiteralPath $previousJar -Algorithm SHA256).Hash
     PreviousMonthlySha256 = (Get-FileHash -LiteralPath $previousTable -Algorithm SHA256).Hash
     PreviousCollectionsSha256 = (Get-FileHash -LiteralPath $previousCollections -Algorithm SHA256).Hash
+    RankExtras = $rankExtras
+    PreviousRankBadgesSha256 = if ($oldRanks.Count) { (Get-FileHash -LiteralPath $oldRanks[0].FullName).Hash } else { $null }
 }
 $manifest | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $pending 'manifest.json') -Encoding ASCII
 Copy-Item -LiteralPath $launcherPath -Destination (Join-Path $game "start.bat.bak_before_goldclaim_$Version")
