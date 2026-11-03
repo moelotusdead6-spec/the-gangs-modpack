@@ -43,6 +43,10 @@ import net.minecraft.util.hit.BlockHitResult;
 public final class PolicySmokeTest implements ModInitializer {
     @Override
     public void onInitialize() {
+        if (System.getenv("GOLDCLAIM_ALEXCAVES_SMOKE") != null) {
+            AlexCavesBossSmokeTest.register();
+            return;
+        }
         if ("true".equals(System.getenv("GOLDCLAIM_CLAIM_SMOKE"))) {
             ClaimPermissionsSmokeTest.register();
             return;

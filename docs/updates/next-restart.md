@@ -1,3 +1,132 @@
+# Passive Wildlife and vanilla animal spawns (2026-11-03)
+
+- Wildlife hamsters and capybaras now use weight 12 instead of 4, a 100%
+  Wildlife spawn chance instead of 50%, chunk frequency 1 instead of 3,
+  and groups of 3-5 instead of 2-4. Hamsters can use dry habitats and
+  capybaras can use jungle habitats, including selected modded biomes.
+- Wildlife's chickadee config used an ignored field, and its jungle, mountain
+  and snowy biome groups did not match many current biome names. Chickadees,
+  cottonbirds, monkeys and other passive Wildlife species now have matching
+  habitats. Hostile Wildlife settings were not changed.
+- WilderNature no longer removes existing vanilla farm-animal spawn entries
+  from forest, savanna, swamp and jungle biome groups. This restores entries
+  already provided by those biomes; it does not invent new ones.
+- The existing 95% attempt reduction for Critters and Companions roly-polies
+  and snails and Naturalist snails remains in place by request.
+
+Validated on an isolated Fabric server with the real chained launchers and
+the updated GoldClaim, Wildlife and WilderNature mods. All three updates
+installed and the server started. All 74 enabled Wildlife entities had a
+loaded biome spawn entry; hamster, capybara, monkey, chickadee and cottonbird
+entries and representative vanilla farm-animal entries in all four biome
+groups were checked. Wildlife's normal spawn caps, terrain checks and
+competition with other ambient mobs still affect how many animals appear.
+
+## Deployment status
+
+The live server was not stopped, restarted or `/reload`ed. Its current
+configs remain unchanged; the changes apply only on the next normal restart.
+The panel now selects `gangs-alex-boss-restart-1.0.70.jar`, which chains to
+`gangs-passive-spawn-restart-1.0.69.jar` (SHA-256
+`a209f6a8400431a6cc03ca3064f11ee32041244e846e9aae439d18525dcc7d87`), then
+to the existing Mimicream launcher. All three uploaded jars were read back
+and verified by hash.
+
+The passive launcher checks the world lock and the original config hashes,
+backs up both originals in `backups/passive-spawn-restart-1.0.69/`, and
+installs the two complete configs. Later starts do not overwrite config edits
+or the files rewritten by the mods. A failed check is logged and the launcher
+continues to the Mimicream update. Source, tests and build script:
+`scripts/hosted/PassiveSpawnRestart*.java` and
+`scripts/hosted/Build-PassiveSpawnRestart.ps1`.
+
+# Alex's Caves bosses can never change blocks; boss health retuned (2026-11-03)
+
+GoldClaim 1.0.65 (server-only, `artifacts/goldclaim-1.0.65.jar`, SHA-256
+`d102e4fe1557ddff6afae3dedb4815f2b136ac70a7d9e620f557aa1f4953d6fa`).
+No client update is needed.
+
+- **No block changes, anywhere, regardless of gamerules.** The
+  `mobGriefing` gamerule and Multiworld's per-world rules did not stop these
+  mobs, because much of their block breaking ignores the gamerule. The
+  protection covers the Luxtructosaurus, Tremorzilla (including when tamed
+  and ridden), Forsaken, Hullbreaker, Magnetron and Tephra. Everything those
+  entities do while ticking is wrapped in a guard that cancels every world
+  block change. That covers walking, stomping, jumping, crushing, tail and
+  bite attacks, the Tremorzilla atomic beam, Lux fissures, fire breath, Lux
+  water-to-stone, Forsaken wall breaking, Hullbreaker breaking, Tephra
+  explosions, Magnetron block stealing and nuclear bombs set off by the beam.
+  Targeted mixins also cancel each known breaking method, and
+  `getMobGriefingEvent` returns false for these entities.
+- **Exceptions.** Tremorzilla can still lay its egg, but only into an air
+  block. A victim's own death handling runs outside the guard, so graves
+  still place. A dying Magnetron drops one Heart of Iron item and no falling
+  blocks.
+- **Maximum health:** Tremorzilla 75,000, Luxtructosaurus 50,000,
+  Hullbreaker 25,000, Forsaken 25,000. Magnetron is unchanged. Each boss gets
+  a persistent modifier with a fixed UUID when it loads, and keeps its
+  current health percentage. Bosses that already exist are adjusted the
+  first time they load. Values above 1024 need AttributeFix, which is in the
+  pack.
+
+Known limitations: the egg's bedding block is not converted, and bosses do
+not trample farmland or press pressure plates. Blocks held by a Magnetron
+that formed before this update are not returned when it dies.
+
+Validated with production-remapped jars on two disposable Fabric servers
+(Alex's Caves 2.1.8, AttributeFix, Fabric API 0.92.11) with
+`mobGriefing=true`, running the same scenarios
+(`sources/goldclaim/src/testmod/.../AlexCavesBossSmokeTest.java`).
+
+- **GoldClaim 1.0.64:** every scenario changed blocks. The Tremorzilla beam
+  changed 361 blocks, Lux fissures 1,454, natural Tremorzilla ticking 1,596
+  and the Hullbreaker 232. The Tremorzilla also set off a nuclear bomb.
+- **GoldClaim 1.0.65:** 0 changed blocks in all 16 arenas, including 600
+  ticks of natural AI against targets. No bomb went off and Forsaken-caused
+  `breakBlock` returned false. Health matched each target exactly and half
+  health survived three save/reload cycles with exactly one modifier.
+
+## Deployment (next restart; never `/reload`)
+
+Restart launcher: `artifacts/gangs-alex-boss-restart-1.0.70.jar` (SHA-256
+`01d5523cba42dd37543463a227cdfba28529639aa6978bbfff891525e2fcd836`). It is
+uploaded, verified and selected as `SERVER_JARFILE` instead of
+`gangs-passive-spawn-restart-1.0.69.jar`. Keep the 1.0.69 and
+`gangs-mimicream-restart-1.0.67.jar` jars in the root. Each launcher runs
+the next one, so every pending update is applied on the same start: Alex
+boss, then passive spawn, then Mimicream, then Fabric. Source, tests and
+build script: `scripts/hosted/AlexBossRestart*.java` and
+`scripts/hosted/Build-AlexBossRestart.ps1`.
+
+On the next start the launcher:
+- checks the Fabric launcher and the world lock;
+- refuses if there is any other `goldclaim-*.jar` in `mods/` or no
+  AttributeFix jar;
+- swaps `mods/goldclaim-1.0.64.jar` (checked by hash) for 1.0.65, saving the
+  original in `backups/alex-boss-restart-1.0.70/`;
+- hands off to `PassiveSpawnRestart` if
+  `gangs-passive-spawn-restart-1.0.69.jar` has the expected hash; otherwise
+  to `MimicreamRestart` if `gangs-mimicream-restart-1.0.67.jar` has the
+  expected hash; otherwise it starts Fabric directly.
+
+Expected console output:
+`[AlexBossRestart] Update installed; original saved in backups/alex-boss-restart-1.0.70`,
+then `Handing off to gangs-passive-spawn-restart-1.0.69.jar.` and the
+passive-spawn and Mimicream lines. Later starts print
+`Update already installed and verified.` On a failed check the launcher
+prints `Update NOT applied; starting normally.` with a reason, and the
+server still boots.
+
+Tested end to end with all three real launchers on a copy of the test
+server. The jar swap and backup worked, each launcher read its own payload
+and handed off to the next, and the server booted with GoldClaim 1.0.65.
+
+To roll back:
+1. Select `gangs-passive-spawn-restart-1.0.69.jar` again.
+2. Delete `mods/goldclaim-1.0.65.jar`.
+3. Restore `mods/goldclaim-1.0.64.jar` from
+   `backups/alex-boss-restart-1.0.70/mods/`.
+
 # Mimicream removal and Gang Boots repair block (2026-11-03)
 
 Server-side data only, shipped in the existing Paxi `gangs_fixes` datapack.

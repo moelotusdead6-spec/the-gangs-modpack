@@ -48,6 +48,7 @@ dependencies {
 	modCompileOnly 'maven.modrinth:moonlight:IYl8kNb4'
 	modCompileOnly 'maven.modrinth:enhanced-celestials:bGoMMYXA'
 	modCompileOnly 'maven.modrinth:data-anchor:PnfBedfn'
+	modCompileOnly files('../../artifacts/alexscaves-2.1.8.jar')
 	modCompileOnly files(project.findProperty('smokeBiolithJar')
 		?: '../../artifacts/biolith-fabric-1.0.1-beta.1-endfix.jar')
 	if (project.hasProperty('smokePlushieJar')) {
