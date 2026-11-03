@@ -1,3 +1,31 @@
+# Mimicream removal and Gang Boots repair block (2026-11-03)
+
+Server-side data only, shipped in the existing Paxi `gangs_fixes` datapack.
+No jars changed and no client update is needed.
+
+- **Mimicream removed.** Alex's Mobs' `mimicream_repair` crafting recipe
+  copied items, so it is now rejected with a Fabric load condition.
+  Mimicubes drop nothing, and the transmutation table's rare pool no longer
+  contains Mimicream. The `gangs_fixes:tick` function clears any leftover
+  Mimicream from online players' inventories. Gang Shop denies the item.
+  Items already sitting in chests are only removed once a player picks them
+  up, and they cannot be crafted with anymore.
+- **Hemolymph Blaster** now uses a Slimeball where it used Mimicream. The
+  shape and other ingredients are the same.
+- **Gobber Ring of Repair** no longer repairs `gangsboots:boots_of_swiftness`.
+  The boots are added to `#gobber2:ring_repair_blacklist` with
+  `replace: false`, so Gobber's own entries are kept. Other items are still
+  repaired.
+
+Validated on a disposable Fabric server with Alex's Mobs 2.0.12, Gobber2
+2.9.5, Gang Boots 1.0.7 and Fabric API 0.92.11:
+- Fabric logged `Rejected resource of type recipes with id
+  alexsmobs:mimicream_repair_recipe`.
+- 500 transmutation-table rolls produced no Mimicream.
+- The Mimicube loot table dropped 0 items.
+- The boots matched the blacklist tag; diamond boots did not.
+- The tick function and recipes loaded without errors.
+
 # Simple Voice Chat 2.6.25 prepared for the next restart (2026-11-03)
 
 Adds [Simple Voice Chat](https://modrinth.com/mod/simple-voice-chat) 2.6.25

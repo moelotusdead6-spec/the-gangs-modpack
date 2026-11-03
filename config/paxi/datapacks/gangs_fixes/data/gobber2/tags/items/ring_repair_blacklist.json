@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "gangsboots:boots_of_swiftness",
+      "required": false
+    }
+  ]
+}

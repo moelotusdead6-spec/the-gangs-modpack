@@ -114,7 +114,7 @@ hash = "c613e5d46cb558a9f240b189bc341ed8a4f71c60c57b0e2013035a593b4b43df"
 
 [[files]]
 file = "config/gangshop/overrides.json"
-hash = "a6d6a84b7bc7861db8c343e3fedcfda1c5f80e230bfe52a9c8b6cc6251040293"
+hash = "2cb59719b095901969aceb99f03d851a7507c76ead566057f651a15c0e218bd6"
 
 [[files]]
 file = "config/gangshop/prices.json"
@@ -143,6 +143,22 @@ hash = "668a3583c0903840d9e566edf34a57da2f57b6b5b1894adb60d55fea028ee9c0"
 [[files]]
 file = "config/paxi/datapack_load_order.json"
 hash = "d0aaf3172f34275479f0669aa5b0a94b85788ae638f3062b948ec49d31c38293"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/alexsmobs/loot_tables/entities/mimicube.json"
+hash = "af73bfdbddd392cbfcf94acfc3638cdeb8cc8f69f70341727b8e174504a838d3"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/alexsmobs/loot_tables/gameplay/transmutation_table_rare.json"
+hash = "d4b16209ae406d7ffaad2e666385ffc1339cc3dda5cbc3b213265281aa6fa67f"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/alexsmobs/recipes/hemolymph_blaster.json"
+hash = "131bc6931a6e4747da6ac925be23e5dfb598021365d0dcc5cf79a56dcad9c345"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/alexsmobs/recipes/mimicream_repair_recipe.json"
+hash = "d95278d2dca24c4fbe5249b1c7aac5e382935a6279b975f1874487b5787f644d"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_fixes/data/c/tags/items/glass_blocks.json"
@@ -318,7 +334,11 @@ hash = "5285d938c2b559919100996565cd6105963e0dba14610d10c7374eef8a82410d"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_fixes/data/gangs_fixes/functions/tick.mcfunction"
-hash = "9b4733371247d135ed095c24ee152cd95307bd27765e6ab5601e63e853fa6ed7"
+hash = "38b818e84c9231f4304827b4046ebb0667ab1432d5b8743f3cd4830d42dcd022"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/gobber2/tags/items/ring_repair_blacklist.json"
+hash = "6d5ee53c2f8d24f4d65aa11f476c8fcf483042b3ef367dea370f1925a0813ad8"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_fixes/data/lootr/tags/blocks/convert/barrels.json"
