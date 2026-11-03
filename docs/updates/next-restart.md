@@ -26,6 +26,36 @@ Validated on a disposable Fabric server with Alex's Mobs 2.0.12, Gobber2
 - The boots matched the blacklist tag; diamond boots did not.
 - The tick function and recipes loaded without errors.
 
+## Deployment (next restart; never `/reload`)
+
+The live server must not be `/reload`ed, so the change is applied by a
+restart launcher, `artifacts/gangs-mimicream-restart-1.0.67.jar` (SHA-256
+`95cc10a794dc7d4300dce62b561f23f6482b8c6a9fd0690dd0dca3966c33afd6`). It is
+uploaded to the server root and selected as `SERVER_JARFILE`, replacing
+`gangs-voicechat-restart-1.0.66.jar`, which has already been applied. Source,
+tests and build script: `scripts/hosted/MimicreamRestart*.java` and
+`scripts/hosted/Build-MimicreamRestart.ps1`.
+
+On the next start the launcher:
+- checks the Fabric launcher, the world lock, the voice-chat marker and the
+  voice jar;
+- installs the five new `gangs_fixes` files and the new `tick.mcfunction`;
+- merges the `alexsmobs:mimicream` deny entry into the live
+  `config/gangshop/overrides.json`, keeping runtime edits;
+- saves the originals in `backups/mimicream-restart-1.0.67/`.
+
+Expected console output:
+`[MimicreamRestart] Update installed; originals saved in backups/mimicream-restart-1.0.67`,
+then `Starting original Fabric launcher.` Later starts print
+`Update already installed and verified.` If any check fails it prints
+`Update NOT applied; starting normally.` with a reason, and the server boots
+unchanged.
+
+To roll back:
+1. Select `gangs-voicechat-restart-1.0.66.jar` again.
+2. Restore `tick.mcfunction` and `overrides.json` from the backup folder.
+3. Delete the five added `gangs_fixes/data/{alexsmobs,gobber2}` files.
+
 # Simple Voice Chat 2.6.25 prepared for the next restart (2026-11-03)
 
 Adds [Simple Voice Chat](https://modrinth.com/mod/simple-voice-chat) 2.6.25
