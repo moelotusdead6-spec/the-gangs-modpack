@@ -1,5 +1,15 @@
 # Published Artifacts
 
+## v1.1.19 client log and model fixes
+
+`artifacts/FoxFriend-fabric-1.18.2-1.21.1-6.0.3-gangs-nolog.jar` is FoxFriend
+6.0.3 by suike (MIT, [upstream](https://github.com/sui-ke/Minecraft-Mod-FoxFriend))
+with only the per-tick `System.out.println` in `FoxMixin.onTick` replaced by
+no-ops. Its license and notice are in `artifacts/FoxFriend-LICENSE.txt`.
+`artifacts/alexscaves-2.1.8.jar` and its source archive now have a
+valid `grottoceratops_egg_template.json`.
+[Details, checksums and rollback](docs/updates/v1.1.19.md).
+
 ## v1.1.18 installed server and supporting fixes
 
 GoldClaim 1.0.62, GangSales 1.0.3, Command Limits 1.0.1, Ledger

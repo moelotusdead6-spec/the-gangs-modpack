@@ -1,5 +1,13 @@
 # Updating The Gangs Modpack
 
+## v1.1.19 client log and model fixes
+
+Stops Item Borders rewriting its config every second, removes FoxFriend's
+per-tick log spam, and fixes the broken Alex's Caves Grottoceratops egg model.
+Close Minecraft and press Play in the existing auto-updating Prism instance.
+No live server restart, reload or installation is part of this publication.
+[Details and rollback](v1.1.19.md).
+
 ## v1.1.18 installed server and supporting fixes
 
 Publishes the installed GoldClaim 1.0.62, GangSales 1.0.3, Ledger repair,

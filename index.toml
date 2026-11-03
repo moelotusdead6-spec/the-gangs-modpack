@@ -6,7 +6,7 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "8b4e68e0aed4d77dd522a9eee67edd5937e0f9fa492710b1237477e5b74f0499"
+hash = "716bc66a27306e767c2671db6a7fdfad00dca37fdccc2c86432d940173449d5a"
 
 [[files]]
 file = "README.md"
@@ -87,6 +87,10 @@ hash = "f3ba34986b212042d95e3a05a0baa37fa4dd7895cce65d7dbc92eb29b0840647"
 [[files]]
 file = "config/gobber2/general.json5"
 hash = "9794ababce25204ea58d2095d2fd616f3e664c4d4e803814c670939da1a831d0"
+
+[[files]]
+file = "config/itemborders-common.toml"
+hash = "c419519d376a98c5fafa02d4e9155a5638ae0be54792db834271c4b4bbaafb40"
 
 [[files]]
 file = "config/options.txt"
@@ -634,11 +638,6 @@ hash = "8344ec1d1328040dc4b8bc4250c6c02a17e89674900a780f1bde06d95919822a"
 metafile = true
 
 [[files]]
-file = "mods/FoxFriend-fabric-1.18.2-1.21.1-6.0.3.pw.toml"
-hash = "e0b67f8f1870d4dae8ec9f6536520194a039841b2482df418838157a84eb8584"
-metafile = true
-
-[[files]]
 file = "mods/Geophilic_v3.6.mod.pw.toml"
 hash = "da87f9de1e5beeb22fc750d9f0db17fb3e4f9a86779ea8f2ccffb87bd85829ed"
 metafile = true
@@ -870,7 +869,7 @@ metafile = true
 
 [[files]]
 file = "mods/alexscaves-direct.pw.toml"
-hash = "6131ab744d4d47d7852c399612efd99b1093c71effea45fee0a624428ef139c9"
+hash = "937fb4afe3edb86e438cd0769d5cafbee8ea61c3d6863f70bf635321d9047a5d"
 metafile = true
 
 [[files]]
@@ -1246,6 +1245,11 @@ metafile = true
 [[files]]
 file = "mods/flowerymooblooms-fabric-mc1.20.1-2.0.2.pw.toml"
 hash = "b812e7eac4638dcec078c9526db18e2a31468c372c67fccce3012a57a05d06f1"
+metafile = true
+
+[[files]]
+file = "mods/foxfriend-direct.pw.toml"
+hash = "52d20f59279d4e3c88c948bb7c601a72e8bcce5a230bd6feb823298ef20e27c2"
 metafile = true
 
 [[files]]
