@@ -6,11 +6,11 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "a61a67b9a2ff8ed3cae41939ccd54f18b6a6f0aa616a574a86c64fa9e1fae9a8"
+hash = "285d4ec845d488dd1318b3c66352e8eaac55b1afe59b2f6cc00293ebcaaf29a4"
 
 [[files]]
 file = "README.md"
-hash = "8f97b6b3d636ef6b68e38b71dc98c4dfb5fd3d0997c35b7a5d281450c5c84b0c"
+hash = "5a04338cb3baed3af579efbf9e8dc85a3980c958731fc7ded18c7eaf68798e74"
 
 [[files]]
 file = "config/EssentialCommands.properties"
@@ -1903,6 +1903,11 @@ metafile = true
 [[files]]
 file = "mods/shield-overhaul-direct.pw.toml"
 hash = "f8c2a021e0d5530f56cd4ae39be75afdb1eddaf43032bb6c9333917c9d3ad21e"
+metafile = true
+
+[[files]]
+file = "mods/simple-voice-chat.pw.toml"
+hash = "022e131ce324e3efc7712161d1aa946e714a42db74abe487ccf4f00cb80c611e"
 metafile = true
 
 [[files]]

@@ -1,5 +1,13 @@
 # Updating The Gangs Modpack
 
+## Prepared locally: v1.1.21 Simple Voice Chat
+
+Adds Simple Voice Chat 2.6.25 to clients and server with 48-block proximity
+and optional private groups. Voice uses UDP on the game port (`port=-1`), so
+no host changes are needed. The server installs it at a restart through
+`gangs-voicechat-restart-1.0.66.jar` once that launcher is armed. See
+[voice chat setup](next-restart.md).
+
 ## Prepared: Neon Wall Wonders 11.0.0
 
 The local update includes all 87 version 11 signs in the existing neon kit

@@ -17,6 +17,14 @@ This modpack is built around friendship, discovery, and those “you had to be t
 - **Updating:** See the [update guide](docs/updates/README.md).
 - **Resource packs:** Enable or disable them in Options > Resource Packs.
 
+## Simple Voice Chat
+
+Pack v1.1.21 adds Simple Voice Chat **2.6.25** for Fabric 1.20.1, with
+48-block proximity voice and optional private groups (press `V`). Players
+without the mod can still join. The server reuses the game port for UDP
+voice, so no host changes are needed; a restart launcher installs it. See
+[voice chat setup](docs/updates/next-restart.md).
+
 ## Neon Wall Wonders
 
 Neon Wall Wonders **11.0.0** is in the client pack and installs on the server

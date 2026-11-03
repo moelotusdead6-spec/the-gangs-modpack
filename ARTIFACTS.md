@@ -1,5 +1,20 @@
 # Published Artifacts
 
+## Prepared locally: Simple Voice Chat 2.6.25
+
+- The unpublished v1.1.21 metadata downloads the original
+  `voicechat-fabric-1.20.1-2.6.25.jar` from the official Modrinth CDN
+  (project `9eGKb6K1`, version `uctY8QSQ`); no copy is rehosted here.
+- SHA-256: `314765c54a4967a971836469c8ba0a31ff0718f418d54bb770fef8a97f3f1036`.
+- Created by Max Henkel; its bundled metadata states All Rights Reserved.
+  [Official project](https://modrinth.com/mod/simple-voice-chat).
+- The supplied Downloads jar differs only in `META-INF/MANIFEST.MF`;
+  every other archive entry is byte-identical to the official release.
+  The owner selected the official download.
+- The server restart launcher `gangs-voicechat-restart-1.0.66.jar` embeds this
+  jar, so it is built locally by `scripts/hosted/Build-VoiceChatRestart.ps1`
+  and is intentionally not published here. See [voice chat setup](docs/updates/next-restart.md).
+
 ## Staged for next restart: claim trust and Neon 11 launcher
 
 - `artifacts/gangs-claim-trust-restart-1.0.65.jar`:

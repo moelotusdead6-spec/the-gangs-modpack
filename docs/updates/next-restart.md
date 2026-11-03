@@ -1,4 +1,82 @@
-# Claim trust and Neon 11 staged for next restart (2026-11-03)
+# Simple Voice Chat 2.6.25 prepared for the next restart (2026-11-03)
+
+Adds [Simple Voice Chat](https://modrinth.com/mod/simple-voice-chat) 2.6.25
+(Fabric 1.20.1, official Modrinth release) to clients and server: 48-block
+proximity voice plus optional private groups. Players without the mod can
+still join; they just have no voice. Nothing on the live server was changed
+while preparing this.
+
+## Networking: no host input needed
+
+- The server config uses `port=-1`, which makes voice chat listen for UDP on
+  the Minecraft port number (25565). Pterodactyl/Wings forwards every
+  allocation for both TCP and UDP, so no new allocation or support ticket is
+  required.
+- This is only safe because server query (which also uses UDP) is off:
+  live `server.properties` has `enable-query=false`. The launcher refuses to
+  install voice chat if query is enabled on the game port or Geyser is present.
+- Blank `voice_host` makes clients use the same address they joined with, and
+  blank `bind_address` uses `server-ip=0.0.0.0`.
+- Optional alternative: the panel allows 5 allocations and only 1 is in use.
+  You can add a second port in **Network**, then change `port=-1` to that port
+  in `config/voicechat/voicechat-server.properties`. This takes effect on the next start.
+
+## Restart launcher
+
+`scripts/hosted/Build-VoiceChatRestart.ps1 -LiveServerProperties <copy>`
+downloads the official jar (SHA-256
+`314765c54a4967a971836469c8ba0a31ff0718f418d54bb770fef8a97f3f1036`), runs
+`VoiceChatRestartTest` and writes
+`tmp\voicechat-restart\gangs-voicechat-restart-1.0.66.jar`. The mod is
+All Rights Reserved, so the launcher is **not** committed or published here;
+it is only uploaded to the private server.
+
+On start, the launcher does the following:
+1. Checks `fabric-server-launch.jar` is the expected file (SHA-256 `6f921315…0028`).
+2. Takes the `world/session.lock`, so it never changes a running world.
+3. Requires the claim-trust 1.0.65 `APPLIED.txt` marker.
+4. Refuses to continue if another `voicechat*.jar` or a different voice chat config already exists.
+5. Atomically installs `mods/voicechat-fabric-1.20.1-2.6.25.jar` and the config.
+6. Writes `backups/voicechat-restart-1.0.66/APPLIED.txt`.
+
+On later starts it only verifies the jar, because the mod rewrites its own
+config. If any check fails it logs
+`[VoiceChatRestart] Voice chat NOT installed; starting normally.` and starts
+the server unchanged, so it cannot cause downtime. The launcher then hands off
+to the original Fabric launcher, and it also replaces
+`gangs-claim-trust-restart-1.0.65.jar`, which only verified already-installed files.
+
+## Arming (only step that touches the server; no restart)
+
+1. Upload `gangs-voicechat-restart-1.0.66.jar` to the server root and confirm
+   its SHA-256 matches the build output.
+2. In **Startup**, set the server jar file to `gangs-voicechat-restart-1.0.66.jar`.
+3. Publish client pack v1.1.21 (push to `main`). This is safe at any time,
+   because the server does not force the mod.
+
+## After the restart
+
+- The console shows `[VoiceChatRestart] Voice chat installed` and then the
+  voice chat server starting on port 25565.
+- Two players with the mod press `V` to open voice chat; the connection icon
+  should not show a cross. Test talking within 48 blocks and joining a group.
+- If clients cannot connect, UDP is not reaching the server. Use the
+  allocation alternative above.
+
+## Rollback
+
+Delete `mods/voicechat-fabric-1.20.1-2.6.25.jar` and `config/voicechat/`,
+then set the server jar file back to `gangs-claim-trust-restart-1.0.65.jar`.
+
+Sources: [official server setup](https://modrepo.de/minecraft/voicechat/wiki/server_setup),
+[hosted-server requirements](https://modrepo.de/minecraft/voicechat/wiki/server_setup_mc_hosting),
+[server configuration](https://modrepo.de/minecraft/voicechat/wiki/server_config).
+# Claim trust and Neon 11 installed (2026-11-03)
+
+After the staging described below, the owner started the server. It reached
+`Done`, and live hashes matched GoldClaim 1.0.64 and Neon 11. The backup marker
+confirmed installation; the old jars were absent. This update is already
+installed and is not part of the pending voice-chat preparation.
 
 `gangs-claim-trust-restart-1.0.65.jar` (SHA-256
 `9270d5dccf87cd95dab8ba467f315fb84e254ccea7470baf7e309df65bf01d9b`) was
