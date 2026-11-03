@@ -1,5 +1,19 @@
 # Published Artifacts
 
+## Prepared: Neon Wall Wonders 11.0.0
+
+- Original, unmodified `artifacts/neon-wall-wonders-gwbzt3mk.jar`.
+- SHA-256: `0c9fcc4a8d8468b477f11214efdf8220bfd3e3402b7d56478caeda84efc26f29`.
+- The 87 neon item models include all 65 in the pack's version 8.0.0
+  artifact. All 87 are in the kit tag and explicitly denied by Gang Shop.
+- Created by oux_y using [CreativeMode.net](https://creativemode.net).
+  [Official mod page](https://creativemode.net/mod/neon-wall-wonders-gwbzt3mk);
+  [CreativeMode Mods License](https://creativemode.net/mod-license).
+  Preserve the original filename and embedded notices when sharing for free.
+- This is a local preparation, not a live-server installation. Version 9
+  contains ten different neon IDs missing from version 11; see the
+  [compatibility and deployment notes](docs/updates/next-restart.md).
+
 ## v1.1.18 installed server and supporting fixes
 
 GoldClaim 1.0.62, GangSales 1.0.3, Command Limits 1.0.1, Ledger

@@ -1,3 +1,32 @@
+# Neon Wall Wonders 11.0.0 prepared (2026-11-03)
+
+The original CreativeMode download `neon-wall-wonders-gwbzt3mk.jar` is
+version **11.0.0**, SHA-256
+`0c9fcc4a8d8468b477f11214efdf8220bfd3e3402b7d56478caeda84efc26f29`.
+Its 87 item models include all 65 in the pack's version 8.0.0 jar plus 22
+new IDs. The existing weekly and monthly neon kit tag contains all 87; none
+are added to the Gang Shop. The local shop deny list covers all 87 and ten
+additional IDs found in version 9.
+
+**Version 9 compatibility:** A separate version 9 download has ten neon IDs
+that are absent from version 11: `neon_adventurer_backpack`, `neon_campfire`,
+`neon_community_emblem`, `neon_enchanted_forest`, `neon_explorer_compass`,
+`neon_moonlit_mountains`, `neon_rustic_cabin`, `neon_sunset_trail_marker`,
+`neon_treasure_chest`, and `neon_wilderness_lantern`. If version 9 was ever
+used on a server or in a world, those blocks and items may be lost on upgrade.
+Back up the world and resolve their absence in the upstream mod before
+loading that world with version 11.
+
+This update is prepared locally only: the running server, its startup
+selection and the public Packwiz manifest were not changed. At a future
+coordinated maintenance window, back up the world and live shop configuration,
+verify the installed Neon version, and install the new jar, kit tag and
+shop-deny entries together before starting. Merge the neon deny entries into
+the current live shop configuration rather than replacing unrelated settings.
+Keep only one Neon Wall Wonders jar on the server and each client; clients and
+server need the same mod version. Do not publish the client update before the
+server is ready for it.
+
 # GoldClaim claim-permission update prepared (2026-11-03)
 
 GoldClaim 1.0.63 was rebuilt with stricter claim interaction protection:

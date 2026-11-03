@@ -21,6 +21,7 @@ Copy-Item -LiteralPath $baseline -Destination $output
 $zip = [IO.Compression.ZipFile]::Open($output, [IO.Compression.ZipArchiveMode]::Update)
 $utf8 = [Text.UTF8Encoding]::new($false)
 . (Join-Path $PSScriptRoot 'Get-PrismAutoUpdateConfig.ps1')
+. (Join-Path $PSScriptRoot 'Set-NeonReleaseEntries.ps1')
 function Write-Entry([string]$Name, [byte[]]$Bytes) {
     $existing = $zip.GetEntry($Name)
     if ($existing) { $existing.Delete() }
@@ -108,9 +109,7 @@ try {
         Copy-Entry ("minecraft/mods/$mod") (Join-Path $repo "artifacts\$mod")
         Copy-Entry ("server-update/mods/$mod") (Join-Path $repo "artifacts\$mod")
     }
-    foreach ($prefix in @('minecraft/', 'client-update/', 'server-update/')) {
-        Copy-Entry ($prefix + 'mods/neon-wall-wonders-gwbzt3mk (10).jar') (Join-Path $repo 'artifacts\neon-wall-wonders-gwbzt3mk (10).jar')
-    }
+    Set-NeonReleaseEntries $zip (Join-Path $repo 'artifacts\neon-wall-wonders-gwbzt3mk.jar')
     Copy-Entry 'server-update/mods/soulsbackpackscompat-1.1.0.jar' (Join-Path $repo 'artifacts\soulsbackpackscompat-1.1.0.jar')
     Copy-Entry 'minecraft/mods/soulsbackpackscompat-1.1.0.jar' (Join-Path $repo 'artifacts\soulsbackpackscompat-1.1.0.jar')
     Copy-Entry 'client-update/mods/soulsbackpackscompat-1.1.0.jar' (Join-Path $repo 'artifacts\soulsbackpackscompat-1.1.0.jar')

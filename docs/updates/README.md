@@ -1,5 +1,12 @@
 # Updating The Gangs Modpack
 
+## Prepared: Neon Wall Wonders 11.0.0
+
+The local update includes all 87 version 11 signs in the existing neon kit
+pool and excludes them from Gang Shop. It has not been installed or published.
+Before a future coordinated server/client update, read the
+[version 9 compatibility warning and deployment notes](next-restart.md).
+
 ## v1.1.18 installed server and supporting fixes
 
 Publishes the installed GoldClaim 1.0.62, GangSales 1.0.3, Ledger repair,

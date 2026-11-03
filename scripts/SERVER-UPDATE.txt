@@ -1,5 +1,10 @@
 The Gangs Modpack - prepared next-restart server update
 
+Neon Wall Wonders 11.0.0 is included as a mod file, but this historical
+installer does not install it or merge its shop restrictions. Follow
+docs/updates/next-restart.md for the coordinated manual update and the
+version 9 compatibility warning. Do not use this installer on a live server.
+
 GoldClaim 1.0.44 / Rank Badges 1.0.3:
 - Wild natural hostiles, phantoms, patrols and zombie sieges disabled;
   block spawners, eggs and commands retained. RSW hostiles unchanged.
