@@ -27,22 +27,37 @@ Keep only one Neon Wall Wonders jar on the server and each client; clients and
 server need the same mod version. Do not publish the client update before the
 server is ready for it.
 
+The historical all-in-one builder and its server installer still target
+GoldClaim 1.0.44 and older bundled mods. The builder now refuses to create a
+current release ZIP, and the installer refuses to downgrade newer GoldClaim
+versions. Neither is a deployment method for this update.
+
 # GoldClaim claim-permission update prepared (2026-11-03)
 
-GoldClaim 1.0.63 was rebuilt with stricter claim interaction protection:
+GoldClaim 1.0.64 was built with stricter claim interaction protection:
 interact trust can use controls such as levers, buttons, elevators and
 pressure plates, while containers and machines including composters remain
 owner/full-trust only. The new `/claim trustlist` command shows trusted
 players and their permission level in the claim where it is run. The new
 `/claimblocks` command reports used and remaining claim blocks for the current
-dimension.
+dimension. Direct item placement and bucket use are also checked at claim
+boundaries. This update does not add protection against cross-claim piston
+movement, fluid flow, hoppers, or other automated changes.
 
 The local artifact is
-`artifacts/goldclaim-1.0.63.jar` (SHA-256
-`83df940c07e6168e92d6e258f61223661ad1d15f92748242ab0ce430b2266057`).
-Packwiz metadata points at this checksum-pinned artifact. This is prepared
-for a normal future restart; it was not installed or activated on the live
-server.
+`artifacts/goldclaim-1.0.64.jar` (SHA-256
+`bfed5f9a22681b235d792d6809b4f59c103547a3a6ded5218986b6bde77e7b8b`).
+Packwiz metadata points at this checksum-pinned artifact. The historical
+1.0.63 artifact was restored from the checksum-verified
+`gangs-neon-loot-restart-1.0.64.jar` payload; live files were not re-read.
+This update was not installed or activated on the live server.
+
+Before a future coordinated restart, check the selected server startup
+launcher as well as the active mod and configuration files. The previously
+selected Neon loot launcher expects GoldClaim 1.0.63 and its earlier kit
+files; it will refuse an unexpected GoldClaim 1.0.64 jar or changed kit
+files. Use a verified deployment and startup selection instead, with exactly
+one GoldClaim jar, after backing up the current server files.
 
 ## Fiw join allowance and crash recovery (2026-11-01)
 

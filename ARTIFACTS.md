@@ -1,5 +1,14 @@
 # Published Artifacts
 
+## Prepared: GoldClaim 1.0.64
+
+- `artifacts/goldclaim-1.0.64.jar`:
+  `bfed5f9a22681b235d792d6809b4f59c103547a3a6ded5218986b6bde77e7b8b`.
+- Claim controls, sensitive block access and item/bucket boundaries are
+  protected; `/claim trustlist` and `/claimblocks` report trust and usage.
+- This is a local preparation, not a live-server installation. See the
+  [deployment and automation limitations](docs/updates/next-restart.md).
+
 ## Prepared: Neon Wall Wonders 11.0.0
 
 - Original, unmodified `artifacts/neon-wall-wonders-gwbzt3mk.jar`.
@@ -14,6 +23,16 @@
   contains ten different neon IDs missing from version 11; see the
   [compatibility and deployment notes](docs/updates/next-restart.md).
 
+## v1.1.19 client log and model fixes
+
+`artifacts/FoxFriend-fabric-1.18.2-1.21.1-6.0.3-gangs-nolog.jar` is FoxFriend
+6.0.3 by suike (MIT, [upstream](https://github.com/sui-ke/Minecraft-Mod-FoxFriend))
+with only the per-tick `System.out.println` in `FoxMixin.onTick` replaced by
+no-ops. Its license and notice are in `artifacts/FoxFriend-LICENSE.txt`.
+`artifacts/alexscaves-2.1.8.jar` and its source archive now have a
+valid `grottoceratops_egg_template.json`.
+[Details, checksums and rollback](docs/updates/v1.1.19.md).
+
 ## v1.1.18 installed server and supporting fixes
 
 GoldClaim 1.0.62, GangSales 1.0.3, Command Limits 1.0.1, Ledger
@@ -22,6 +41,18 @@ are published with checksum-pinned Packwiz metadata and corresponding source.
 [Versions, checksums, source, update instructions and rollback](docs/updates/v1.1.18.md).
 The exact server binaries were verified against hosted download readback.
 Only Biolith and Rank Badges are client mod replacements in this release.
+
+Ledger is LGPL-3.0; its complete corresponding-source bundle, including
+upstream source, patch/build tools and license, is published alongside the jar:
+`artifacts/ledger-1.2.8+gangs.compat.1-corresponding-source.zip`.
+
+Biolith by TerraformersMC and gniftygnome is LGPL-3.0.
+[Upstream source](https://github.com/TerraformersMC/Biolith).
+The complete modified source is
+`sources/biolith-fabric-1.0.1-beta.1-endfix-concurrency-source.zip`.
+The targeted project in `sources/biolith-concurrency` compiles the concurrency
+fix against the unchanged End-fix base and preserves unrelated jar entries.
+See `artifacts/biolith-ATTRIBUTION.txt` for attribution and source links.
 
 ## Neon Wall Wonders 8.0.0
 

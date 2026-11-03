@@ -65,6 +65,7 @@ foreach ($id in $ids) { Require ($tagIds.Contains($id)) "V11 item missing from n
 
 $overridesPath = Join-Path $repo 'config\gangshop\overrides.json'
 $overrides = Get-Content -LiteralPath $overridesPath -Raw | ConvertFrom-Json
+$prices = Get-Content -LiteralPath (Join-Path $repo 'config\gangshop\prices.json') -Raw | ConvertFrom-Json
 $v9Only = @(
     'neon_adventurer_backpack', 'neon_campfire', 'neon_community_emblem',
     'neon_enchanted_forest', 'neon_explorer_compass', 'neon_moonlit_mountains',
@@ -74,6 +75,10 @@ $v9Only = @(
 foreach ($id in $ids) {
     $denied = $overrides.denyItems.PSObject.Properties[$id]
     Require ($null -ne $denied -and $denied.Value -eq $true) "Neon is not denied in Gang Shop: $id"
+    if (-not $oldIds.Contains($id)) {
+        Require ($null -eq $overrides.itemSellOverrides.PSObject.Properties[$id]) "New neon has a shop sell override: $id"
+        Require ($null -eq $prices.items.PSObject.Properties[$id]) "New neon has a shop price: $id"
+    }
 }
 foreach ($path in $v9Only) {
     $id = "${namespace}:$path"

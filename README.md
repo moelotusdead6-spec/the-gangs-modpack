@@ -32,9 +32,24 @@ for free with its embedded notices preserved.
 [Official mod page](https://creativemode.net/mod/neon-wall-wonders-gwbzt3mk)
 and [CreativeMode Mods License](https://creativemode.net/mod-license).
 
+## Claim permissions (prepared)
+
+GoldClaim 1.0.64 is prepared locally for a future server update; it is not
+active on the running server. Use `/claim trust interact <player>` to let a
+player use controls such as levers, buttons, pressure plates and elevators
+without granting access to protected containers and machines. Use `/claim trust interact all`
+to grant that control access to everyone, or `/claim untrust interact all` to
+remove it.
+
+- `/claim trustlist` shows the permission levels for the claim you stand in.
+- `/claimblocks` shows your used and remaining claim blocks in this dimension.
+
 ## Server protection
 
-- **Published v1.1.18:** The installed GoldClaim 1.0.62, GangSales 1.0.3,
+- **Published v1.1.19:** Client fixes stop Item Borders config rewrites and
+  FoxFriend log spam and repair the Alex's Caves Grottoceratops egg model.
+  See [details and rollback](docs/updates/v1.1.19.md).
+- **Published v1.1.18:** GoldClaim 1.0.62, GangSales 1.0.3,
   Command Limits 1.0.1, Ledger repair, Biolith concurrency fix and Rank Badges
   1.0.3 now have published source and checksum-pinned pack metadata.
   Close Minecraft and press Play in the same auto-updating Prism instance
@@ -42,7 +57,7 @@ and [CreativeMode Mods License](https://creativemode.net/mod-license).
   No live power action was sent; local-only login-damage protection and
   restart installers remain unpublished. See [details](docs/updates/v1.1.18.md).
 
-- **Prepared for next restart:** GoldClaim 1.0.62 adds missing player-name completion, doubles sponge absorption budgets, and stops Alex's Mobs shattered dimensional portals inside the current world border. BCLib 3.0.16 and Better End 4.0.12 require matching client updates. Oux_y and Rootamiss receive UUID-scoped Fiw verification exemptions only; other protections remain enforced. See [activation and rollback](docs/updates/next-restart.md).
+- **Earlier gameplay update:** GoldClaim 1.0.62 added missing player-name completion, doubled sponge absorption budgets, and stopped Alex's Mobs shattered dimensional portals inside the current world border. BCLib 3.0.16 and Better End 4.0.12 require matching client updates. Oux_y and Rootamiss receive UUID-scoped Fiw verification exemptions only; other protections remain enforced. See [activation and rollback](docs/updates/next-restart.md).
 - **Staged for next restart:** GoldClaim 1.0.59 removes the Withered Wabbajack, restores staff-only `/locate`, and protects future beach terrain from Expanded Ecosphere's sea-level air cut. Additive tags repair Alex's recipes, including Straddleboard; six cave configs enable Alex's Caves in newly generated RSW Overworld chunks. Existing terrain and other Soulslike weapons remain unchanged. No live restart or reload; see [activation and rollback](docs/updates/next-restart.md).
 - **Resource-world travel:** GoldClaim 1.0.57 prepares new RSW arrival terrain asynchronously instead of waiting for generation in `/rsw` on the main server thread. Preparation has a two-minute timeout and releases its chunk tickets when finished or cancelled.
 - **Audit logging:** The server uses Ledger `1.2.8+gangs.compat.1` to repair missing-world registration during logging and compatibility with the installed Kotlin runtime. Existing audit records and database IDs are preserved; previously dropped actions cannot be reconstructed. The jar and LGPL corresponding source bundle are listed in [ARTIFACTS.md](ARTIFACTS.md).

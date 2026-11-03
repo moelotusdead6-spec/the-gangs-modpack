@@ -99,6 +99,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.CommandNode;
@@ -137,6 +138,8 @@ import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.mob.Monster;
@@ -147,9 +150,21 @@ import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.command.CommandSource;
+import net.minecraft.block.AbstractCauldronBlock;
+import net.minecraft.block.BeehiveBlock;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.CampfireBlock;
+import net.minecraft.block.ComparatorBlock;
 import net.minecraft.block.ComposterBlock;
+import net.minecraft.block.DaylightDetectorBlock;
+import net.minecraft.block.EnderChestBlock;
+import net.minecraft.block.NoteBlock;
+import net.minecraft.block.RepeaterBlock;
+import net.minecraft.block.entity.SignBlockEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemConvertible;
+import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.item.ItemUsageContext;
 import net.minecraft.item.Items;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.command.CommandManager;
@@ -177,6 +192,7 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.util.WorldSavePath;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.screen.ScreenTexts;
+import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardCriterion;
@@ -213,6 +229,7 @@ implements ModInitializer {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final Predicate<ServerCommandSource> PUBLIC_COMMAND = source -> true;
     private static final String OVERWORLD_DIMENSION = "minecraft:overworld";
+    private static final Identifier OPENBLOCKS_ELEVATOR = new Identifier("openblocks", "elevator_block");
     private static GoldClaimMod INSTANCE;
     private GoldClaimConfig config;
     private ClaimManager claimManager;
@@ -459,7 +476,7 @@ implements ModInitializer {
                 return ActionResult.PASS;
             }
             boolean fullAccess = this.claimManager.canModify(serverPlayer.getUuid(), serverPlayer.getGameProfile().getName(), serverPlayer.hasPermissionLevel(2), dimension, pos.getX(), pos.getZ());
-            if (this.isSensitiveClaimBlock(world, pos) && !fullAccess) {
+            if (!fullAccess && this.isSensitiveClaimBlock(world, pos, serverPlayer.getMainHandStack())) {
                 this.deny(serverPlayer, "You cannot access containers or machines in this claim.");
                 return ActionResult.FAIL;
             }
@@ -561,9 +578,52 @@ implements ModInitializer {
         });
     }
 
-    private boolean isSensitiveClaimBlock(World world, BlockPos pos) {
-        return world.getBlockEntity(pos) instanceof Inventory
-            || world.getBlockState(pos).getBlock() instanceof ComposterBlock;
+    private boolean isSensitiveClaimBlock(World world, BlockPos pos, ItemStack mainHandStack) {
+        var blockEntity = world.getBlockEntity(pos);
+        var block = world.getBlockState(pos).getBlock();
+        if (blockEntity instanceof Inventory || blockEntity instanceof NamedScreenHandlerFactory
+                || blockEntity instanceof SignBlockEntity
+                || block instanceof AbstractCauldronBlock || block instanceof BeehiveBlock
+                || block instanceof CampfireBlock || block instanceof ComposterBlock || block instanceof EnderChestBlock
+                || block instanceof ComparatorBlock || block instanceof RepeaterBlock
+                || block instanceof DaylightDetectorBlock || block instanceof NoteBlock
+                || !mainHandStack.isEmpty() && mainHandStack.getItem() instanceof BlockItem
+                    && OPENBLOCKS_ELEVATOR.equals(Registries.BLOCK.getId(block))) {
+            return true;
+        }
+        for (Direction side : Direction.values()) {
+            if (ItemStorage.SIDED.find(world, pos, side) != null
+                    || FluidStorage.SIDED.find(world, pos, side) != null) {
+                return true;
+            }
+        }
+        return ItemStorage.SIDED.find(world, pos, null) != null
+            || FluidStorage.SIDED.find(world, pos, null) != null;
+    }
+
+    public boolean canUseItemOnClaim(ServerPlayerEntity player, ItemUsageContext context) {
+        World world = context.getWorld();
+        if (!this.canUseItemAtClaim(player, world, context.getBlockPos())) {
+            return false;
+        }
+        if (context.getStack().getItem() instanceof BlockItem) {
+            BlockPos placed = new ItemPlacementContext(context).getBlockPos();
+            return this.canUseItemAtClaim(player, world, placed);
+        }
+        return true;
+    }
+
+    public boolean canUseItemAtClaim(ServerPlayerEntity player, World world, BlockPos pos) {
+        String dimension = world.getRegistryKey().getValue().toString();
+        if (PVP_DIMENSION.equals(dimension)) {
+            return true;
+        }
+        boolean allowed = this.claimManager.canModify(player.getUuid(), player.getGameProfile().getName(),
+            player.hasPermissionLevel(2), dimension, pos.getX(), pos.getZ());
+        if (!allowed) {
+            this.deny(player, "You cannot place blocks or use items in this claim.");
+        }
+        return allowed;
     }
 
     private void registerCommands() {
@@ -1304,6 +1364,7 @@ implements ModInitializer {
     private int sendHelp(ServerCommandSource source) {
         source.sendFeedback(() -> Text.literal((String)("Claim tool: hold a gold shovel, right-click 2 corners to claim (minimum " + this.config.minimumClaimWidth + "x" + this.config.minimumClaimDepth + ", max " + this.config.maxClaimBlocksPerPlayerPerDimension + " blocks per dimension).")), false);
         source.sendFeedback(() -> Text.literal((String)"Commands: /claim info, /claim visualize, /claim expand <amount>, /claim list, /claim trust <player|uuid>, /claim trust interact <player|uuid>, /claim trust manager <player|uuid>, /claim untrust <player|uuid>, /claim untrust interact <player|uuid>, /claim untrust manager <player|uuid>, /claim unclaim"), false);
+        source.sendFeedback(() -> Text.literal("View claim permissions: /claim trustlist. View your claim-block allowance: /claimblocks."), false);
         source.sendFeedback(() -> Text.literal((String)"Homes: /sethome <name>, /home <name>, /home list, /delhome <name>, /home public <name>, /home private <name>, /phome <name>, /phome list (up to 10 per player)"), false);
         source.sendFeedback(() -> Text.literal((String)"Admin: /claim admin help"), false);
         return 1;
@@ -2619,14 +2680,8 @@ implements ModInitializer {
         return 1;
     }
 
-    private int listClaimTrust(ServerCommandSource source) {
-        ServerPlayerEntity player;
-        try {
-            player = source.getPlayerOrThrow();
-        } catch (Exception failure) {
-            source.sendError(Text.literal("Only players can run this command."));
-            return 0;
-        }
+    private int listClaimTrust(ServerCommandSource source) throws CommandSyntaxException {
+        ServerPlayerEntity player = source.getPlayerOrThrow();
         String dimension = player.getWorld().getRegistryKey().getValue().toString();
         Optional<Claim> claimOpt = this.claimManager.getClaimAt(dimension, player.getBlockX(), player.getBlockZ());
         if (claimOpt.isEmpty()) {
@@ -2635,54 +2690,33 @@ implements ModInitializer {
         }
         Claim claim = claimOpt.get();
         source.sendFeedback(() -> Text.literal("Claim trust list for " + this.getClaimOwnerLabel(claim) + ":"), false);
-        if (claim.managerAll) {
-            source.sendFeedback(() -> Text.literal("- PUBLIC: MANAGER"), false);
-        } else if (claim.trustAll) {
-            source.sendFeedback(() -> Text.literal("- PUBLIC: FULL"), false);
-        } else if (claim.interactAll) {
-            source.sendFeedback(() -> Text.literal("- PUBLIC: INTERACT"), false);
+        Claim.TrustLevel publicLevel = ClaimTrustList.publicLevel(claim);
+        if (publicLevel != null) {
+            source.sendFeedback(() -> Text.literal("- PUBLIC: " + publicLevel), false);
         }
-        Set<String> listed = new HashSet<>();
-        int entries = 0;
-        entries += this.sendTrustEntries(source, claim.managerPlayerNames, claim.managerPlayers, "MANAGER", listed);
-        entries += this.sendTrustEntries(source, claim.trustedPlayerNames, claim.trustedPlayers, "FULL", listed);
-        entries += this.sendTrustEntries(source, claim.interactPlayerNames, claim.interactPlayers, "INTERACT", listed);
-        if (entries == 0 && !claim.trustAll && !claim.managerAll && !claim.interactAll) {
+        List<ClaimTrustList.Entry> entries = ClaimTrustList.entries(claim, uuid -> {
+            ServerPlayerEntity online = source.getServer().getPlayerManager().getPlayer(uuid);
+            if (online != null) {
+                return online.getGameProfile().getName();
+            }
+            return source.getServer().getUserCache().getByUuid(uuid)
+                .map(GameProfile::getName).orElse(null);
+        });
+        for (ClaimTrustList.Entry entry : entries) {
+            source.sendFeedback(() -> Text.literal("- " + entry.display() + ": " + entry.level()), false);
+        }
+        if (entries.stream().anyMatch(ClaimTrustList.Entry::unresolved)) {
+            source.sendFeedback(() -> Text.literal(
+                "Uncached or invalid entries are shown separately; older name entries may refer to the same player."), false);
+        }
+        if (entries.isEmpty() && publicLevel == null) {
             source.sendFeedback(() -> Text.literal("No players are trusted in this claim."), false);
         }
         return 1;
     }
 
-    private int sendTrustEntries(ServerCommandSource source, Set<String> names, Set<String> uuids,
-                                 String level, Set<String> listed) {
-        int entries = 0;
-        if (names != null) {
-            for (String name : names) {
-                if (name != null && !name.isBlank() && listed.add(name.toLowerCase(java.util.Locale.ROOT))) {
-                    source.sendFeedback(() -> Text.literal("- " + name + ": " + level), false);
-                    entries++;
-                }
-            }
-        }
-        if (uuids != null) {
-            for (String uuid : uuids) {
-                if (uuid != null && !uuid.isBlank() && listed.add(uuid)) {
-                    source.sendFeedback(() -> Text.literal("- " + uuid + ": " + level), false);
-                    entries++;
-                }
-            }
-        }
-        return entries;
-    }
-
-    private int showClaimBlocks(ServerCommandSource source) {
-        ServerPlayerEntity player;
-        try {
-            player = source.getPlayerOrThrow();
-        } catch (Exception failure) {
-            source.sendError(Text.literal("Only players can run this command."));
-            return 0;
-        }
+    private int showClaimBlocks(ServerCommandSource source) throws CommandSyntaxException {
+        ServerPlayerEntity player = source.getPlayerOrThrow();
         String dimension = player.getWorld().getRegistryKey().getValue().toString();
         int used = this.claimManager.getTotalClaimBlocks(player.getUuid(), dimension);
         int limit = this.config.maxClaimBlocksPerPlayerPerDimension;

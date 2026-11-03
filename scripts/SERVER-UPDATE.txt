@@ -1,9 +1,13 @@
 The Gangs Modpack - prepared next-restart server update
 
-Neon Wall Wonders 11.0.0 is included as a mod file, but this historical
-installer does not install it or merge its shop restrictions. Follow
+Neon Wall Wonders 11.0.0 is prepared separately; this historical installer
+does not install it or merge its shop restrictions. Follow
 docs/updates/next-restart.md for the coordinated manual update and the
 version 9 compatibility warning. Do not use this installer on a live server.
+The historical installer refuses to replace newer GoldClaim versions, and the
+all-in-one builder refuses to create a ZIP for the current pack until its old
+server installer is updated. The historical Neon loot launcher builder also
+refuses to package its older GoldClaim and Neon versions for the current pack.
 
 GoldClaim 1.0.44 / Rank Badges 1.0.3:
 - Wild natural hostiles, phantoms, patrols and zombie sieges disabled;

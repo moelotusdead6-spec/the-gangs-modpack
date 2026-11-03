@@ -19,6 +19,12 @@ repositories {
 		metadataSources { artifact() }
 		content { includeGroup 'waystones-pinned' }
 	}
+	ivy {
+		url 'https://mediafilez.forgecdn.net/files/7654/713'
+		patternLayout { artifact '[artifact].[ext]' }
+		metadataSources { artifact() }
+		content { includeGroup 'brutalbosses-pinned' }
+	}
 }
 
 dependencies {
@@ -37,8 +43,8 @@ dependencies {
 	testImplementation 'junit:junit:4.13.2'
 	testRuntimeOnly "net.luckperms:api:5.4"
 	modImplementation files('../../artifacts/Chunky-1.3.146.jar')
-	modCompileOnly files('../../artifacts/brutalbosses-fabric-1.20.1-8.5.jar')
-	modCompileOnly files('../../artifacts/supplementaries-1.20-3.1.44-fabric.jar')
+	modCompileOnly 'brutalbosses-pinned:brutalbosses-fabric-1.20.1-8.5:8.5@jar'
+	modCompileOnly 'maven.modrinth:supplementaries:hsHs7Gle'
 	modCompileOnly 'maven.modrinth:moonlight:IYl8kNb4'
 	modCompileOnly 'maven.modrinth:enhanced-celestials:bGoMMYXA'
 	modCompileOnly 'maven.modrinth:data-anchor:PnfBedfn'
@@ -240,6 +246,10 @@ loom {
 }
 
 tasks.named('runPolicySmoke') {
+	if (System.getenv('GOLDCLAIM_CLAIM_SMOKE') == 'true') {
+		// Fiw's production jar needs a newer Loom to remap; this fixture does not use it.
+		classpath = classpath.filter { !it.name.startsWith('fiw-anticheat-') }
+	}
 	doFirst {
 		def directory = file('../../tmp/goldclaim-policy-smoke')
 		def eula = new File(directory, 'eula.txt')

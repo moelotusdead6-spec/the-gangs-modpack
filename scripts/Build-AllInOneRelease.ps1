@@ -11,6 +11,12 @@ $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 Add-Type -AssemblyName System.IO.Compression
 $repo = [IO.Directory]::GetParent($PSScriptRoot).FullName
+$goldclaimMetadata = [IO.File]::ReadAllText((Join-Path $repo 'mods\goldclaim-direct.pw.toml'))
+$goldclaimFilename = [regex]::Match($goldclaimMetadata, '(?m)^filename = "([^"]+)"\r?$')
+if (-not $goldclaimFilename.Success) { throw 'Cannot determine the current GoldClaim filename from Packwiz metadata.' }
+if ($goldclaimFilename.Groups[1].Value -cne 'goldclaim-1.0.44.jar') {
+    throw "Historical all-in-one builder packages GoldClaim 1.0.44, but the current pack uses $($goldclaimFilename.Groups[1].Value). Update the release builder and server installer before creating a new ZIP."
+}
 if (-not $DefaultOptionsJar) {
     $DefaultOptionsJar = Join-Path $repo 'tmp\defaultoptions-fabric-1.20.1-18.0.6.jar'
 }

@@ -1,0 +1,8 @@
+name = "FoxFriend 6.0.3 (Gangs no-log build)"
+filename = "FoxFriend-fabric-1.18.2-1.21.1-6.0.3-gangs-nolog.jar"
+side = "both"
+
+[download]
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/FoxFriend-fabric-1.18.2-1.21.1-6.0.3-gangs-nolog.jar"
+hash-format = "sha256"
+hash = "183c86269892b858713d6d6f71c13a476f1204336780ec23395d27574ebf40d3"

@@ -6,11 +6,11 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "5f1ca2d26fb1edda6e28b455c4e83eb6a85d5fe0dcc939176280aa75348340b5"
+hash = "47ebfdcc563572e57d3bc0ba17f7e689966980aaa96b41286d6a5cf91c9923be"
 
 [[files]]
 file = "README.md"
-hash = "58f9c9480aa37b8b0289a27e5539437e8b8b646e67ee3ee04ea6e7201a3f2a98"
+hash = "42079810dd6358ee6b6c6f55aff641dc4ca87d91cc8b3e1c79df6274a95d6942"
 
 [[files]]
 file = "config/EssentialCommands.properties"
@@ -127,6 +127,10 @@ hash = "f3ba34986b212042d95e3a05a0baa37fa4dd7895cce65d7dbc92eb29b0840647"
 [[files]]
 file = "config/gobber2/general.json5"
 hash = "9794ababce25204ea58d2095d2fd616f3e664c4d4e803814c670939da1a831d0"
+
+[[files]]
+file = "config/itemborders-common.toml"
+hash = "c419519d376a98c5fafa02d4e9155a5638ae0be54792db834271c4b4bbaafb40"
 
 [[files]]
 file = "config/options.txt"
@@ -842,11 +846,6 @@ hash = "8344ec1d1328040dc4b8bc4250c6c02a17e89674900a780f1bde06d95919822a"
 metafile = true
 
 [[files]]
-file = "mods/FoxFriend-fabric-1.18.2-1.21.1-6.0.3.pw.toml"
-hash = "e0b67f8f1870d4dae8ec9f6536520194a039841b2482df418838157a84eb8584"
-metafile = true
-
-[[files]]
 file = "mods/Geophilic_v3.6.mod.pw.toml"
 hash = "da87f9de1e5beeb22fc750d9f0db17fb3e4f9a86779ea8f2ccffb87bd85829ed"
 metafile = true
@@ -1078,7 +1077,7 @@ metafile = true
 
 [[files]]
 file = "mods/alexscaves-direct.pw.toml"
-hash = "6131ab744d4d47d7852c399612efd99b1093c71effea45fee0a624428ef139c9"
+hash = "937fb4afe3edb86e438cd0769d5cafbee8ea61c3d6863f70bf635321d9047a5d"
 metafile = true
 
 [[files]]
@@ -1457,6 +1456,11 @@ hash = "b812e7eac4638dcec078c9526db18e2a31468c372c67fccce3012a57a05d06f1"
 metafile = true
 
 [[files]]
+file = "mods/foxfriend-direct.pw.toml"
+hash = "52d20f59279d4e3c88c948bb7c601a72e8bcce5a230bd6feb823298ef20e27c2"
+metafile = true
+
+[[files]]
 file = "mods/friendsandfoes-fabric-mc1.20.1-3.0.9.pw.toml"
 hash = "c5be423b490177e26089a090f79f5a1cf061c8fc76fc7569d9b3a3a14b944d1a"
 metafile = true
@@ -1518,7 +1522,7 @@ metafile = true
 
 [[files]]
 file = "mods/goldclaim-direct.pw.toml"
-hash = "103ff2acadb3564e71e77af7c1c78575ef39aed4f3b084cb115f720e2241c13d"
+hash = "9b1c7272afcd75c90e96ecaa23a564b8bf1cfc404d62440fe5aa1b44212e1589"
 metafile = true
 
 [[files]]

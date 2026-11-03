@@ -1,5 +1,11 @@
 The-Gangs-Modpack-Prism-*.zip
 The-Gangs-Modpack-Server-Update-*.zip
+/The-Gangs-Modpack-v*.zip
+/The-Gangs-Modpack-v*.zip.bak
+/The-Gangs-Modpack-v*.mrpack
+/The-Gangs-Modpack-Resource-Pack-Defaults-Update-*.zip
+/resourcepacks/immersive-interfaces.zip
+__pycache__/
 .vscode/
 tmp/
 mods/*.jar

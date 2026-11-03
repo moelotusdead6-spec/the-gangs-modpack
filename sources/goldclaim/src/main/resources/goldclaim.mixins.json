@@ -25,6 +25,8 @@
     "HubPearlTeleportMixin",
     "HubLocalTeleportMixin",
     "HubItemUseMixin",
+    "ClaimItemUseMixin",
+    "ClaimBucketUseMixin",
     "RswRoamingBossMixin",
     "RoamingBossTreasureMixin",
     "LegacyTeleportCommandMixin",

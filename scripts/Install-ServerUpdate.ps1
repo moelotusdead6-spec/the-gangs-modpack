@@ -8,6 +8,19 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $game = (Resolve-Path -LiteralPath $GameDirectory).Path
+$installedMods = Join-Path $game 'mods'
+if (Test-Path -LiteralPath $installedMods -PathType Container) {
+    foreach ($jar in Get-ChildItem -LiteralPath $installedMods -File | Where-Object {
+        $_.Name -match '^goldclaim-.*\.jar(?:\.pending)?$'
+    }) {
+        if ($jar.Name -notmatch '^goldclaim-(\d+\.\d+\.\d+)\.jar(?:\.pending)?$') {
+            throw "Cannot determine the version of $($jar.Name); historical update aborted."
+        }
+        if ([version]$Matches[1] -gt [version]'1.0.44') {
+            throw "Historical server update would downgrade or remove $($jar.Name); update aborted."
+        }
+    }
+}
 $utf8 = [Text.UTF8Encoding]::new($false)
 $running = @(Get-CimInstance Win32_Process |
     Where-Object {

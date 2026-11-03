@@ -7,6 +7,18 @@ pool and excludes them from Gang Shop. It has not been installed or published.
 Before a future coordinated server/client update, read the
 [version 9 compatibility warning and deployment notes](next-restart.md).
 
+GoldClaim 1.0.64 is also prepared locally with separate interaction and
+container permissions, `/claim trustlist`, and `/claimblocks`. It has not been
+installed or activated. See the [claim update notes](next-restart.md).
+
+## v1.1.19 client log and model fixes
+
+Stops Item Borders rewriting its config every second, removes FoxFriend's
+per-tick log spam, and fixes the broken Alex's Caves Grottoceratops egg model.
+Close Minecraft and press Play in the existing auto-updating Prism instance.
+No live server restart, reload or installation is part of this publication.
+[Details and rollback](v1.1.19.md).
+
 ## v1.1.18 installed server and supporting fixes
 
 Publishes the installed GoldClaim 1.0.62, GangSales 1.0.3, Ledger repair,
@@ -24,6 +36,15 @@ is staged for the next normal restart; no restart or reload is needed to
 stage it. Close Minecraft and press Play in the same auto-updating Prism
 instance before rejoining after restart. No replacement instance is needed.
 See [installation, attribution and rollback](v1.1.17.md).
+
+## v1.1.16 End library updates
+
+BCLib updates to **3.0.16** and Better End to **4.0.12** for Fabric 1.20.1.
+Close Minecraft and press Play in the same auto-updating Prism instance.
+Packwiz downloads the new jars and replaces the previously managed versions;
+no new instance or manual ZIP installation is needed.
+Instances without automatic updates must enable them using the setup below.
+The matching server update is prepared for the owner's next normal restart.
 
 ## v1.1.15 Halloween client appearance
 

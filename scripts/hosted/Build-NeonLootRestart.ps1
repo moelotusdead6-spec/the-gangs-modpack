@@ -2,16 +2,23 @@
 param()
 $ErrorActionPreference = 'Stop'
 $repo = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..\..')).Path
+$goldclaimMetadata = Get-Content -LiteralPath (Join-Path $repo 'mods\goldclaim-direct.pw.toml') -Raw
+$neonMetadata = Get-Content -LiteralPath (Join-Path $repo 'mods\neon-wall-wonders.pw.toml') -Raw
+if ($goldclaimMetadata -notmatch '(?m)^filename\s*=\s*"goldclaim-1\.0\.63\.jar"\s*$' -or
+        $neonMetadata -notmatch '(?m)^filename\s*=\s*"neon-wall-wonders-gwbzt3mk \(10\)\.jar"\s*$') {
+    throw 'Historical Neon loot launcher targets GoldClaim 1.0.63 and Neon Wall Wonders 8; it is incompatible with the current pack.'
+}
+$jarSource = Join-Path $repo 'sources\goldclaim\build\libs\goldclaim-1.0.63.jar'
+if (-not (Test-Path -LiteralPath $jarSource -PathType Leaf) -or
+        (Get-FileHash -LiteralPath $jarSource -Algorithm SHA256).Hash -ine '7d66559036d14812a71fed22443554861b992bd7efbcf574f07cd8dd5671b49e') {
+    throw 'The historical GoldClaim 1.0.63 build is missing or does not match the installed launcher payload.'
+}
 $build = Join-Path $repo 'tmp\neon-loot-restart-build'
 $classes = Join-Path $build 'classes'
 $payload = Join-Path $classes 'payload'
 if (Test-Path -LiteralPath $classes) { Remove-Item -LiteralPath $classes -Recurse -Force }
 New-Item -ItemType Directory -Force -Path $payload | Out-Null
 $utf8 = [Text.UTF8Encoding]::new($false)
-$jarSource = Join-Path $repo 'sources\goldclaim\build\libs\goldclaim-1.0.63.jar'
-if (-not (Test-Path -LiteralPath $jarSource -PathType Leaf)) {
-    throw 'Build GoldClaim 1.0.63 with remapJar before packaging the restart launcher.'
-}
 $files = @(
     @{ Source = $jarSource; Target = 'mods/goldclaim-1.0.63.jar' },
     @{ Source = 'config\paxi\datapacks\gangs_kits\data\gangs\loot_tables\kits\weekly_1.json'; Target = 'config/paxi/datapacks/gangs_kits/data/gangs/loot_tables/kits/weekly_1.json' },
