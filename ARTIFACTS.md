@@ -1,15 +1,25 @@
 # Published Artifacts
 
-## Prepared: GoldClaim 1.0.64
+## Staged for next restart: claim trust and Neon 11 launcher
+
+- `artifacts/gangs-claim-trust-restart-1.0.65.jar`:
+  `9270d5dccf87cd95dab8ba467f315fb84e254ccea7470baf7e309df65bf01d9b`.
+  Built by `scripts/hosted/Build-ClaimTrustRestart.ps1` from
+  `ClaimTrustRestart.java` with regression tests against byte-exact live files.
+- Uploaded and selected as `SERVER_JARFILE` on 2026-11-03; it applies GoldClaim
+  1.0.64 and Neon Wall Wonders 11 on the next restart. See the
+  [restart notes](docs/updates/next-restart.md).
+
+## Staged: GoldClaim 1.0.64
 
 - `artifacts/goldclaim-1.0.64.jar`:
   `bfed5f9a22681b235d792d6809b4f59c103547a3a6ded5218986b6bde77e7b8b`.
 - Claim controls, sensitive block access and item/bucket boundaries are
   protected; `/claim trustlist` and `/claimblocks` report trust and usage.
-- This is a local preparation, not a live-server installation. See the
+- Installed by the claim trust restart launcher on the next server restart. See the
   [deployment and automation limitations](docs/updates/next-restart.md).
 
-## Prepared: Neon Wall Wonders 11.0.0
+## Staged: Neon Wall Wonders 11.0.0
 
 - Original, unmodified `artifacts/neon-wall-wonders-gwbzt3mk.jar`.
 - SHA-256: `0c9fcc4a8d8468b477f11214efdf8220bfd3e3402b7d56478caeda84efc26f29`.
@@ -19,8 +29,8 @@
   [Official mod page](https://creativemode.net/mod/neon-wall-wonders-gwbzt3mk);
   [CreativeMode Mods License](https://creativemode.net/mod-license).
   Preserve the original filename and embedded notices when sharing for free.
-- This is a local preparation, not a live-server installation. Version 9
-  contains ten different neon IDs missing from version 11; see the
+- Published to clients and installed on the server at the next restart.
+  Version 9 was a discarded update and was never used on the server; see the
   [compatibility and deployment notes](docs/updates/next-restart.md).
 
 ## v1.1.19 client log and model fixes

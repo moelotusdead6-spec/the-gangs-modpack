@@ -19,12 +19,10 @@ This modpack is built around friendship, discovery, and those “you had to be t
 
 ## Neon Wall Wonders
 
-Neon Wall Wonders **11.0.0** is prepared for the next coordinated server and
-client update, but has not been installed or published by this preparation.
-Its 87 sign models include all 65 from the pack's previous 8.0.0 jar. They
-remain excluded from the Gang Shop and are available through the existing
-neon kit pool. See [update and compatibility notes](docs/updates/next-restart.md)
-before upgrading, especially if version 9 was ever used.
+Neon Wall Wonders **11.0.0** is in the client pack and installs on the server
+at the next restart. Its 87 sign models include all 65 from the previous 8.0.0
+jar. They remain excluded from the Gang Shop and are available through the
+existing neon kit pool. See [update notes](docs/updates/next-restart.md).
 
 Created by oux_y using [CreativeMode.net](https://creativemode.net).
 The original, unmodified `neon-wall-wonders-gwbzt3mk.jar` is provided
@@ -32,10 +30,10 @@ for free with its embedded notices preserved.
 [Official mod page](https://creativemode.net/mod/neon-wall-wonders-gwbzt3mk)
 and [CreativeMode Mods License](https://creativemode.net/mod-license).
 
-## Claim permissions (prepared)
+## Claim permissions
 
-GoldClaim 1.0.64 is prepared locally for a future server update; it is not
-active on the running server. Use `/claim trust interact <player>` to let a
+GoldClaim 1.0.64 is staged on the server and becomes active at the next
+restart. Use `/claim trust interact <player>` to let a
 player use controls such as levers, buttons, pressure plates and elevators
 without granting access to protected containers and machines. Use `/claim trust interact all`
 to grant that control access to everyone, or `/claim untrust interact all` to

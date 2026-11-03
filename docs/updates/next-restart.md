@@ -1,3 +1,44 @@
+# Claim trust and Neon 11 staged for next restart (2026-11-03)
+
+`gangs-claim-trust-restart-1.0.65.jar` (SHA-256
+`9270d5dccf87cd95dab8ba467f315fb84e254ccea7470baf7e309df65bf01d9b`) was
+uploaded to the server root, read back with a matching hash, and selected as
+`SERVER_JARFILE`, replacing `gangs-neon-loot-restart-1.0.64.jar`. The server
+was not stopped or restarted; the update applies on the next restart.
+
+Before the change, the live files were read and hashed: GoldClaim 1.0.63
+(`7d665590…e49e`), Neon 8 `neon-wall-wonders-gwbzt3mk (10).jar`
+(`a0b36248…58cc`), the 65-entry kit tag (`65e946b2…ed11`) and
+`fabric-server-launch.jar` (`6f921315…0028`). Version 9 was a discarded
+update and was never used on the server.
+
+On start, while `world/session.lock` is not held, the launcher:
+
+- refuses to change anything if any of those files differ, or another active
+  GoldClaim or Neon jar exists;
+- backs up the originals and live `config/gangshop/overrides.json` to
+  `backups/claim-trust-restart-1.0.65/`;
+- installs `goldclaim-1.0.64.jar`, `neon-wall-wonders-gwbzt3mk.jar` (V11) and
+  the 87-entry kit tag, then removes the 1.0.63 and Neon 8 jars;
+- adds the 32 missing Neon `denyItems` entries to the live shop overrides
+  without changing any other line (no Neon prices are added);
+- verifies the result, writes `APPLIED.txt`, and starts the original Fabric
+  launcher. Later starts verify the installed files and start normally.
+
+Expected console line: `[ClaimTrustRestart] Update installed; originals saved
+in backups/claim-trust-restart-1.0.65`. If it reports a refusal instead,
+nothing was changed. Select `gangs-neon-loot-restart-1.0.64.jar` again to
+start as before.
+
+Rollback after it applied: stop the server, restore the four files from the
+backup folder, delete `mods/goldclaim-1.0.64.jar` and
+`mods/neon-wall-wonders-gwbzt3mk.jar`, and select
+`gangs-neon-loot-restart-1.0.64.jar`. Neon signs placed from the 22 new
+designs would be lost by rolling back Neon.
+
+The client pack (v1.1.20) was published at the same time. Clients with Neon 11
+can join the Neon 8 server before the restart; after it, clients must update.
+
 # Neon Wall Wonders 11.0.0 prepared (2026-11-03)
 
 The original CreativeMode download `neon-wall-wonders-gwbzt3mk.jar` is
