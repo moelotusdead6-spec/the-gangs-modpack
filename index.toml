@@ -742,7 +742,7 @@ hash = "1c13a1332ade83697f1ffab860a174c43d717f9f291e20f3ec79c78a6cfaaa5d"
 
 [[files]]
 file = "config/rsls.properties"
-hash = "c9dcea32ddb0b050300fa6b2f22f601f58b36539f1a4fd64b077d7a9fd00f5df"
+hash = "2feea5543ab9c2893997d13350fb06ac8816e7de4cf6ca02d554d210d228d805"
 
 [[files]]
 file = "config/serverhats.json"
@@ -1906,7 +1906,7 @@ metafile = true
 
 [[files]]
 file = "mods/rsls-1.1.17.pw.toml"
-hash = "af4f09ef7dd7a46be6dadf7de0a460ee7ecbc0127d5dcebfdac3ba4ecccf5028"
+hash = "700c53056076439cfa49918101be24288add2958da4a1ae8ec39fa865b76f56a"
 metafile = true
 
 [[files]]
