@@ -741,6 +741,10 @@ file = "config/randomcollections/config.json"
 hash = "1c13a1332ade83697f1ffab860a174c43d717f9f291e20f3ec79c78a6cfaaa5d"
 
 [[files]]
+file = "config/rsls.properties"
+hash = "c9dcea32ddb0b050300fa6b2f22f601f58b36539f1a4fd64b077d7a9fd00f5df"
+
+[[files]]
 file = "config/serverhats.json"
 hash = "4cfe261f013007c2572268d5a2550af1e365e7c9146bc599edfbe3e68f5ecedd"
 
@@ -1898,6 +1902,11 @@ metafile = true
 [[files]]
 file = "mods/roughly-enough-items-direct.pw.toml"
 hash = "26e3ee47b301af8f03d37cc13f9132a4c3e3e55069fa1a2547006c8cd45aae62"
+metafile = true
+
+[[files]]
+file = "mods/rsls-1.1.17.pw.toml"
+hash = "af4f09ef7dd7a46be6dadf7de0a460ee7ecbc0127d5dcebfdac3ba4ecccf5028"
 metafile = true
 
 [[files]]
