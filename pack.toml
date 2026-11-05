@@ -1,6 +1,6 @@
 name = "The Gangs Modpack"
 author = "moelotusdead6-spec"
-version = "1.1.21"
+version = "1.1.22"
 pack-format = "packwiz:1.1.0"
 
 [index]
@@ -9,5 +9,5 @@ hash-format = "sha256"
 hash = "7a063d6d9d1bd5f357e1532c99adbb7f6e5efa701c9614c2e798a672310d1b80"
 
 [versions]
-fabric = "0.19.3"
+fabric = "0.19.5"
 minecraft = "1.20.1"

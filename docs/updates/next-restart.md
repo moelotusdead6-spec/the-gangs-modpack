@@ -1,3 +1,16 @@
+# Client launch fix (2026-11-05)
+
+The client startup crash in `FactoryRedirectWrapperMixinTransformer` was
+caused by Fabric Loader 0.19.3 bundling MixinExtras 0.5.4. MixinExtras 0.5.5
+fixes its incompatibility with `@Redirect` annotations compiled against Fabric
+Mixin 0.17.4. The pack now pins Fabric Loader 0.19.5, which bundles Mixin
+0.17.4 and MixinExtras 0.5.5.
+
+Packwiz updates mods but does not update the Fabric Loader component in an
+existing Prism instance. Close the game, edit the instance's Version settings,
+and set Fabric Loader to 0.19.5, then launch again. This is a client-side
+loader fix; the running server does not need a restart.
+
 # Safe mod updates (2026-11-05)
 
 37 client-and-server mods and 1 client-only mod (Cinematic Respawn 1.4.3)
@@ -12,9 +25,10 @@ Held back on purpose:
   Swords and its add-ons), AzureLib 3, Alex's Mobs 2.2, Friends & Foes 5,
   Deeper Darker 2.0 alpha, Fisherman House 2, OpenBlocks 1.0 and
   ThreadTweak, which is for 1.20.2.
-- Updates that cannot load with this pack:
+- Dependency updates held during the original update:
   - Fabric Language Kotlin 1.14.2 and Soulslike Weaponry 1.4.10 need Fabric
-    Loader 0.19.5. Soulslike Weaponry also needs Ranged Weapon API 2.3.
+    Loader 0.19.5, now pinned by this pack. Soulslike Weaponry also needs
+    Ranged Weapon API 2.3.
   - Hybrid Aquatic 1.7.4 needs the missing HAPI library.
   - JourneyMap 6.0.7 changed the plugin loader that GoldClaim Map hooks,
     so clients closed while loading. It was rolled back to 6.0.0-beta.5.
