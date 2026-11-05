@@ -1,5 +1,22 @@
 # Updating The Gangs Modpack
 
+## Client auto-update checksum repair
+
+The pack index contained a checksum for `ARTIFACTS.md` that did not match the
+LF-normalized file published by GitHub Pages. Prism's Packwiz pre-launch
+update rejects that download and stops before Minecraft starts.
+The corrected index has been tested with a real Packwiz update and retry.
+
+After the corrected index is published, close Minecraft and press Play in the
+same auto-updating Prism instance. No new import or server restart is needed.
+If the launch still fails, share the full Prism launch log.
+
+After `packwiz refresh`, maintainers should run
+`powershell -NoProfile -ExecutionPolicy Bypass -File scripts\Test-PackwizIndex.ps1`
+before publishing.
+It checks the index hashes and rejects files Git would transform, including
+mixed or CRLF line endings in files that Git stores with LF.
+
 ## Prepared locally: v1.1.21 Simple Voice Chat
 
 Adds Simple Voice Chat 2.6.25 to clients and server with 48-block proximity

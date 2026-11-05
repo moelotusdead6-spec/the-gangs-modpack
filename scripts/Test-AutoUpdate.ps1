@@ -7,6 +7,8 @@ param(
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 $repo = [IO.Directory]::GetParent($PSScriptRoot).FullName
+$indexCheck = Join-Path $PSScriptRoot 'Test-PackwizIndex.ps1'
+& $indexCheck -PackDirectory $repo
 $root = Join-Path $repo ('tmp\auto-update-test-' + (Get-Date -Format 'yyyyMMdd-HHmmss-ffff'))
 $published = Join-Path $root 'published'
 $game = Join-Path $root 'client'
@@ -18,7 +20,7 @@ try {
 } finally { $zip.Dispose() }
 function Write-Fixture([string]$Path, [string]$Content) {
     New-Item -ItemType Directory -Path ([IO.Path]::GetDirectoryName($Path)) -Force | Out-Null
-    [IO.File]::WriteAllText($Path, $Content, [Text.UTF8Encoding]::new($false))
+    [IO.File]::WriteAllText($Path, $Content.Replace("`r`n", "`n"), [Text.UTF8Encoding]::new($false))
 }
 function Require([bool]$Condition, [string]$Message) {
     if (-not $Condition) { throw $Message }
@@ -74,6 +76,64 @@ hash = "$hash"
     Write-Fixture (Join-Path $published 'servers.dat') 'never-publish-personal-servers'
     $java = (Get-Command java.exe -ErrorAction Stop).Source
     $pending = $listener.GetContextAsync()
+    function Invoke-FixtureUpdate([string]$Name, [ref]$NextRequest) {
+        $stdout = Join-Path $root "$Name.log"
+        $stderr = Join-Path $root "$Name.err"
+        $process = Start-Process -FilePath $java -ArgumentList @('-jar', "`"$bootstrap`"", '-g', '-s', 'client', "${url}pack.toml") `
+            -WorkingDirectory $game -PassThru -RedirectStandardOutput $stdout -RedirectStandardError $stderr
+        $handle = $process.Handle
+        $deadline = (Get-Date).AddMinutes(3)
+        while (-not $process.HasExited) {
+            if ((Get-Date) -gt $deadline) {
+                Stop-Process -Id $process.Id
+                throw 'Isolated automatic update timed out.'
+            }
+            if ($NextRequest.Value.Wait(100)) {
+                $context = $NextRequest.Value.Result
+                $relative = $context.Request.Url.AbsolutePath.TrimStart('/').Replace('/', '\')
+                $path = [IO.Path]::GetFullPath((Join-Path $published $relative))
+                if (-not $path.StartsWith($published + '\', [StringComparison]::OrdinalIgnoreCase) -or
+                        -not (Test-Path -LiteralPath $path -PathType Leaf)) {
+                    $context.Response.StatusCode = 404
+                } else {
+                    $bytes = [IO.File]::ReadAllBytes($path)
+                    $context.Response.ContentLength64 = $bytes.Length
+                    $context.Response.OutputStream.Write($bytes, 0, $bytes.Length)
+                }
+                $context.Response.Close()
+                $NextRequest.Value = $listener.GetContextAsync()
+            }
+        }
+        $process.WaitForExit()
+        return [pscustomobject]@{
+            ExitCode = $process.ExitCode
+            Log = [IO.File]::ReadAllText($stdout) + [IO.File]::ReadAllText($stderr)
+        }
+    }
+    function Require-IndexFailure([string]$Expected) {
+        $failed = $false
+        try {
+            & $indexCheck -PackDirectory $published
+        } catch {
+            if (-not $_.Exception.Message.Contains($Expected)) { throw }
+            $failed = $true
+        }
+        Require $failed "Expected Packwiz index validation to report: $Expected"
+    }
+    $regressionDoc = Join-Path $published 'ARTIFACTS.md'
+    [IO.File]::WriteAllText($regressionDoc, "fixture`r`n", [Text.UTF8Encoding]::new($false))
+    Push-Location $published
+    try {
+        & packwiz refresh
+        if ($LASTEXITCODE -ne 0) { throw 'Fixture Packwiz refresh failed.' }
+    } finally { Pop-Location }
+    Require-IndexFailure 'Git will transform: ARTIFACTS.md'
+    Write-Fixture $regressionDoc "fixture`n"
+    Require-IndexFailure 'Hash mismatch: ARTIFACTS.md'
+    $failedUpdate = Invoke-FixtureUpdate 'checksum-mismatch' ([ref]$pending)
+    Require ($failedUpdate.ExitCode -ne 0 -and $failedUpdate.Log -match '(?i)ARTIFACTS\.md' -and
+        $failedUpdate.Log -match '(?i)hash|checksum') "The updater did not reject the checksum mismatch:`r`n$($failedUpdate.Log)"
+
     foreach ($generation in 1..2) {
         $islandMetadata = Join-Path $published 'mods\removed-island.pw.toml'
         $grimMetadata = Join-Path $published 'mods\grimac.pw.toml'
@@ -107,40 +167,13 @@ hash = "$hash"
             & packwiz refresh
             if ($LASTEXITCODE -ne 0) { throw 'Fixture Packwiz refresh failed.' }
         } finally { Pop-Location }
+        & $indexCheck -PackDirectory $published
         $index = [IO.File]::ReadAllText((Join-Path $published 'index.toml'))
         Require ($index -notmatch '(?m)^file = "(options.txt|servers.dat)"') 'Packwiz indexed personal preferences.'
         Require ($index -match 'config/defaultoptions/options.txt' -and $index -match 'config/defaultoptions/servers.dat') 'First-run defaults must stay managed.'
-        $stdout = Join-Path $root "update-$generation.log"
-        $stderr = Join-Path $root "update-$generation.err"
-        $process = Start-Process -FilePath $java -ArgumentList @('-jar', "`"$bootstrap`"", '-g', '-s', 'client', "${url}pack.toml") `
-            -WorkingDirectory $game -PassThru -RedirectStandardOutput $stdout -RedirectStandardError $stderr
-        $handle = $process.Handle
-        $deadline = (Get-Date).AddMinutes(3)
-        while (-not $process.HasExited) {
-            if ((Get-Date) -gt $deadline) {
-                Stop-Process -Id $process.Id
-                throw 'Isolated automatic update timed out.'
-            }
-            if ($pending.Wait(100)) {
-                $context = $pending.Result
-                $relative = $context.Request.Url.AbsolutePath.TrimStart('/').Replace('/', '\')
-                $path = [IO.Path]::GetFullPath((Join-Path $published $relative))
-                if (-not $path.StartsWith($published + '\', [StringComparison]::OrdinalIgnoreCase) -or
-                        -not (Test-Path -LiteralPath $path -PathType Leaf)) {
-                    $context.Response.StatusCode = 404
-                } else {
-                    $bytes = [IO.File]::ReadAllBytes($path)
-                    $context.Response.ContentLength64 = $bytes.Length
-                    $context.Response.OutputStream.Write($bytes, 0, $bytes.Length)
-                }
-                $context.Response.Close()
-                $pending = $listener.GetContextAsync()
-            }
-        }
-        $process.WaitForExit()
-        if ($process.ExitCode -ne 0) {
-            throw ("Packwiz automatic update failed:`r`n" + [IO.File]::ReadAllText($stdout) +
-                [IO.File]::ReadAllText($stderr))
+        $update = Invoke-FixtureUpdate "update-$generation" ([ref]$pending)
+        if ($update.ExitCode -ne 0) {
+            throw ("Packwiz automatic update failed:`r`n" + $update.Log)
         }
         foreach ($path in $hashes.Keys) {
             Require ((Get-FileHash $path).Hash -ceq $hashes[$path]) "Automatic update replaced personal data: $path"
@@ -160,6 +193,6 @@ hash = "$hash"
         Require ((Test-Path -LiteralPath (Join-Path $game 'mods\grimac-fabric-fixture.jar')) -eq ($generation -eq 1)) 'Automatic update did not remove the previously managed GrimAC mod.'
         Require ((Test-Path -LiteralPath (Join-Path $game 'mods\jei-fabric-fixture.jar')) -eq ($generation -eq 1)) 'Automatic update did not remove previously managed JEI.'
     }
-    Write-Output 'PASS: two real headless Packwiz updates; previously managed JEI removed, managed defaults updated, personal options/server lists and player-added mod jars stayed byte-identical, root preference exclusions worked, and server-only mods were skipped.'
+    Write-Output 'PASS: a real Packwiz checksum failure, recovery and two headless updates; previously managed JEI removed, managed defaults updated, personal options/server lists and player-added mod jars stayed byte-identical, root preference exclusions worked, and server-only mods were skipped.'
 } finally { $listener.Stop(); $listener.Close() }
 Remove-Item -LiteralPath $root -Recurse
