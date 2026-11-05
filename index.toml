@@ -1516,7 +1516,7 @@ metafile = true
 
 [[files]]
 file = "mods/gangs-oux-badges-compat-direct.pw.toml"
-hash = "3fb35e6aa856de133fdca88bae12f63c5617fd33a39fad5995109f676f504e59"
+hash = "7bfc12a07a2d02f29e7802b664e796a449b5cffb3b786c8f02e6215854584764"
 metafile = true
 
 [[files]]

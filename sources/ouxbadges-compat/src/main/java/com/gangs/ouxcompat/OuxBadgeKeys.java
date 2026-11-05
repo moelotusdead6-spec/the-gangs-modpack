@@ -1,9 +1,15 @@
 package com.gangs.ouxcompat;
 
+import net.minecraft.text.Style;
+import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
+
 /** Oux Badges team names ({@code oux_badges_<key>}) and the glyphs its badge font maps them to. */
 public final class OuxBadgeKeys {
     public static final String TEAM_PREFIX = "oux_badges_";
     static final String[] KEYS = {"1_owner", "2_mod", "3_gang", "4_drifter"};
+    private static final String[] LABELS = {"Owner", "Mod", "Gang", "Drifter"};
+    private static final Identifier BADGE_FONT = new Identifier(CompatMixinPlugin.OUX_FONT_NAMESPACE, "badges");
     public static final int FIRST_GLYPH = 0xE000;
     /** Badge images taller than this are scaled down; the 256px font atlas cannot hold Oux's ~480px images. */
     public static final int MAX_GLYPH_HEIGHT = 64;
@@ -29,6 +35,23 @@ public final class OuxBadgeKeys {
 
     public static String glyph(int index) {
         return new String(Character.toChars(FIRST_GLYPH + index));
+    }
+
+    public static String label(int index) {
+        return LABELS[index];
+    }
+
+    public static Text glyphText(int index) {
+        return Text.literal(glyph(index)).setStyle(Style.EMPTY.withFont(BADGE_FONT));
+    }
+
+    public static String withoutLabelPrefix(String text, int index) {
+        String prefix = "[" + label(index) + "] ";
+        return text.startsWith(prefix) ? text.substring(prefix.length()) : text;
+    }
+
+    public static boolean matchesSenderName(String text, String profileName, String displayName) {
+        return text.contains(profileName) || displayName != null && !displayName.isEmpty() && text.contains(displayName);
     }
 
     public static boolean hasBadge(String text) {

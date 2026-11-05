@@ -18,6 +18,11 @@ public class OuxBadgeKeysTest {
         assertEquals(1, OuxBadgeKeys.priority("oux_badges_2_mod"));
         assertEquals(4, OuxBadgeKeys.priority("red"));
         assertEquals("\uE002", OuxBadgeKeys.glyph(2));
+        assertEquals("Owner", OuxBadgeKeys.label(0));
+        assertEquals("~Oux", OuxBadgeKeys.withoutLabelPrefix("[Owner] ~Oux", 0));
+        assertEquals("Oux_y", OuxBadgeKeys.withoutLabelPrefix("Oux_y", 0));
+        assertTrue(OuxBadgeKeys.matchesSenderName("[Owner] ~Oux", "Oux_y", "~Oux"));
+        assertFalse(OuxBadgeKeys.matchesSenderName("[Owner] ~Oux", "Oux_y", null));
         assertTrue(OuxBadgeKeys.hasBadge("<\uE000 Oux_y> hi"));
         assertFalse(OuxBadgeKeys.hasBadge("<[Owner] Oux_y> hi"));
     }

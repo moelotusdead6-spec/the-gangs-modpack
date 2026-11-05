@@ -9,11 +9,9 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableTextContent;
-import net.minecraft.util.Identifier;
 
 /** Puts the sender's Oux badge image in front of their name in player chat: {@code <[badge] Name> message}. */
 public final class ChatBadges {
-    private static final Identifier BADGE_FONT = new Identifier(CompatMixinPlugin.OUX_FONT_NAMESPACE, "badges");
     private static final Set<String> CHAT_KEYS = Set.of("chat.type.text", "chat.type.announcement", "chat.type.team.text");
 
     private ChatBadges() {
@@ -30,12 +28,12 @@ public final class ChatBadges {
             Team team = entry.getScoreboardTeam();
             int badge = OuxBadgeKeys.index(team == null ? null : team.getName());
             if (badge < 0) continue;
-            String name = entry.getProfile().getName();
             for (int i = 0; i < args.length; i++) {
-                if (args[i] instanceof Text sender && sender.getString().contains(name)) {
-                    MutableText display = Text.literal(OuxBadgeKeys.glyph(badge)).setStyle(Style.EMPTY.withFont(BADGE_FONT));
+                if (args[i] instanceof Text sender && isSender(sender, entry)) {
+                    MutableText display = OuxBadgeKeys.glyphText(badge).copy();
                     display.append(Text.literal(" ").setStyle(Style.EMPTY.withFont(Style.DEFAULT_FONT_ID)));
                     // Children inherit the badge font unless they name the default font, which would turn the name into boxes.
+                    String name = OuxBadgeKeys.withoutLabelPrefix(sender.getString(), badge);
                     display.append(Text.literal(name).setStyle(sender.getStyle().withFont(Style.DEFAULT_FONT_ID)));
                     args[i] = display;
                     MutableText result = Text.translatable(content.getKey(), args).setStyle(message.getStyle());
@@ -45,5 +43,11 @@ public final class ChatBadges {
             }
         }
         return message;
+    }
+
+    private static boolean isSender(Text sender, PlayerListEntry entry) {
+        Text displayName = entry.getDisplayName();
+        return OuxBadgeKeys.matchesSenderName(sender.getString(), entry.getProfile().getName(),
+            displayName == null ? null : displayName.getString());
     }
 }
