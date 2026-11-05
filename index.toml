@@ -1591,7 +1591,7 @@ metafile = true
 
 [[files]]
 file = "mods/journeymap-fabric-1.20.1-6.0.0-beta.5.pw.toml"
-hash = "155df11e67fecb9582a9f20ba726898f65a85ecf5755dbf12fc136dc35c797c1"
+hash = "03b4e7977b13be40206dc95f5a1b0114e619e71872cf1ec14cd2fc995506a263"
 metafile = true
 
 [[files]]

@@ -1,8 +1,8 @@
 # Safe mod updates (2026-11-05)
 
-38 client-and-server mods and 1 client-only mod (Cinematic Respawn 1.4.3)
+37 client-and-server mods and 1 client-only mod (Cinematic Respawn 1.4.3)
 received patch or minor updates, including Fabric API 0.92.12, Voice Chat 2.6.27, BCLib 3.0.17 / BetterEnd 4.0.13, Farmer's
-Delight Refabricated 2.5.7, JourneyMap 6.0.7, Moonlight 2.16.38, Balm 7.3.44,
+Delight Refabricated 2.5.7, Moonlight 2.16.38, Balm 7.3.44,
 Puzzles Lib 8.1.36, Oh The Biomes We've Gone 1.8.2 and the Moog's structure
 mods. `mods/*.pw.toml` lists the exact versions.
 
@@ -16,11 +16,13 @@ Held back on purpose:
   - Fabric Language Kotlin 1.14.2 and Soulslike Weaponry 1.4.10 need Fabric
     Loader 0.19.5. Soulslike Weaponry also needs Ranged Weapon API 2.3.
   - Hybrid Aquatic 1.7.4 needs the missing HAPI library.
+  - JourneyMap 6.0.7 changed the plugin loader that GoldClaim Map hooks,
+    so clients closed while loading. It was rolled back to 6.0.0-beta.5.
 
 Each new jar's dependencies and conflicts were checked against the whole
 pack. An isolated Fabric 1.20.1 server with the live server's exact 265 jars,
 plus the updates, started cleanly in 116 s. The live server was stopped, not
-`/reload`ed. The 38 old jars were moved to `backups/mod-updates-2026-11-05/`
+`/reload`ed. The 37 old jars were moved to `backups/mod-updates-2026-11-05/`
 and the new jars were installed. Rollback: stop the server, delete the new
 jars and move the backups back into `mods/`.
 
