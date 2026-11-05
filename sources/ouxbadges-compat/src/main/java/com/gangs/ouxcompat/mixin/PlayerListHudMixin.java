@@ -1,9 +1,12 @@
 package com.gangs.ouxcompat.mixin;
 
+import com.gangs.ouxcompat.ChatBadges;
 import com.gangs.ouxcompat.OuxBadgeKeys;
 import java.util.Comparator;
 import net.minecraft.client.gui.hud.PlayerListHud;
 import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.text.Text;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -24,5 +27,12 @@ public abstract class PlayerListHudMixin {
         ENTRY_ORDERING = Comparator.comparingInt((PlayerListEntry entry) ->
             OuxBadgeKeys.priority(entry.getScoreboardTeam() == null ? null : entry.getScoreboardTeam().getName()))
             .thenComparing(vanilla);
+    }
+
+    /** A custom tab display name (e.g. a nickname) is shown instead of the team prefix, so badge it here too. */
+    @Inject(method = "getPlayerName", at = @At("RETURN"), cancellable = true)
+    private void gangsOux$badgeDisplayName(PlayerListEntry entry, CallbackInfoReturnable<Text> callback) {
+        if (entry.getDisplayName() == null) return;
+        callback.setReturnValue(ChatBadges.decorateTabName(callback.getReturnValue(), entry));
     }
 }

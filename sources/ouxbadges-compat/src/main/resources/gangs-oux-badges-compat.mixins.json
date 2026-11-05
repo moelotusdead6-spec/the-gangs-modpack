@@ -4,6 +4,6 @@
   "package": "com.gangs.ouxcompat.mixin",
   "plugin": "com.gangs.ouxcompat.CompatMixinPlugin",
   "compatibilityLevel": "JAVA_17",
-  "client": ["BitmapFontLoaderMixin", "ChatHudMixin", "PlayerListHudMixin", "TeamPrefixMixin"],
+  "client": ["BitmapFontLoaderMixin", "ChatHudMixin", "MessageHandlerMixin", "PlayerListHudMixin", "TeamPrefixMixin"],
   "injectors": {"defaultRequire": 1}
 }

@@ -10,7 +10,7 @@ Drifter. Players cannot choose their own badge.
 
 - **Pack.** `mods/oux-badges-direct.pw.toml` is the original, unmodified
   CreativeMode jar (side both). `mods/gangs-oux-badges-compat-direct.pw.toml`
-  adds our client-only Gangs Oux Badges Compat 1.0.1
+  adds our client-only Gangs Oux Badges Compat 1.0.2
   (`sources/ouxbadges-compat`), and Rank Badges is removed. The compat mod
   contains no Oux code or assets. Oux 6.0.0 does not work properly on 1.20.1
   without it:
@@ -25,9 +25,11 @@ Drifter. Players cannot choose their own badge.
      sends badge keys before the client channel is registered. As a result,
      tab and name badges could fall back to text. The compat mod now renders
      badge-team prefixes directly from the scoreboard team, without depending
-     on that packet. It also decorates chat from the sender's team, matches
-     nickname display names, removes the existing text label and forces the
-     default font on the name so it does not render as boxes.
+     on that packet. It also badges player chat by sender UUID, including
+     Styled Chat's preformatted `<[Owner] ~Oux>` lines and nicknames, and
+     badges custom (nickname) tab-list names, which vanilla draws without the
+     team prefix. The text label is replaced by the glyph, and every other
+     part of the line keeps its original style.
   4. It keeps the Rank Badges tab order: Owner, Mod, Gang, Drifter.
 
   The compatibility plugin patches Oux's tab-list crash only when Oux is

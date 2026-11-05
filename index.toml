@@ -6,7 +6,7 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "c224aae8605a858f9c163c3a8a85be98dc26903afe62deba675a944ae0ab0572"
+hash = "4603b4a5e2aefadf6b56ff2b3103c342a2cda06ff5dedc83cce0962afadc8251"
 
 [[files]]
 file = "README.md"
@@ -1516,7 +1516,7 @@ metafile = true
 
 [[files]]
 file = "mods/gangs-oux-badges-compat-direct.pw.toml"
-hash = "7bfc12a07a2d02f29e7802b664e796a449b5cffb3b786c8f02e6215854584764"
+hash = "904eb8cfad34f012c8bd1bae076819449b45742a8476fc316966711e81f7d468"
 metafile = true
 
 [[files]]

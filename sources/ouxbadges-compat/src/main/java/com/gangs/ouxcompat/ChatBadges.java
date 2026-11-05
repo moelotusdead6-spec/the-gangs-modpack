@@ -1,53 +1,69 @@
 package com.gangs.ouxcompat;
 
-import java.util.Set;
+import java.util.List;
+import java.util.UUID;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.scoreboard.Team;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableTextContent;
 
-/** Puts the sender's Oux badge image in front of their name in player chat: {@code <[badge] Name> message}. */
+/**
+ * Shows the sender's Oux badge image in chat. Player chat carries the sender's UUID, so the badge comes from their
+ * scoreboard team whatever format the server uses (vanilla, Styled Chat's generic {@code %s} wrapper, nicknames).
+ */
 public final class ChatBadges {
-    private static final Set<String> CHAT_KEYS = Set.of("chat.type.text", "chat.type.announcement", "chat.type.team.text");
+    private static UUID pendingSender;
 
     private ChatBadges() {
     }
 
+    public static void beginPlayerMessage(UUID sender) {
+        pendingSender = sender;
+    }
+
+    public static void endPlayerMessage() {
+        pendingSender = null;
+    }
+
     public static Text decorate(Text message, MinecraftClient client) {
-        if (!(message.getContent() instanceof TranslatableTextContent content) || !CHAT_KEYS.contains(content.getKey())) {
-            return message;
-        }
+        UUID sender = pendingSender;
+        pendingSender = null;
         ClientPlayNetworkHandler network = client.getNetworkHandler();
-        if (network == null || OuxBadgeKeys.hasBadge(message.getString())) return message;
-        Object[] args = content.getArgs().clone();
+        if (network == null) return message;
+        if (sender != null) {
+            PlayerListEntry entry = network.getPlayerListEntry(sender);
+            int badge = entry == null ? -1 : badge(entry);
+            return badge < 0 ? message : BadgeText.apply(message, badge, names(entry), false);
+        }
+        // Messages without a sender (system/profileless): only swap an explicit "[Label]" in front of a badge holder's name.
+        String plain = message.getString();
         for (PlayerListEntry entry : network.getPlayerList()) {
-            Team team = entry.getScoreboardTeam();
-            int badge = OuxBadgeKeys.index(team == null ? null : team.getName());
+            int badge = badge(entry);
             if (badge < 0) continue;
-            for (int i = 0; i < args.length; i++) {
-                if (args[i] instanceof Text sender && isSender(sender, entry)) {
-                    MutableText display = OuxBadgeKeys.glyphText(badge).copy();
-                    display.append(Text.literal(" ").setStyle(Style.EMPTY.withFont(Style.DEFAULT_FONT_ID)));
-                    // Children inherit the badge font unless they name the default font, which would turn the name into boxes.
-                    String name = OuxBadgeKeys.withoutLabelPrefix(sender.getString(), badge);
-                    display.append(Text.literal(name).setStyle(sender.getStyle().withFont(Style.DEFAULT_FONT_ID)));
-                    args[i] = display;
-                    MutableText result = Text.translatable(content.getKey(), args).setStyle(message.getStyle());
-                    message.getSiblings().forEach(sibling -> result.append(sibling.copy()));
-                    return result;
+            String label = "[" + OuxBadgeKeys.label(badge) + "] ";
+            for (String name : names(entry)) {
+                if (name != null && !name.isEmpty() && plain.contains(label + name)) {
+                    return BadgeText.apply(message, badge, List.of(), true);
                 }
             }
         }
         return message;
     }
 
-    private static boolean isSender(Text sender, PlayerListEntry entry) {
-        Text displayName = entry.getDisplayName();
-        return OuxBadgeKeys.matchesSenderName(sender.getString(), entry.getProfile().getName(),
-            displayName == null ? null : displayName.getString());
+    public static Text decorateTabName(Text name, PlayerListEntry entry) {
+        int badge = badge(entry);
+        return badge < 0 ? name : BadgeText.apply(name, badge, List.of(), false, true);
+    }
+
+    static int badge(PlayerListEntry entry) {
+        Team team = entry.getScoreboardTeam();
+        return OuxBadgeKeys.index(team == null ? null : team.getName());
+    }
+
+    static List<String> names(PlayerListEntry entry) {
+        Text display = entry.getDisplayName();
+        String profile = entry.getProfile().getName();
+        return display == null ? List.of(profile) : List.of(display.getString(), profile);
     }
 }
