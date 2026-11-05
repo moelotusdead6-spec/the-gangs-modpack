@@ -1,13 +1,13 @@
 name = "1.0+1.20.1"
-filename = "structure_pool_api-1.0+1.20.1.jar"
+filename = "structure_pool_api-fabric-1.2.1+1.20.1.jar"
 side = "both"
 
 [download]
-url = "https://cdn.modrinth.com/data/LrYZi08Q/versions/Syp6lSTL/structure_pool_api-1.0%2B1.20.1.jar"
+url = "https://cdn.modrinth.com/data/LrYZi08Q/versions/y5a2WAp4/structure_pool_api-fabric-1.2.1%2B1.20.1.jar"
 hash-format = "sha512"
-hash = "1436abdff001eb90e86ca69601f022e97708878395964300d50c6afbbb63d4bca030e99062faeaed692cdbf3f7476cc6f422e039091b3d453008e3bcf98a8e71"
+hash = "8279b483b247c301118f43f3b2cb26c5195c8b930ca1ba3468c0a8c9c55ab4fabd76de22e154c2ddf07148adf487af214b86c06ea9105bc6f3adf18d14986dd2"
 
 [update]
 [update.modrinth]
 mod-id = "LrYZi08Q"
-version = "Syp6lSTL"
+version = "y5a2WAp4"

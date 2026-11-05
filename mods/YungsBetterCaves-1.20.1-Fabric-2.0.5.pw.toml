@@ -1,13 +1,13 @@
 name = "[1.20.1] v2.0.5 (Fabric)"
-filename = "YungsBetterCaves-1.20.1-Fabric-2.0.5.jar"
+filename = "YungsBetterCaves-1.20.1-Fabric-2.0.7.jar"
 side = "both"
 
 [download]
-url = "https://cdn.modrinth.com/data/Dfu00ggU/versions/bsjRT669/YungsBetterCaves-1.20.1-Fabric-2.0.5.jar"
+url = "https://cdn.modrinth.com/data/Dfu00ggU/versions/vIYfXCs1/YungsBetterCaves-1.20.1-Fabric-2.0.7.jar"
 hash-format = "sha512"
-hash = "db01f5c133c62c23f2a92ab83e19ea81682ff88b9625374865ad4f465fb1496bd6b11d3c3453fab1601765400d2a914150c2fb018b63e835d5358971bf5fafa3"
+hash = "16a91fe5b08af5b92c1fbd340e2a19a066ee699e3fc387228d3537ef191b28d12b8a4022acdaa7515e6cae154ef947a7ff8a3d1495584e7567f92b8fd8adaf1c"
 
 [update]
 [update.modrinth]
 mod-id = "Dfu00ggU"
-version = "bsjRT669"
+version = "vIYfXCs1"

@@ -1,3 +1,29 @@
+# Safe mod updates (2026-11-05)
+
+38 client-and-server mods and 1 client-only mod (Cinematic Respawn 1.4.3)
+received patch or minor updates, including Fabric API 0.92.12, Voice Chat 2.6.27, BCLib 3.0.17 / BetterEnd 4.0.13, Farmer's
+Delight Refabricated 2.5.7, JourneyMap 6.0.7, Moonlight 2.16.38, Balm 7.3.44,
+Puzzles Lib 8.1.36, Oh The Biomes We've Gone 1.8.2 and the Moog's structure
+mods. `mods/*.pw.toml` lists the exact versions.
+
+Held back on purpose:
+- Major or alpha releases: the Spell Engine family (Spell Engine,
+  Spell Power, Archers, Wizards, Paladins, Runes, Ranged Weapon API, Simply
+  Swords and its add-ons), AzureLib 3, Alex's Mobs 2.2, Friends & Foes 5,
+  Deeper Darker 2.0 alpha, Fisherman House 2, OpenBlocks 1.0 and
+  ThreadTweak, which is for 1.20.2.
+- Updates that cannot load with this pack:
+  - Fabric Language Kotlin 1.14.2 and Soulslike Weaponry 1.4.10 need Fabric
+    Loader 0.19.5. Soulslike Weaponry also needs Ranged Weapon API 2.3.
+  - Hybrid Aquatic 1.7.4 needs the missing HAPI library.
+
+Each new jar's dependencies and conflicts were checked against the whole
+pack. An isolated Fabric 1.20.1 server with the live server's exact 265 jars,
+plus the updates, started cleanly in 116 s. The live server was stopped, not
+`/reload`ed. The 38 old jars were moved to `backups/mod-updates-2026-11-05/`
+and the new jars were installed. Rollback: stop the server, delete the new
+jars and move the backups back into `mods/`.
+
 # Oux Badges replace Rank Badges (pending)
 
 Rank badges are now picture badges from **Oux Badges 6.0.0, made by oux_y
