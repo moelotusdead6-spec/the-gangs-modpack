@@ -6,7 +6,7 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "285d4ec845d488dd1318b3c66352e8eaac55b1afe59b2f6cc00293ebcaaf29a4"
+hash = "1f79963aa2dca9ccb9250b2fbd1f8e79f930108ea1b08c8265aa9df3d6f717d3"
 
 [[files]]
 file = "README.md"
@@ -1101,7 +1101,7 @@ metafile = true
 
 [[files]]
 file = "mods/alexscaves-direct.pw.toml"
-hash = "937fb4afe3edb86e438cd0769d5cafbee8ea61c3d6863f70bf635321d9047a5d"
+hash = "36768c7a96af8142c019373b5478ac6108405f0ea2dc38748a72be9fe473c588"
 metafile = true
 
 [[files]]
@@ -1515,6 +1515,11 @@ hash = "2ba74627329119476e6f4346ad5d4944d23466933336e16a2775ac7b1e61e1fc"
 metafile = true
 
 [[files]]
+file = "mods/gangs-oux-badges-compat-direct.pw.toml"
+hash = "3fb35e6aa856de133fdca88bae12f63c5617fd33a39fad5995109f676f504e59"
+metafile = true
+
+[[files]]
 file = "mods/gangsales-direct.pw.toml"
 hash = "3497cc81555ec33d9fc033d2c408b3b7c9dc2665566104bf1b1f2988754fd54c"
 metafile = true
@@ -1810,6 +1815,11 @@ hash = "9388d225a59524076cb42c542e97e64f1cb69ef98e76d0f25cf6ca88074a1d71"
 metafile = true
 
 [[files]]
+file = "mods/oux-badges-direct.pw.toml"
+hash = "08ec8142d4e7596c75c525dc345d5f6cafe8be0f1bf005aded603d3162d2b15c"
+metafile = true
+
+[[files]]
 file = "mods/owo-lib-0.11.2_1.20.pw.toml"
 hash = "d48b7e82e21bd1e152f9aea979a3dd09b26636bfb73e7c9b7c7b73371e9c0f5a"
 metafile = true
@@ -1872,11 +1882,6 @@ metafile = true
 [[files]]
 file = "mods/ranged-weapon-api-direct.pw.toml"
 hash = "8cba7c6532745447f98d5bdccd739e15f6a57821ffb7a63e4e4b01320853936f"
-metafile = true
-
-[[files]]
-file = "mods/rankbadges-direct.pw.toml"
-hash = "97dae001ac4c481e4b825dbcc7bdf90c0d6a074060874bd770d55d7ee76fc820"
 metafile = true
 
 [[files]]

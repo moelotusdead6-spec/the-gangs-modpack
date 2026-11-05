@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "gangs-oux-badges-compat",
+  "version": "${version}",
+  "name": "Gangs Oux Badges Compat",
+  "description": "Client compatibility fixes for Oux Badges 6.0.0 (by oux_y using CreativeMode.net) on Minecraft 1.20.1: tab-list crash, oversized badge images, badges in player chat and tab order by rank. Contains no Oux Badges code or assets.",
+  "authors": [
+    "Prof_it",
+    "GitHub Copilot"
+  ],
+  "license": "CC-BY-4.0",
+  "environment": "client",
+  "mixins": ["gangs-oux-badges-compat.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.15.11",
+    "minecraft": "~1.20.1",
+    "java": ">=17",
+    "oux-badges-hiec7dbm": "*"
+  },
+  "breaks": {
+    "rankbadges": "*"
+  }
+}

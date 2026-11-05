@@ -1,5 +1,7 @@
 package com.elysium.goldclaim;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -19,8 +21,6 @@ import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,21 +31,37 @@ final class RankService {
     private static LuckPerms permissions;
     private static boolean migrated;
     private static int ticks;
+    private static Method ouxRefresh;
+    private static boolean ouxUnavailable;
 
+    static final String BADGE_PERMISSION_PREFIX = "oux.badges.";
+    static final String BADGE_TEAM_PREFIX = "oux_badges_";
+    // Teams from GoldClaim <= 1.0.65, Rank Badges and the gangs_hub datapack; Oux Badges now owns rank teams.
+    static final List<String> LEGACY_TEAMS = List.of("00_owner", "01_mod", "02_gang", "03_drifters",
+        "owner", "rankbadges_owner", "mod", "rankbadges_mod", "player", "rankbadges_player");
+
+    /**
+     * Ranks are shown by Oux Badges (config/oux-badges.json). Each badge key starts with its tab position
+     * because vanilla sorts the player list by team name, and Oux Badges names teams oux_badges_&lt;key&gt;.
+     */
     enum Rank {
-        OWNER("00_owner", "OWNER", Formatting.BLUE),
-        MOD("01_mod", "MOD", Formatting.GREEN),
-        GANG("02_gang", "Gang", Formatting.GOLD),
-        DRIFTERS("03_drifters", "Drifters", Formatting.GRAY);
+        OWNER("1_owner"),
+        MOD("2_mod"),
+        GANG("3_gang"),
+        DRIFTERS("4_drifter");
 
-        final String team;
-        final String label;
-        final Formatting color;
+        final String badge;
 
-        Rank(String team, String label, Formatting color) {
-            this.team = team;
-            this.label = label;
-            this.color = color;
+        Rank(String badge) {
+            this.badge = badge;
+        }
+
+        String permission() {
+            return BADGE_PERMISSION_PREFIX + badge;
+        }
+
+        String team() {
+            return BADGE_TEAM_PREFIX + badge;
         }
     }
 
@@ -55,7 +71,7 @@ final class RankService {
             try {
                 permissions = LuckPermsProvider.get();
             } catch (IllegalStateException | NoClassDefFoundError unavailable) {
-                LOGGER.error("LuckPerms unavailable: rank-group migration cannot run. Tab labels still use the configured roster.", unavailable);
+                LOGGER.error("LuckPerms unavailable: rank-group migration cannot run and Oux Badges cannot show ranks.", unavailable);
                 return;
             }
             LuckPerms api = permissions;
@@ -109,24 +125,45 @@ final class RankService {
         }
         Rank rank = rank(player.getGameProfile().getName(), groups.contains("owner"),
             groups.contains("mod") || groups.contains("moderator") || player.hasPermissionLevel(2));
-        Scoreboard scoreboard = server.getScoreboard();
-        Team team = scoreboard.getTeam(rank.team);
-        if (team == null) team = scoreboard.addTeam(rank.team);
-        Text prefix = Text.literal("[" + rank.label + "] ").formatted(rank.color);
-        if (!team.getPrefix().equals(prefix)) team.setPrefix(prefix);
-        if (team.getColor() != rank.color) team.setColor(rank.color);
-        if (!team.isFriendlyFireAllowed()) team.setFriendlyFireAllowed(true);
-        if (scoreboard.getPlayerTeam(player.getEntityName()) != team) {
-            scoreboard.addPlayerToTeam(player.getEntityName(), team);
+        // Oux Badges re-checks every 5 seconds; refresh now so a new or changed rank shows immediately.
+        if (user != null && grantBadge(user, rank)) refreshBadge(player);
+    }
+
+    /** Gives the user exactly one rank badge permission, held only in memory and never saved. */
+    static boolean grantBadge(PermissionHolder holder, Rank rank) {
+        boolean changed = false;
+        for (Node node : new ArrayList<>(holder.transientData().toCollection())) {
+            if (node.getKey().startsWith(BADGE_PERMISSION_PREFIX) && !node.getKey().equals(rank.permission())) {
+                changed |= holder.transientData().remove(node).wasSuccessful();
+            }
+        }
+        changed |= holder.transientData().add(Node.builder(rank.permission()).build()).wasSuccessful();
+        return changed;
+    }
+
+    private static void refreshBadge(ServerPlayerEntity player) {
+        if (ouxUnavailable) return;
+        try {
+            if (ouxRefresh == null) {
+                ouxRefresh = Class.forName("oux_badges_hiec7dbm.BadgeRuntime")
+                    .getMethod("refreshPlayer", ServerPlayerEntity.class, Logger.class);
+            }
+            ouxRefresh.invoke(null, player, LOGGER);
+        } catch (InvocationTargetException failure) {
+            LOGGER.error("Oux Badges could not refresh the badge for {}", player.getGameProfile().getName(), failure.getCause());
+        } catch (ReflectiveOperationException | LinkageError missing) {
+            ouxUnavailable = true;
+            LOGGER.warn("Oux Badges is not installed; rank badges will not be shown.", missing);
         }
     }
 
     private static void refresh(MinecraftServer server) {
+        removeLegacyTeams(server.getScoreboard());
         for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) apply(player, server);
     }
 
     private static void removeLegacyTeams(Scoreboard scoreboard) {
-        for (String name : List.of("owner", "rankbadges_owner", "mod", "player", "rankbadges_player")) {
+        for (String name : LEGACY_TEAMS) {
             Team team = scoreboard.getTeam(name);
             if (team != null) scoreboard.removeTeam(team);
         }

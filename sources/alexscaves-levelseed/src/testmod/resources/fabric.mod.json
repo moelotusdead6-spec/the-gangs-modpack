@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "alexscaves_levelseed_smoke",
+  "version": "1.0.0",
+  "environment": "server",
+  "entrypoints": {
+    "main": ["com.github.alexmodguy.alexscaves.gangs.smoke.LevelSeedSmokeTest"]
+  },
+  "depends": {
+    "alexscaves": "*",
+    "multiworld": "*",
+    "fabric-api": "*"
+  }
+}

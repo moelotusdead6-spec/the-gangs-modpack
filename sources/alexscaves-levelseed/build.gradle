@@ -1,0 +1,97 @@
+plugins {
+    id 'fabric-loom' version '1.10-SNAPSHOT'
+}
+
+// Targeted fix for Alex's Caves 2.1.8: cave-biome placement and cave maps use each level's own
+// seed and dimension instead of the last value written to a biome source shared between levels.
+version = '2.1.8-gangs-levelseed'
+group = 'com.github.alexscaves'
+
+def baseJar = file('../../artifacts/alexscaves-2.1.8.jar')
+def baseSha256 = 'bf0065bbe70b143fafbd7340b1938a99aaefe3ad8236b22ac6aacf277c0b2b4f'
+def patchedClasses = [
+    'com/github/alexmodguy/alexscaves/server/level/biome/ACBiomeRarity*.class',
+    'com/github/alexmodguy/alexscaves/mixin/MultiNoiseBiomeSourceMixin*.class',
+    'com/github/alexmodguy/alexscaves/mixin/ChunkStatusMixin*.class',
+    'com/github/alexmodguy/alexscaves/server/level/map/CaveBiomeMapWorldWorker*.class'
+]
+
+repositories {
+    maven { url 'https://maven.fabricmc.net/' }
+}
+
+dependencies {
+    minecraft 'com.mojang:minecraft:1.20.1'
+    mappings loom.officialMojangMappings()
+    modImplementation 'net.fabricmc:fabric-loader:0.16.14'
+    modImplementation files(baseJar)
+    compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 17
+}
+
+sourceSets {
+    testmod {
+        compileClasspath += sourceSets.main.compileClasspath
+    }
+}
+
+dependencies {
+    modCompileOnly 'net.fabricmc.fabric-api:fabric-api:0.92.11+1.20.1'
+}
+
+// Server smoke test: drop the remapped jar, the Alex's Caves jar under test, Multiworld and Fabric API
+// into a disposable Fabric server; it writes levelseed-smoke-result.txt and halts.
+tasks.register('smokeJar', Jar) {
+    archiveBaseName = 'alexscaves-levelseed-smoke'
+    archiveVersion = '1.0.0'
+    from sourceSets.testmod.output
+}
+
+tasks.register('remapSmokeJar', net.fabricmc.loom.task.RemapJarTask) {
+    dependsOn tasks.named('smokeJar')
+    inputFile = tasks.named('smokeJar').flatMap { it.archiveFile }
+    archiveBaseName = 'alexscaves-levelseed-smoke'
+    archiveVersion = '1.0.0'
+    archiveClassifier = 'production'
+}
+
+tasks.register('verifyBase') {
+    doLast {
+        def hash = java.security.MessageDigest.getInstance('SHA-256').digest(baseJar.bytes).encodeHex().toString()
+        if (hash != baseSha256) {
+            throw new GradleException("Alex's Caves base jar differs from the tested artifact.")
+        }
+    }
+}
+
+// The original refmap stays: the patched mixins keep their exact injection targets.
+tasks.register('patchedJar', Zip) {
+    dependsOn remapJar, verifyBase
+    archiveFileName = 'alexscaves-2.1.8-gangs-levelseed.jar'
+    destinationDirectory = file('../../artifacts')
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+    from(zipTree(baseJar)) {
+        exclude patchedClasses
+    }
+    from(remapJar.archiveFile.map { zipTree(it) }) {
+        include patchedClasses
+    }
+}
+
+tasks.register('patchedSources', Zip) {
+    archiveFileName = 'alexscaves-fabric-2.1.8-levelseed-source.zip'
+    destinationDirectory = file('..')
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+    from(zipTree('../alexscaves-fabric-2.1.8-source.zip')) {
+        exclude patchedClasses.collect { 'src/main/java/' + it.replace('*.class', '.java') }
+    }
+    into('src/main/java') {
+        from 'src/main/java'
+    }
+}

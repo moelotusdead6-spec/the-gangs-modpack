@@ -19,11 +19,11 @@ public class RankServiceTest {
     }
 
     @Test
-    public void teamNamesSortInExactRankOrder() {
-        assertEquals(List.of("00_owner", "01_mod", "02_gang", "03_drifters"),
-            java.util.Arrays.stream(RankService.Rank.values()).map(rank -> rank.team).sorted().toList());
-        assertEquals(net.minecraft.util.Formatting.GRAY, RankService.Rank.DRIFTERS.color);
-        assertEquals(net.minecraft.util.Formatting.GOLD, RankService.Rank.GANG.color);
+    public void badgeTeamsSortInExactRankOrder() {
+        List<String> teams = java.util.Arrays.stream(RankService.Rank.values()).map(RankService.Rank::team).toList();
+        assertEquals(List.of("oux_badges_1_owner", "oux_badges_2_mod", "oux_badges_3_gang", "oux_badges_4_drifter"), teams);
+        assertEquals(teams, teams.stream().sorted().toList());
+        assertEquals("oux.badges.4_drifter", RankService.Rank.DRIFTERS.permission());
     }
 
     @Test

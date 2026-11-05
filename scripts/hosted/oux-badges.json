@@ -1,0 +1,64 @@
+{
+  "format": "[{badge}] ",
+  "animationIntervalTicks": 20,
+  "priority": [
+    "1_owner",
+    "2_mod",
+    "3_gang",
+    "4_drifter"
+  ],
+  "badges": [
+    {
+      "key": "1_owner",
+      "label": "Owner",
+      "color": "#F6C344",
+      "alternateColor": "#4169E1",
+      "animate": true,
+      "bold": true,
+      "italic": false,
+      "groups": [],
+      "permissions": [
+        "oux.badges.1_owner"
+      ]
+    },
+    {
+      "key": "2_mod",
+      "label": "Mod",
+      "color": "#18A86B",
+      "alternateColor": "#B8F5A8",
+      "animate": false,
+      "bold": true,
+      "italic": false,
+      "groups": [],
+      "permissions": [
+        "oux.badges.2_mod"
+      ]
+    },
+    {
+      "key": "3_gang",
+      "label": "Gang",
+      "color": "#8A43B8",
+      "alternateColor": "#E34BC7",
+      "animate": false,
+      "bold": true,
+      "italic": false,
+      "groups": [],
+      "permissions": [
+        "oux.badges.3_gang"
+      ]
+    },
+    {
+      "key": "4_drifter",
+      "label": "Drifter",
+      "color": "#E7C546",
+      "alternateColor": "#B88752",
+      "animate": false,
+      "bold": true,
+      "italic": false,
+      "groups": [],
+      "permissions": [
+        "oux.badges.4_drifter"
+      ]
+    }
+  ]
+}

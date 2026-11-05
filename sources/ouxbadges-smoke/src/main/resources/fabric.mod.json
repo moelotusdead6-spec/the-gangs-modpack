@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "ouxbadges_smoke",
+  "version": "1.0.0",
+  "name": "Oux Badges rank smoke test",
+  "environment": "server",
+  "entrypoints": {
+    "main": ["com.gangs.ouxbadges.smoke.OuxBadgesSmokeTest"]
+  },
+  "depends": {
+    "fabric-api": "*",
+    "goldclaim": "*",
+    "oux-badges-hiec7dbm": "*",
+    "luckperms": "*"
+  }
+}

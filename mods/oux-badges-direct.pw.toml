@@ -1,0 +1,8 @@
+name = "Oux Badges"
+filename = "oux-badges-hiec7dbm.jar"
+side = "both"
+
+[download]
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/oux-badges-hiec7dbm.jar"
+hash-format = "sha256"
+hash = "7f48bbfac7ab4f3340271ba66806e21ac21b8674bb8ed77162e8b74fc3f3c810"

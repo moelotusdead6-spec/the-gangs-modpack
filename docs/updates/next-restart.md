@@ -1,3 +1,54 @@
+# Oux Badges replace Rank Badges (pending)
+
+Rank badges are now picture badges from **Oux Badges 6.0.0, made by oux_y
+using [CreativeMode.net](https://creativemode.net)**
+([mod page](https://creativemode.net/mod/oux-badges-hiec7dbm),
+[license](https://creativemode.net/mod-license)). They show in chat, the tab
+list and above heads. GoldClaim 1.0.66 still decides ranks automatically:
+Oux_y is Owner, moderators are Mod, the OG roster is Gang and everyone else is
+Drifter. Players cannot choose their own badge.
+
+- **Pack.** `mods/oux-badges-direct.pw.toml` is the original, unmodified
+  CreativeMode jar (side both). `mods/gangs-oux-badges-compat-direct.pw.toml`
+  adds our client-only Gangs Oux Badges Compat 1.0.0
+  (`sources/ouxbadges-compat`), and Rank Badges is removed. The compat mod
+  contains no Oux code or assets. Oux 6.0.0 does not work properly on 1.20.1
+  without it:
+  1. Its tab-list mixin targets `drawText(..., boolean)`, but
+     `PlayerListHud.render` calls `drawTextWithShadow`, so opening the game
+     crashed. The compat mixin plugin rewrites that call to the equivalent
+     `drawText(..., true)` before Oux's mixin applies.
+  2. Its badge images are about 480x200, which is too large for the font
+     atlas, so they showed as empty boxes. They are scaled to 64 px high
+     while loading.
+  3. Oux only decorates the one-argument `ChatHud.addMessage`, and its server
+     sends badge keys before the client channel is registered. As a result,
+     chat never showed badges. The compat mod decorates player chat from the
+     sender's `oux_badges_<key>` team, and forces the default font on the
+     name so it does not render as boxes.
+  4. It keeps the Rank Badges tab order: Owner, Mod, Gang, Drifter.
+
+  The compat mod only patches the tab list when Oux is exactly version
+  6.0.0. Verified in a local client with the original jar: the tab list,
+  name tags and chat all show the image badges.
+- **Server.** `artifacts/gangs-oux-badges-restart-1.0.72.jar` (SHA-256
+  `befda734de424031052c8172df52479c126c45116591265100d795884cbe2a6d`).
+  Upload it next to the other launchers and select it as the server jar.
+  Never `/reload`. While the world lock is free, it:
+  - replaces GoldClaim 1.0.64 or 1.0.65 with 1.0.66,
+  - removes `mods/rankbadges-1.0.3.jar`,
+  - installs `mods/oux-badges-hiec7dbm.jar` and `config/oux-badges.json`,
+  - saves the originals in `backups/oux-badges-restart-1.0.72/`.
+
+  It then hands off to `gangs-alex-map-seed-restart-1.0.71.jar`, which
+  continues through the alex-boss, passive-spawn and Mimicream launchers. If
+  a check fails, nothing is changed and the server starts normally. Source,
+  tests and build script: `scripts/hosted/OuxBadgesRestart*.java` and
+  `scripts/hosted/Build-OuxBadgesRestart.ps1`.
+- **Rollback.** Stop the server. Delete `mods/oux-badges-hiec7dbm.jar` and
+  `mods/goldclaim-1.0.66.jar`, copy the jars from the backup folder back into
+  `mods/`, and select the previous launcher.
+
 # Passive Wildlife and vanilla animal spawns (2026-11-03)
 
 - Wildlife hamsters and capybaras now use weight 12 instead of 4, a 100%
@@ -39,6 +90,89 @@ or the files rewritten by the mods. A failed check is logged and the launcher
 continues to the Mimicream update. Source, tests and build script:
 `scripts/hosted/PassiveSpawnRestart*.java` and
 `scripts/hosted/Build-PassiveSpawnRestart.ps1`.
+
+# Alex's Caves cave maps and cave biomes in RSW and the overworld (pending)
+
+Alex's Caves 2.1.8-gangs-levelseed
+(`artifacts/alexscaves-2.1.8-gangs-levelseed.jar`, SHA-256
+`ec1606e1efdf43f635cf0e74a559a229e133a9f90f85c64119a9027ff421ceeb`).
+Clients get it through packwiz. The server change is not live yet.
+
+- **Cause.** Alex's Caves stores the world seed and dimension it uses to
+  place cave biomes on the biome source object. GoldClaim creates
+  `multiworld:rsw` with Multiworld's `NORMAL` generator, and that generator
+  is the overworld's own chunk generator. So the overworld and RSW share one
+  biome source, even though RSW has its own random seed. Each chunk generated
+  in either level overwrote the stored seed. With the RSW pregenerator and
+  C2ME's threaded generation, this happens constantly. The cave-map search
+  then used whichever seed was stored at that moment. Maps failed, or pointed
+  where the other level would have the biome. Chunks generated while the
+  wrong seed was stored also got cave biomes in the wrong places. The shared
+  Voronoi generator used by the cave biome layout was also unsafe across
+  threads.
+- **Fix.** The biome source now uses the seed and dimension of the level
+  whose climate sampler asks for the biome. Levels are registered when they
+  generate chunks and when a cave map starts searching. The old shared
+  values remain only as a fallback for unknown samplers. Each lookup also
+  uses its own Voronoi generator. Changed classes: `ACBiomeRarity`,
+  `MultiNoiseBiomeSourceMixin`, `ChunkStatusMixin` and
+  `CaveBiomeMapWorldWorker`. Everything else in the jar is byte-identical to
+  `alexscaves-2.1.8.jar`, and the original mixin refmap is kept because the
+  injection targets did not change. Nether and End maps still do not work;
+  Alex's Caves only places its biomes in the configured overworld-type
+  levels.
+- **Existing terrain is not regenerated.** Chunks that were already
+  generated keep their current biomes. Overworld areas that were generated
+  while RSW's seed was stored may still disagree with new maps. RSW is
+  generated again on its daily reset, so it is fully consistent after the
+  first reset that follows the restart.
+- **Validation.** A disposable Fabric server ran Multiworld, Fabric API and
+  a smoke test mod (`sources/alexscaves-levelseed/src/testmod`). The test
+  creates `multiworld:rsw` the way GoldClaim does, with a different seed.
+  It checks every rare cave-biome sample in a ±4096-block grid for both
+  levels, with the shared state set to each level in turn. It also runs a
+  real cave-map search in each level with the shared state flipped to the
+  other level, then generates the target chunk. With the original jar: 548
+  overworld and 692 RSW samples changed, and both maps pointed at
+  `snowy_plains` and `taiga`. With the patched jar: 0 changed samples, and
+  the maps found `candy_cavity` in the overworld and `primordial_caves` in
+  RSW at their real locations. The full launcher chain below was also run on
+  that server: it swapped the jar, kept the backup, handed off through every
+  pending launcher and the smoke test passed.
+- **Source.** LGPL corresponding source:
+  `sources/alexscaves-fabric-2.1.8-levelseed-source.zip`. Build with
+  `sources\goldclaim\gradlew.bat -p sources\alexscaves-levelseed patchedJar patchedSources`.
+  The published 2.1.8 source uses `net.minecraftforge` shim packages, but
+  the jar uses the relocated `com.github.alexmodguy.alexscaves.forge_shim`
+  packages. The patched `CaveBiomeMapWorldWorker` imports the relocated one
+  so that it matches the jar.
+
+## Deployment (not done yet)
+
+`artifacts/gangs-alex-map-seed-restart-1.0.71.jar` (SHA-256
+`b42f1dd8616d1b992ded7f5d399e586f8bc443edbe8f6547a84c9a27266b87b3`).
+Upload it next to the other launchers and select it as the panel's server
+jar; the live server must not be `/reload`ed. On the next normal start,
+while the world lock is free, it:
+
+1. checks `mods/alexscaves-2.1.8.jar` against SHA-256
+   `bf0065bbe70b143fafbd7340b1938a99aaefe3ad8236b22ac6aacf277c0b2b4f`,
+2. refuses to run if any other `alexscaves-<version>` jar is present,
+3. saves the original in `backups/alex-map-seed-restart-1.0.71/`, and
+4. installs the patched jar and verifies it by hash.
+
+It then hands off to `gangs-alex-boss-restart-1.0.70.jar`, which continues
+to the passive-spawn and Mimicream launchers. A failed check is logged and
+the server starts normally with the original jar. Source, tests and build
+script: `scripts/hosted/AlexMapSeedRestart*.java` and
+`scripts/hosted/Build-AlexMapSeedRestart.ps1`.
+
+Rollback: stop the server and delete
+`mods/alexscaves-2.1.8-gangs-levelseed.jar`. Copy
+`backups/alex-map-seed-restart-1.0.71/mods/alexscaves-2.1.8.jar` back into
+`mods/` and select the previous launcher. On the pack side, point
+`mods/alexscaves-direct.pw.toml` back at `alexscaves-2.1.8.jar` and its hash,
+then run `packwiz refresh`.
 
 # Alex's Caves bosses can never change blocks; boss health retuned (2026-11-03)
 

@@ -1,0 +1,9 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.gangs.ouxcompat.mixin",
+  "plugin": "com.gangs.ouxcompat.CompatMixinPlugin",
+  "compatibilityLevel": "JAVA_17",
+  "client": ["BitmapFontLoaderMixin", "ChatHudMixin", "PlayerListHudMixin"],
+  "injectors": {"defaultRequire": 1}
+}
