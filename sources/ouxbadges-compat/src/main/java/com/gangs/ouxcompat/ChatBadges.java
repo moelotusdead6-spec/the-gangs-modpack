@@ -36,23 +36,31 @@ public final class ChatBadges {
             int badge = entry == null ? -1 : badge(entry);
             return badge < 0 ? message : BadgeText.apply(message, badge, names(entry), false);
         }
-        // Messages without a sender (system/profileless): only swap an explicit "[Label]" in front of a badge holder's name.
-        String plain = message.getString();
         for (PlayerListEntry entry : network.getPlayerList()) {
             int badge = badge(entry);
             if (badge < 0) continue;
-            String label = "[" + OuxBadgeKeys.label(badge) + "] ";
-            for (String name : names(entry)) {
-                if (name != null && !name.isEmpty() && plain.contains(label + name)) {
-                    return BadgeText.apply(message, badge, List.of(), true);
-                }
-            }
+            Text display = entry.getDisplayName();
+            Text decorated = SystemBadges.decorate(message, badge, entry.getProfile().getName(),
+                display == null ? null : display.getString());
+            if (decorated != message) return decorated;
         }
         return message;
     }
 
     public static Text decorateTabName(Text name, PlayerListEntry entry) {
-        int badge = badge(entry);
+        return decorateRank(name, badge(entry));
+    }
+
+    public static Text decorateNameplate(Text original, PlayerListEntry entry) {
+        if (entry == null || entry.getDisplayName() == null) return original;
+        return nameplate(original, entry.getDisplayName(), badge(entry));
+    }
+
+    static Text nameplate(Text original, Text display, int badge) {
+        return display == null ? original : decorateRank(display, badge);
+    }
+
+    private static Text decorateRank(Text name, int badge) {
         return badge < 0 ? name : BadgeText.apply(name, badge, List.of(), false, true);
     }
 

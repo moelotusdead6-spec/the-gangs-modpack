@@ -3,7 +3,7 @@
   "id": "gangs-oux-badges-compat",
   "version": "${version}",
   "name": "Gangs Oux Badges Compat",
-  "description": "Client compatibility fixes for Oux Badges 6.0.0 (by oux_y using CreativeMode.net) on Minecraft 1.20.1: tab-list crash, oversized badge images, scoreboard badge rendering, nickname-aware chat badges and tab order by rank. Contains no Oux Badges code or assets.",
+  "description": "Client compatibility fixes for Oux Badges 6.0.0 (by oux_y using CreativeMode.net) on Minecraft 1.20.1: tab-list crash, oversized badge images, scoreboard badges, nickname-aware chat, AFK and nameplates, and tab order by rank. Contains no Oux Badges code or assets.",
   "authors": [
     "Prof_it",
     "GitHub Copilot"

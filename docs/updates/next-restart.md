@@ -1,3 +1,17 @@
+# AFK badges and nickname nameplates (client update 1.1.24)
+
+Gangs Oux Badges Compat 1.0.3 replaces the rank label in Essential Commands'
+AFK and return announcements with the correct badge, including when a player
+has a nickname or their tab entry still has the AFK prefix. Above players'
+heads, it uses the nickname already sent in the player list while preserving
+the badge and Minecraft's normal nameplate visibility rules.
+
+This is a client-only update: players receive it on their next Packwiz-enabled
+launch. The live server does not need a restart or `/reload`. Essential
+Commands' `nickname_above_head` remains disabled: that option changes the
+client's account-name field and truncates it to 16 characters, which can
+interfere with scoreboard-based badges.
+
 # Client launch fix (2026-11-05)
 
 Polymorph 0.49.11's crafting mixin uses an `@Redirect` annotation format that
@@ -53,7 +67,7 @@ Drifter. Players cannot choose their own badge.
 
 - **Pack.** `mods/oux-badges-direct.pw.toml` is the original, unmodified
   CreativeMode jar (side both). `mods/gangs-oux-badges-compat-direct.pw.toml`
-  adds our client-only Gangs Oux Badges Compat 1.0.2
+  adds our client-only Gangs Oux Badges Compat 1.0.3
   (`sources/ouxbadges-compat`), and Rank Badges is removed. The compat mod
   contains no Oux code or assets. Oux 6.0.0 does not work properly on 1.20.1
   without it:

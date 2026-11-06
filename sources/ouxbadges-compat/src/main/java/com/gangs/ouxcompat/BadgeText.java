@@ -25,6 +25,15 @@ public final class BadgeText {
 
     /** As above; with {@code prepend}, a text with neither label nor name gets the glyph at the start. */
     public static Text apply(Text text, int badge, List<String> names, boolean requireLabel, boolean prepend) {
+        return apply(text, badge, names, requireLabel, prepend, -1);
+    }
+
+    static Text replaceLabelAt(Text text, int badge, int labelAt) {
+        return apply(text, badge, List.of(), true, false, labelAt);
+    }
+
+    private static Text apply(Text text, int badge, List<String> names, boolean requireLabel, boolean prepend,
+            int labelAt) {
         List<Segment> segments = new ArrayList<>();
         StringBuilder full = new StringBuilder();
         text.visit((style, part) -> {
@@ -36,7 +45,8 @@ public final class BadgeText {
         if (OuxBadgeKeys.hasBadge(plain)) return text;
 
         String label = "[" + OuxBadgeKeys.label(badge) + "]";
-        int at = plain.indexOf(label);
+        int at = labelAt >= 0 ? labelAt : plain.indexOf(label);
+        if (labelAt >= 0 && !plain.startsWith(label, labelAt)) return text;
         int removeEnd = at;
         boolean addSpace = false;
         if (at >= 0) {

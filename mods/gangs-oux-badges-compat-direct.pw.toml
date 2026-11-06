@@ -1,8 +1,8 @@
 name = "Gangs Oux Badges Compat"
-filename = "gangs-oux-badges-compat-1.0.2.jar"
+filename = "gangs-oux-badges-compat-1.0.3.jar"
 side = "client"
 
 [download]
-url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/gangs-oux-badges-compat-1.0.2.jar"
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/gangs-oux-badges-compat-1.0.3.jar"
 hash-format = "sha256"
-hash = "6df71ec3f2f9c87e8ee262f4ee22870537571cbf44c5517a3e4564e27347f54d"
+hash = "685b134791e1fa371e8c0fc19b3575f706a1f30bb7e7b3b09052c56ff43e0a31"
