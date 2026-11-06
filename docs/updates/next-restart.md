@@ -1,15 +1,16 @@
 # Client launch fix (2026-11-05)
 
-The client startup crash in `FactoryRedirectWrapperMixinTransformer` was
-caused by Fabric Loader 0.19.3 bundling MixinExtras 0.5.4. MixinExtras 0.5.5
-fixes its incompatibility with `@Redirect` annotations compiled against Fabric
-Mixin 0.17.4. The pack now pins Fabric Loader 0.19.5, which bundles Mixin
-0.17.4 and MixinExtras 0.5.5.
+Polymorph 0.49.11's crafting mixin uses an `@Redirect` annotation format that
+crashes MixinExtras 0.5.4, which is bundled with Fabric Loader 0.19.3. The
+pack now installs the unmodified MixinExtras 0.5.5 Fabric jar from Maven
+Central as a client-only mod. Fabric selects it instead of the older bundled
+copy; it fixes the crash even if the current launch still uses Loader 0.19.3.
 
-Packwiz updates mods but does not update the Fabric Loader component in an
-existing Prism instance. Close the game, edit the instance's Version settings,
-and set Fabric Loader to 0.19.5, then launch again. This is a client-side
-loader fix; the running server does not need a restart.
+Players with Packwiz automatic updates enabled only need to launch the pack
+again. The headless updater also updates Prism's saved Fabric Loader component
+to the pack's 0.19.5 pin. The managed MixinExtras jar fixes launches still
+using 0.19.3, so a separate manual loader change is unnecessary. No server
+restart is needed.
 
 # Safe mod updates (2026-11-05)
 

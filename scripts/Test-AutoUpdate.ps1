@@ -64,6 +64,20 @@ hash-format = "sha256"
 hash = "$hash"
 "@
     }
+    $mixinName = 'mixinextras-fabric-0.5.5.jar'
+    $mixinMetadata = [IO.File]::ReadAllText((Join-Path $repo 'mods\mixinextras-fabric-direct.pw.toml'))
+    Require ($mixinMetadata -match '(?m)^filename = "mixinextras-fabric-0\.5\.5\.jar"\r?$' -and
+        $mixinMetadata -match '(?m)^side = "client"\r?$' -and
+        $mixinMetadata -match '(?m)^hash-format = "sha512"\r?$') 'MixinExtras must remain a SHA-512 pinned client mod.'
+    $mixinPayload = Join-Path $published 'payloads\mixinextras.jar'
+    Write-Fixture $mixinPayload 'mixinextras-client-payload'
+    $mixinHash = (Get-FileHash -LiteralPath $mixinPayload -Algorithm SHA512).Hash.ToLowerInvariant()
+    $fixtureMixinMetadata = [regex]::Replace($mixinMetadata, '(?m)^url = "[^"]+"\r?$',
+        "url = `"${url}payloads/mixinextras.jar`"")
+    $fixtureMixinMetadata = [regex]::Replace($fixtureMixinMetadata, '(?m)^hash = "[0-9a-f]+"\r?$',
+        "hash = `"$mixinHash`"")
+    Require ($fixtureMixinMetadata.Contains("url = `"${url}payloads/mixinextras.jar`"") -and
+        $fixtureMixinMetadata.Contains("hash = `"$mixinHash`"")) 'Could not prepare the MixinExtras update fixture.'
     $hashes = @{}
     foreach ($relative in @('options.txt', 'optionsof.txt', 'optionsshaders.txt', 'servers.dat', 'servers.dat_old',
             'defaultoptions.journal.json', 'config\defaultoptions\defaultoptions.journal.json', 'config\personal-mod.json',
@@ -72,15 +86,24 @@ hash = "$hash"
         Write-Fixture $path "personal-$relative"
         $hashes[$path] = (Get-FileHash $path).Hash
     }
+    $instanceMetadata = Join-Path $root 'mmc-pack.json'
+    $initialInstance = '{"formatVersion":1,"components":[{"uid":"net.minecraft","version":"1.20.1"},{"uid":"net.fabricmc.fabric-loader","version":"0.19.3"}]}'
+    Write-Fixture $instanceMetadata $initialInstance
+    function Get-FabricVersion([string]$Path) {
+        $instance = [IO.File]::ReadAllText($Path) | ConvertFrom-Json
+        $loaders = @($instance.components | Where-Object { $_.uid -eq 'net.fabricmc.fabric-loader' })
+        Require ($loaders.Count -eq 1) "Expected exactly one Fabric Loader component in $Path."
+        return $loaders[0].version
+    }
     Write-Fixture (Join-Path $published 'options.txt') 'never-publish-personal-options'
     Write-Fixture (Join-Path $published 'servers.dat') 'never-publish-personal-servers'
     $java = (Get-Command java.exe -ErrorAction Stop).Source
     $pending = $listener.GetContextAsync()
-    function Invoke-FixtureUpdate([string]$Name, [ref]$NextRequest) {
+    function Invoke-FixtureUpdate([string]$Name, [ref]$NextRequest, [string]$GameDirectory = $game, [string]$Side = 'client') {
         $stdout = Join-Path $root "$Name.log"
         $stderr = Join-Path $root "$Name.err"
-        $process = Start-Process -FilePath $java -ArgumentList @('-jar', "`"$bootstrap`"", '-g', '-s', 'client', "${url}pack.toml") `
-            -WorkingDirectory $game -PassThru -RedirectStandardOutput $stdout -RedirectStandardError $stderr
+        $process = Start-Process -FilePath $java -ArgumentList @('-jar', "`"$bootstrap`"", '-g', '-s', $Side, "${url}pack.toml") `
+            -WorkingDirectory $GameDirectory -PassThru -RedirectStandardOutput $stdout -RedirectStandardError $stderr
         $handle = $process.Handle
         $deadline = (Get-Date).AddMinutes(3)
         while (-not $process.HasExited) {
@@ -148,6 +171,11 @@ hash = "$hash"
             Remove-Item -LiteralPath $islandMetadata
             Remove-Item -LiteralPath $grimMetadata
             Remove-Item -LiteralPath $jeiMetadata
+            Write-Fixture (Join-Path $published 'mods\mixinextras-fabric-direct.pw.toml') $fixtureMixinMetadata
+            $fixturePack = Join-Path $published 'pack.toml'
+            $packText = [IO.File]::ReadAllText($fixturePack)
+            Require ($packText.Contains('fabric = "0.19.3"')) 'The first-generation Fabric Loader pin is missing.'
+            Write-Fixture $fixturePack ($packText.Replace('fabric = "0.19.3"', 'fabric = "0.19.5"'))
         }
         Write-Fixture (Join-Path $published 'config\defaultoptions\options.txt') "generation:$generation"
         Write-Fixture (Join-Path $published 'config\defaultoptions\keybindings.txt') "key_key.forward:generation-$generation"
@@ -189,10 +217,34 @@ hash = "$hash"
         }
         Require (Test-Path -LiteralPath (Join-Path $game 'mods\client-fixture.jar')) 'Client mod was not installed.'
         Require (-not (Test-Path -LiteralPath (Join-Path $game 'mods\server-fixture.jar'))) 'Automatic client update installed a server-only mod.'
+        $installedMixin = Join-Path $game "mods\$mixinName"
+        Require ((Test-Path -LiteralPath $installedMixin) -eq ($generation -eq 2)) 'MixinExtras was not installed automatically during the update.'
+        if ($generation -eq 2) {
+            Require ((Get-FileHash -LiteralPath $installedMixin -Algorithm SHA512).Hash.ToLowerInvariant() -ceq $mixinHash) 'Installed MixinExtras payload did not match its checksum.'
+        }
+        $expectedLoader = if ($generation -eq 1) { '0.19.3' } else { '0.19.5' }
+        Require ((Get-FabricVersion $instanceMetadata) -ceq $expectedLoader) 'The headless updater did not apply the expected Fabric Loader component.'
         Require ((Test-Path -LiteralPath (Join-Path $game 'mods\YungsBetterEndIsland-fixture.jar')) -eq ($generation -eq 1)) 'Automatic update did not remove the previously managed island mod.'
         Require ((Test-Path -LiteralPath (Join-Path $game 'mods\grimac-fabric-fixture.jar')) -eq ($generation -eq 1)) 'Automatic update did not remove the previously managed GrimAC mod.'
         Require ((Test-Path -LiteralPath (Join-Path $game 'mods\jei-fabric-fixture.jar')) -eq ($generation -eq 1)) 'Automatic update did not remove previously managed JEI.'
     }
-    Write-Output 'PASS: a real Packwiz checksum failure, recovery and two headless updates; previously managed JEI removed, managed defaults updated, personal options/server lists and player-added mod jars stayed byte-identical, root preference exclusions worked, and server-only mods were skipped.'
+    $existingInstance = Join-Path $root 'existing-instance'
+    $existingGame = Join-Path $existingInstance 'minecraft'
+    New-Item -ItemType Directory -Path (Join-Path $existingGame 'mods') -Force | Out-Null
+    $existingMetadata = Join-Path $existingInstance 'mmc-pack.json'
+    Write-Fixture $existingMetadata $initialInstance
+    Copy-Item -LiteralPath $mixinPayload -Destination (Join-Path $existingGame "mods\$mixinName")
+    $existing = Invoke-FixtureUpdate 'existing-mixinextras' ([ref]$pending) $existingGame
+    Require ($existing.ExitCode -eq 0) "Automatic update failed with an existing MixinExtras jar:`r`n$($existing.Log)"
+    Require ((Get-FileHash -LiteralPath (Join-Path $existingGame "mods\$mixinName") -Algorithm SHA512).Hash.ToLowerInvariant() -ceq $mixinHash) 'The existing MixinExtras jar was not preserved correctly.'
+    Require ((Get-FabricVersion $existingMetadata) -ceq '0.19.5') 'The existing instance did not receive the Fabric Loader update.'
+
+    $serverGame = Join-Path $root 'server'
+    New-Item -ItemType Directory -Path $serverGame | Out-Null
+    $server = Invoke-FixtureUpdate 'server-side' ([ref]$pending) $serverGame 'server'
+    Require ($server.ExitCode -eq 0) "Isolated server-side update failed:`r`n$($server.Log)"
+    Require (-not (Test-Path -LiteralPath (Join-Path $serverGame "mods\$mixinName"))) 'A server-side update installed client-only MixinExtras.'
+    Require (Test-Path -LiteralPath (Join-Path $serverGame 'mods\server-fixture.jar')) 'A server-side update skipped the server fixture.'
+    Write-Output 'PASS: Packwiz checksum failure and recovery, automatic Fabric Loader and client-only MixinExtras updates, an existing matching jar, server-side exclusion, managed defaults, personal settings and mod preservation.'
 } finally { $listener.Stop(); $listener.Close() }
 Remove-Item -LiteralPath $root -Recurse

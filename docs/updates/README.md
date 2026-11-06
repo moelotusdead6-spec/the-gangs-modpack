@@ -168,8 +168,9 @@ game directory. Neither method changes player settings.
 
 Internet access is required for update checks. Failed updates block launch
 and appear in Prism's log rather than silently launching a mismatched client.
-Minecraft or Fabric Loader version changes may require a separate launcher
-update; Packwiz's pre-launch hook manages pack files, not Prism components.
+The headless Packwiz pre-launch hook also updates Prism's saved Minecraft and
+loader component versions when the pack pins change. A launcher restart may
+still be needed before Prism uses updated component metadata.
 
 ## Personal settings
 

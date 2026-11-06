@@ -1750,6 +1750,11 @@ hash = "333a538b63dd23c9d0c524710f4f343349f3ac0ad2ee54c61a58cc7fcec36ad1"
 metafile = true
 
 [[files]]
+file = "mods/mixinextras-fabric-direct.pw.toml"
+hash = "0fe2643f957535d23481d5074a98a26f510bfe1e6f386adb55ce627535a27242"
+metafile = true
+
+[[files]]
 file = "mods/mobscarecrow-2.3.0.pw.toml"
 hash = "5716283631b45674d4859dbae3d3f2f2f4d1250d2a8037d4eb46a7665a930cc6"
 metafile = true

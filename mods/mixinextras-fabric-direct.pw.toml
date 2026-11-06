@@ -1,0 +1,8 @@
+name = "MixinExtras"
+filename = "mixinextras-fabric-0.5.5.jar"
+side = "client"
+
+[download]
+url = "https://repo.maven.apache.org/maven2/io/github/llamalad7/mixinextras-fabric/0.5.5/mixinextras-fabric-0.5.5.jar"
+hash-format = "sha512"
+hash = "854e8fdc79699835253cb1d98ff10c6ef88586f11a1a279a198e8c6784ff7477dceb6d8d8562fafb458b2c43648f6dc4853e42a3d606ba495d1c3eafa02d953a"
