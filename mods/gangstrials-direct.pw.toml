@@ -1,0 +1,8 @@
+name = "Gangs Trials"
+filename = "gangstrials-1.0.7.jar"
+side = "both"
+
+[download]
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/gangstrials-1.0.7.jar"
+hash-format = "sha256"
+hash = "10e7d3218416ea10fe60814a72b3fe84a1dc0faebebb230b464586f4e2d4beac"

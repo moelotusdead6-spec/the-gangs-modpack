@@ -12,8 +12,8 @@ This modpack is built around friendship, discovery, and those “you had to be t
 
 ## Getting started
 
-- **Minimum software requirements:** Minecraft 1.20.1, Java 17+, and Fabric Loader 0.19.3+.
-- **Download:** [Latest release](https://github.com/moelotusdead6-spec/the-gangs-modpack/releases/latest). Import the all-in-one ZIP into Prism Launcher.
+- **Minimum software requirements:** Minecraft 1.20.1, Java 17+, and Fabric Loader 0.19.5+.
+- **Download:** [The Gangs Modpack installer](https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/The-Gangs-Modpack-Installer.zip). Import it into Prism Launcher and press Play; the first launch downloads every mod automatically, and each later launch keeps them up to date. Do not add or remove mod files by hand.
 - **Updating:** See the [update guide](docs/updates/README.md).
 - **Resource packs:** Enable or disable them in Options > Resource Packs.
 

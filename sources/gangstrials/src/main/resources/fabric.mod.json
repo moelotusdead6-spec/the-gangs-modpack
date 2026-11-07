@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "gangstrials",
+  "version": "${version}",
+  "name": "Gangs Trials",
+  "description": "First-party worldgen gate for The Gangs Modpack: restricts configured structures (by default minecraft:trial_chambers) to an allowlist of dimensions (by default multiworld:rsw). Also fixes Tricky Trials Backport trial spawner configs, spawner light rules, wind charge self-launch, breeze infighting, trial spawner hardness and the missing ominous item spawner renderer.",
+  "authors": [
+    "Prof_it",
+    "GitHub Copilot"
+  ],
+  "license": "CC-BY-4.0",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["com.gangs.gangstrials.GangsTrialsMod"],
+    "client": ["com.gangs.gangstrials.client.GangsTrialsClient"]
+  },
+  "mixins": ["gangstrials.mixins.json", "gangstrials.backport.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.15.11",
+    "minecraft": "~1.20.1",
+    "java": ">=17"
+  }
+}

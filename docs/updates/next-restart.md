@@ -1,3 +1,113 @@
+# Prepared locally: Trial Chambers in RSW, Botania, Lootr chest-only chambers
+
+Adds 1.21-style Trial Chambers (RSW overworld only) and Botania without any
+shop additions. "Faithful Chambers" itself is infeasible here: it is a
+CurseForge datapack whose required mod "Trials Chambers [1.20.1 Backport]" is
+Forge-only. The Fabric-native **Tricky Trials Backport** replaces it and
+generates real `minecraft:trial_chambers` with working Trial Spawner and
+Vault blocks; Huge Structure Blocks is therefore not needed.
+
+New packwiz entries (clients receive these on update):
+
+- Botania 1.20.1-456 (Modrinth; Patchouli already present).
+- Tricky Trials Backport 2026.1 — repacked as
+  `artifacts/trickytrialsbackport-fabric-2026.1-gangs.1.jar` because the
+  upstream Fabric jar misnames its mixin refmap
+  (`trickytrialsbackport-common-common-refmap.json` vs the
+  `trickytrialsbackport-refmap.json` its config requests), which crashes a
+  production server during mixin apply (RaidMixin). MIT by Daniel Dixon
+  (Dandi2k8); the repack only adds a correctly named copy of the refmap.
+- Copper Age Backport 0.1.5.1-pre, Trimmed 2.1.4, Sherds API 4.0.4
+  (required dependencies, Modrinth).
+- GangsTrials 1.0.7 (`artifacts/gangstrials-1.0.7.jar`, client and server,
+  first-party `sources/gangstrials`):
+  - gates structures to an allowlist of dimensions via
+    `config/gangstrials.json`. The default restricts
+    `minecraft:trial_chambers` to `multiworld:rsw` for both generation
+    (ChunkGenerator) and `/locate`/maps (StructureLocator).
+  - replaces the backport's trial spawner loop with vanilla 1.21 behaviour:
+    gradual spawning up to the simultaneous cap, total mobs scaled per
+    extra player, one weighted reward per player, and ominous conversion
+    during cooldown. Keys drop with `spawner_key_chance` (default `0.1`);
+    other rolls give the normal or ominous consumable loot.
+  - ominous item spawners fire potions, arrows, fire charges and wind
+    charges downward as projectiles instead of dropping pickup items, and a
+    client renderer stops the client crash.
+  - wind charges knock back only on impact. Breezes target only players.
+    Trial spawners get vanilla hardness and blast resistance.
+  - stops the backport logging "has no detected players" every tick.
+- Gang Shop 1.0.10 (`artifacts/gangshop-1.0.10.jar`): adds `botania`,
+  `trickytrialsbackport`, `copperagebackport`, `trimmed`, `sherdsapi` to the
+  excluded shop namespaces. The backport registers its blocks/items under
+  the `minecraft:` namespace, so `config/gangshop/overrides.json` also denies
+  the 34 backported ids (tuff family, crafter, heavy_core, vault, mace,
+  wind charge, trial keys, discs, sherds, trims, etc.).
+
+Lootr: new `config/lootr.json` blacklists the two loot tables used by trial
+chamber barrels (`minecraft:chests/trial_chambers/corridor`,
+`minecraft:chests/trial_chambers/intersection_barrel`). Chamber chests
+(supply/entrance/intersection) still convert to per-player Lootr chests;
+chamber barrels stay shared vanilla barrels. All other Lootr behaviour is
+unchanged.
+
+Lootr containers are now indestructible in every dimension. The `breaking`
+section of `config/lootr.json` sets `disable_break` (survival players cannot
+break them; creative players must sneak), disables fake-player breaking, and
+sets `blast_immune`, so TNT, creepers and Supplementaries bombs leave them
+intact. The `gangs_fixes` datapack adds `#lootr:containers` to
+`minecraft:wither_immune` and `minecraft:dragon_immune`. This stops charged
+wither skulls (Scythe of the Forlorn) and the dragon from breaking them.
+
+Spawner and vault rewards use vanilla table ids
+(`loot_tables/spawners/trial_chamber/*`, `chests/trial_chambers/reward*`) and
+can be overridden later from the `gangs_fixes` Paxi datapack.
+
+Validation (2026-11-06, isolated closed server in `tmp/testserver`, full
+263-mod server side, fresh world, no players):
+
+- Boots to `Done` with no new mixin/registry errors after the refmap repack
+  (the pre-existing non-fatal necronomicon warning is unchanged).
+- `/locate structure minecraft:trial_chambers` fails in `minecraft:overworld`
+  and succeeds in `multiworld:rsw` (found 240 blocks from spawn).
+- With a test-only config allowing the overworld, a generated chamber
+  contained 16 vaults and 2 trial spawners; Lootr converted 13 chests.
+- Controlled setblock tests: a barrel with the corridor table stayed
+  `minecraft:barrel`; a barrel with `chests/simple_dungeon` converted to
+  `lootr:lootr_barrel`; a chest with the supply table converted to
+  `lootr:lootr_chest`.
+- Gang Shop catalog: no `botania:`/backport entries; denied `minecraft:` ids
+  removed (catalog 14464 -> 14447); prices.json gained no new-mod entries.
+
+**Deployment status:** nothing installed on the live server. The new and
+repacked artifacts must be published via GitHub Pages (git push) before
+clients or the hosted server can download them, and the pack version has not
+been bumped yet. Trial chambers only generate in newly created RSW chunks,
+so they appear after the next RSW reset (or in still-ungenerated RSW areas).
+
+# Prepared locally: new-install mismatch fix
+
+New players imported the v1.1.13 All-in-One ZIP, still linked as the
+download. It bundles 241 jars without a Packwiz manifest and pins Fabric
+Loader 0.19.3, so Packwiz never removed its outdated or retired jars and
+those players could not join.
+
+- New installer: `artifacts/The-Gangs-Modpack-Installer.zip`, built by
+  `scripts/Build-InstallerZip.ps1`. It contains only `instance.cfg` (with the
+  auto-update pre-launch hook), `mmc-pack.json` (Minecraft and Fabric versions
+  read from `pack.toml`) and the Packwiz bootstrap. No mods are bundled, so
+  the first launch downloads and tracks the exact current pack. Its URL is
+  stable: `https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/The-Gangs-Modpack-Installer.zip`.
+  `index.html` and `README.md` link to it. Rebuild it only when the
+  Minecraft or Fabric version changes.
+- Auto-heal for existing broken installs: 63 `mods/retired-*.pw.toml`
+  client entries cover every jar name shipped by past release ZIPs or
+  mrpacks that is no longer in the pack. Each one downloads
+  `artifacts/gangs-retired-mod-placeholder.jar` (an empty jar with no
+  `fabric.mod.json`) over the stale file. Fabric skips such jars ("Found
+  non-fabric mods"); the isolated test server booted normally with two
+  placeholders. Do not reuse a retired filename for a real mod; remove the
+  matching retired entry first.
+
 # Prepared locally: RSW dragon-only recovery (GoldClaim 1.0.67)
 
 The 2026-11-06 live RSW End fight data had `DragonKilled=1`,

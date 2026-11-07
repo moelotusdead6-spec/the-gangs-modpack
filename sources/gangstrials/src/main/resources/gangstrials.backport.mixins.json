@@ -1,0 +1,24 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.gangs.gangstrials.mixin.backport",
+  "plugin": "com.gangs.gangstrials.BackportMixinPlugin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "BreezeTargetMixin",
+    "HostileEntityMixin",
+    "OminousItemSpawnerMixin",
+    "TrialSpawnerConfigMixin",
+    "TrialSpawnerHardnessMixin",
+    "TrialSpawnerResistanceMixin",
+    "TrialSpawnerMixin",
+    "TrialSpawnerStateMixin",
+    "WindChargeMixin"
+  ],
+  "client": [
+    "EntityRenderersInvoker"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

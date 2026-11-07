@@ -1,0 +1,13 @@
+name = "Copper Age Backport"
+filename = "copperagebackport-fabric-1.20.1-0.1.5.1-pre.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/a1llHwl4/versions/jd5L8iw0/copperagebackport-fabric-1.20.1-0.1.5.1-pre.jar"
+hash-format = "sha512"
+hash = "008d5373432d623357cbfaff82e2213e45ea4f9394b68dfa88c1e0dda106c70ed88bb657706296ca3d031d67fbf0a1c9b6b12efbd6a5ca8d792123a3b5c2f171"
+
+[update]
+[update.modrinth]
+mod-id = "a1llHwl4"
+version = "jd5L8iw0"

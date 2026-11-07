@@ -1,0 +1,15 @@
+{
+  "breaking": {
+    "disable_break": true,
+    "enable_break": false,
+    "enable_fake_player_break": false,
+    "blast_resistant": false,
+    "blast_immune": true
+  },
+  "lists": {
+    "loot_table_blacklist": [
+      "minecraft:chests/trial_chambers/corridor",
+      "minecraft:chests/trial_chambers/intersection_barrel"
+    ]
+  }
+}

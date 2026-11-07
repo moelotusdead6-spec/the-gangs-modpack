@@ -6,11 +6,11 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "3a7a4c0f62fdd5a10a9cd0a6d202faeea2c8779200b5548eea32e46924b9237a"
+hash = "a3f81ed716fd3e7b27c3c83b8ebfae2be82ece16b05a0e4f9ab2db91606acf8f"
 
 [[files]]
 file = "README.md"
-hash = "5a04338cb3baed3af579efbf9e8dc85a3980c958731fc7ded18c7eaf68798e74"
+hash = "c1c61b4f7d8c8ac2717bbc2e0f0dbf4c31f254f6ed48494eabf687b121a2851d"
 
 [[files]]
 file = "config/EssentialCommands.properties"
@@ -114,11 +114,15 @@ hash = "c613e5d46cb558a9f240b189bc341ed8a4f71c60c57b0e2013035a593b4b43df"
 
 [[files]]
 file = "config/gangshop/overrides.json"
-hash = "2cb59719b095901969aceb99f03d851a7507c76ead566057f651a15c0e218bd6"
+hash = "4a005df5d05e5152b062dbd80828a742494e1483461b39d31f57124fa9ec1873"
 
 [[files]]
 file = "config/gangshop/prices.json"
 hash = "6adeb70ccdd238f9ef40413e5b3c98471682ce8f74fce8be94c81ab73cd0f9b6"
+
+[[files]]
+file = "config/gangstrials.json"
+hash = "14b62e9956796a530d71a629af4802fcab79f738626aebcd19312c9cdaafce9d"
 
 [[files]]
 file = "config/global_packs.toml"
@@ -131,6 +135,10 @@ hash = "9794ababce25204ea58d2095d2fd616f3e664c4d4e803814c670939da1a831d0"
 [[files]]
 file = "config/itemborders-common.toml"
 hash = "c419519d376a98c5fafa02d4e9155a5638ae0be54792db834271c4b4bbaafb40"
+
+[[files]]
+file = "config/lootr.json"
+hash = "4021ede7ae738b08f5a3184cf1f66a5b9ce0629f9b6673375007a0c5dda48dc9"
 
 [[files]]
 file = "config/options.txt"
@@ -349,12 +357,40 @@ file = "config/paxi/datapacks/gangs_fixes/data/lootr/tags/blocks/convert/chests.
 hash = "8e5a4769c7045e3058c88ee53856bfa45acda171711b7cbd4645ab9dac078a75"
 
 [[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/minecraft/tags/blocks/dragon_immune.json"
+hash = "416748c36d8ea7868dbff467846a69fcbb4d871a90b79be2c80220e7498791ab"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/minecraft/tags/blocks/wither_immune.json"
+hash = "416748c36d8ea7868dbff467846a69fcbb4d871a90b79be2c80220e7498791ab"
+
+[[files]]
 file = "config/paxi/datapacks/gangs_fixes/data/minecraft/tags/functions/load.json"
 hash = "0f7edeb2f48d171ebbc8de46a7159bc4a51efc5e2c94a6c1e8217c1bb22c6c8d"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_fixes/data/minecraft/tags/functions/tick.json"
 hash = "ffd8304d6ca5e1ac6ed7684446b2a218ecf3b15316dfc250ee98a280dadb56d0"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/minecraft/worldgen/structure/trial_chambers.json"
+hash = "a9ea4d98ccf2b6395059cbdfa32ad1ba6c8b2e95c745dfa94b815b5ff4d373b1"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/minecraft/worldgen/template_pool/trial_chambers/spawner/contents/melee.json"
+hash = "a2b90f18800ea94209baf86f4cb66e1e47d9ee0028f5ecfd629d958c53cc396d"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/minecraft/worldgen/template_pool/trial_chambers/spawner/contents/ranged.json"
+hash = "428474c9bddb4ae4dd3dbc457a57cdc7dde35a886f3383a2b9f9e89e7889ecc2"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/minecraft/worldgen/template_pool/trial_chambers/spawner/contents/slow_ranged.json"
+hash = "4760ac72fe6f9e3c877920822955817f1c736c9f752d3b8d44ab2846e3cc026b"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/minecraft/worldgen/template_pool/trial_chambers/spawner/contents/small_melee.json"
+hash = "022abd45eecb0d4bc9603e7e25ef8ad6cf9a714bf2c43fed5658b54130cc1e79"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_fixes/data/multiworld/enhancedcelestials/lunar/dimension_settings/rsw.json"
@@ -778,7 +814,7 @@ hash = "d022c03cd1366878024d932aca7e3eda35a9f19e87bac7fc11bf8e1521d36ac7"
 
 [[files]]
 file = "index.html"
-hash = "c0b10275718136a8de25c3a1bf88b980dc9e011a5c39a728cc1418e53aad25ff"
+hash = "0778a4e0c06958763581ba4d2ae66b1a421520fa370c8639e48b71a2a67b0971"
 
 [[files]]
 file = "mods/.gitkeep"
@@ -1180,6 +1216,11 @@ hash = "2f234637558fdff1a39f7d8343b862a4abff7caa74d7f2ab05231a176c7d4323"
 metafile = true
 
 [[files]]
+file = "mods/backport-copper-age.pw.toml"
+hash = "510d99c50e0930c544123ba49843d38afe5f18aa8745e35a3d309f328aa4d218"
+metafile = true
+
+[[files]]
 file = "mods/badpackets-fabric-0.4.3.pw.toml"
 hash = "1bb1b8720fb7094a16b7ec6858116a7dbfe0f9206d338b5235db8b23eeb78a86"
 metafile = true
@@ -1237,6 +1278,11 @@ metafile = true
 [[files]]
 file = "mods/biolith-direct.pw.toml"
 hash = "965e2303a433f1646855af639db914a375e15f15e1bd91139756421f455582a1"
+metafile = true
+
+[[files]]
+file = "mods/botania.pw.toml"
+hash = "52c82e2266c407ae84b0ae774786085ca1910400648d42e418b2821590201766"
 metafile = true
 
 [[files]]
@@ -1536,7 +1582,12 @@ metafile = true
 
 [[files]]
 file = "mods/gangshop-direct.pw.toml"
-hash = "1000df422c8cc8d8dc98fdf916538d683b63aac75f733298b2f1a80c6da75297"
+hash = "25c83b3eb63d53fc54dc5158a89899a508fe7cf068639c65c73b598ad5577647"
+metafile = true
+
+[[files]]
+file = "mods/gangstrials-direct.pw.toml"
+hash = "32bb555e378ae425857440cb7fc4a29e8a323e961667206c10754387a68ca57a"
 metafile = true
 
 [[files]]
@@ -1910,6 +1961,321 @@ hash = "c00686a7cb652494d43d57a2ae36331ec37a9cf04b05ee6ef95b8f204374d151"
 metafile = true
 
 [[files]]
+file = "mods/retired-alexscaves-2-1-8.pw.toml"
+hash = "0ec5c86b4a325bbdb2bb4748127a28ab0c812f4c77c0b68a42e4a3ab5592ed01"
+metafile = true
+
+[[files]]
+file = "mods/retired-ambientsounds-fabric-v6-3-8-mc1-20-1.pw.toml"
+hash = "fb6afb22a34b48e6ccf2059f02daa5fd2db7c00e5eaad0da7cdbe503b91b80f9"
+metafile = true
+
+[[files]]
+file = "mods/retired-amendments-1-20-2-2-5-fabric.pw.toml"
+hash = "8cf6f8e2fc9940bd47df24679111f0febaf4c26ad147dbdee572443ba360f773"
+metafile = true
+
+[[files]]
+file = "mods/retired-balm-fabric-1-20-1-7-3-41.pw.toml"
+hash = "a55f592409f2b8c8c51204416e6065df3ca12dc0114c5a2fc87b098b39e3dfcd"
+metafile = true
+
+[[files]]
+file = "mods/retired-bclib-3-0-14.pw.toml"
+hash = "b23b69df9fc517aa8c814bd0b9b507dcf95d2b6295470aadd818259b2cf1682f"
+metafile = true
+
+[[files]]
+file = "mods/retired-better-end-4-0-11.pw.toml"
+hash = "a640d73de3d15c05c3bc4923cc6401a498e628820e56cd358c5c0733af98d86e"
+metafile = true
+
+[[files]]
+file = "mods/retired-biolith-fabric-1-0-1-beta-1-endfix.pw.toml"
+hash = "713f68c21b2a9be32b874f1b7fabda8c72de6d6df742edc833c7b7a475cd60c3"
+metafile = true
+
+[[files]]
+file = "mods/retired-biolith-fabric-1-0-1-beta-1.pw.toml"
+hash = "16a8ee926cae2204b658f2dc0fed1d32b94b7b0a2e3e1c1acf6dce84b658d2bb"
+metafile = true
+
+[[files]]
+file = "mods/retired-cameraoverhaul-v2-1-1-fabric-mc-1-20-1-20-5.pw.toml"
+hash = "82ebb8c7e723f7ac5ae623efee5a9dd58d0de8cc35e582d96ad1a40daa939dc9"
+metafile = true
+
+[[files]]
+file = "mods/retired-chat-heads-0-15-3-fabric-1-20.pw.toml"
+hash = "c5ae4019fe0983f6e32066a644fccab257fef2a544bc46510b53f6a3677db653"
+metafile = true
+
+[[files]]
+file = "mods/retired-chefs-delight-1-0-4-fabric-1-20-1.pw.toml"
+hash = "c90123ead5353185fa5b754fadca2cb3b7da19e4bd3a74d7c660cd0e4b525a45"
+metafile = true
+
+[[files]]
+file = "mods/retired-cinematic-respawn-1-20-1-fabric-1-4-0.pw.toml"
+hash = "2be2468fddc504b9470f7f41ba32799e5d6964b1885a2cc93335f44c2f4b57e9"
+metafile = true
+
+[[files]]
+file = "mods/retired-compass2map-2-0-3-fabric-1-20-1.pw.toml"
+hash = "ad1c7dd7bc6352c5f7b215fa5a7cb698dd97aeb720102bfc43727257025eec5e"
+metafile = true
+
+[[files]]
+file = "mods/retired-corgilib-fabric-1-20-1-4-0-3-4.pw.toml"
+hash = "276db38f61d92e0da58f14428d9ff3c3b42af6d0c236a5fddf91c2d84e12d5b7"
+metafile = true
+
+[[files]]
+file = "mods/retired-creativecore-fabric-v2-12-39-mc1-20-1.pw.toml"
+hash = "a4b2f215805cd20b066a4ed0632e3f3eee0bba367e57db4c5efa941d9825037e"
+metafile = true
+
+[[files]]
+file = "mods/retired-crittersandcompanions-fabric-1-20-1-2-6-2.pw.toml"
+hash = "e6dbdf1f78ba188dfd63905f5128cf9f49827ea34d188ffeda0f4e31f1770fb7"
+metafile = true
+
+[[files]]
+file = "mods/retired-data-anchor-fabric-1-20-1-1-0-0-23.pw.toml"
+hash = "42c8e956551e4642ed36c9ae20dd45a8c8345ea91d2032abcbc701cc2339dcae"
+metafile = true
+
+[[files]]
+file = "mods/retired-enhanced-celestials-fabric-1-20-1-5-0-3-1.pw.toml"
+hash = "5baf790c05cde71d6929ca4c2317bbd736bd5b30fbade955e47218d0e64786d6"
+metafile = true
+
+[[files]]
+file = "mods/retired-explorerscompass-1-20-1-2-6-0-fabric.pw.toml"
+hash = "f7c94a7d8879364daefcc27204ab8a9ed2635749d46d040f6ead8e7b1d3d9f8a"
+metafile = true
+
+[[files]]
+file = "mods/retired-fabric-api-0-92-11-1-20-1.pw.toml"
+hash = "c4714ae5f4aab610fb163b24ac61ed0af8c4a0b16504fc283e9d997967472e7d"
+metafile = true
+
+[[files]]
+file = "mods/retired-fancymenu-fabric-3-9-8-mc-1-20-1.pw.toml"
+hash = "aadfbe302e64bb29dc6f32f041eeea64bd3bba78ebc4c7f337527a10b0f426df"
+metafile = true
+
+[[files]]
+file = "mods/retired-farmersdelight-1-20-1-2-4-1-refabricated.pw.toml"
+hash = "bfed03042aad7d352b4282330d3382df4c44749deb975f941996677133dc0293"
+metafile = true
+
+[[files]]
+file = "mods/retired-foxfriend-fabric-1-18-2-1-21-1-6-0-3.pw.toml"
+hash = "70a8cd0b3c2585e0ccd05d67112427816c024e090114ff96e5f34dba5dba533d"
+metafile = true
+
+[[files]]
+file = "mods/retired-fzzy-config-0-7-6-1-20-1.pw.toml"
+hash = "c8edc014061e9f0c70095554a57394ba4f6e3039d8838c9024bc77ea09e4ffa3"
+metafile = true
+
+[[files]]
+file = "mods/retired-galosphere-1-20-1-1-5-2-fabric.pw.toml"
+hash = "9f03184b2fd6d6f440f05b1baf11e5ba525a6239adcdbe7f44c0c13336db1dca"
+metafile = true
+
+[[files]]
+file = "mods/retired-galospheretrimming-1-20-1-1-0-0-quilt.pw.toml"
+hash = "e9bbdfdabc75e5337db18bac6cf855ee95c7e182ed722e697e8318eeda077acd"
+metafile = true
+
+[[files]]
+file = "mods/retired-gangsboots-1-0-4.pw.toml"
+hash = "575d1532581f1ba2e8fb4b2403c492a161c77ac43341f40649af250ea07958b4"
+metafile = true
+
+[[files]]
+file = "mods/retired-gangscosmetics-2-0-0.pw.toml"
+hash = "e87a3b9d15ecfac4cc239e6ec86feec2532a1195814437ab1d442d3c6347f713"
+metafile = true
+
+[[files]]
+file = "mods/retired-gangshats-1-0-0.pw.toml"
+hash = "3eac7f4e6cec559934f479acd892ae4ef13f9e2863f35cc10b5e566c75e23e95"
+metafile = true
+
+[[files]]
+file = "mods/retired-gangshats-1-0-8.pw.toml"
+hash = "f472d2b9c7319fcee70cdeed0a8493ad1e6c50a40818512ab157b4bc0100030f"
+metafile = true
+
+[[files]]
+file = "mods/retired-gangshats-1-0-9.pw.toml"
+hash = "5b2f03e00a639d59af476b2852c746270ce9a8ab51d0b2f49dc72a44d43efed1"
+metafile = true
+
+[[files]]
+file = "mods/retired-gangshop-1-0-0.pw.toml"
+hash = "85126572a7b42ca8ff75a750444fe7ffb8a6b8f0e48cbe671bec234498f28853"
+metafile = true
+
+[[files]]
+file = "mods/retired-gangshop-1-0-7.pw.toml"
+hash = "1cbc824fab3296591a2c08465aacfdaaf6778355baa51d7cb0c917f68a91c236"
+metafile = true
+
+[[files]]
+file = "mods/retired-geophilic-v3-6-mod.pw.toml"
+hash = "913bd6650c96524fed39bc3a09711d4ebd25538ed1a6f8551e5bcd20d42b64f2"
+metafile = true
+
+[[files]]
+file = "mods/retired-globalpacks-fabric-1-20-1-19-3-6.pw.toml"
+hash = "f2901fa402af59140ccb220e173045586a02bd3912bedef95d16ad55225ba51a"
+metafile = true
+
+[[files]]
+file = "mods/retired-goldclaimmap-1-0-0.pw.toml"
+hash = "6e95940c9afba1abdc1490cfafbb65fb7b9ef9a4a1f062641d726f5b46721768"
+metafile = true
+
+[[files]]
+file = "mods/retired-goldclaimmap-1-0-1.pw.toml"
+hash = "bc213edd2da2503574ee81ab41ef26ae64a7b0b64fc2e1e357fe9f7483db7591"
+metafile = true
+
+[[files]]
+file = "mods/retired-grimac-fabric-2-3-74-8eb5f28.pw.toml"
+hash = "6c7d1dce649bca72dbda3d914d6028856a877f497bc4d1a7b346b1e3a7c8bbce"
+metafile = true
+
+[[files]]
+file = "mods/retired-jei-1-20-1-fabric-15-21-0-138.pw.toml"
+hash = "0dd8a237d693bb88c2c3efee19a20a9e26277aff236787c791b3feb83eb4e8d6"
+metafile = true
+
+[[files]]
+file = "mods/retired-kubejs-fabric-2001-6-5-build-26.pw.toml"
+hash = "4ac5f3f0376cd1df1f832b91b2931ea9359b0e3a21ef8044b5e50c9dc34731f5"
+metafile = true
+
+[[files]]
+file = "mods/retired-ledger-1-2-8.pw.toml"
+hash = "cec8dd3a697899fd21b912288738bdc2af830ee158d2be94776be1b05b035e57"
+metafile = true
+
+[[files]]
+file = "mods/retired-litematica-fabric-1-20-1-0-15-3.pw.toml"
+hash = "f79406d193ca5d3ec35695dafaf54ee4735def20d7c90dc9ef71d8e013ce247f"
+metafile = true
+
+[[files]]
+file = "mods/retired-moogs-structures-1-20-1-20-4-3-0-2-fabric.pw.toml"
+hash = "cb35f77540a8070cde9b4f0008d23a606f0460c593e10731ec6243320c8e2b2f"
+metafile = true
+
+[[files]]
+file = "mods/retired-moogsendstructures-1-20-2-0-3.pw.toml"
+hash = "dd4edf1e16b79df4383d0ddf3cf2e218e63ade69ee8eedc1355285bbc840031a"
+metafile = true
+
+[[files]]
+file = "mods/retired-moogsnetherstructures-1-20-3-0-0.pw.toml"
+hash = "7e394504fade71e06299ce5004f1e0579fcab1cb84a2e9a861961495f60db0a2"
+metafile = true
+
+[[files]]
+file = "mods/retired-moogsvoyagerstructures-1-20-5-0-8.pw.toml"
+hash = "929244255ef5dd72498a1453df4b34b6518040b3802f6ecf4940c28cb7065709"
+metafile = true
+
+[[files]]
+file = "mods/retired-moonlight-1-20-2-16-34-fabric.pw.toml"
+hash = "14de8eea5c81f8da5b849e6a84d3cbf0972fa8951d6bd94362a6c954b8f28834"
+metafile = true
+
+[[files]]
+file = "mods/retired-naturescompass-1-20-1-2-6-0-fabric.pw.toml"
+hash = "be24d990901a7406c5896eb9b097bee239fa85efc33c8bcba576bb033813eab3"
+metafile = true
+
+[[files]]
+file = "mods/retired-oh-the-biomes-weve-gone-fabric-1-8-0.pw.toml"
+hash = "d759710ff6be7f58bd9146e408d314100cf4cc939a73243805c3ff28894edeb1"
+metafile = true
+
+[[files]]
+file = "mods/retired-oh-the-trees-youll-grow-fabric-1-20-1-1-7-0.pw.toml"
+hash = "9ddce2304ce097eee1f21f2329cdfbe8c121071a4f6b1592d063b8d518d7c551"
+metafile = true
+
+[[files]]
+file = "mods/retired-particlerain-4-0-0-beta-10-1-20-1-fabric.pw.toml"
+hash = "81ef54926e356c904091d6a1d11418f9a957bda7efb046d7af931fec5e3e0937"
+metafile = true
+
+[[files]]
+file = "mods/retired-polymorph-fabric-0-49-10-1-20-1.pw.toml"
+hash = "8f27de3d3bc708fe1b81b737ad9437e0f7e1e657318b40eb6e0cb7c89e518a29"
+metafile = true
+
+[[files]]
+file = "mods/retired-puzzleslib-v8-1-33-1-20-1-fabric.pw.toml"
+hash = "cdceaf6536363cf7e62a8fcaf3c127316779c0fbb9624ec4da924bd60af697d7"
+metafile = true
+
+[[files]]
+file = "mods/retired-rankbadges-1-0-1.pw.toml"
+hash = "1ec14e651740e4a183b8e97e3874dbf9c8aff517219c53b5c3b03dc537bac645"
+metafile = true
+
+[[files]]
+file = "mods/retired-rankbadges-1-0-2.pw.toml"
+hash = "371826e673ca9577598ae5d1ad3af18ad8d83670b4e3c0d73d9052546e2da8c8"
+metafile = true
+
+[[files]]
+file = "mods/retired-repurposed-structures-7-1-24-1-20-1-fabric.pw.toml"
+hash = "ed1ba52fbc66f3e290316e334ec0a4de0776a8bab593edcf5833429c787f51cd"
+metafile = true
+
+[[files]]
+file = "mods/retired-rhino-fabric-2001-2-3-build-10.pw.toml"
+hash = "e8dafc022e40b3b9c114862c104f44c52776eaad8b7f025a381e9671f4dab24a"
+metafile = true
+
+[[files]]
+file = "mods/retired-shouldersurfing-fabric-1-20-1-5-0-7.pw.toml"
+hash = "0637c878526a58984379736ce6937a3e421479352d22e394cf57bb6d3aab5f68"
+metafile = true
+
+[[files]]
+file = "mods/retired-soulsbackpackscompat-1-0-0.pw.toml"
+hash = "847ef753bc967d901ab29d3d0d8fd3734c6a291aefcb37bef68a41fdae3d3e40"
+metafile = true
+
+[[files]]
+file = "mods/retired-sound-physics-remastered-fabric-1-20-1-1-4-10.pw.toml"
+hash = "4a0297bfb229785b7dceab95c6c28a20ae57d88a215a622235d7a97ddaa1fd71"
+metafile = true
+
+[[files]]
+file = "mods/retired-structure-pool-api-1-0-1-20-1.pw.toml"
+hash = "3f814df752fb9f61214a9ff935f187e7eda0532b42d9aed809fe2f75c6f830c9"
+metafile = true
+
+[[files]]
+file = "mods/retired-yungsbettercaves-1-20-1-fabric-2-0-5.pw.toml"
+hash = "6d9bf4e6b1bbe2ed75476983f6e15e13b216bebc8acce5e88d3a544d66ac2572"
+metafile = true
+
+[[files]]
+file = "mods/retired-yungsbetterendisland-1-20-fabric-2-0-6.pw.toml"
+hash = "9af8b39b4ff256e82cba167e89fa6330432aecf073bfda397f1e3e343363fb74"
+metafile = true
+
+[[files]]
 file = "mods/roughly-enough-items-direct.pw.toml"
 hash = "26e3ee47b301af8f03d37cc13f9132a4c3e3e55069fa1a2547006c8cd45aae62"
 metafile = true
@@ -1937,6 +2303,11 @@ metafile = true
 [[files]]
 file = "mods/servercore-fabric-1.5.2+1.20.1.pw.toml"
 hash = "2e191c5df3d9a95ce73197693e930d5f5362b45a3202193d2adc62c746147f1c"
+metafile = true
+
+[[files]]
+file = "mods/sherdsapi.pw.toml"
+hash = "685eb6a64bbb0b311e45c50954beca63bc1aa4d2b5f62ba2aaddb852202704b1"
 metafile = true
 
 [[files]]
@@ -2082,6 +2453,16 @@ metafile = true
 [[files]]
 file = "mods/toms_storage_fabric-1.20-1.7.1.pw.toml"
 hash = "039a96dc3be2df04618b3c10c1753bb273ae4935d8eaba4b2a4f50265d352b2b"
+metafile = true
+
+[[files]]
+file = "mods/tricky-trials-backport-direct.pw.toml"
+hash = "e6c668a2861a226f55e6d07e8a7002a238b5c21d003b942ebb6cc0f244fd9218"
+metafile = true
+
+[[files]]
+file = "mods/trimmed.pw.toml"
+hash = "38a431749f56dab8f8cba60acd36fa62e85b6aaab3d261a8d73169f8be0aafd6"
 metafile = true
 
 [[files]]

@@ -1,0 +1,13 @@
+name = "Sherds API"
+filename = "sherdsapi-fabric-1.20.1-4.0.4.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/nOUYhAZV/versions/uh4KCrsH/sherdsapi-fabric-1.20.1-4.0.4.jar"
+hash-format = "sha512"
+hash = "bd019fdfbc8925a79f8c115d66c2e626b4f745de266f457d72946e43291c90a321007bf7249f22bbb6d568f44a7a7e066573069ab1f8b79272ad297609d61a6d"
+
+[update]
+[update.modrinth]
+mod-id = "nOUYhAZV"
+version = "uh4KCrsH"

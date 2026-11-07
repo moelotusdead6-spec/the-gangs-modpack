@@ -1,0 +1,8 @@
+{
+  "structure_dimension_allowlist": {
+    "minecraft:trial_chambers": [
+      "multiworld:rsw"
+    ]
+  },
+  "spawner_key_chance": 0.1
+}

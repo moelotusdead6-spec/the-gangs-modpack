@@ -1,0 +1,8 @@
+name = "Retired: gangshop-1.0.0.jar"
+filename = "gangshop-1.0.0.jar"
+side = "client"
+
+[download]
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/gangs-retired-mod-placeholder.jar"
+hash-format = "sha256"
+hash = "1f9828c6a79419e51fa074c349eed50bbb8da6d88d47a9a94f3a5a3c718f80b0"

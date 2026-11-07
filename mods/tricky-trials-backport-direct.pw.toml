@@ -1,0 +1,7 @@
+name = "Tricky Trials Backport"
+filename = "trickytrialsbackport-fabric-2026.1-gangs.1.jar"
+
+[download]
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/trickytrialsbackport-fabric-2026.1-gangs.1.jar"
+hash-format = "sha256"
+hash = "abcca58649b0d773ef6b243e0cd752431f06413fcd5ec344b0a4d9d3a483d35f"

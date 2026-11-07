@@ -1,5 +1,33 @@
 # Published Artifacts
 
+## Prepared locally: Trial Chambers (RSW-only), Botania, Gang Shop 1.0.10
+
+- `artifacts/gangstrials-1.0.7.jar`:
+  `10e7d3218416ea10fe60814a72b3fe84a1dc0faebebb230b464586f4e2d4beac`.
+  First-party client and server mod (`sources/gangstrials`). It restricts
+  configured structures to allowed dimensions via `config/gangstrials.json`
+  (default: `minecraft:trial_chambers` only in `multiworld:rsw`) and fixes
+  backport trial spawners, ominous item spawners, wind charges and breezes.
+- `artifacts/gangs-retired-mod-placeholder.jar`:
+  `1f9828c6a79419e51fa074c349eed50bbb8da6d88d47a9a94f3a5a3c718f80b0`.
+  Empty non-mod jar written over retired jar names by `mods/retired-*.pw.toml`.
+- `artifacts/The-Gangs-Modpack-Installer.zip`:
+  `20364f4b5bf667d5b1e5431fd08595882a4000f0d749cb538f0794d54716c0f4`.
+  Slim Prism installer with no bundled mods (`scripts/Build-InstallerZip.ps1`).
+- `artifacts/gangshop-1.0.10.jar`:
+  `d1f0e39b5b98d0256bfa73b0e3e41d960573183b466091fb1145b7c4f762aebb`.
+  Excludes `botania`, `trickytrialsbackport`, `copperagebackport`, `trimmed`
+  and `sherdsapi` namespaces from the shop catalog.
+- `artifacts/trickytrialsbackport-fabric-2026.1-gangs.1.jar`:
+  `abcca58649b0d773ef6b243e0cd752431f06413fcd5ec344b0a4d9d3a483d35f`.
+  Tricky Trials Backport 2026.1 by Daniel Dixon (Dandi2k8), MIT. Repack adds
+  a correctly named copy of the mixin refmap (upstream ships
+  `trickytrialsbackport-common-common-refmap.json` while its mixin config
+  requests `trickytrialsbackport-refmap.json`, crashing production servers).
+  No other entries changed. [Official project](https://modrinth.com/mod/tricky-trials-backport).
+- Prepared locally only; not yet pushed to GitHub Pages or installed on the
+  live server. See [details and validation](docs/updates/next-restart.md).
+
 ## Prepared locally: GoldClaim 1.0.67 RSW dragon recovery
 
 - `artifacts/goldclaim-1.0.67.jar`:
