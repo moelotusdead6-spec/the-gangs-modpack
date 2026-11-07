@@ -26,6 +26,12 @@ keeps the original in `backups/end-portal-restart-1.0.75`, then hands off to
 `gangs-trials-botania-restart-1.0.74.jar`. Select it as `SERVER_JARFILE`.
 The change applies at the next restart; never `/reload`.
 
+Deployed 2026-11-07 ~22:27 UTC (no players, maintenance mode on): the
+launcher was uploaded with a read-back hash check and selected as
+`SERVER_JARFILE`. After restart only `mods/goldclaim-1.0.68.jar` is active,
+`backups/end-portal-restart-1.0.75/APPLIED.txt` exists, and the server
+reached `Done (10.637s)`.
+
 # Pack v1.1.26: Enhanced Celestials 2 notice hidden (2026-11-07)
 
 Enhanced Celestials 5.0.3.3 (already the newest 1.20.1 build) opens an
