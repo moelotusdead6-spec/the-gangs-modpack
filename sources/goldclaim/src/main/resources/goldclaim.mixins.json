@@ -25,6 +25,7 @@
     "BiomePickerAccessor",
     "EndBiomeSourceAccessor",
     "EnderDragonFightInvoker",
+    "EnderDragonFightPortalMixin",
     "BetterEndChestOpeningMixin",
     "ChestInventoryAccessor",
     "ServerChunkManagerInvoker",

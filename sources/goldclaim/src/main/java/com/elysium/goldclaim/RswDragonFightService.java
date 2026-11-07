@@ -29,6 +29,7 @@ public class RswDragonFightService {
     private static final Logger LOGGER = LoggerFactory.getLogger("GoldClaim/RswDragonFight");
     private static final String FIGHT_FILE = "rsw_dragon_fight.dat";
     private PendingReset pending;
+    private ServerWorld exitPortalChecked;
 
     private record PendingReset(ServerCommandSource source, ServerWorld world, long generation,
                                 long started, TeleportChunkArea area) {}
@@ -98,7 +99,28 @@ public class RswDragonFightService {
         return ((EnderDragonFightInvoker)fight).goldclaim$getDragonSpawnState() != null;
     }
 
+    private void relocateBuriedExitPortal(MinecraftServer server, RswResetService resets) {
+        ServerWorld world = rswEnd(server);
+        if (world == null || world == this.exitPortalChecked || resets.isClosed()) return;
+        EnderDragonFight fight = world.getEnderDragonFight();
+        if (fight == null) return;
+        this.exitPortalChecked = world;
+        var data = fight.toData();
+        // Only an already-open portal needs moving now; a closed one is placed on the surface when the dragon dies.
+        if (!data.dragonKilled() || data.exitPortalLocation().isEmpty() || isRespawning(fight)) return;
+        BlockPos portal = data.exitPortalLocation().get();
+        if (!ExitPortalPlacement.isBuried(world, portal)) return;
+        ((EnderDragonFightInvoker)fight).goldclaim$generateEndPortal(true);
+        saveFightData(world, fight.toData());
+        LOGGER.info("RSW End exit portal was buried at {}; now at {}", portal, fight.toData().exitPortalLocation().orElse(null));
+    }
+
     void tick(MinecraftServer server, RswResetService resets) {
+        try {
+            relocateBuriedExitPortal(server, resets);
+        } catch (RuntimeException failure) {
+            LOGGER.error("Failed to check the RSW End exit portal", failure);
+        }
         PendingReset request = this.pending;
         if (request == null) return;
         boolean finished = true;

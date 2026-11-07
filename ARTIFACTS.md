@@ -1,5 +1,17 @@
 # Published Artifacts
 
+## GoldClaim 1.0.68: End exit portal on the island surface
+
+- `artifacts/goldclaim-1.0.68.jar`:
+  `3c3c59e1f528a4fc699732190551ada24c9b05515a73ed92f05d4651a127f6ee`.
+  1.0.67 (RSW dragon recovery) plus `EnderDragonFightPortalMixin`, which keeps
+  the End exit fountain on the island surface instead of buried.
+- `artifacts/gangs-end-portal-restart-1.0.75.jar`:
+  `fe69d4d021c41cc4219be53301f99f3f5e2e90b5db5bc748090786243cabc341`.
+  Server restart launcher replacing `mods/goldclaim-1.0.66.jar` with 1.0.68;
+  chains to `gangs-trials-botania-restart-1.0.74.jar`.
+  See [details](docs/updates/next-restart.md).
+
 ## Prepared locally: Trial Chambers (RSW-only), Botania, Gang Shop 1.0.10
 
 - `artifacts/gangs-trials-botania-restart-1.0.74.jar`:

@@ -1,3 +1,31 @@
+# GoldClaim 1.0.68: End exit portal always on the island surface (2026-11-07)
+
+Vanilla places the exit fountain at the `MOTION_BLOCKING_NO_LEAVES`
+heightmap top at (0, 0). That reports the world bottom when the chunk is not
+loaded, and a saved location is never rechecked, so the RSW End exit portal
+ended up buried. `EnderDragonFightPortalMixin` (all End fights) now runs
+before `generateEndPortal`. It force-loads the centre chunks and takes the
+median top solid block within 6 blocks, ignoring air, fluids, leaves,
+bedrock and portal blocks. A new fountain is placed at that surface. A saved
+location two or more blocks below the surface is moved there, and the old
+portal blocks are removed so only one exit remains. On the first server tick
+after start, `RswDragonFightService` moves an already-open buried RSW exit
+portal once and saves the fight. A closed portal is placed correctly when the
+dragon dies or `/rsw dragon reset confirm` rebuilds it. GoldClaim 1.0.68 also
+carries the undeployed 1.0.67 dragon-recovery commands.
+
+Validation: all 91 GoldClaim unit tests pass. `runDragonRecoverySmoke` passed
+with the mixin applied (exit portal opened at y=57 on the surface, 36
+`end_portal` blocks). `EndPortalRestartTest` covers install, idempotent
+re-run, backup and refusal of tampered or unexpected GoldClaim jars.
+
+Deploy: `gangs-end-portal-restart-1.0.75.jar`
+(`scripts/hosted/Build-EndPortalRestart.ps1`) swaps
+`mods/goldclaim-1.0.66.jar` (`82421f35…`) for 1.0.68 under the world lock,
+keeps the original in `backups/end-portal-restart-1.0.75`, then hands off to
+`gangs-trials-botania-restart-1.0.74.jar`. Select it as `SERVER_JARFILE`.
+The change applies at the next restart; never `/reload`.
+
 # Pack v1.1.26: Enhanced Celestials 2 notice hidden (2026-11-07)
 
 Enhanced Celestials 5.0.3.3 (already the newest 1.20.1 build) opens an
