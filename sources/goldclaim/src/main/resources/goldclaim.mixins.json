@@ -24,6 +24,7 @@
     "BeachSurfaceRuleMixin",
     "BiomePickerAccessor",
     "EndBiomeSourceAccessor",
+    "EnderDragonFightInvoker",
     "BetterEndChestOpeningMixin",
     "ChestInventoryAccessor",
     "ServerChunkManagerInvoker",

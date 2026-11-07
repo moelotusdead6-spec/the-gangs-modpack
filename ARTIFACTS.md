@@ -1,5 +1,18 @@
 # Published Artifacts
 
+## Prepared locally: GoldClaim 1.0.67 RSW dragon recovery
+
+- `artifacts/goldclaim-1.0.67.jar`:
+  `647d41b123886ccf802d683f4bf3b554066d88b09d019e75c56a8d260f502567`.
+- Adds operator-only `/rsw dragon status` and `/rsw dragon reset confirm`.
+  Recovery backs up the old fight, rebuilds only the central exit fountain,
+  and preserves terrain, seed, kill/gateway history and vanilla End state.
+- All 88 GoldClaim unit tests and the isolated `runDragonRecoverySmoke`
+  fixture passed, including spawning one managed dragon and opening its exit
+  portal; a clean build reproduces the hash above.
+- Prepared locally only; not uploaded, installed or selected on the live
+  server. See [deployment status and usage](docs/updates/next-restart.md).
+
 ## Prepared locally: Simple Voice Chat 2.6.25
 
 - The unpublished v1.1.21 metadata downloads the original

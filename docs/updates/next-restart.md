@@ -1,3 +1,70 @@
+# Prepared locally: RSW dragon-only recovery (GoldClaim 1.0.67)
+
+The 2026-11-06 live RSW End fight data had `DragonKilled=1`,
+`PreviouslyKilled=1` and `NeedsStateScanning=0`, but no dragon UUID or exit
+portal location. The live log recorded a legacy scan declaring the dragon
+already killed. This explains the missing automatic fight; the source of the
+portal blocks detected by that scan has not been confirmed.
+
+GoldClaim 1.0.67 adds operator-only commands, usable from any dimension or
+the server console:
+
+```text
+/rsw dragon status
+/rsw dragon reset confirm
+```
+
+In the panel console, omit the leading `/`. Everyone must leave RSW End
+before requesting recovery and stay out until its success message appears.
+The command prepares the central chunks asynchronously, saves a
+`rsw_dragon_fight-before-reset-*.dat` backup beside the existing fight file,
+rebuilds the **closed central exit fountain**, and saves an undefeated fight
+without running the misleading legacy scan. The fountain can replace blocks
+in its immediate footprint; the dimension, seed and surrounding terrain are
+not reset. Previous kill/reward history and remaining gateway progress are
+preserved, and vanilla End fight data is untouched.
+
+After success, enter the central island in non-spectator mode to activate
+the dragon. The exit portal opens normally when that managed dragon is
+defeated. The command refuses an occupied End, an ongoing RSW reset, an
+active dragon respawn, a loaded living dragon or a tracked undefeated dragon
+that might be unloaded. A duplicate request is rejected; if RSW changes or
+a player enters while chunks are being prepared, recovery is cancelled.
+Terrain preparation times out after two minutes with an explicit error.
+
+**Deployment status:** the verified server-only jar is prepared at
+`artifacts/goldclaim-1.0.67.jar`, SHA-256
+`647d41b123886ccf802d683f4bf3b554066d88b09d019e75c56a8d260f502567`.
+It has **not** been uploaded or selected for installation on the live server;
+the existing startup launcher remains unchanged. It must be installed through
+the stopped-server/next-restart deployment workflow before these commands
+exist. Installing the jar does not reset a fight automatically. Do not use
+`/reload`, delete RSW terrain, or run `/rsw reset` for this repair:
+`/rsw reset` resets all three resource worlds.
+
+Validation (2026-11-06): all 88 GoldClaim unit tests pass, and a clean
+`build` reproduces the artifact's SHA-256 exactly. The isolated
+`runDragonRecoverySmoke` fixture (`GOLDCLAIM_DRAGON_RECOVERY_SMOKE=true`, Fabric
+Loader 0.19.3, seeded throwaway world) passed and wrote
+`tmp/goldclaim-dragon-recovery-smoke/dragon-recovery-smoke-passed.txt`. It
+verified operator and console
+access, explicit confirmation, enqueue below 250ms, all refusal conditions,
+player-entry cancellation/retry, exact old-state backup, fountain generation,
+terrain/seed/gateway/vanilla-End preservation, immediate persistence and
+reload, exactly one managed dragon, a closed portal before the defeat and 36
+`end_portal` blocks after it. No live world state was modified. The
+CorgiLib NightConfig error printed during fixture shutdown is a dev-runtime
+artifact that occurs after the result is written. To repeat it, copy an
+accepted `eula.txt` into `tmp/goldclaim-dragon-recovery-smoke`, then run:
+
+```powershell
+.\sources\goldclaim\gradlew.bat -p .\sources\goldclaim runDragonRecoverySmoke --no-daemon `
+  '-PsmokeModsDir=../../tmp/dragon-recovery-smoke-dependencies' '-Ploader_version=0.19.3'
+```
+
+The dependency directory holds Multiworld, Fantasy, LuckPerms, Saro's plushie,
+WunderLib, Cupboard, CorgiLib and the other `biolith-smoke-dependencies` jars.
+
 # AFK badges and nickname nameplates (client update 1.1.24)
 
 Gangs Oux Badges Compat 1.0.3 replaces the rank label in Essential Commands'

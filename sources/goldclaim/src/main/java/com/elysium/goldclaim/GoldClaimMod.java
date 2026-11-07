@@ -236,6 +236,7 @@ implements ModInitializer {
     private SelectionManager selectionManager;
     private final KitService kitService = new KitService();
     private final RswResetService rswResetService = new RswResetService();
+    private final RswDragonFightService rswDragonFightService = new RswDragonFightService();
     private final TeleportPreparation teleportPreparation = new TeleportPreparation(this.rswResetService);
     private final RswEndCityService rswEndCities = new RswEndCityService();
     private ChunkGenerator rswEndGenerator;
@@ -685,6 +686,12 @@ implements ModInitializer {
             dispatcher.register((LiteralArgumentBuilder)this.publicCommand("pvp").executes(ctx -> this.teleportToTestingWorld((ServerCommandSource)ctx.getSource(), PVP_DIMENSION, "PVP", true)));
             dispatcher.register(this.publicCommand("rsw")
                 .executes(ctx -> this.teleportToRsw(ctx.getSource()))
+                .then(CommandManager.literal("dragon").requires(source -> source.hasPermissionLevel(2))
+                    .then(CommandManager.literal("status")
+                        .executes(ctx -> this.rswDragonFightService.status(ctx.getSource())))
+                    .then(CommandManager.literal("reset")
+                        .then(CommandManager.literal("confirm")
+                            .executes(ctx -> this.rswDragonFightService.requestReset(ctx.getSource(), this.rswResetService)))))
                 .then(CommandManager.literal("reset").requires(source -> source.hasPermissionLevel(2))
                     .executes(ctx -> this.requestRswReset(ctx.getSource()))));
             dispatcher.register((LiteralArgumentBuilder)this.publicCommand("rtp").executes(ctx -> this.randomTeleport((ServerCommandSource)ctx.getSource())));
@@ -936,6 +943,7 @@ implements ModInitializer {
                 });
             this.rswEntrySearch.tick();
             this.teleportPreparation.tick();
+            this.rswDragonFightService.tick(server, this.rswResetService);
             if (server.getTicks() % 20 == 0) {
                 DifficultySync.sync(server);
             }
