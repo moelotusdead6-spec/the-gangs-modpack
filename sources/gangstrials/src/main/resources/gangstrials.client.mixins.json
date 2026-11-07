@@ -1,0 +1,12 @@
+{
+  "required": false,
+  "minVersion": "0.8",
+  "package": "com.gangs.gangstrials.mixin.client",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "EC2AnnouncementMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 0
+  }
+}

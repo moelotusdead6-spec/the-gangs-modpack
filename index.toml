@@ -6,7 +6,7 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "430baef41c449142e32544b4511936bfa4e60a19919661a1322c87ad18f7b5cc"
+hash = "128198f68703e6d613b21c84ba4598fa319bd355aa9e6d9e6179a2409296d49e"
 
 [[files]]
 file = "README.md"
@@ -1587,7 +1587,7 @@ metafile = true
 
 [[files]]
 file = "mods/gangstrials-direct.pw.toml"
-hash = "32bb555e378ae425857440cb7fc4a29e8a323e961667206c10754387a68ca57a"
+hash = "deda8a716f8051cdf1ea7a5e4882d32e48e02720bd1a54b8aaf7c24905ae694b"
 metafile = true
 
 [[files]]

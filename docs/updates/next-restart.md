@@ -1,3 +1,22 @@
+# Pack v1.1.26: Enhanced Celestials 2 notice hidden (2026-11-07)
+
+Enhanced Celestials 5.0.3.3 (already the newest 1.20.1 build) opens an
+"Enhanced Celestials 2 is here!" screen on every world join, and its dismiss
+button only lasts until the next join. Enhanced Celestials 2 is published
+only for Minecraft 26.x, so it cannot be added to this 1.20.1 pack.
+GangsTrials 1.0.8 adds a client-only `@Pseudo` mixin
+(`mixin/client/EC2AnnouncementMixin`, optional config
+`gangstrials.client.mixins.json`) that cancels
+`EC2AnnouncementTrigger.onLogin`, so the screen never opens. Nothing else
+changes; the server keeps GangsTrials 1.0.7 (the change is client-only).
+
+Server restart 2026-11-07 ~22:01 UTC (maintenance mode on, no players):
+`gangs-trials-botania-restart-1.0.74.jar` applied. Botania, the trial
+backport jars, GangsTrials 1.0.7, Gang Shop 1.0.10 and
+`alexscaves-2.1.8-gangs-levelseed.jar` are active,
+`backups/trials-botania-restart-1.0.74/APPLIED.txt` exists, and the server
+reached `Done (11.392s)`.
+
 # Prepared locally: Trial Chambers in RSW, Botania, Lootr chest-only chambers
 
 Adds 1.21-style Trial Chambers (RSW overworld only) and Botania without any

@@ -8,6 +8,11 @@
   and Lootr changes, and swapping in the Alex's Caves level-seed jar (read
   from `gangs-alex-map-seed-restart-1.0.71.jar`); chains to
   `gangs-oux-badges-restart-1.0.72.jar`.
+- `artifacts/gangstrials-1.0.8.jar`:
+  `09f3addac04ebfa3c6296f7bc5a6968eef7b6be015e51f72071fdfb44aa9a080`.
+  1.0.7 plus a client-only mixin that stops Enhanced Celestials 5.0.3.3
+  opening its "Enhanced Celestials 2 is here!" screen on every world join
+  (EC2 exists only for Minecraft 26.x). The server keeps 1.0.7.
 - `artifacts/gangstrials-1.0.7.jar`:
   `10e7d3218416ea10fe60814a72b3fe84a1dc0faebebb230b464586f4e2d4beac`.
   First-party client and server mod (`sources/gangstrials`). It restricts
