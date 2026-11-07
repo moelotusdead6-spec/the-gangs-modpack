@@ -16,16 +16,19 @@ import java.util.jar.JarFile;
  * Restart launcher for Trial Chambers (RSW only), Botania and indestructible Lootr containers. While the world is
  * not running it installs every "new.*" payload file from files.properties and moves every "old.*" file (checked by
  * SHA-256) into BACKUP: Gang Shop 1.0.9 becomes 1.0.10, and the live lootr.json and Gang Shop overrides are replaced
- * by staged copies made from them. It then hands off to gangs-oux-badges-restart-1.0.72.jar, which continues the
- * existing launcher chain. If any check fails nothing is changed and the server still starts normally.
+ * by staged copies made from them. It also swaps the live Alex's Caves jar for the level-seed build, which the
+ * 1.0.71 launcher refused because it only accepted a newer original. A "src.*" entry names a class path resource to
+ * read a payload file from (the level-seed jar is taken from gangs-alex-map-seed-restart-1.0.71.jar). It then hands
+ * off to gangs-oux-badges-restart-1.0.72.jar, which continues the existing launcher chain. If any check fails nothing
+ * is changed and the server still starts normally.
  */
 public final class TrialsBotaniaRestart {
-    static final Path BACKUP = Path.of("backups/trials-botania-restart-1.0.73");
+    static final Path BACKUP = Path.of("backups/trials-botania-restart-1.0.74");
     static final String RESOURCES = "/trialsbotania-payload/";
     static final String FABRIC_LAUNCHER_SHA256 = "6f921315fe2f570c331ca877d1e815c29b93fdc4ad04ce0f0f5cdf4300710028";
     static final String OUX_BADGES = "gangs-oux-badges-restart-1.0.72.jar";
     static final String OUX_BADGES_SHA256 = "befda734de424031052c8172df52479c126c45116591265100d795884cbe2a6d";
-    static final String APPLIED = "Trial Chambers, Botania, Gang Shop 1.0.10 and Lootr protection installed.\n";
+    static final String APPLIED = "Trial Chambers, Botania, Gang Shop 1.0.10, Lootr protection and Alex's Caves level seed installed.\n";
 
     public static void main(String[] args) throws Throwable {
         Path root = Path.of(".").toAbsolutePath().normalize();
@@ -83,6 +86,7 @@ public final class TrialsBotaniaRestart {
             requireOnly(root, "gangstrials-", "gangstrials-1.0.7.jar");
             requireOnly(root, "Botania-", "Botania-1.20.1-456-FABRIC.jar");
             requireOnly(root, "trickytrialsbackport-", "trickytrialsbackport-fabric-2026.1-gangs.1.jar");
+            requireOnly(root, "alexscaves-", "alexscaves-2.1.8.jar", "alexscaves-2.1.8-gangs-levelseed.jar");
             if (Files.exists(marker)) {
                 verifyInstalled(root, oldFiles, newFiles);
                 System.out.println("[TrialsBotaniaRestart] Update already installed and verified.");
@@ -191,8 +195,13 @@ public final class TrialsBotaniaRestart {
         return result;
     }
 
-    static InputStream payload(String name) {
-        InputStream stream = TrialsBotaniaRestart.class.getResourceAsStream(RESOURCES + name);
+    static InputStream payload(String name) throws Exception {
+        String resource = RESOURCES + name;
+        if (!name.equals("files.properties")) {
+            String source = properties("files.properties").getProperty("src." + name);
+            if (source != null) resource = source;
+        }
+        InputStream stream = TrialsBotaniaRestart.class.getResourceAsStream(resource);
         if (stream == null) throw new IllegalStateException("Missing payload: " + name);
         return stream;
     }

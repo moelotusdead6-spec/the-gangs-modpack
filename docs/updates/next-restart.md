@@ -80,10 +80,10 @@ Validation (2026-11-06, isolated closed server in `tmp/testserver`, full
 
 **Deployment status:** pack v1.1.25 is published, so clients update on their
 next launch. The server installs the update on its next normal start through
-`artifacts/gangs-trials-botania-restart-1.0.73.jar` (SHA-256
-`9d1d3a4f501e7c127d2d12e0c10d0b4de6dd4ab2a7885f3f44f77cf6e52271ca`), which is
-selected as the panel's server jar. Never `/reload`. While the world lock is
-free, it:
+`artifacts/gangs-trials-botania-restart-1.0.74.jar` (SHA-256
+`bdac9539a5c8b0f4917ff97b56b39af349bf3549873fe8a69f54f81eba646c48`), which is
+selected as the panel's server jar. It supersedes the never-run 1.0.73. Never
+`/reload`. While the world lock is free, it:
 
 - installs Botania, Tricky Trials Backport (repack), Copper Age Backport,
   Trimmed, Sherds API and GangsTrials 1.0.7;
@@ -93,7 +93,24 @@ free, it:
 - replaces `config/lootr.json` (the live file plus `blast_immune` and the
   trial barrel blacklist) and `config/gangshop/overrides.json` (the live file
   plus the 34 backport deny entries, `scripts/hosted/trials-botania-overrides.json`);
-- saves the originals in `backups/trials-botania-restart-1.0.73/`.
+- replaces `mods/alexscaves-2.1.8.jar` with
+  `alexscaves-2.1.8-gangs-levelseed.jar`, taken from the map-seed launcher
+  already on the server (see below);
+- saves the originals in `backups/trials-botania-restart-1.0.74/`.
+
+Until the server restarts, 1.1.25 clients can crash with
+`Missing registry: sherdsapi:sherd` (for example rendering decorated pots in
+REI), because the server does not have Sherds API yet.
+
+**Why the map-seed update never applied:** the 1.0.71 launcher only accepts
+the v1.1.19 Alex's Caves build (`bf0065bb…`). The live server still runs the
+earlier build (`f748286c…`), which was only ever updated on clients, so the
+launcher refused at every restart since 2026-11-05 and logged "Update NOT
+applied". The two builds differ only in the client-side
+`grottoceratops_egg_template.json`, and the level-seed jar is the newer build
+plus the seed patch, so 1.0.74 swaps the live jar after checking it is
+exactly `f748286c…`. After that, 1.0.71 still finds no original jar, logs
+that it did not apply, and hands off as before.
 
 Every replaced live file is checked against the hash read before staging. If
 any check fails nothing changes and the server starts normally. The launcher
@@ -102,8 +119,9 @@ existing chain. Source, tests and build script:
 `scripts/hosted/TrialsBotaniaRestart*.java` and
 `scripts/hosted/Build-TrialsBotaniaRestart.ps1`.
 
-Rollback: stop the server, delete the six new mod jars and
-`mods/gangshop-1.0.10.jar`, copy the backed-up files back, and select
+Rollback: stop the server, delete the six new mod jars,
+`mods/gangshop-1.0.10.jar` and `mods/alexscaves-2.1.8-gangs-levelseed.jar`,
+copy the backed-up files back, and select
 `gangs-oux-badges-restart-1.0.72.jar`.
 
 Trial chambers only generate in newly created RSW chunks, so they appear
@@ -410,6 +428,9 @@ Clients get it through packwiz. The server change is not live yet.
   so that it matches the jar.
 
 ## Deployment (not done yet)
+
+Superseded: this launcher refused the live jar (see the trials/Botania
+section above); `gangs-trials-botania-restart-1.0.74.jar` performs the swap.
 
 `artifacts/gangs-alex-map-seed-restart-1.0.71.jar` (SHA-256
 `b42f1dd8616d1b992ded7f5d399e586f8bc443edbe8f6547a84c9a27266b87b3`).

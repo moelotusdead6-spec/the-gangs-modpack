@@ -3,7 +3,7 @@ import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.Properties;
 
-/** Regression tests for TrialsBotaniaRestart.install. Args: gangshop-1.0.9.jar, directory with live lootr.json and overrides.json. */
+/** Regression tests for TrialsBotaniaRestart.install. Args: gangshop-1.0.9.jar, directory with live lootr.json, overrides.json and alexscaves-2.1.8.jar. */
 public final class TrialsBotaniaRestartTest {
     public static void main(String[] args) throws Exception {
         Path gangShop = Path.of(args[0]);
@@ -18,6 +18,8 @@ public final class TrialsBotaniaRestartTest {
             if (key.startsWith("old.")) TrialsBotaniaRestart.check(root.resolve(TrialsBotaniaRestart.BACKUP).resolve(name), manifest.getProperty(key));
         }
         require(!Files.exists(root.resolve("mods/gangshop-1.0.9.jar")), "Gang Shop 1.0.9 was not removed.");
+        require(!Files.exists(root.resolve("mods/alexscaves-2.1.8.jar")), "Original Alex's Caves jar was not removed.");
+        require(Files.exists(root.resolve("mods/alexscaves-2.1.8-gangs-levelseed.jar")), "Level-seed jar missing.");
         require(Files.exists(root.resolve(TrialsBotaniaRestart.BACKUP).resolve("APPLIED.txt")), "Marker missing.");
         TrialsBotaniaRestart.install(root);
 
@@ -33,6 +35,7 @@ public final class TrialsBotaniaRestartTest {
         Files.writeString(root.resolve("config/lootr.json"), "{}");
         expectFailure(root, "File changed since staging");
         require(Files.exists(root.resolve("mods/gangshop-1.0.9.jar")), "Failed update removed Gang Shop 1.0.9.");
+        require(Files.exists(root.resolve("mods/alexscaves-2.1.8.jar")), "Failed update removed Alex's Caves.");
         require(!Files.exists(root.resolve("mods/gangstrials-1.0.7.jar")), "Failed update installed mods.");
         require(!Files.exists(root.resolve(TrialsBotaniaRestart.BACKUP)), "Failed update created backups.");
         delete(root);
@@ -41,6 +44,12 @@ public final class TrialsBotaniaRestartTest {
         root = fixture(gangShop, live);
         Files.writeString(root.resolve("mods/gangshop-1.0.8.jar"), "x");
         expectFailure(root, "Unexpected active mod");
+        delete(root);
+
+        // A different Alex's Caves build blocks the update.
+        root = fixture(gangShop, live);
+        Files.writeString(root.resolve("mods/alexscaves-2.1.8.jar"), "x");
+        expectFailure(root, "File changed since staging");
         delete(root);
         System.out.println("TrialsBotaniaRestart tests passed.");
     }
@@ -54,6 +63,7 @@ public final class TrialsBotaniaRestartTest {
         Files.copy(gangShop, root.resolve("mods/gangshop-1.0.9.jar"));
         Files.copy(live.resolve("lootr.json"), root.resolve("config/lootr.json"));
         Files.copy(live.resolve("overrides.json"), root.resolve("config/gangshop/overrides.json"));
+        Files.copy(live.resolve("alexscaves-2.1.8.jar"), root.resolve("mods/alexscaves-2.1.8.jar"));
         return root;
     }
 
