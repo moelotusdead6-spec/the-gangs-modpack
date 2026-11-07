@@ -1,5 +1,6 @@
 package com.elysium.goldclaim;
 
+import com.elysium.goldclaim.mixin.EnderDragonFightInvoker;
 import com.mojang.authlib.GameProfile;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,7 +11,10 @@ import java.util.UUID;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.boss.dragon.EnderDragonFight;
+import net.minecraft.entity.decoration.EndCrystalEntity;
+import net.minecraft.util.math.Direction;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.ClientConnection;
@@ -26,6 +30,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.WorldSavePath;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 
 final class RswDragonRecoverySmokeTest {
     private static int ticks;
@@ -33,13 +38,15 @@ final class RswDragonRecoverySmokeTest {
     private static EnderDragonFight.Data oldData;
     private static EnderDragonFight.Data vanillaData;
     private static ServerPlayerEntity visitor;
+    private static int openedCount;
     private static long seed;
     private static final BlockPos MARKER = new BlockPos(32, 90, 32);
+    private static final BlockPos STRAY_PORTAL = new BlockPos(2, 20, 1);
     private static final String RESET = "rsw dragon reset confirm";
 
     static void register() {
         ServerTickEvents.END_SERVER_TICK.register(server -> {
-            require(++ticks < 2400, "Dragon recovery smoke timed out");
+            require(++ticks < 4800, "Dragon recovery smoke timed out");
             ServerWorld world = server.getWorld(RegistryKey.of(RegistryKeys.WORLD,
                 new Identifier(GoldClaimMod.RSW_THE_END_DIMENSION)));
             if (world == null || ticks < 40) return;
@@ -75,6 +82,7 @@ final class RswDragonRecoverySmokeTest {
                         "Reset permission check could be bypassed");
                     RswDragonFightService.saveFightData(world, oldData);
                     world.setBlockState(MARKER, Blocks.DIAMOND_BLOCK.getDefaultState());
+                    world.setBlockState(STRAY_PORTAL, Blocks.END_PORTAL.getDefaultState());
                     require(dispatcher.execute("rsw dragon status", source) == 1, "Status failed");
                     long before = System.nanoTime();
                     require(dispatcher.execute(RESET, source) == 1, "Reset did not enqueue");
@@ -95,15 +103,19 @@ final class RswDragonRecoverySmokeTest {
                     return;
                 }
                 if (stage == 2) {
-                    var data = world.getEnderDragonFight().toData();
-                    if (data.dragonKilled()) return;
-                    require(!data.needsStateScanning() && !data.isRespawning(), "Reset retained legacy/respawn state");
+                    var fight = world.getEnderDragonFight();
+                    if (((EnderDragonFightInvoker)fight).goldclaim$getDragonSpawnState() == null) return;
+                    var data = fight.toData();
+                    require(data.dragonKilled() && !data.needsStateScanning(), "Reset did not enter the respawn ritual");
                     require(data.previouslyKilled() && data.gateways().equals(oldData.gateways()),
                         "Reset lost prior kill/gateway progress");
                     require(data.dragonUUID().isEmpty() && data.exitPortalLocation().isPresent(),
                         "Reset did not clear UUID or build a fountain");
                     BlockPos portal = data.exitPortalLocation().orElseThrow();
-                    require(world.getBlockState(portal).isOf(Blocks.BEDROCK), "Exit fountain was not generated");
+                    require(ExitPortalPlacement.hasFountain(world, portal), "Exit fountain was not generated");
+                    require(!ExitPortalPlacement.isBuried(world, portal), "Exit fountain is buried at " + portal);
+                    require(portalBlocks(world, portal).isEmpty(), "Exit portal stayed open during the respawn");
+                    require(!world.getBlockState(STRAY_PORTAL).isOf(Blocks.END_PORTAL), "Stray buried portal was kept");
                     require(world.getSeed() == seed && world.getBlockState(MARKER).isOf(Blocks.DIAMOND_BLOCK),
                         "Reset changed seed or terrain outside the fountain");
                     require(server.getSaveProperties().getDragonFight().equals(vanillaData),
@@ -121,13 +133,21 @@ final class RswDragonRecoverySmokeTest {
                     world.setEnderDragonFight(null);
                     RswDragonFightService.ensureDragonFight(world);
                     require(world.getEnderDragonFight().toData().equals(data), "Reset state did not survive reload");
+                    world.setEnderDragonFight(fight);
                     visitor = visitor(server, world);
                     stage = 3;
+                    return;
+                }
+                if (stage == 4) {
+                    finishRitual(server, world);
                     return;
                 }
                 var dragons = world.getAliveEnderDragons();
                 if (dragons.isEmpty()) return;
                 require(dragons.size() == 1, "Recovery spawned duplicate dragons");
+                int crystals = world.getEntitiesByType(EntityType.END_CRYSTAL, new Box(-64, world.getBottomY(), -64,
+                    64, world.getTopY(), 64), crystal -> true).size();
+                require(crystals > 0, "Respawn did not rebuild pillar crystals");
                 world.removePlayer(visitor, Entity.RemovalReason.DISCARDED);
                 require(dispatcher.execute(RESET, source) == 0, "Reset accepted with a live dragon");
                 var fight = world.getEnderDragonFight();
@@ -142,20 +162,39 @@ final class RswDragonRecoverySmokeTest {
                         + ", sameFight=" + (fight == world.getEnderDragonFight()));
                 require(server.getSaveProperties().getDragonFight().equals(vanillaData),
                     "Dragon spawn modified vanilla End state");
-                Files.writeString(Path.of("dragon-recovery-smoke-passed.txt"),
-                    "PASS: operator-only confirmed command; console support; RSW reset/respawn/unloaded-dragon guards; "
-                    + "enqueue <250ms; duplicate and "
-                    + "occupied-End refusal; player-entry cancellation and retry; exact old-state backup; "
-                    + "closed fountain rebuilt; killed/legacy flags cleared; kill/gateway progress, terrain, "
-                    + "seed and vanilla End preserved; state survives reload; exactly one dragon spawns; "
-                    + "live-dragon reset refused; managed dragon defeat opens the exit portal ("
-                    + opened.size() + " end_portal blocks at y=" + opened.get(0).getY() + ", fountain "
-                    + fountain.toShortString() + ").\n");
-                server.stop(false);
+                if (stage == 3) {
+                    BlockPos above = fountain.up();
+                    for (Direction direction : Direction.Type.HORIZONTAL) {
+                        BlockPos rim = above.offset(direction, 3);
+                        var crystal = new EndCrystalEntity(world, rim.getX() + 0.5, rim.getY(), rim.getZ() + 0.5);
+                        crystal.setShowBottom(false);
+                        world.spawnEntity(crystal);
+                    }
+                    visitor = visitor(server, world);
+                    openedCount = opened.size();
+                    stage = 4;
+                    return;
+                }
             } catch (Exception failure) {
                 throw new IllegalStateException("RSW dragon recovery integration failed", failure);
             }
         });
+    }
+
+    private static void finishRitual(MinecraftServer server, ServerWorld world) throws IOException {
+        var fight = world.getEnderDragonFight();
+        if (((EnderDragonFightInvoker)fight).goldclaim$getDragonSpawnState() == null) return;
+        BlockPos fountain = fight.toData().exitPortalLocation().orElseThrow();
+        require(portalBlocks(world, fountain).isEmpty(), "Crystal ritual did not close the exit portal");
+        Files.writeString(Path.of("dragon-recovery-smoke-passed.txt"),
+            "PASS: operator-only confirmed command; console support; RSW reset/respawn/unloaded-dragon guards; "
+            + "enqueue <250ms; duplicate and occupied-End refusal; player-entry cancellation and retry; exact "
+            + "old-state backup; reset starts the vanilla respawn ritual with a closed surface fountain; stray "
+            + "buried portal removed; kill/gateway progress, terrain, seed and vanilla End preserved; state "
+            + "survives reload; pillars rebuilt with crystals; exactly one dragon spawns; live-dragon reset "
+            + "refused; managed dragon defeat opens the exit portal (" + openedCount + " end_portal blocks, "
+            + "fountain " + fountain.toShortString() + "); four rim crystals restart the respawn and close it.\n");
+        server.stop(false);
     }
 
     private static ServerPlayerEntity visitor(MinecraftServer server, ServerWorld world) {

@@ -1,3 +1,41 @@
+# GoldClaim 1.0.69: RSW End fountain and dragon respawn bypass BetterEnd (2026-11-07)
+
+1.0.68 did not fix the RSW End. BetterEnd (`customEndPortal=true`) sends every
+`EndPortalFeature` to one per-save portal position, so the RSW fountain was
+built buried at y≈58 while the fight recorded y=73. It also places its own
+portal shape, which vanilla cannot find to close during a respawn, and it
+replaces the crystal-ritual check with one for that shape. Results: the portal
+stayed buried, stayed lit during respawns, and `/rsw dragon reset` summoned a
+bare dragon with no pillar crystals.
+
+Fixes, active outside `minecraft:the_end` only (the main End is unchanged):
+- `EnderDragonFightPortalMixin` now cancels `generateEndPortal`. It removes
+  every stray `end_portal` block in the central column (±8 blocks, all
+  heights), then places the vanilla fountain on the surface. That fountain is
+  open after a kill and closed during a respawn.
+- `/rsw dragon reset confirm` now runs the vanilla respawn sequence. The
+  fountain closes, and when a player reaches the island the pillars rebuild
+  with lit crystals before the dragon is summoned. Kill and gateway progress
+  are kept.
+- Four End Crystals on the fountain rim (the vanilla ritual) are detected
+  every second and start the same sequence.
+- On startup an open RSW portal whose fountain is missing or buried is rebuilt.
+  On the live server this moves the lit portal from y≈58 up to the y=73
+  surface.
+
+Validation: the unit tests pass. `runDragonRecoverySmoke` (with BetterEnd
+loaded) covered the following:
+- Reset starts the respawn with a closed surface fountain, and a buried stray
+  portal is removed.
+- Pillar crystals rebuild and exactly one dragon spawns.
+- The portal opens when that dragon dies.
+- Four rim crystals restart the respawn and close the portal.
+
+Deploy: `gangs-end-portal-restart-1.0.76.jar`
+(`scripts/hosted/Build-EndPortal2Restart.ps1`) swaps
+`mods/goldclaim-1.0.68.jar` (`3c3c59e1…`) for 1.0.69 under the world lock and
+keeps a backup in `backups/end-portal-restart-1.0.76`. It then hands off to
+`gangs-end-portal-restart-1.0.75.jar`. Never `/reload`.
 # GoldClaim 1.0.68: End exit portal always on the island surface (2026-11-07)
 
 Vanilla places the exit fountain at the `MOTION_BLOCKING_NO_LEAVES`

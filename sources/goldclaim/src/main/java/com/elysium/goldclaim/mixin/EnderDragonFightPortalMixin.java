@@ -4,6 +4,7 @@ import com.elysium.goldclaim.ExitPortalPlacement;
 import net.minecraft.entity.boss.dragon.EnderDragonFight;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.EndPortalFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,18 +23,22 @@ public abstract class EnderDragonFightPortalMixin {
     @Shadow @Final private BlockPos origin;
     @Shadow private BlockPos exitPortalLocation;
 
-    @Inject(method = "generateEndPortal", at = @At("HEAD"))
+    @Inject(method = "generateEndPortal", at = @At("HEAD"), cancellable = true)
     private void goldclaim$placeOnSurface(boolean previouslyKilled, CallbackInfo ci) {
+        // BetterEnd moves every exit portal to one per-save position; non-vanilla Ends build their own fountain.
+        if (this.world.getRegistryKey() == World.END) return;
         BlockPos center = this.exitPortalLocation != null ? this.exitPortalLocation : EndPortalFeature.offsetOrigin(this.origin);
         int surface = ExitPortalPlacement.surfaceY(this.world, center);
         if (surface == Integer.MIN_VALUE) return;
         BlockPos old = this.exitPortalLocation;
-        if (old != null && !ExitPortalPlacement.isBuried(old.getY(), surface)) return;
-        BlockPos target = new BlockPos(center.getX(), surface, center.getZ());
-        if (old != null) {
-            ExitPortalPlacement.clearOldPortal(this.world, old);
-            GOLDCLAIM$LOGGER.info("Moving buried exit portal in {} from {} to {}", this.world.getRegistryKey().getValue(), old, target);
+        BlockPos target = old != null && !ExitPortalPlacement.isBuried(old.getY(), surface)
+            ? old : new BlockPos(center.getX(), surface, center.getZ());
+        if (!target.equals(old)) {
+            GOLDCLAIM$LOGGER.info("Placing exit portal in {} at {} (was {})", this.world.getRegistryKey().getValue(), target, old);
         }
         this.exitPortalLocation = target;
+        ExitPortalPlacement.clearStrayPortals(this.world, target);
+        ExitPortalPlacement.placeFountain(this.world, target, previouslyKilled);
+        ci.cancel();
     }
 }

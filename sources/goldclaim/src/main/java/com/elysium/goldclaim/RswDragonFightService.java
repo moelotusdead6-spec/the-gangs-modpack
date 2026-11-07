@@ -2,6 +2,10 @@ package com.elysium.goldclaim;
 
 import com.elysium.goldclaim.mixin.EnderDragonFightInvoker;
 import net.minecraft.entity.boss.dragon.EnderDragonFight;
+import net.minecraft.entity.boss.dragon.EnderDragonSpawnState;
+import net.minecraft.entity.decoration.EndCrystalEntity;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Direction;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtOps;
@@ -22,6 +26,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionException;
 
@@ -30,6 +36,7 @@ public class RswDragonFightService {
     private static final String FIGHT_FILE = "rsw_dragon_fight.dat";
     private PendingReset pending;
     private ServerWorld exitPortalChecked;
+    private int ritualTicks;
 
     private record PendingReset(ServerCommandSource source, ServerWorld world, long generation,
                                 long started, TeleportChunkArea area) {}
@@ -106,18 +113,54 @@ public class RswDragonFightService {
         if (fight == null) return;
         this.exitPortalChecked = world;
         var data = fight.toData();
-        // Only an already-open portal needs moving now; a closed one is placed on the surface when the dragon dies.
+        // Only an already-open portal needs repairing now; a closed one is rebuilt when the dragon dies.
         if (!data.dragonKilled() || data.exitPortalLocation().isEmpty() || isRespawning(fight)) return;
         BlockPos portal = data.exitPortalLocation().get();
-        if (!ExitPortalPlacement.isBuried(world, portal)) return;
+        if (ExitPortalPlacement.hasFountain(world, portal) && !ExitPortalPlacement.isBuried(world, portal)) return;
         ((EnderDragonFightInvoker)fight).goldclaim$generateEndPortal(true);
         saveFightData(world, fight.toData());
-        LOGGER.info("RSW End exit portal was buried at {}; now at {}", portal, fight.toData().exitPortalLocation().orElse(null));
+        LOGGER.info("RSW End exit portal at {} was missing or buried; rebuilt at {}", portal,
+            fight.toData().exitPortalLocation().orElse(null));
+    }
+
+    /**
+     * Starts the vanilla respawn sequence without EnderDragonFight#respawnDragon's 17x17-chunk portal search;
+     * BetterEnd also replaces the vanilla crystal check with one for its own portal shape.
+     */
+    static void startRespawn(EnderDragonFight fight, List<EndCrystalEntity> crystals) {
+        EnderDragonFightInvoker access = (EnderDragonFightInvoker)fight;
+        access.goldclaim$setDragonSpawnState(EnderDragonSpawnState.START);
+        access.goldclaim$setSpawnStateTimer(0);
+        access.goldclaim$generateEndPortal(false);
+        access.goldclaim$setCrystals(new ArrayList<>(crystals));
+    }
+
+    /** Vanilla crystal ritual: one End Crystal on each side of the exit fountain rim. */
+    private void checkRespawnRitual(MinecraftServer server, RswResetService resets) {
+        if (++this.ritualTicks < 20) return;
+        this.ritualTicks = 0;
+        ServerWorld world = rswEnd(server);
+        if (world == null || resets.isClosed() || world.getPlayers().isEmpty()) return;
+        EnderDragonFight fight = world.getEnderDragonFight();
+        if (fight == null || isRespawning(fight)) return;
+        var data = fight.toData();
+        if (!data.dragonKilled() || data.exitPortalLocation().isEmpty()) return;
+        BlockPos above = data.exitPortalLocation().get().up();
+        List<EndCrystalEntity> crystals = new ArrayList<>();
+        for (Direction direction : Direction.Type.HORIZONTAL) {
+            List<EndCrystalEntity> side = world.getNonSpectatingEntities(EndCrystalEntity.class,
+                new Box(above.offset(direction, 2)));
+            if (side.isEmpty()) return;
+            crystals.addAll(side);
+        }
+        LOGGER.info("RSW End crystal ritual completed; respawning the dragon");
+        startRespawn(fight, crystals);
     }
 
     void tick(MinecraftServer server, RswResetService resets) {
         try {
             relocateBuriedExitPortal(server, resets);
+            checkRespawnRitual(server, resets);
         } catch (RuntimeException failure) {
             LOGGER.error("Failed to check the RSW End exit portal", failure);
         }
@@ -144,17 +187,18 @@ public class RswDragonFightService {
             Path backup = Files.createTempFile(directory,
                 "rsw_dragon_fight-before-reset-", ".dat");
             writeFightData(backup.toFile(), oldData);
-            var data = new EnderDragonFight.Data(false, false, oldData.previouslyKilled(), false,
-                Optional.empty(), Optional.empty(), oldData.gateways());
+            var data = new EnderDragonFight.Data(false, true, oldData.previouslyKilled(), false,
+                Optional.empty(), oldData.exitPortalLocation(), oldData.gateways());
             var fight = new EnderDragonFight(world, world.getSeed(), data, BlockPos.ORIGIN);
-            // A legacy scan can mistake unrelated portal blocks for a completed fight.
-            ((EnderDragonFightInvoker)fight).goldclaim$generateEndPortal(false);
-            writeFightData(getFightFile(world), fight.toData());
             world.setEnderDragonFight(fight);
+            // Rebuild the fountain and run the vanilla crystal respawn (pillars + lit crystals, portal closed).
+            startRespawn(fight, List.of());
+            writeFightData(getFightFile(world), fight.toData());
             LOGGER.info("RSW dragon fight reset by {}; previous fight saved to {}", request.source().getName(), backup);
-            request.source().sendFeedback(() -> Text.literal("RSW dragon fight reset and saved. Enter the central "
-                + "island in non-spectator mode to spawn the dragon. Exit fountain rebuilt; terrain, gateway "
-                + "progress and other worlds preserved. Fight backup: " + backup.getFileName()), true);
+            request.source().sendFeedback(() -> Text.literal("RSW dragon respawn started. When a player reaches the "
+                + "central island the pillars and crystals rebuild and the dragon is summoned; the exit portal stays "
+                + "closed until it dies. Terrain, gateway progress and other worlds preserved. Fight backup: "
+                + backup.getFileName()), true);
         } catch (IOException | CompletionException | IllegalStateException failure) {
             LOGGER.error("RSW dragon-only reset failed", failure);
             request.source().sendError(Text.literal("RSW dragon reset failed: " + failure.getMessage()

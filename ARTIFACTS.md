@@ -1,5 +1,15 @@
 # Published Artifacts
 
+## GoldClaim 1.0.69: RSW End fountain and respawn bypass BetterEnd
+
+- `artifacts/goldclaim-1.0.69.jar`:
+  `91b84e88fcfb8cabe5aef855b584c529cd81bd6e75bb0dc4a9430637f988e8f7`.
+  Builds the RSW End exit fountain itself on the surface (BetterEnd ignored),
+  and runs the vanilla crystal respawn for resets and player rituals.
+- `artifacts/gangs-end-portal-restart-1.0.76.jar`:
+  `4eca7c1feee3d299d02841bac673b096d9a6e8ec4e64124bbb2320b51be3cb44`.
+  Server restart launcher replacing `mods/goldclaim-1.0.68.jar` with 1.0.69;
+  chains to `gangs-end-portal-restart-1.0.75.jar`.
 ## GoldClaim 1.0.68: End exit portal on the island surface
 
 - `artifacts/goldclaim-1.0.68.jar`:
