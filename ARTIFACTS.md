@@ -2,6 +2,10 @@
 
 ## Prepared locally: Trial Chambers (RSW-only), Botania, Gang Shop 1.0.10
 
+- `artifacts/gangs-trials-botania-restart-1.0.73.jar`:
+  `9d1d3a4f501e7c127d2d12e0c10d0b4de6dd4ab2a7885f3f44f77cf6e52271ca`.
+  Server restart launcher installing the trials, Botania, Gang Shop 1.0.10
+  and Lootr changes; chains to `gangs-oux-badges-restart-1.0.72.jar`.
 - `artifacts/gangstrials-1.0.7.jar`:
   `10e7d3218416ea10fe60814a72b3fe84a1dc0faebebb230b464586f4e2d4beac`.
   First-party client and server mod (`sources/gangstrials`). It restricts

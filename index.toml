@@ -6,7 +6,7 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "a3f81ed716fd3e7b27c3c83b8ebfae2be82ece16b05a0e4f9ab2db91606acf8f"
+hash = "0337581280e51c7dd1347157d2d9495a6f206a73e4d5714cd1c6246ef98fdc3b"
 
 [[files]]
 file = "README.md"
@@ -138,7 +138,7 @@ hash = "c419519d376a98c5fafa02d4e9155a5638ae0be54792db834271c4b4bbaafb40"
 
 [[files]]
 file = "config/lootr.json"
-hash = "4021ede7ae738b08f5a3184cf1f66a5b9ce0629f9b6673375007a0c5dda48dc9"
+hash = "d03bd6dcf935f30a7f8588ab713ef118ffc0b793c0bb28f56d3e140cde88e606"
 
 [[files]]
 file = "config/options.txt"

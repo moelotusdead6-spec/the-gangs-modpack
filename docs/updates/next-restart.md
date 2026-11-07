@@ -78,11 +78,36 @@ Validation (2026-11-06, isolated closed server in `tmp/testserver`, full
 - Gang Shop catalog: no `botania:`/backport entries; denied `minecraft:` ids
   removed (catalog 14464 -> 14447); prices.json gained no new-mod entries.
 
-**Deployment status:** nothing installed on the live server. The new and
-repacked artifacts must be published via GitHub Pages (git push) before
-clients or the hosted server can download them, and the pack version has not
-been bumped yet. Trial chambers only generate in newly created RSW chunks,
-so they appear after the next RSW reset (or in still-ungenerated RSW areas).
+**Deployment status:** pack v1.1.25 is published, so clients update on their
+next launch. The server installs the update on its next normal start through
+`artifacts/gangs-trials-botania-restart-1.0.73.jar` (SHA-256
+`9d1d3a4f501e7c127d2d12e0c10d0b4de6dd4ab2a7885f3f44f77cf6e52271ca`), which is
+selected as the panel's server jar. Never `/reload`. While the world lock is
+free, it:
+
+- installs Botania, Tricky Trials Backport (repack), Copper Age Backport,
+  Trimmed, Sherds API and GangsTrials 1.0.7;
+- replaces Gang Shop 1.0.9 with 1.0.10;
+- installs `config/gangstrials.json` and the seven new `gangs_fixes`
+  datapack files;
+- replaces `config/lootr.json` (the live file plus `blast_immune` and the
+  trial barrel blacklist) and `config/gangshop/overrides.json` (the live file
+  plus the 34 backport deny entries, `scripts/hosted/trials-botania-overrides.json`);
+- saves the originals in `backups/trials-botania-restart-1.0.73/`.
+
+Every replaced live file is checked against the hash read before staging. If
+any check fails nothing changes and the server starts normally. The launcher
+then hands off to `gangs-oux-badges-restart-1.0.72.jar` and the rest of the
+existing chain. Source, tests and build script:
+`scripts/hosted/TrialsBotaniaRestart*.java` and
+`scripts/hosted/Build-TrialsBotaniaRestart.ps1`.
+
+Rollback: stop the server, delete the six new mod jars and
+`mods/gangshop-1.0.10.jar`, copy the backed-up files back, and select
+`gangs-oux-badges-restart-1.0.72.jar`.
+
+Trial chambers only generate in newly created RSW chunks, so they appear
+after the next RSW reset (or in still-ungenerated RSW areas).
 
 # Prepared locally: new-install mismatch fix
 

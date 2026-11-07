@@ -6,3 +6,6 @@
 *.html text eol=lf
 /mods/.gitkeep text eol=lf
 config/** text=auto eol=lf
+
+# Byte-exact copy derived from the live server's CRLF config; its hash is pinned by the restart launcher.
+scripts/hosted/trials-botania-overrides.json -text
