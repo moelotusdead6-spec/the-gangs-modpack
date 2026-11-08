@@ -19,8 +19,14 @@ The production Fabric Loader 0.19.3 fixture passed all nine affected trades
 and an unchanged trade using the actual mod jars. Installer tests passed for
 the combined update, repeat installs, changed/corrupt jars and a locked world.
 Both restart launchers are uploaded; the Chef compatibility launcher is
-selected as `SERVER_JARFILE`. The server remains stopped pending approval to
-start. Never use `/reload`.
+selected as `SERVER_JARFILE`. After approval, the server started normally;
+the log confirms `gangschefcompat 1.0.0` and `goldclaim 1.0.71` loaded.
+Never use `/reload`.
+
+The retired `goldclaimmap-1.0.2.jar` metadata was normalized to LF and its
+Packwiz index hash refreshed after Prism reported an invalid mod file hash.
+Run `scripts/Test-PackwizIndex.ps1` after `packwiz refresh` to check both
+manifest hashes and Git's line-ending transformations before publishing.
 
 # GoldClaim mailbox and RSW JourneyMap reset (2026-11-07)
 

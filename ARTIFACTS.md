@@ -35,7 +35,8 @@ update, idempotency, corrupt or unexpected jars, and a locked world.
 The Packwiz pins and GoldClaim jars are included in this release. They become
 available to clients after the GitHub Pages update completes. The 1.0.78
 restart launcher is uploaded to the server root and is retained in the Chef
-compatibility restart chain. Keep the server stopped until startup is approved.
+compatibility restart chain. The server was started with the combined launcher;
+its log confirms that the compatibility mod and GoldClaim 1.0.71 loaded.
 
 ## GoldClaim 1.0.69: RSW End fountain and respawn bypass BetterEnd
 

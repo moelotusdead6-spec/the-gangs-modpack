@@ -6,7 +6,7 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "cb0e050bdcdd98444762718ce72c041b081265e1dbf16f60dbfdaf7b450fd750"
+hash = "d94d77d2f19bfa3880c2f85050e8ffbb65806dbd0c72f2c9ccc9a2ac92ee8901"
 
 [[files]]
 file = "README.md"
@@ -2152,7 +2152,7 @@ metafile = true
 
 [[files]]
 file = "mods/retired-goldclaimmap-1-0-2.pw.toml"
-hash = "b739197ccd9b0b71d07e3307935b8a0c43fbc484e8278aeeffe97bbb98ff8cfb"
+hash = "423f52679b329c04205425795c8db97be732b85e6812bdd42b24721647ca769d"
 metafile = true
 
 [[files]]
