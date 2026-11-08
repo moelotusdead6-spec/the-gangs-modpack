@@ -1,5 +1,43 @@
 # Published Artifacts
 
+## Chef's Delight trade crash recovery
+
+- `artifacts/gangschefcompat-1.0.0.jar`:
+  `1fab7ab76a13e545ca73156ffa1ab7bded6bd93478c9cbef5b8d98707047c5a9`.
+  First-party compatibility mod for Chef's Delight 1.0.5 and Farmer's
+  Delight Refabricated 2.5.7; preserves the affected villager trade prices.
+- `artifacts/gangs-chefcompat-restart-1.0.0.jar`:
+  `987eb8a222e6357f755a85ade80d17723adf9ffef232d8f16c91872c355c8466`.
+  Verifies the two affected mods, installs the compatibility mod and
+  GoldClaim 1.0.71, then continues the verified mailbox/RSW map restart chain.
+
+The real-mod Fabric Loader 0.19.3 smoke fixture checked all nine affected
+trade factories and an unaffected trade. The launcher tests cover the combined
+update, idempotency, corrupt or unexpected jars, and a locked world.
+
+## GoldClaim mailbox and RSW JourneyMap resets
+
+- `artifacts/goldclaim-1.0.71.jar`:
+  `3c1af3abe852511f2fd6a432959528c16383fbec077467c5d5a8617d7caa2697`.
+  Includes the offline mailbox, all 1.0.69 fixes, and server-side RSW map
+  generation synchronization.
+- `artifacts/goldclaimmap-1.0.3.jar`:
+  `2d33246fb55d7151521c52cc5a65478d3fd697ff2717b0843b4ad319b0a063ea`.
+  Rotates only JourneyMap's `multiworld:rsw`, `multiworld:rsw_nether`, and
+  `multiworld:rsw_the_end` tile and chunk-cache paths after a completed reset.
+  `/wild`, other dimensions, waypoints, and archived maps are unchanged.
+- `artifacts/gangs-goldclaim-mailbox-rswmap-restart-1.0.78.jar`:
+  `bbd2b2b37bffd0cdbde7da309ef2f71aee0cf04db9ad42b6042ebb7289b3c185`.
+  At startup, checksum-verifies and backs up the active 1.0.68, 1.0.69, or
+  1.0.70 GoldClaim jar; installs 1.0.71 and continues the existing
+  `gangs-trials-botania-restart-1.0.74.jar` chain. See the [release notes](docs/updates/next-restart.md).
+
+The Packwiz pins and GoldClaim jars are included in this release. They become
+available to clients after the GitHub Pages update completes. The 1.0.78
+restart launcher is already uploaded to the server root and selected as
+`SERVER_JARFILE`; keep the server stopped until the separate crash fix is
+complete and startup is explicitly approved.
+
 ## GoldClaim 1.0.69: RSW End fountain and respawn bypass BetterEnd
 
 - `artifacts/goldclaim-1.0.69.jar`:

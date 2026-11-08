@@ -3,7 +3,9 @@
   "package": "com.elysium.goldclaimmap.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "JourneyMapPluginDiscoveryMixin"
+    "JourneyMapPluginDiscoveryMixin",
+    "JourneyMapRswPathMixin",
+    "JourneyMapRswRegionMixin"
   ],
   "injectors": {
     "defaultRequire": 1

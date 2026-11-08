@@ -6,7 +6,7 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "54396b84a9b0c45de095b8ca949eca2d06aec9bcede8844343d687976f9cae2e"
+hash = "e8a7ec74c1d117b50e01beeadd5c8b424bf2662c8e45763d1ce5bc54fc79d725"
 
 [[files]]
 file = "README.md"
@@ -1576,6 +1576,11 @@ hash = "8ef6fe3054aafa2f6fca92a82dd67c9371930ace16ee3b3bcce7d12abf0d98ec"
 metafile = true
 
 [[files]]
+file = "mods/gangschefcompat-direct.pw.toml"
+hash = "3a6b9abd6fb67d4283c9c3b4aa61c92c976717f5e2c0b39db56a26c8ca4b6f92"
+metafile = true
+
+[[files]]
 file = "mods/gangscosmetics-direct.pw.toml"
 hash = "1159eeb7d3c9a50c072012c6ded16d1cf69a4efcacf1194398dd1a5eef6740cc"
 metafile = true
@@ -1602,12 +1607,12 @@ metafile = true
 
 [[files]]
 file = "mods/goldclaim-direct.pw.toml"
-hash = "858a1c7baa92119774dbcf9e50cdffc459fc668f945537e0813e6eb6c6a108df"
+hash = "1cbba6afd4ce7b89fc8fd07b1e6c43fcb80ba5a0626fb1ae07a19be7b90ddcad"
 metafile = true
 
 [[files]]
 file = "mods/goldclaimmap-direct.pw.toml"
-hash = "3efa796f0591f86d11b1fbac96117f1f0dd6fc91b14689940b86852732bbb9d0"
+hash = "86fbb9d12f1f50a1db093faecd05ed3514ff5977307ec28cb1954b8ecc046308"
 metafile = true
 
 [[files]]
@@ -2143,6 +2148,11 @@ metafile = true
 [[files]]
 file = "mods/retired-goldclaimmap-1-0-1.pw.toml"
 hash = "bc213edd2da2503574ee81ab41ef26ae64a7b0b64fc2e1e357fe9f7483db7591"
+metafile = true
+
+[[files]]
+file = "mods/retired-goldclaimmap-1-0-2.pw.toml"
+hash = "b739197ccd9b0b71d07e3307935b8a0c43fbc484e8278aeeffe97bbb98ff8cfb"
 metafile = true
 
 [[files]]

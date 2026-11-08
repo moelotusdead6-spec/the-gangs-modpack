@@ -1,3 +1,108 @@
+# GoldClaim mailbox and RSW JourneyMap reset (2026-11-07)
+
+- `/mailbox`: available to every player. Opens a six-row click-to-claim menu
+  with 45 rewards per page and previous/next arrows. Click or shift-click a
+  reward to receive it. Players cannot take menu icons, deposit items, or
+  claim somebody else's mail.
+- `/mailbox send <MinecraftUsername> <item>`: Mod, Admin and Owner (including
+  inherited LuckPerms groups), or operator level 2+. The explicit permission
+  `goldclaim.mailbox.send` overrides these defaults; explicit denial wins.
+  Each send creates **one** item without taking an item from the sender.
+- `/mailbox send all <item>`: sends one item to each UUID in the server's
+  username cache plus connected players, deduplicated by UUID. Includes known
+  offline players; it cannot discover names missing from that cache.
+- `/mailbox send @a <item>`: normal Minecraft selector, online players only.
+  Bulk sends report exact successful/failed counts and identify failed
+  recipients. A failure does not undo successful recipients; do not blindly
+  repeat an entire bulk send.
+- Username completion includes cached offline players and connected players,
+  plus `all` and `@a`. Item IDs use Minecraft's registry-backed completion.
+  Use real Minecraft usernames, not Discord names or display nicknames.
+
+Example:
+
+```mcfunction
+/mailbox send vendetta neon-wall-wonders-gwbzt3mk:neon_arcade_alien
+```
+
+If Vendetta's actual Minecraft username differs, substitute that username.
+The recipient is notified on joining, or immediately if already online.
+A full inventory leaves the reward in the mailbox. Mail is stored by UUID
+under `<world>/gangs-mailbox/<uuid>.json`, survives restarts and name changes,
+and preserves item NBT. Include this directory in world backups.
+Claims save the delivered item and a receipt together in player data before
+atomically removing the mailbox entry. An interrupted claim resumes without
+delivering a duplicate. Storage errors are logged and shown to the player.
+
+Validation: all 93 GoldClaim unit tests pass; the isolated Fabric mailbox
+integration fixture passes with real LuckPerms. It covers public/staff and
+explicit grant/deny permissions, offline send, cached name completion,
+`all` including offline recipients, `@a` excluding them, exact partial-failure
+counts, item persistence, menu/inventory behavior, full inventory, blocked
+and stale clicks, page navigation, corrupt storage, and crash receipt recovery.
+The fixture registers a test item at the giveaway's exact ID when the neon
+mod is absent; it does not validate that mod's artwork or placement behavior.
+
+Reproduce locally with an already accepted EULA in the isolated fixture
+directory and the local smoke dependency/library directories:
+
+```powershell
+$env:GOLDCLAIM_MAILBOX_SMOKE = 'true'
+Set-Location sources\goldclaim
+.\gradlew.bat test remapJar runPolicySmoke `
+  '-PsmokeModsDir=../../tmp/dragon-recovery-smoke-dependencies' `
+  '-PsmokeLibrariesDir=../../tmp/projectile-smoke-libraries' `
+  '-Ploader_version=0.19.3' --offline
+```
+
+Prepared release artifacts:
+
+- `artifacts/goldclaim-1.0.71.jar`: SHA-256 `3c1af3abe852511f2fd6a432959528c16383fbec077467c5d5a8617d7caa2697`.
+- `artifacts/goldclaimmap-1.0.3.jar`: SHA-256 `2d33246fb55d7151521c52cc5a65478d3fd697ff2717b0843b4ad319b0a063ea`.
+- `artifacts/gangs-goldclaim-mailbox-rswmap-restart-1.0.78.jar`: SHA-256 `bbd2b2b37bffd0cdbde7da309ef2f71aee0cf04db9ad42b6042ebb7289b3c185`.
+
+Every successful completed RSW reset selects new blank JourneyMap storage for
+`multiworld:rsw`, `multiworld:rsw_nether`, and `multiworld:rsw_the_end`.
+Previous map folders are retained; they are not deleted. `/wild`
+(`minecraft:overworld`), other dimensions, and waypoints are unchanged. This
+avoids reusing old RSW tiles; terrain rendering itself is not eliminated and
+no performance improvement is promised. Clients must update GoldClaim Map to
+1.0.3; a server-only update cannot rotate offline players' local files.
+
+The 1.0.78 restart launcher checksum-verifies the active GoldClaim 1.0.68,
+1.0.69, or 1.0.70 jar, backs it up in
+`backups/goldclaim-mailbox-rswmap-restart-1.0.78`, and atomically installs
+1.0.71 under the world lock. It handles verified interrupted installs and
+continues the existing 1.0.74 Trials/Botania chain, bypassing older launchers
+that would downgrade GoldClaim.
+
+Validation: all 93 server and 16 client unit tests passed. The mailbox
+integration fixture passed, covering public/staff permissions, offline
+delivery, claims, persistence and crash recovery. A smoke run against the
+pinned JourneyMap jar verified all three RSW paths rotate, image-cache keys
+separate generations, old background writes stay pinned, and non-RSW paths are
+unchanged.
+
+The Packwiz update is published from `main`; clients can obtain GoldClaim Map
+1.0.3 after GitHub Pages finishes updating. The 1.0.78 restart launcher has
+already been uploaded to the server root and selected as `SERVER_JARFILE`.
+Keep the server stopped until the separate crash fix is complete and startup
+is explicitly approved. Never `/reload`.
+
+Run the isolated installer tests without overwriting the prepared launcher:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File `
+  scripts\hosted\Build-GoldClaimMailboxRestart.ps1 -TestOnly
+```
+
+Tests cover upgrades from all three supported jars, backups, idempotent and
+interrupted installs, and refusal of corrupt payloads or unexpected/tampered
+active jars. To rebuild after source changes, remove the existing generated
+`artifacts/gangs-goldclaim-mailbox-rswmap-restart-1.0.78.jar` before running
+the script without `-TestOnly`; it refuses to overwrite it. The build verifies
+source jars, Packwiz pins, and the next launcher checksum.
+
 # GoldClaim 1.0.69: RSW End fountain and dragon respawn bypass BetterEnd (2026-11-07)
 
 1.0.68 did not fix the RSW End. BetterEnd (`customEndPortal=true`) sends every

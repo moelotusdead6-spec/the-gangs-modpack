@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "goldclaimmap_rsw_smoke",
+  "version": "1.0.0",
+  "name": "GoldClaim Map RSW smoke fixture",
+  "environment": "client",
+  "entrypoints": {
+    "client": ["com.elysium.goldclaimmap.RswJourneyMapSmoke"]
+  },
+  "depends": {
+    "goldclaimmap": "*",
+    "journeymap": "*"
+  }
+}

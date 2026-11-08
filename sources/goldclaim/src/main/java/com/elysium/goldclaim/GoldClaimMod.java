@@ -395,6 +395,7 @@ implements ModInitializer {
             CelestialPolicy.register();
         }
         this.registerJoinHandler();
+        new RswMapSync(this.rswResetService::generation).register();
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
@@ -631,6 +632,7 @@ implements ModInitializer {
     private void registerCommands() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             TrashCommand.register(dispatcher);
+            MailboxService.register(dispatcher, registryAccess);
             dispatcher.register(CommandManager.literal("claim")
                 .then(CommandManager.literal("trustlist")
                     .executes(ctx -> this.listClaimTrust(ctx.getSource()))));
@@ -856,6 +858,7 @@ implements ModInitializer {
                 this.evacuateLegacyPlayer(player);
             }
             this.kitService.join(player);
+            MailboxService.join(player);
             if (this.isFirstJoin(player, server)) {
                 this.giveFirstJoinTools(player);
             }

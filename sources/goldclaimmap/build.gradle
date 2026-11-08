@@ -58,6 +58,85 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 	modCompileOnly files(journeyMapApi)
 	testImplementation 'junit:junit:4.13.2'
+	if (project.hasProperty('smokeJourneyMapJar')) {
+		def original = file(project.property('smokeJourneyMapJar'))
+		def digest = MessageDigest.getInstance('SHA-512').digest(original.bytes).encodeHex().toString()
+		if (digest != project.journeymap_sha512) {
+			throw new GradleException('Smoke JourneyMap jar does not match the pinned release.')
+		}
+		// Development-only copy: retain static mixin remapping but remove the unsupported newer Loom declaration.
+		def stripManifests
+		stripManifests = { byte[] bytes ->
+			def output = new ByteArrayOutputStream()
+			new JarInputStream(new ByteArrayInputStream(bytes)).withCloseable { input ->
+				def manifest = input.manifest ?: new java.util.jar.Manifest()
+				manifest.mainAttributes.putValue('Manifest-Version', '1.0')
+				manifest.mainAttributes.remove(new java.util.jar.Attributes.Name('Fabric-Loom-Version'))
+				new JarOutputStream(output, manifest).withCloseable { jar ->
+					for (def entry = input.nextJarEntry; entry != null; entry = input.nextJarEntry) {
+						if (entry.name.equalsIgnoreCase('META-INF/MANIFEST.MF')) continue
+						def content = input.readAllBytes()
+						jar.putNextEntry(new java.util.zip.ZipEntry(entry.name))
+						jar.write(entry.name.endsWith('.jar') ? stripManifests(content) : content)
+						jar.closeEntry()
+					}
+				}
+			}
+			output.toByteArray()
+		}
+		def runtimeJar = new File(journeyMapApi.parentFile, "journeymap-smoke-v2-${digest.take(16)}.jar")
+		if (!runtimeJar.exists()) runtimeJar.bytes = stripManifests(original.bytes)
+		modRuntimeOnly files(runtimeJar)
+		// Fabric development launches do not discover the parent's nested dependencies.
+		new ZipFile(original).withCloseable { zip ->
+			for (def entry in zip.entries().findAll { it.name.startsWith('META-INF/jars/') && it.name.endsWith('.jar') }) {
+				def nested = new File(journeyMapApi.parentFile, "smoke-v2-${digest.take(16)}-${entry.name.tokenize('/').last()}")
+				if (!nested.exists()) {
+					zip.getInputStream(entry).withCloseable { nested.bytes = stripManifests(it.readAllBytes()) }
+				}
+				modRuntimeOnly files(nested)
+			}
+		}
+	}
+}
+
+sourceSets {
+	testmod {
+		compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+		runtimeClasspath += output + compileClasspath + sourceSets.main.runtimeClasspath
+	}
+}
+
+loom {
+	mods {
+		goldclaimmap { sourceSet sourceSets.main }
+		goldclaimmap_rsw_smoke { sourceSet sourceSets.testmod }
+	}
+	runs {
+		rswMapSmoke {
+			client()
+			name 'Isolated JourneyMap RSW storage smoke'
+			source sourceSets.testmod
+			runDir '../../tmp/goldclaimmap-rsw-smoke'
+			vmArg '-Xmx1G'
+			vmArg '-XX:ActiveProcessorCount=4'
+			vmArg '-Djava.awt.headless=true'
+		}
+	}
+}
+
+tasks.named('runRswMapSmoke') {
+	doFirst {
+		if (!project.hasProperty('smokeJourneyMapJar')) {
+			throw new GradleException('Supply -PsmokeJourneyMapJar with the pinned local JourneyMap jar.')
+		}
+		delete file('../../tmp/goldclaimmap-rsw-smoke/rsw-map-smoke-passed.txt')
+	}
+	doLast {
+		if (!file('../../tmp/goldclaimmap-rsw-smoke/rsw-map-smoke-passed.txt').exists()) {
+			throw new GradleException('JourneyMap RSW storage smoke did not produce a passing result.')
+		}
+	}
 }
 
 processResources {

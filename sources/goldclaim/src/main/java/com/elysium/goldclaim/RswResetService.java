@@ -172,6 +172,7 @@ final class RswResetService {
     }
 
     static void validate(State state) {
+        if (state.generation < 0) throw new IllegalArgumentException("Negative RSW reset generation");
         if (!java.util.Set.of("IDLE", "UNLOADING", "ARCHIVING", "CREATING", "PREGENERATING", "FINALIZING").contains(state.phase)) {
             throw new IllegalArgumentException("Unknown RSW reset phase: " + state.phase);
         }

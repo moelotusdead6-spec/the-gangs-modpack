@@ -22,6 +22,7 @@ public class GoldClaimMapClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        RswMapNetworking.register();
         ClientLifecycleEvents.CLIENT_STARTED.register(client ->
                 PublicServerAddress.update(client.runDirectory.toPath()));
         ClientPlayNetworking.registerGlobalReceiver(CHANNEL, (client, handler, buf, sender) -> {

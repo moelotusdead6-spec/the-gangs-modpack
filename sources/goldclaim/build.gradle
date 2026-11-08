@@ -293,7 +293,8 @@ loom {
 }
 
 tasks.named('runPolicySmoke') {
-	if (System.getenv('GOLDCLAIM_CLAIM_SMOKE') == 'true') {
+	if (System.getenv('GOLDCLAIM_CLAIM_SMOKE') == 'true'
+			|| System.getenv('GOLDCLAIM_MAILBOX_SMOKE') == 'true') {
 		// Fiw's production jar needs a newer Loom to remap; this fixture does not use it.
 		classpath = classpath.filter { !it.name.startsWith('fiw-anticheat-') }
 	}

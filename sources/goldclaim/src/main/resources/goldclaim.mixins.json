@@ -33,6 +33,7 @@
     "LeavesBlockMixin",
     "FallingBlockMixin",
     "ServerPlayerEntityMixin",
+    "PlayerManagerInvoker",
     "RecipeManagerMixin",
     "RswPlayerTravelMixin",
     "HubRandomTeleportMixin",
