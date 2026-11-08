@@ -157,20 +157,45 @@ hash = "$hash"
     Require ($failedUpdate.ExitCode -ne 0 -and $failedUpdate.Log -match '(?i)ARTIFACTS\.md' -and
         $failedUpdate.Log -match '(?i)hash|checksum') "The updater did not reject the checksum mismatch:`r`n$($failedUpdate.Log)"
 
+    $oldMapPayload = Join-Path $published 'payloads\goldclaimmap-old.jar'
+    $newMapPayload = Join-Path $published 'payloads\goldclaimmap-new.jar'
+    $retiredMapPayload = Join-Path $published 'payloads\goldclaimmap-retired.jar'
+    Write-Fixture $oldMapPayload 'old-map-payload'
+    Write-Fixture $newMapPayload 'new-map-payload'
+    Write-Fixture $retiredMapPayload 'retired-map-placeholder'
+    function Write-MapFixture([string]$Path, [string]$Name, [string]$FileName, [string]$Payload) {
+        $hash = (Get-FileHash -LiteralPath $Payload -Algorithm SHA256).Hash.ToLowerInvariant()
+        $payloadName = [IO.Path]::GetFileName($Payload)
+        Write-Fixture $Path @"
+name = "$Name"
+filename = "$FileName"
+side = "client"
+[download]
+url = "${url}payloads/$payloadName"
+hash-format = "sha256"
+hash = "$hash"
+"@
+    }
+
     foreach ($generation in 1..2) {
         $islandMetadata = Join-Path $published 'mods\removed-island.pw.toml'
         $grimMetadata = Join-Path $published 'mods\grimac.pw.toml'
         $jeiMetadata = Join-Path $published 'mods\jei.pw.toml'
+        $mapMetadata = Join-Path $published 'mods\goldclaimmap-direct.pw.toml'
+        $retiredMapMetadata = Join-Path $published 'mods\retired-goldclaimmap-1-0-2.pw.toml'
         if ($generation -eq 1) {
             $island = [IO.File]::ReadAllText((Join-Path $published 'mods\client.pw.toml'))
             Write-Fixture $islandMetadata ($island.Replace('client-fixture.jar', 'YungsBetterEndIsland-fixture.jar'))
             $grim = $island.Replace('client-fixture.jar', 'grimac-fabric-fixture.jar').Replace('side = "client"', 'side = "both"')
             Write-Fixture $grimMetadata $grim
             Write-Fixture $jeiMetadata ($island.Replace('client-fixture.jar', 'jei-fabric-fixture.jar'))
+            Write-MapFixture $mapMetadata 'GoldClaim Map' 'goldclaimmap-1.0.2.jar' $oldMapPayload
         } else {
             Remove-Item -LiteralPath $islandMetadata
             Remove-Item -LiteralPath $grimMetadata
             Remove-Item -LiteralPath $jeiMetadata
+            Write-MapFixture $mapMetadata 'GoldClaim Map' 'goldclaimmap-1.0.3.jar' $newMapPayload
+            Write-MapFixture $retiredMapMetadata 'Retired: goldclaimmap-1.0.2.jar' 'goldclaimmap-1.0.2.jar' $retiredMapPayload
             Write-Fixture (Join-Path $published 'mods\mixinextras-fabric-direct.pw.toml') $fixtureMixinMetadata
             $fixturePack = Join-Path $published 'pack.toml'
             $packText = [IO.File]::ReadAllText($fixturePack)
@@ -227,6 +252,14 @@ hash = "$hash"
         Require ((Test-Path -LiteralPath (Join-Path $game 'mods\YungsBetterEndIsland-fixture.jar')) -eq ($generation -eq 1)) 'Automatic update did not remove the previously managed island mod.'
         Require ((Test-Path -LiteralPath (Join-Path $game 'mods\grimac-fabric-fixture.jar')) -eq ($generation -eq 1)) 'Automatic update did not remove the previously managed GrimAC mod.'
         Require ((Test-Path -LiteralPath (Join-Path $game 'mods\jei-fabric-fixture.jar')) -eq ($generation -eq 1)) 'Automatic update did not remove previously managed JEI.'
+        $oldMap = Join-Path $game 'mods\goldclaimmap-1.0.2.jar'
+        $newMap = Join-Path $game 'mods\goldclaimmap-1.0.3.jar'
+        $expectedOldMap = if ($generation -eq 1) { $oldMapPayload } else { $retiredMapPayload }
+        Require ((Get-FileHash -LiteralPath $oldMap).Hash -ceq (Get-FileHash -LiteralPath $expectedOldMap).Hash) 'The old map jar did not receive the expected retirement placeholder.'
+        Require ((Test-Path -LiteralPath $newMap) -eq ($generation -eq 2)) 'The new map jar was not installed at the expected generation.'
+        if ($generation -eq 2) {
+            Require ((Get-FileHash -LiteralPath $newMap).Hash -ceq (Get-FileHash -LiteralPath $newMapPayload).Hash) 'The new map jar did not match its payload.'
+        }
     }
     $existingInstance = Join-Path $root 'existing-instance'
     $existingGame = Join-Path $existingInstance 'minecraft'
@@ -245,6 +278,6 @@ hash = "$hash"
     Require ($server.ExitCode -eq 0) "Isolated server-side update failed:`r`n$($server.Log)"
     Require (-not (Test-Path -LiteralPath (Join-Path $serverGame "mods\$mixinName"))) 'A server-side update installed client-only MixinExtras.'
     Require (Test-Path -LiteralPath (Join-Path $serverGame 'mods\server-fixture.jar')) 'A server-side update skipped the server fixture.'
-    Write-Output 'PASS: Packwiz checksum failure and recovery, automatic Fabric Loader and client-only MixinExtras updates, an existing matching jar, server-side exclusion, managed defaults, personal settings and mod preservation.'
+    Write-Output 'PASS: Packwiz checksum failure and recovery, map mod retirement and upgrade, automatic Fabric Loader and client-only MixinExtras updates, an existing matching jar, server-side exclusion, managed defaults, personal settings and mod preservation.'
 } finally { $listener.Stop(); $listener.Close() }
 Remove-Item -LiteralPath $root -Recurse
