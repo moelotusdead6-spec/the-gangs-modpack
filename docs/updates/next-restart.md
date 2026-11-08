@@ -1,3 +1,27 @@
+# Chef trade crash recovery and combined restart (2026-11-07)
+
+The 16:57 server crash was a Chef's Delight Cook villager generating a trade:
+Chef's Delight 1.0.5 references Farmer's Delight registry fields removed in
+Refabricated 2.5.7. `gangschefcompat-1.0.0.jar` fixes all nine affected trade
+factories using the existing item IDs and original prices, use counts, XP and
+price multipliers. It does not remove villagers or downgrade either mod.
+
+The stopped-server restart launcher is
+`gangs-chefcompat-restart-1.0.0.jar` (SHA-256
+`987eb8a222e6357f755a85ade80d17723adf9ffef232d8f16c91872c355c8466`).
+It requires the matching Chef's Delight and Farmer's Delight jars, installs
+the compatibility mod under the world lock, and applies the verified
+GoldClaim 1.0.71 mailbox/RSW map update before handing off to the existing
+`gangs-goldclaim-mailbox-rswmap-restart-1.0.78.jar` chain. The combined
+launcher refuses to start if a required check or installation fails.
+
+The production Fabric Loader 0.19.3 fixture passed all nine affected trades
+and an unchanged trade using the actual mod jars. Installer tests passed for
+the combined update, repeat installs, changed/corrupt jars and a locked world.
+Both restart launchers are uploaded; the Chef compatibility launcher is
+selected as `SERVER_JARFILE`. The server remains stopped pending approval to
+start. Never use `/reload`.
+
 # GoldClaim mailbox and RSW JourneyMap reset (2026-11-07)
 
 - `/mailbox`: available to every player. Opens a six-row click-to-claim menu
@@ -84,10 +108,8 @@ separate generations, old background writes stay pinned, and non-RSW paths are
 unchanged.
 
 The Packwiz update is published from `main`; clients can obtain GoldClaim Map
-1.0.3 after GitHub Pages finishes updating. The 1.0.78 restart launcher has
-already been uploaded to the server root and selected as `SERVER_JARFILE`.
-Keep the server stopped until the separate crash fix is complete and startup
-is explicitly approved. Never `/reload`.
+1.0.3 after GitHub Pages finishes updating. The 1.0.78 restart launcher is
+uploaded and retained in the Chef compatibility restart chain described above.
 
 Run the isolated installer tests without overwriting the prepared launcher:
 

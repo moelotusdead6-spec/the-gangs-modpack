@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "id": "gangschefcompat_smoke",
+  "version": "1.0.0",
+  "name": "Chef trade compatibility smoke test",
+  "environment": "server",
+  "entrypoints": {
+    "server": ["com.gangs.chefcompat.TradeSmokeTest"]
+  },
+  "depends": {
+    "gangschefcompat": "*"
+  }
+}

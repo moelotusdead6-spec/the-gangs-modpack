@@ -1,0 +1,8 @@
+name = "Gangs Chef's Delight Compatibility"
+filename = "gangschefcompat-1.0.0.jar"
+side = "both"
+
+[download]
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/gangschefcompat-1.0.0.jar"
+hash-format = "sha256"
+hash = "1fab7ab76a13e545ca73156ffa1ab7bded6bd93478c9cbef5b8d98707047c5a9"
