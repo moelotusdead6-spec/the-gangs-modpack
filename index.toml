@@ -1396,8 +1396,8 @@ hash = "f5be583f48f5568454a222e6bf57537ca515cc6d5992213b9a6baba293668fda"
 metafile = true
 
 [[files]]
-file = "mods/effective-2.3.2-1.20.1.pw.toml"
-hash = "b8b8f3e637624668b798bb6d3eefd243d842c5b29a9643211da425960c45c172"
+file = "mods/effective-2.2.2.1.pw.toml"
+hash = "170cd0c6b5b79b9e7222b71c8a66e8797fae48535c906c358e25a46e5195a915"
 metafile = true
 
 [[files]]
@@ -2048,6 +2048,11 @@ metafile = true
 [[files]]
 file = "mods/retired-data-anchor-fabric-1-20-1-1-0-0-23.pw.toml"
 hash = "42c8e956551e4642ed36c9ae20dd45a8c8345ea91d2032abcbc701cc2339dcae"
+metafile = true
+
+[[files]]
+file = "mods/retired-effective-2-3-2-1-20-1.pw.toml"
+hash = "f1bd9562b2c4eb89f49154c714e3d68c501c1a725347a5734326c854bcf9d818"
 metafile = true
 
 [[files]]

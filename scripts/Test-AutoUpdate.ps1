@@ -163,6 +163,14 @@ hash = "$hash"
     Write-Fixture $oldMapPayload 'old-map-payload'
     Write-Fixture $newMapPayload 'new-map-payload'
     Write-Fixture $retiredMapPayload 'retired-map-placeholder'
+    $effectiveMetadata = [IO.File]::ReadAllText((Join-Path $repo 'mods\effective-2.2.2.1.pw.toml'))
+    $retiredEffectiveMetadata = [IO.File]::ReadAllText((Join-Path $repo 'mods\retired-effective-2-3-2-1-20-1.pw.toml'))
+    Require ($effectiveMetadata -match '(?m)^filename = "effective-2\.2\.2\.1\.jar"\r?$' -and
+        $effectiveMetadata -match '(?m)^side = "client"\r?$' -and
+        $effectiveMetadata -match '(?m)^pin = true\r?$' -and
+        $effectiveMetadata -match '(?m)^version = "GThVNISR"\r?$') 'Effective must remain pinned to the client-only pre-ambience release.'
+    Require ($retiredEffectiveMetadata -match '(?m)^filename = "effective-2\.3\.2-1\.20\.1\.jar"\r?$' -and
+        $retiredEffectiveMetadata -match '(?m)^side = "client"\r?$') 'The crashing Effective jar must have client-only retirement metadata.'
     function Write-MapFixture([string]$Path, [string]$Name, [string]$FileName, [string]$Payload) {
         $hash = (Get-FileHash -LiteralPath $Payload -Algorithm SHA256).Hash.ToLowerInvariant()
         $payloadName = [IO.Path]::GetFileName($Payload)
@@ -183,6 +191,7 @@ hash = "$hash"
         $jeiMetadata = Join-Path $published 'mods\jei.pw.toml'
         $mapMetadata = Join-Path $published 'mods\goldclaimmap-direct.pw.toml'
         $retiredMapMetadata = Join-Path $published 'mods\retired-goldclaimmap-1-0-2.pw.toml'
+        $effectivePath = Join-Path $published 'mods\effective-2.3.2-1.20.1.pw.toml'
         if ($generation -eq 1) {
             $island = [IO.File]::ReadAllText((Join-Path $published 'mods\client.pw.toml'))
             Write-Fixture $islandMetadata ($island.Replace('client-fixture.jar', 'YungsBetterEndIsland-fixture.jar'))
@@ -190,12 +199,16 @@ hash = "$hash"
             Write-Fixture $grimMetadata $grim
             Write-Fixture $jeiMetadata ($island.Replace('client-fixture.jar', 'jei-fabric-fixture.jar'))
             Write-MapFixture $mapMetadata 'GoldClaim Map' 'goldclaimmap-1.0.2.jar' $oldMapPayload
+            Write-MapFixture $effectivePath 'Effective 2.3.2' 'effective-2.3.2-1.20.1.jar' $oldMapPayload
         } else {
             Remove-Item -LiteralPath $islandMetadata
             Remove-Item -LiteralPath $grimMetadata
             Remove-Item -LiteralPath $jeiMetadata
             Write-MapFixture $mapMetadata 'GoldClaim Map' 'goldclaimmap-1.0.3.jar' $newMapPayload
             Write-MapFixture $retiredMapMetadata 'Retired: goldclaimmap-1.0.2.jar' 'goldclaimmap-1.0.2.jar' $retiredMapPayload
+            Remove-Item -LiteralPath $effectivePath
+            Write-MapFixture (Join-Path $published 'mods\effective-2.2.2.1.pw.toml') 'Effective 2.2.2.1' 'effective-2.2.2.1.jar' $newMapPayload
+            Write-MapFixture (Join-Path $published 'mods\retired-effective-2-3-2-1-20-1.pw.toml') 'Retired: Effective 2.3.2' 'effective-2.3.2-1.20.1.jar' $retiredMapPayload
             Write-Fixture (Join-Path $published 'mods\mixinextras-fabric-direct.pw.toml') $fixtureMixinMetadata
             $fixturePack = Join-Path $published 'pack.toml'
             $packText = [IO.File]::ReadAllText($fixturePack)
@@ -242,6 +255,16 @@ hash = "$hash"
         }
         Require (Test-Path -LiteralPath (Join-Path $game 'mods\client-fixture.jar')) 'Client mod was not installed.'
         Require (-not (Test-Path -LiteralPath (Join-Path $game 'mods\server-fixture.jar'))) 'Automatic client update installed a server-only mod.'
+        $oldEffective = Join-Path $game 'mods\effective-2.3.2-1.20.1.jar'
+        $expectedOldEffective = if ($generation -eq 1) { $oldMapPayload } else { $retiredMapPayload }
+        Require ((Get-FileHash -LiteralPath $oldEffective).Hash -ceq
+            (Get-FileHash -LiteralPath $expectedOldEffective).Hash) 'The old Effective jar was not installed or retired with the expected payload.'
+        $newEffective = Join-Path $game 'mods\effective-2.2.2.1.jar'
+        Require ((Test-Path -LiteralPath $newEffective) -eq ($generation -eq 2)) 'The Effective downgrade was not installed during the update.'
+        if ($generation -eq 2) {
+            Require ((Get-FileHash -LiteralPath $newEffective).Hash -ceq
+                (Get-FileHash -LiteralPath $newMapPayload).Hash) 'The installed Effective downgrade failed its checksum.'
+        }
         $installedMixin = Join-Path $game "mods\$mixinName"
         Require ((Test-Path -LiteralPath $installedMixin) -eq ($generation -eq 2)) 'MixinExtras was not installed automatically during the update.'
         if ($generation -eq 2) {
@@ -267,10 +290,15 @@ hash = "$hash"
     $existingMetadata = Join-Path $existingInstance 'mmc-pack.json'
     Write-Fixture $existingMetadata $initialInstance
     Copy-Item -LiteralPath $mixinPayload -Destination (Join-Path $existingGame "mods\$mixinName")
+    Copy-Item -LiteralPath $oldMapPayload -Destination (Join-Path $existingGame 'mods\effective-2.3.2-1.20.1.jar')
     $existing = Invoke-FixtureUpdate 'existing-mixinextras' ([ref]$pending) $existingGame
     Require ($existing.ExitCode -eq 0) "Automatic update failed with an existing MixinExtras jar:`r`n$($existing.Log)"
     Require ((Get-FileHash -LiteralPath (Join-Path $existingGame "mods\$mixinName") -Algorithm SHA512).Hash.ToLowerInvariant() -ceq $mixinHash) 'The existing MixinExtras jar was not preserved correctly.'
     Require ((Get-FabricVersion $existingMetadata) -ceq '0.19.5') 'The existing instance did not receive the Fabric Loader update.'
+    Require ((Get-FileHash -LiteralPath (Join-Path $existingGame 'mods\effective-2.3.2-1.20.1.jar')).Hash -ceq
+        (Get-FileHash -LiteralPath $retiredMapPayload).Hash) 'The updater did not retire an unmanaged old Effective jar.'
+    Require ((Get-FileHash -LiteralPath (Join-Path $existingGame 'mods\effective-2.2.2.1.jar')).Hash -ceq
+        (Get-FileHash -LiteralPath $newMapPayload).Hash) 'The existing instance did not receive the Effective downgrade.'
 
     $serverGame = Join-Path $root 'server'
     New-Item -ItemType Directory -Path $serverGame | Out-Null
@@ -278,6 +306,8 @@ hash = "$hash"
     Require ($server.ExitCode -eq 0) "Isolated server-side update failed:`r`n$($server.Log)"
     Require (-not (Test-Path -LiteralPath (Join-Path $serverGame "mods\$mixinName"))) 'A server-side update installed client-only MixinExtras.'
     Require (Test-Path -LiteralPath (Join-Path $serverGame 'mods\server-fixture.jar')) 'A server-side update skipped the server fixture.'
-    Write-Output 'PASS: Packwiz checksum failure and recovery, map mod retirement and upgrade, automatic Fabric Loader and client-only MixinExtras updates, an existing matching jar, server-side exclusion, managed defaults, personal settings and mod preservation.'
+    Require (-not (Test-Path -LiteralPath (Join-Path $serverGame 'mods\effective-2.2.2.1.jar')) -and
+        -not (Test-Path -LiteralPath (Join-Path $serverGame 'mods\effective-2.3.2-1.20.1.jar'))) 'The server update installed client-only Effective or its retirement placeholder.'
+    Write-Output 'PASS: Packwiz checksum failure and recovery, Effective downgrade and managed/unmanaged jar retirement, map mod retirement and upgrade, automatic Fabric Loader and client-only MixinExtras updates, an existing matching jar, server-side exclusion, managed defaults, personal settings and mod preservation.'
 } finally { $listener.Stop(); $listener.Close() }
 Remove-Item -LiteralPath $root -Recurse

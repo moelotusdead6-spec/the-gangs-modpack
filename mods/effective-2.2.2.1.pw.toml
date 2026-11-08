@@ -1,0 +1,14 @@
+name = "Effective 2.2.2.1+1.20.1"
+filename = "effective-2.2.2.1.jar"
+side = "client"
+pin = true
+
+[download]
+url = "https://cdn.modrinth.com/data/pcPXJeZi/versions/GThVNISR/effective-2.2.2.1.jar"
+hash-format = "sha512"
+hash = "d512286c1f1d8f06c7682bde9609d7328a3c917b1e15d6c39078813f4234605f680bdfadbe59cc87ce4e8a112b4ecc560c57c2557a6013b08b4c650661e74fc5"
+
+[update]
+[update.modrinth]
+mod-id = "pcPXJeZi"
+version = "GThVNISR"

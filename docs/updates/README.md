@@ -1,5 +1,26 @@
 # Updating The Gangs Modpack
 
+## Effective ambience crash mitigation (2026-11-08)
+
+Effective is downgraded and pinned to **2.2.2.1+1.20.1** to remove the
+2.3.2 biome-ambience handler responsible for the confirmed
+`tickingSound is null` client crash. Waterfall/splash visuals and waterfall
+audio remain; the newer Effective biome ambience is removed. Existing
+AmbientSounds 6.3.11 and Sound Physics Remastered 1.5.1 are unchanged.
+
+After publication, close Minecraft and press Play in the existing
+auto-updating Prism instance. The old Effective jar is replaced with the
+standard inert retirement placeholder, not loaded alongside the downgrade.
+This is client-only: no server restart, world change or `/reload` is needed.
+The release jars were checksum-verified: the downgrade contains no
+`org/ladysnake/effective/ambience` classes or ambience entrypoint/mixin,
+but still contains its waterfall sound class. This removes the identified
+crash path; it does not certify every other feature or mod interaction.
+
+Upstream: [waterfall crash report](https://github.com/Ladysnake/Effective/issues/325)
+and [ambience null-sound report](https://github.com/Ladysnake/Effective/issues/297).
+Do not unpin or restore 2.3.2 without a verified fix for that handler.
+
 ## Client auto-update checksum repair
 
 The pack index contained a checksum for `ARTIFACTS.md` that did not match the
