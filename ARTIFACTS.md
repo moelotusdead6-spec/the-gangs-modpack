@@ -1,5 +1,24 @@
 # Published Artifacts
 
+## Prepared: Botania-only no-flight compatibility
+
+- `artifacts/gangsbotaniacompat-1.0.1.jar`:
+  `8f05304d0976bb90fa9ba51ca58b51ab889083e377fede47bea6c99d3f3f2614`.
+  First-party client/server compatibility mod for the exact Botania
+  1.20.1-456-FABRIC build. Disables Tiara flight, gliding and aerial dash;
+  retains items, cosmetics, other mods' flight and native creative/spectator
+  flight, even while a Tiara is worn.
+- `artifacts/gangs-botania-no-flight-restart-1.0.1.jar`:
+  `b81fa6f3ecfa645901cd7aa5494366d8af1cd1cc6fc513e7a905dcf26c0d2125`.
+  Installs the compatibility mod under the world lock, then continues the
+  unchanged pending Discord/Chef/GoldClaim restart chain.
+
+The production-mapped Botania smoke and combined installer tests passed.
+The corrected 1.0.1 launcher is uploaded, host-readback checksum verified and
+selected for the next startup; the live server has not been restarted.
+Pack v1.1.28 includes the client artifact and metadata.
+See [deployment and validation details](docs/updates/next-restart.md).
+
 ## Chef's Delight trade crash recovery
 
 - `artifacts/gangschefcompat-1.0.0.jar`:

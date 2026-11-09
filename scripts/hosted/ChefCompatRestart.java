@@ -19,8 +19,8 @@ public final class ChefCompatRestart {
     static final String FARMER_SHA256 = "7f5c6cf0e05f66c11925c6e1e66c513fa4f9660a742e38762c929b3ca37de2d9";
     static final String COMPAT_SHA256 = "1fab7ab76a13e545ca73156ffa1ab7bded6bd93478c9cbef5b8d98707047c5a9";
     static final String FABRIC_SHA256 = "6f921315fe2f570c331ca877d1e815c29b93fdc4ad04ce0f0f5cdf4300710028";
-    static final String NEXT = "gangs-goldclaim-mailbox-rswmap-restart-1.0.78.jar";
-    static final String NEXT_SHA256 = "bbd2b2b37bffd0cdbde7da309ef2f71aee0cf04db9ad42b6042ebb7289b3c185";
+    static final String NEXT = "gangs-goldclaim-mailbox-rswmap-restart-1.0.80.jar";
+    static final String NEXT_SHA256 = "2ef28ca884025351918d61aac961cb3e9515694b6ee1b69c057dfd895596b673";
     static final String PAYLOAD = "/chefcompat-payload/mods/gangschefcompat-1.0.0.jar";
 
     public static void main(String[] args) throws Throwable {

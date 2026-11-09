@@ -1,3 +1,127 @@
+# Botania-only no-flight compatibility selected for next restart (2026-11-08)
+
+The server policy disallows Botania flight. The first-party
+`gangsbotaniacompat-1.0.1.jar` disables the Flugel Tiara's flight eligibility,
+including the Eye/infinite-flight path, and cancels its worn-tick movement
+on **both client and server**: no glide, dash, fall-distance reduction or
+flight mana drain. It does not write shared player flight permissions:
+other mods' flight, staff flight and native creative/spectator flight
+remain unchanged, even while wearing a Tiara. The Tiara contributes no dash in those
+modes either. The Tiara, recipes, cosmetic variants, custom names and Eye
+teleportation are retained. Equipping the Tiara displays a server notice;
+updated clients also show the policy in its tooltip.
+
+This is a compatibility mod, not a Botania repack. It contains no upstream
+Botania code/assets, requires the exact pinned 1.20.1-456-FABRIC build, and
+uses required mixin injections so a changed method cannot silently leave
+flight enabled. Keep normal movement/anti-cheat protections: this patch is
+not a general defense against modified clients spoofing movement.
+
+Prepared artifacts:
+
+- `artifacts/gangsbotaniacompat-1.0.1.jar`, SHA-256
+  `8f05304d0976bb90fa9ba51ca58b51ab889083e377fede47bea6c99d3f3f2614`.
+- `artifacts/gangs-botania-no-flight-restart-1.0.1.jar`, SHA-256
+  `b81fa6f3ecfa645901cd7aa5494366d8af1cd1cc6fc513e7a905dcf26c0d2125`.
+
+The new outer launcher verifies the existing Fabric launcher and
+`gangs-discord-bridge-restart-1.0.1.jar`, verifies Botania's full SHA-512,
+installs only the compatibility mod under the world lock, then hands off
+to the **unchanged pending Discord -> Chef 1.0.2 -> GoldClaim 1.0.73**
+chain. This retains the pending Neon rewards, mailbox/RSW features and
+private Discord configuration. No existing launcher jar is overwritten.
+Missing/changed dependencies, duplicate mod jars or an occupied world lock
+abort instead of starting without the patch.
+
+**Selected for the next startup, not yet applied:** the corrected 1.0.1 launcher
+is uploaded and its full SHA-256 was verified by downloading its bytes back
+from the host. The Fabric, Discord, Chef and GoldClaim launcher hashes on
+the host also match the pending chain. With the owner's approval,
+`SERVER_JARFILE` is set to `gangs-botania-no-flight-restart-1.0.1.jar`;
+the selection was verified after reloading the settings page. The earlier
+unselected 1.0.0 trial launcher was removed. Pack v1.1.28 includes the
+client metadata and mod artifact alongside the pending Discord/Neon files.
+The live server has not been restarted.
+Leave every existing chain jar in place. Restart only at the owner's
+approved time; never `/reload`. Clients must close Minecraft and launch
+their auto-updating Prism instance to receive the compatibility mod.
+
+Validation: the Gradle remapped build passed. An isolated, localhost-only
+Minecraft 1.20.1 / Fabric Loader 0.19.5 fixture with the exact pinned Botania
+jar passed the production-mapped smoke assertions for flight eligibility,
+glide/dash velocity, fall distance, saved flags, preservation of every
+allowFlying/flying combination in all four game modes without ability
+packets, cosmetic/item preservation and equip notices, then
+stopped cleanly. This was a minimal Botania fixture, not a full production
+server or interactive client test. Existing Botania data-fixer warnings
+were present. Installer tests passed installs/repeats, corrupt payloads,
+changed/missing Botania, duplicate/changed compatibility jars, world locking,
+and the combined Discord/Chef/GoldClaim 1.0.73 update without modifying the
+two Discord configuration files.
+
+Build with
+`sources\goldclaim\gradlew.bat -p sources\gangsbotaniacompat build remapSmokeJar --no-daemon --console=plain`;
+the production smoke entrypoint is in
+`sources/gangsbotaniacompat/src/testmod`. Rebuild/check the launcher with
+`powershell -NoProfile -ExecutionPolicy Bypass -File scripts\hosted\Build-BotaniaNoFlightRestart.ps1 -TestOnly`.
+The builder refuses to overwrite an existing release launcher.
+
+The shared Google AI search text is not a verified advisory: its generic
+claim-bypass, storage/hopper/Crafty Crate duplication and performance claims
+have not been reproduced against this pack. No unrelated Botania mechanics
+were removed and no claim is made that those alleged exploits are fixed.
+
+# Discord chat bridge active (2026-11-08)
+
+Discord Integration Fabric 3.0.7 is pinned server-only for Minecraft 1.20.1.
+The launcher and chat-only configuration files are uploaded to the host;
+the owner reports saving the token privately. The launcher is selected as
+`SERVER_JARFILE` and ran during the owner's restart. Minecraft started, and
+the bot authenticated, but Discord Integration shut down because required
+channel permissions were missing. Its error lists message read, message
+write, embed links and manage messages; it did not identify which were missing.
+With the owner's approval, the bot's member-specific override in the private
+`#server-chat` channel now allows View Channel, Send Messages, Embed Links and
+Manage Messages. Manage Messages allows moderation of other people's messages
+in that channel. After the owner's next restart, the log reported successful
+login, a connected WebSocket, "Bot ready", and Minecraft startup complete.
+A Minecraft chat message was observed in `#server-chat`; the owner confirmed
+that a Discord message appeared in Minecraft. The hosting panel showed no
+configured schedules when checked; do not assume one will occur.
+The prepared chat-only templates are
+`scripts/hosted/discord-integration-chat.example.toml` and
+`scripts/hosted/discord-integration-messages.example.toml`. They target
+`#server-chat`, disable Discord commands, account linking, the `/discord`
+invite command, `/say` and `/me` relays, and join, leave, death, advancement,
+and server status messages. Plain chat is intended to flow both ways. Test
+privacy and intended channel access before announcing it.
+
+The launcher is `artifacts/gangs-discord-bridge-restart-1.0.0.jar`, SHA-256
+`056ea08a29cc00af3b3ecee0b58179c500a08a0aed482bd35b6eb22bb0db2de`.
+It verifies the Fabric launcher and existing Chef compatibility chain, requires
+both server configuration files, installs the pinned mod under the world lock,
+and then hands off to the existing chain. The host's previous selection was
+the expected Chef compatibility launcher.
+
+On the host, copy the first template to `config/Discord-Integration.toml` and
+the second to `DiscordIntegration-Data/Messages.toml`. The owner must enter
+the Discord bot token privately in the first file; never post it in chat,
+show it in screenshots or shared browser pages, or commit or distribute it.
+The live config and data directory are excluded from Git and Packwiz. Restrict
+host panel and backup access to the config. The launcher contains no token.
+Restart rather than `/reload`, only after the owner approves the timing.
+After future changes, verify the launcher handoff and bot login in the
+console, then test one message in each direction without exposing the token.
+
+The launcher installation and lock/conflict checks pass. An isolated server
+with a local full-pack fixture, including Ledger and Styled Chat, started and
+stopped with the pinned mod and both templates; its Loader was 0.19.5, not a
+verified exact copy of production. The fixture used a placeholder token; production authentication and
+two-way message delivery have since been verified as described above.
+The fixture emitted unrelated mod/config warnings. Fabricord was rejected
+after a separate full-pack fixture failed during Ledger's SQLite initialization;
+the same fixture without Fabricord started normally.
+
 # Chef trade crash recovery and combined restart (2026-11-07)
 
 The 16:57 server crash was a Chef's Delight Cook villager generating a trade:
@@ -27,6 +151,43 @@ The retired `goldclaimmap-1.0.2.jar` metadata was normalized to LF and its
 Packwiz index hash refreshed after Prism reported an invalid mod file hash.
 Run `scripts/Test-PackwizIndex.ps1` after `packwiz refresh` to check both
 manifest hashes and Git's line-ending transformations before publishing.
+
+# RSW chest neon rewards prepared (2026-11-08)
+
+The two rare Neon chest rewards change from Neon Fox and Neon Owl to **Neon
+Crescent Moon and Stars** (`neon_crescent_moon`) and **Neon Spirit Mask**
+(`neon_spirit_mask`). Each has an independent **0.25%** bonus roll; the
+trigger and loot scope are unchanged. Both items already exist in the
+installed Neon Wall Wonders 11 jar and remain excluded from the Gang Shop.
+
+GoldClaim 1.0.73 contains this server-side-only change and retains the 1.0.71
+mailbox/RSW map features. No client pack update, world change, or RSW reset is
+needed. A server restart is needed to load the updated GoldClaim code; do not
+use `/reload`.
+
+The prepared and uploaded
+`artifacts/gangs-chefcompat-restart-1.0.2.jar` (SHA-256
+`ceb7ff7e49b85c8c19616ba1606f3f1e5e92d398cb2e5d0d846767dfff7c5154`) installs
+the existing Chef compatibility mod and then hands off to
+`gangs-goldclaim-mailbox-rswmap-restart-1.0.80.jar` (SHA-256
+`2ef28ca884025351918d61aac961cb3e9515694b6ee1b69c057dfd895596b673`).
+That installer accepts GoldClaim 1.0.68 through 1.0.72, backs up the active
+jar under `backups/goldclaim-mailbox-rswmap-restart-1.0.80/`, and installs
+1.0.73 before continuing the existing Trials/Botania restart chain.
+
+GoldClaim 1.0.73 is pinned in Packwiz as
+`artifacts/goldclaim-1.0.73.jar` (SHA-256
+`4862b7e859130ff5aaa3fd9fd3cd148cf94472c40e88f8ed6cc1ae30cf6f9b5e`).
+Installer tests passed for all supported old jars, repeats, interrupted
+installs, tampering, and the combined Chef/GoldClaim chain. The mod's Gradle
+tests and remapped build passed. The updated Discord bridge launcher
+`artifacts/gangs-discord-bridge-restart-1.0.1.jar` (SHA-256
+`4a801c6667e5f5bb132e7b8235482cbc044a78e03822a3e25b9d54fb5dc3fab5`)
+preserves the currently selected Discord bridge setup while chaining through
+the new Chef and GoldClaim installers. All three launchers are uploaded, and
+`SERVER_JARFILE` is set to `gangs-discord-bridge-restart-1.0.1.jar` for the
+next startup. The selection was verified after reloading the settings page.
+The live server has not been restarted.
 
 # GoldClaim mailbox and RSW JourneyMap reset (2026-11-07)
 

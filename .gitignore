@@ -8,6 +8,8 @@ The-Gangs-Modpack-Server-Update-*.zip
 __pycache__/
 .vscode/
 tmp/
+/config/Discord-Integration.toml
+/DiscordIntegration-Data/
 mods/*.jar
 packwiz-installer.jar
 packwiz.json

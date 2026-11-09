@@ -46,22 +46,22 @@ public final class ChefCompatRestartTest {
 
     private static void installsCombinedUpdate(byte[] payload, Path chef, Path farmer, Path goldclaim) throws Exception {
         Path root = root(chef, farmer);
-        Files.copy(goldclaim, root.resolve(GoldClaimMailboxRestart.OLD_69));
+        Files.copy(goldclaim, root.resolve(GoldClaimMailboxRestart.OLD_72));
         ChefCompatRestart.installUpdates(root, payload);
         ChefCompatRestart.installUpdates(root, payload);
         ChefCompatRestart.check(root.resolve(ChefCompatRestart.COMPAT), ChefCompatRestart.COMPAT_SHA256);
-        GoldClaimMailboxRestart.check(root.resolve(GoldClaimMailboxRestart.NEW_71),
-                GoldClaimMailboxRestart.NEW_71_SHA256);
+        GoldClaimMailboxRestart.check(root.resolve(GoldClaimMailboxRestart.NEW_73),
+                GoldClaimMailboxRestart.NEW_73_SHA256);
         GoldClaimMailboxRestart.check(root.resolve(GoldClaimMailboxRestart.BACKUP)
-                .resolve(GoldClaimMailboxRestart.OLD_69), GoldClaimMailboxRestart.OLD_69_SHA256);
-        require(!Files.exists(root.resolve(GoldClaimMailboxRestart.OLD_69)), "old GoldClaim was not replaced");
+                .resolve(GoldClaimMailboxRestart.OLD_72), GoldClaimMailboxRestart.OLD_72_SHA256);
+        require(!Files.exists(root.resolve(GoldClaimMailboxRestart.OLD_72)), "old GoldClaim was not replaced");
     }
 
     private static void rejectsChangedGoldClaim(byte[] payload, Path chef, Path farmer) throws Exception {
         Path root = root(chef, farmer);
-        Files.writeString(root.resolve(GoldClaimMailboxRestart.OLD_69), "unexpected");
+        Files.writeString(root.resolve(GoldClaimMailboxRestart.OLD_72), "unexpected");
         expectFailure(() -> ChefCompatRestart.installUpdates(root, payload), "unexpected SHA-256");
-        require(!Files.exists(root.resolve(GoldClaimMailboxRestart.NEW_71)), "changed GoldClaim allowed install");
+        require(!Files.exists(root.resolve(GoldClaimMailboxRestart.NEW_73)), "changed GoldClaim allowed install");
     }
 
     private static void rejectsCorruptPayload(byte[] payload, Path chef, Path farmer) throws Exception {

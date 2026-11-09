@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "id": "gangsbotaniacompat_smoke",
+  "version": "1.0.0",
+  "name": "Botania no-flight smoke test",
+  "environment": "server",
+  "entrypoints": {
+    "server": ["com.gangs.botaniacompat.FlightSmokeTest"]
+  },
+  "depends": {
+    "gangsbotaniacompat": "*"
+  }
+}

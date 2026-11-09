@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "gangsbotaniacompat",
+  "version": "${version}",
+  "name": "Gangs Botania Compatibility",
+  "description": "Disables Botania Tiara flight, gliding and aerial dash while preserving items and cosmetics.",
+  "authors": ["The Gangs"],
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["com.gangs.botaniacompat.BotaniaCompat"],
+    "client": ["com.gangs.botaniacompat.BotaniaCompatClient"]
+  },
+  "mixins": ["gangsbotaniacompat.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.15.6",
+    "minecraft": "1.20.1",
+    "java": ">=17",
+    "fabric-api": "*",
+    "botania": "=1.20.1-456-FABRIC"
+  }
+}

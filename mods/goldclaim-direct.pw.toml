@@ -1,8 +1,8 @@
 name = "GoldClaim"
-filename = "goldclaim-1.0.71.jar"
+filename = "goldclaim-1.0.73.jar"
 side = "server"
 
 [download]
-url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/goldclaim-1.0.71.jar"
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/goldclaim-1.0.73.jar"
 hash-format = "sha256"
-hash = "3c1af3abe852511f2fd6a432959528c16383fbec077467c5d5a8617d7caa2697"
+hash = "4862b7e859130ff5aaa3fd9fd3cd148cf94472c40e88f8ed6cc1ae30cf6f9b5e"

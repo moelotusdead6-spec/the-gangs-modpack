@@ -23,6 +23,8 @@ sources/*/build/
 sources/*/bin/
 sources/*/logs/
 tmp/
+/config/Discord-Integration.toml
+/DiscordIntegration-Data/
 scripts/
 docs/
 mods/*.jar

@@ -6,7 +6,7 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "d94d77d2f19bfa3880c2f85050e8ffbb65806dbd0c72f2c9ccc9a2ac92ee8901"
+hash = "8531b0707a656b525be2f02da8b4af51182b6bdf8e5db9325ba3a883df70b112"
 
 [[files]]
 file = "README.md"
@@ -1391,6 +1391,11 @@ hash = "f373d061b212b65b3e4ec314862f1fbc8639c7662c37724bdca943308d9afaaf"
 metafile = true
 
 [[files]]
+file = "mods/discord-integration.pw.toml"
+hash = "54033b0f7ff4312af3412b30159ed1115c3f6e0e22971e866ac201338cf0a8ad"
+metafile = true
+
+[[files]]
 file = "mods/dynamiclights-v1.9.3-mc1.17-26.2.9-mod.pw.toml"
 hash = "f5be583f48f5568454a222e6bf57537ca515cc6d5992213b9a6baba293668fda"
 metafile = true
@@ -1576,6 +1581,11 @@ hash = "8ef6fe3054aafa2f6fca92a82dd67c9371930ace16ee3b3bcce7d12abf0d98ec"
 metafile = true
 
 [[files]]
+file = "mods/gangsbotaniacompat-direct.pw.toml"
+hash = "45ba366af4d318cf1f5a8f369ad5b9f91c01d7126c01e351b5ae0dc90017838a"
+metafile = true
+
+[[files]]
 file = "mods/gangschefcompat-direct.pw.toml"
 hash = "3a6b9abd6fb67d4283c9c3b4aa61c92c976717f5e2c0b39db56a26c8ca4b6f92"
 metafile = true
@@ -1607,7 +1617,7 @@ metafile = true
 
 [[files]]
 file = "mods/goldclaim-direct.pw.toml"
-hash = "1cbba6afd4ce7b89fc8fd07b1e6c43fcb80ba5a0626fb1ae07a19be7b90ddcad"
+hash = "62b78efc158a5a0ed9fe2d3a3dbe4809ee8f69eceb2c1437d9527a661be9344d"
 metafile = true
 
 [[files]]

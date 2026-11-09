@@ -1,0 +1,8 @@
+name = "Gangs Botania Compatibility"
+filename = "gangsbotaniacompat-1.0.1.jar"
+side = "both"
+
+[download]
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/gangsbotaniacompat-1.0.1.jar"
+hash-format = "sha256"
+hash = "8f05304d0976bb90fa9ba51ca58b51ab889083e377fede47bea6c99d3f3f2614"

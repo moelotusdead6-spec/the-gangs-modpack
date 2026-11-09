@@ -1,0 +1,25 @@
+[general]
+botToken = "INSERT BOT TOKEN HERE"
+botChannel = "1569049888417906919"
+enableUpdateChecker = false
+
+[commands]
+enabled = false
+adminRoleIDs = []
+customCommands = []
+
+[messages]
+language = "local"
+sendOnSayCommand = false
+sendOnMeCommand = false
+
+[linking]
+enableLinking = false
+globalLinking = false
+whitelistMode = false
+
+[webhook]
+enable = false
+
+[ingameCommand]
+enabled = false
