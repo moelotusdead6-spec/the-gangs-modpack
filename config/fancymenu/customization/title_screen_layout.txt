@@ -219,7 +219,7 @@ decoration_overlay {
 decoration_overlay {
   overlay_type = string_lights
   instance_identifier = 5f56bde3-24eb-4591-9b8b-388922bc7582-1785451001859
-  show_decoration_overlay = true
+  show_decoration_overlay = false
   string_lights_scale = 1.0
   string_lights_wind_strength = 1.0
   string_lights_flicker_speed = 1.0
@@ -299,7 +299,7 @@ decoration_overlay {
 decoration_overlay {
   overlay_type = leaves
   instance_identifier = 4ea92d90-3317-4af1-bc53-a2c06d8a35dc-1787259693072
-  show_decoration_overlay = true
+  show_decoration_overlay = false
   leaves_density = 0.5
   leaves_wind_intensity = 1.0
   leaves_wind_blows = true

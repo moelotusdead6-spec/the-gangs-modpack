@@ -1,5 +1,13 @@
 # Updating The Gangs Modpack
 
+## FancyMenu Halloween decorations removed (2026-11-09)
+
+The title-screen orange string lights and falling leaves are disabled, and
+FancyMenu uses its standard Dark interface theme again. The custom wallpaper,
+buttons, and music configuration are unchanged by this appearance update.
+After publication, close Minecraft and press Play in the existing auto-updating
+Prism instance to receive it. No server restart or new instance is needed.
+
 ## Effective ambience crash mitigation (2026-11-08)
 
 Effective is downgraded and pinned to **2.2.2.1+1.20.1** to remove the
@@ -94,7 +102,7 @@ The matching server update is prepared for the owner's next normal restart.
 
 ## v1.1.15 Halloween client appearance
 
-FancyMenu uses its built-in **Spooky Season** interface theme. The title
+This release originally used FancyMenu's built-in **Spooky Season** interface theme. The title
 screen adds orange string lights and a light autumn-leaves overlay; the
 custom wallpaper, menu buttons, music and multiplayer layouts are unchanged.
 This is a client-pack change, not a server setting. Players receive it by

@@ -94,7 +94,7 @@ hash = "dc0d52fa9c85e6c29c72c2bea250c93ce7b2eeac10720ce8ee600a31a7b72b5f"
 
 [[files]]
 file = "config/fancymenu/customization/title_screen_layout.txt"
-hash = "5bf38f96ee5ee21601c33a903ef22ccb9fbb3bfaa5a2849e0b5e77322efe2097"
+hash = "8e1616f2cf8e7c945b58b2635511fcd601f9a7b897147d6cb336890640b70435"
 
 [[files]]
 file = "config/fancymenu/customization/universal_layout.txt"
@@ -102,7 +102,7 @@ hash = "fac102f637be60d94ad6c8fb3df57d0a75fcb907b31be83b59b31c81680b1bd2"
 
 [[files]]
 file = "config/fancymenu/options.txt"
-hash = "d5dff20bac1237ed80bde9cec9b23a137d48ff68630005cf78bff6cc1345bed7"
+hash = "39c8fbcb59e108ea11a928e491fd605aced9d318c93ee343df83fe9aa45ddfd4"
 
 [[files]]
 file = "config/fiw-mods-api/config.json"
