@@ -43,6 +43,10 @@ import net.minecraft.util.hit.BlockHitResult;
 public final class PolicySmokeTest implements ModInitializer {
     @Override
     public void onInitialize() {
+        if ("true".equals(System.getenv("GOLDCLAIM_HUB_FURNITURE_SMOKE"))) {
+            HubFurnitureSmokeTest.register();
+            return;
+        }
         if ("true".equals(System.getenv("GOLDCLAIM_MAILBOX_SMOKE"))) {
             MailboxSmokeTest.register();
             return;

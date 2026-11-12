@@ -1,3 +1,152 @@
+# Rotating server GC logs configured for next startup (2026-11-11)
+
+With owner approval, the hosted panel's persisted `JAVA_ARGS` now appends:
+
+```text
+-Xlog:gc*:file=logs/gc.log:time,uptime,level,tags:filecount=5,filesize=10M
+```
+
+Readback verified that only `JAVA_ARGS` changed and the effective startup
+command includes the flag. Existing JVM flags, the effective 9216 MiB heap
+limit and `SERVER_JARFILE` selection are unchanged. The server remains running;
+no restart or `/reload` was issued. Logging begins on the next startup, so
+runtime log creation and rotation remain to be verified after that restart.
+
+The existing server `logs` directory was checked before configuration.
+GC output uses `logs/gc.log` plus up to five rotated files, approximately
+60 MiB total with possible per-file size overshoot. The fixed basename avoids
+unbounded timestamp-named sets across restarts. These logs are not heap dumps
+and do not change garbage collection policy. No heap dump or JFR capture was
+enabled. The furniture release was subsequently authorized on 2026-11-12,
+as described below; the GC logging flag is retained.
+
+# Furniture additions and hub projectiles: release authorized, restart pending (2026-11-12)
+
+The owner originally requested staging only on 2026-11-11, then authorized
+publication and next-startup selection on 2026-11-12. The owner will restart
+the server when ready; no restart or `/reload` is authorized by this release.
+The client pack version is **1.1.29**. Public download verification precedes
+selection of `gangs-furniture-hub-restart-1.0.0.jar`; until that verification,
+the selected launcher remains `gangs-botania-no-flight-restart-1.0.1.jar`.
+
+The four supplied jars match the exact official Modrinth release hashes:
+
+- Block Pack `1.1.2`: `bf_blockpack-fabric-1.20.1-1.1.2.jar`.
+- Immersive Furniture `0.4.1+1.20.1`.
+- Urban Decor `1.0.6`.
+- Just Outdoor Stuffs `1.0.2`.
+
+Urban Decor requires RunicLib; Packwiz resolved Fabric **4.3.11**. All five
+client/server pins download the unmodified upstream jars from Modrinth.
+They are staged outside the live mods directory under
+`staging/furniture-hub-1.0.0` on the host. The restart installer embeds only
+the first-party updates and configuration, not the upstream jars.
+All five staged upstream jars were downloaded back and SHA-256 verified
+against the installer's embedded manifest. The same directory contains
+`gangs-furniture-hub-restart-1.0.0.jar` (424,763 bytes), also readback verified:
+`5b983f6db3078bd4698db8d702b6e18a2dcbf89e39721cf226049f8667860e84`.
+Pre-publication host inspection on 2026-11-12 reverified all six staged files
+and seven original/prerequisite jars. It still showed GoldClaim 1.0.73 and
+Gang Shop 1.0.10 as the active versions; none of the new furniture jars were
+in the live mods directory. Both existing Discord configuration files remain
+present. The running server's mods are not modified by publication or launcher
+selection; the installer applies them only at the owner's next restart.
+
+**No new shop stock:** Gang Shop **1.0.11** excludes `bf_blockpack`,
+`immersive_furniture`, `urban_decor`, `justoutdoorstuffs` and `runiclib` before
+item classification or price initialization. Existing shop configuration,
+prices and overrides are not replaced.
+
+**Immersive Furniture policy:** the owner chose the built-in restriction on
+**all** Artisan's Workstation crafting, not a custom online-only patch.
+`config/immersive_furniture.json` sets `requiredCraftingPermissionLevel` to
+**2**, so ordinary players cannot craft either local or online designs,
+including in creative mode. Operators with level 2 or above retain crafting.
+This is not a LuckPerms permission node and does not automatically grant
+non-OP staff access. It does **not** prevent client-side library browsing,
+authentication or access to the external website. The library URL and all
+other native defaults are retained. The complete config includes its
+required `version` and `name`: this upstream loader can otherwise reset the
+restriction or deserialize omitted fields without their constructor defaults.
+
+**Hub projectiles:** GoldClaim **1.0.74** uses the existing configured hub
+dimension (`portalHubDimension`, normally `gangs:hub`), not `/wild` or RSW.
+It rejects projectile spawns and removes existing projectiles before entity
+or passenger ticks. This includes vanilla and modded `ProjectileEntity`
+subclasses, Eye of Ender entities and the verified Alex's Caves ranged-effect
+entities that do not extend that class: waves, daggers, dinosaur spirits,
+peppermints, sugar staff hexes, thrown waste drums and magnetic weapons.
+Standard projectile item use is denied with a notice before consumption:
+bows/crossbows, tridents, throwable items, fireworks, eyes and fishing rods.
+There is no staff bypass. Modded launchers are covered at entity spawn even
+when their item has no standard launch callback; hitscan attacks or future
+custom entities outside these types are not claimed to be projectiles.
+Dropped items and armor stands are preserved, and other dimensions retain
+normal projectile behavior.
+
+The new **FurnitureHubRestart** launcher deliberately supersedes the
+already-applied Botania/Discord/Chef/mailbox/trials chain. Host readback
+confirmed the exact old GoldClaim 1.0.73, Gang Shop 1.0.10, Botania
+compatibility, Chef compatibility and Discord jars, original Fabric launcher,
+and predecessor launcher; the mailbox and trials `APPLIED.txt` markers exist.
+Replaying the old chain after upgrading would reject the newer GoldClaim/shop.
+Instead, the new launcher verifies those prerequisite jars and the presence
+of both private Discord configs, installs under the stopped world's session
+lock, and starts the original Fabric launcher directly. It never reads or
+rewrites Discord credentials. Every other installed mod/config is retained.
+
+Original GoldClaim/shop jars are saved under
+`backups/furniture-hub-1.0.0`. All payloads, staged upstream jars, old files,
+targets, backups and managed-mod duplicates are preflighted. Changed or
+missing dependencies, unexpected configs/jars and an occupied world lock
+abort explicitly. Repeats and interrupted installs are supported; both the
+prepared furniture config and its verified native reserialization are
+accepted. Keep the staging directory and backups for future starts.
+Do not simply reselect an older launcher after this upgrade: its version
+checks do not accept these newer jars. Removing furniture mods after players
+place their blocks can destroy that content.
+
+Validation passed:
+
+- Gang Shop build and unit tests, including namespace-first exclusions.
+- GoldClaim build/unit tests and remapped production/smoke jars.
+- Isolated, localhost-only Minecraft 1.20.1 / Fabric Loader 0.19.5 integration:
+  **26 vanilla/modded projectile types**, spawn/tick/passenger guards,
+  launch-item denial without consumption, ordinary item/display preservation,
+  and non-hub projectile spawns.
+- All **1,393 registered furniture items** are absent from the shop:
+  Block Pack 1,202, Urban Decor 136, Just Outdoor Stuffs 52, Immersive Furniture 3.
+  Existing cobblestone stock remains available.
+- The native furniture config matches every unrelated default; ordinary
+  players are refused local/online crafting in survival and creative, while
+  level-2 staff can craft using the real request handler.
+- Restart installer tests cover install/repeat/native config, corrupt payloads,
+  renamed duplicates, changed config/targets, missing originals/staging/
+  prerequisites, world locking and interrupted recovery.
+- Packwiz refresh and `scripts\Test-PackwizIndex.ps1` passed with **564**
+  indexed files; the served config was normalized to LF before packaging.
+
+The final fixture shut down cleanly. The earlier failed fixture lacked crafting
+materials, and its shutdown lacked NightConfig runtime libraries; both fixture
+issues were corrected. Existing optional-mod/data-fixer warnings were present.
+This is not a full production-pack or interactive client test.
+
+Rebuild the integration fixture with the accepted EULA already copied into
+`tmp/goldclaim-hub-furniture-smoke`, using
+`sources\goldclaim\gradlew.bat -p sources\goldclaim runHubFurnitureSmoke "-Ploader_version=0.19.5" "-PsmokeModsDir=<absolute dependency directory>" "-PsmokeLibrariesDir=<absolute NightConfig library directory>" --no-daemon --console=plain`.
+The dependency directory contains the supplied four jars, pinned RunicLib,
+Gang Shop 1.0.11 and the existing projectile fixture dependencies (without its
+older Gang Shop jar). Build/check the installer with
+`powershell -NoProfile -ExecutionPolicy Bypass -File scripts\hosted\Build-FurnitureHubRestart.ps1`
+(add `-TestOnly` to avoid packaging). The builder refuses to overwrite a release.
+
+Publication and launcher selection are now owner-approved. Verify the Pages
+deployment and all downloads, then put the staged launcher in the server root
+and select it for the owner's next restart, preserving all `JAVA_ARGS`,
+including rotating GC logs. Do not initiate that restart.
+Clients must fully close Minecraft and launch their auto-updating instance
+for the new content mods once the server update is applied.
+
 # Botania-only no-flight compatibility selected for next restart (2026-11-08)
 
 The server policy disallows Botania flight. The first-party

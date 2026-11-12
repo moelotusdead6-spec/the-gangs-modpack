@@ -122,6 +122,16 @@ loom {
 		goldclaim_policy_smoke { sourceSet sourceSets.testmod }
 	}
 	runs {
+		hubFurnitureSmoke {
+			server()
+			name 'Isolated hub projectile and furniture integration test'
+			source sourceSets.testmod
+			runDir '../../tmp/goldclaim-hub-furniture-smoke'
+			vmArg '-Xmx2G'
+			vmArg '-XX:ActiveProcessorCount=4'
+			environmentVariable 'GOLDCLAIM_HUB_FURNITURE_SMOKE', 'true'
+			programArg 'nogui'
+		}
 		policySmoke {
 			server()
 			name 'Isolated GoldClaim policy smoke test'
@@ -288,6 +298,47 @@ loom {
 			if (!file('../../tmp/goldclaim-rsw-smoke/rsw-smoke-passed.txt').exists()) {
 				throw new GradleException('RSW dragon verification did not produce a passing result.')
 			}
+		}
+	}
+}
+
+tasks.named('runHubFurnitureSmoke') {
+	classpath = classpath.filter { !it.name.startsWith('fiw-anticheat-') }
+	doFirst {
+		def directory = file('../../tmp/goldclaim-hub-furniture-smoke')
+		def eula = new File(directory, 'eula.txt')
+		if (!eula.exists() || !(eula.text =~ /(?m)^eula=true\s*$/).find()) {
+			throw new GradleException('Copy your accepted Minecraft eula.txt into tmp/goldclaim-hub-furniture-smoke before running the fixture.')
+		}
+		new File(directory, 'server.properties').text = '''server-ip=127.0.0.1
+server-port=0
+online-mode=false
+enable-query=false
+enable-rcon=false
+level-name=smoke-world
+level-type=minecraft:flat
+generate-structures=false
+view-distance=2
+simulation-distance=2
+max-tick-time=60000
+generator-settings={"layers":[{"block":"minecraft:bedrock","height":1},{"block":"minecraft:dirt","height":2},{"block":"minecraft:grass_block","height":1}],"biome":"minecraft:plains"}
+'''
+		copy {
+			from '../../config/immersive_furniture.json'
+			into new File(directory, 'config')
+		}
+		copy {
+			from '../../config/randomcollections/config.json'
+			into new File(directory, 'config/randomcollections')
+		}
+		def result = new File(directory, 'policy-smoke-passed.txt')
+		if (result.exists() && !result.delete()) {
+			throw new GradleException('Cannot clear the previous hub/furniture smoke-test result.')
+		}
+	}
+	doLast {
+		if (!file('../../tmp/goldclaim-hub-furniture-smoke/policy-smoke-passed.txt').exists()) {
+			throw new GradleException('Hub/furniture verification did not produce a passing result.')
 		}
 	}
 }

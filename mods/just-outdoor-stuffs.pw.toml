@@ -1,0 +1,13 @@
+name = "Just Outdoor Stuffs"
+filename = "JustOutdoorStuffs-1.20.1-fabric-v1.0.2.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/6hCfRrRD/versions/V0qW1u68/JustOutdoorStuffs-1.20.1-fabric-v1.0.2.jar"
+hash-format = "sha512"
+hash = "92c3af731016096af9a325057a5802ec41514a8df4957e18be4f2dba81de83e559efdec1d949817350dfc0970044785653585186350504d8c6d407f032a2cb9a"
+
+[update]
+[update.modrinth]
+mod-id = "6hCfRrRD"
+version = "V0qW1u68"

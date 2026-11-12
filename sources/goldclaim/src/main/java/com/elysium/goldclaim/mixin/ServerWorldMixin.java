@@ -14,7 +14,9 @@
 package com.elysium.goldclaim.mixin;
 
 import com.elysium.goldclaim.GoldClaimMod;
+import com.elysium.goldclaim.HubProjectilePolicy;
 import com.elysium.goldclaim.RswDragonFightService;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.boss.dragon.EnderDragonFight;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
@@ -29,9 +31,31 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value={ServerWorld.class})
 public abstract class ServerWorldMixin {
+    @Inject(method = "addEntity", at = @At("HEAD"), cancellable = true)
+    private void goldclaim$denyHubProjectileSpawn(Entity entity, CallbackInfoReturnable<Boolean> ci) {
+        if (HubProjectilePolicy.remove(entity, (ServerWorld)(Object)this)) {
+            ci.setReturnValue(false);
+        }
+    }
+
+    @Inject(method = "tickEntity", at = @At("HEAD"), cancellable = true)
+    private void goldclaim$removeHubProjectile(Entity entity, CallbackInfo ci) {
+        if (HubProjectilePolicy.remove(entity, (ServerWorld)(Object)this)) {
+            ci.cancel();
+        }
+    }
+
+    @Inject(method = "tickPassenger", at = @At("HEAD"), cancellable = true)
+    private void goldclaim$removeHubProjectilePassenger(Entity vehicle, Entity passenger, CallbackInfo ci) {
+        if (HubProjectilePolicy.remove(passenger, (ServerWorld)(Object)this)) {
+            ci.cancel();
+        }
+    }
+
     @Inject(method={"tickFluid"}, at={@At(value="HEAD")}, cancellable=true)
     private void goldclaim$freezeHubFluids(BlockPos pos, Fluid fluid, CallbackInfo callbackInfo) {
         if (GoldClaimMod.shouldFreezeHubFluids((ServerWorld)(Object)this) && (fluid == Fluids.WATER || fluid == Fluids.FLOWING_WATER)) {

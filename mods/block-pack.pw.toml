@@ -1,0 +1,13 @@
+name = "Block Pack"
+filename = "bf_blockpack-fabric-1.20.1-1.1.2.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/An633Gxh/versions/lPwxv6GO/bf_blockpack-fabric-1.20.1-1.1.2.jar"
+hash-format = "sha512"
+hash = "0b0bd66b3d6b9b7c0016c53bde148bfef0d7848227c4c78b59356efd79c17fa2b352efc05e2e04c58eec37e46c8dc027d57890184cca58ff22358f5fbd47075e"
+
+[update]
+[update.modrinth]
+mod-id = "An633Gxh"
+version = "lPwxv6GO"

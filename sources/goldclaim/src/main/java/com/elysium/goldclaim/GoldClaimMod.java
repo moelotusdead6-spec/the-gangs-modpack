@@ -341,6 +341,7 @@ implements ModInitializer {
         WaystonePolicy.register();
         this.config = GoldClaimConfig.load();
         HubTeleportPolicy.register();
+        HubProjectilePolicy.register();
         Path claimsPath = Path.of("config", "goldclaim", "claims.json");
         this.claimManager = new ClaimManager(claimsPath, this.config);
         new ClaimMapSync(this.claimManager).register();

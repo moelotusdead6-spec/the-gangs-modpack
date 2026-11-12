@@ -1,5 +1,36 @@
 # Published Artifacts
 
+## Furniture additions and hub projectile protection (v1.1.29)
+
+On 2026-11-12 the owner authorized publication and next-startup selection,
+but will restart the server when ready. Pack v1.1.29 includes the four supplied furniture mods and required
+RunicLib using pinned official downloads, native operator-only Immersive
+Furniture crafting, Gang Shop 1.0.11 exclusions and GoldClaim 1.0.74 hub
+projectile protection. Native client-side online library browsing is not
+blocked by the crafting restriction.
+
+- `artifacts/goldclaim-1.0.74.jar`, SHA-256
+  `ea43770aadb71de491e4a5d51176e37bfbc42a19c265ad6cc2fc82b51fb71c43`.
+- `artifacts/gangshop-1.0.11.jar`, SHA-256
+  `39d2deee0019ba566233655205810835a927dad2f9aad8c9fef6b17173c1827f`.
+- `artifacts/gangs-furniture-hub-restart-1.0.0.jar`, SHA-256
+  `5b983f6db3078bd4698db8d702b6e18a2dcbf89e39721cf226049f8667860e84`.
+  Uploaded alongside the five upstream jars under the host's
+  `staging/furniture-hub-1.0.0`, outside the active mods directory; every
+  staged file was downloaded back and its SHA-256 verified. After public
+  download verification, this launcher is placed in the server root and
+  selected for the next startup. Active server mods are not changed while
+  the server is running.
+
+The new restart installer verifies and supersedes the already-applied
+Botania/Discord/Chef/mailbox/trials chain rather than replaying obsolete
+GoldClaim/shop version checks. It backs up the old jars, requires staged,
+hash-pinned upstream files, and installs only while the world is stopped.
+The final isolated Fabric integration checked 26 projectile types, all 1,393
+registered furniture items against the shop, and native crafting permissions;
+unit/build and interrupted-install regression tests passed.
+See [staging, activation and validation details](docs/updates/next-restart.md).
+
 ## Prepared: Botania-only no-flight compatibility
 
 - `artifacts/gangsbotaniacompat-1.0.1.jar`:

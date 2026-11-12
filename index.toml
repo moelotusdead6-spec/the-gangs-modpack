@@ -6,7 +6,7 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "8531b0707a656b525be2f02da8b4af51182b6bdf8e5db9325ba3a883df70b112"
+hash = "fdd0f30acb1f00729e4c1df93a6f793ba9584cfaa7ba293b0d4e7ddff43e8cf9"
 
 [[files]]
 file = "README.md"
@@ -131,6 +131,10 @@ hash = "f3ba34986b212042d95e3a05a0baa37fa4dd7895cce65d7dbc92eb29b0840647"
 [[files]]
 file = "config/gobber2/general.json5"
 hash = "9794ababce25204ea58d2095d2fd616f3e664c4d4e803814c670939da1a831d0"
+
+[[files]]
+file = "config/immersive_furniture.json"
+hash = "a82332c4c241ec651307045a1bddb4babe468d857c31f60b465ba907e83f5e46"
 
 [[files]]
 file = "config/itemborders-common.toml"
@@ -1281,6 +1285,11 @@ hash = "965e2303a433f1646855af639db914a375e15f15e1bd91139756421f455582a1"
 metafile = true
 
 [[files]]
+file = "mods/block-pack.pw.toml"
+hash = "b46d1ebda8ff25d4ed4fec92dfa6a71dc0cb9bd32b09f313937d6dc3fe33e4be"
+metafile = true
+
+[[files]]
 file = "mods/botania.pw.toml"
 hash = "52c82e2266c407ae84b0ae774786085ca1910400648d42e418b2821590201766"
 metafile = true
@@ -1597,7 +1606,7 @@ metafile = true
 
 [[files]]
 file = "mods/gangshop-direct.pw.toml"
-hash = "25c83b3eb63d53fc54dc5158a89899a508fe7cf068639c65c73b598ad5577647"
+hash = "c668181759f421b41ce7c9b2da05bdec24afc09b6efaa662d54e0f5bb2969c14"
 metafile = true
 
 [[files]]
@@ -1617,7 +1626,7 @@ metafile = true
 
 [[files]]
 file = "mods/goldclaim-direct.pw.toml"
-hash = "62b78efc158a5a0ed9fe2d3a3dbe4809ee8f69eceb2c1437d9527a661be9344d"
+hash = "a0158ccaf3991ea36946a00b9ae73685cbdbb643ba90c3f4dc2880d616b38b69"
 metafile = true
 
 [[files]]
@@ -1646,6 +1655,11 @@ hash = "79c1db3aebd6429bb1e5829b511c9a67dbbddcae46361953166c48c7e5f77ce8"
 metafile = true
 
 [[files]]
+file = "mods/immersive-furniture.pw.toml"
+hash = "8856493cc49932d102f5991030187eb7c635bb26a054215fe4a4d032901e99e2"
+metafile = true
+
+[[files]]
 file = "mods/indium-1.0.36_mc1.20.1.pw.toml"
 hash = "87ff9e892ac602ae10cc678bfb8f4c618d8eac23308380850f6f762b06f7dd9a"
 metafile = true
@@ -1658,6 +1672,11 @@ metafile = true
 [[files]]
 file = "mods/journeymap-fabric-1.20.1-6.0.0-beta.5.pw.toml"
 hash = "03b4e7977b13be40206dc95f5a1b0114e619e71872cf1ec14cd2fc995506a263"
+metafile = true
+
+[[files]]
+file = "mods/just-outdoor-stuffs.pw.toml"
+hash = "30a50082008326b715feebf94b19163f3e7a231fa6a32e8b054815e4d23c0f94"
 metafile = true
 
 [[files]]
@@ -2316,6 +2335,11 @@ hash = "1cc6df431bab87fc6d6edceadb61a36c8476dbbccbb69e706cafca2939f660c1"
 metafile = true
 
 [[files]]
+file = "mods/runiclib.pw.toml"
+hash = "c67ee2b7722b353755fa9bfcf389a79b113793f0283531f3c56849f76d48af34"
+metafile = true
+
+[[files]]
 file = "mods/sarosplayerplushiemod-fabric-1.20.1-1.1.pw.toml"
 hash = "2a947613a5023377ca406af6e5ece7d8ce739b24e525e4cd5e52b49583f6869a"
 metafile = true
@@ -2503,6 +2527,11 @@ metafile = true
 [[files]]
 file = "mods/universal-graves.pw.toml"
 hash = "3850ba97b0333e8a93577e2d6352659e63bdefa295c704b18431ae233b6040e8"
+metafile = true
+
+[[files]]
+file = "mods/urban-decor.pw.toml"
+hash = "de552470f6a99f835e6b7229ac4afa87b1de25c6c02ec8971d9c30a683125923"
 metafile = true
 
 [[files]]
