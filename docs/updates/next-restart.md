@@ -7,10 +7,11 @@ With owner approval, the hosted panel's persisted `JAVA_ARGS` now appends:
 ```
 
 Readback verified that only `JAVA_ARGS` changed and the effective startup
-command includes the flag. Existing JVM flags, the effective 9216 MiB heap
-limit and `SERVER_JARFILE` selection are unchanged. The server remains running;
-no restart or `/reload` was issued. Logging begins on the next startup, so
-runtime log creation and rotation remain to be verified after that restart.
+command includes the flag. Existing JVM flags and the effective 9216 MiB heap
+limit were unchanged. No restart or `/reload` was issued. On 2026-11-12,
+read-only verification found `logs/gc.log` from the subsequent server startup,
+with G1 activity and a 9 GiB maximum heap. Actual archive rotation has not yet
+been observed. The later furniture launcher selection retains this exact flag.
 
 The existing server `logs` directory was checked before configuration.
 GC output uses `logs/gc.log` plus up to five rotated files, approximately
@@ -20,14 +21,23 @@ and do not change garbage collection policy. No heap dump or JFR capture was
 enabled. The furniture release was subsequently authorized on 2026-11-12,
 as described below; the GC logging flag is retained.
 
-# Furniture additions and hub projectiles: release authorized, restart pending (2026-11-12)
+# Furniture additions and hub projectiles: published and selected, restart pending (2026-11-12)
 
 The owner originally requested staging only on 2026-11-11, then authorized
 publication and next-startup selection on 2026-11-12. The owner will restart
 the server when ready; no restart or `/reload` is authorized by this release.
-The client pack version is **1.1.29**. Public download verification precedes
-selection of `gangs-furniture-hub-restart-1.0.0.jar`; until that verification,
-the selected launcher remains `gangs-botania-no-flight-restart-1.0.1.jar`.
+The client pack version **1.1.29** is published. Release commit `1327bac`
+completed GitHub Pages deployment successfully. Public Packwiz manifests,
+all seven changed/new mod metadata files, the furniture config, all three
+release jars and the five official upstream downloads were hash-verified.
+The restart installer was then moved to the server root, downloaded back,
+SHA-256 verified and selected as `SERVER_JARFILE`:
+`gangs-furniture-hub-restart-1.0.0.jar`.
+
+Startup readback confirms the selected jar appears in the effective command
+and `JAVA_ARGS` is byte-for-byte unchanged, including rotating GC logs.
+The server remains running with GoldClaim 1.0.73 and Gang Shop 1.0.10.
+The new mods and hub policy become active only after the owner restarts.
 
 The four supplied jars match the exact official Modrinth release hashes:
 
@@ -140,10 +150,10 @@ older Gang Shop jar). Build/check the installer with
 `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\hosted\Build-FurnitureHubRestart.ps1`
 (add `-TestOnly` to avoid packaging). The builder refuses to overwrite a release.
 
-Publication and launcher selection are now owner-approved. Verify the Pages
-deployment and all downloads, then put the staged launcher in the server root
-and select it for the owner's next restart, preserving all `JAVA_ARGS`,
-including rotating GC logs. Do not initiate that restart.
+Publication, public download verification and launcher selection are complete.
+Keep the five upstream jars in `staging/furniture-hub-1.0.0` and the selected
+installer in the server root for the owner's next restart. Preserve all
+`JAVA_ARGS`, including rotating GC logs. Do not initiate that restart.
 Clients must fully close Minecraft and launch their auto-updating instance
 for the new content mods once the server update is applied.
 
