@@ -1,8 +1,9 @@
 # Mythic Mounts and admin claim trust (v1.1.30)
 
-This release is prepared for the owner's restart. Do not use `/reload` or
-restart on the owner's behalf. Publication and launcher selection must be
-verified before telling players to update or restart.
+Pack v1.1.30 is published and its manifests and release jars have been
+verified on GitHub Pages. The corrected restart launcher is selected and its
+effective startup command verified. The server is still running; the owner
+will restart it. Do not use `/reload` or restart on the owner's behalf.
 
 The existing Gangs Cosmetics 2.0.2 is unchanged. `/cosmetics` has a Mounts
 category with previews, unlocks from Cosmetic Keys, transferable duplicate

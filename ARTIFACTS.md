@@ -2,9 +2,10 @@
 
 ## Mythic Mounts and admin claim trust (v1.1.30)
 
-The release is prepared for publication and the owner's restart; verify public
-availability and the selected server launcher separately before announcing it.
-The original Cosmetics 2.0.2 jar remains unchanged. Mythic Mounts 7.2 is
+Pack v1.1.30 and these release artifacts are published and checksum-verified.
+The corrected launcher is selected for the owner's next restart; the running
+server has not been restarted. The original Cosmetics 2.0.2 jar remains
+unchanged. Mythic Mounts 7.2 is
 downloaded unmodified from the pinned official Modrinth URL, not redistributed
 in the installer.
 
