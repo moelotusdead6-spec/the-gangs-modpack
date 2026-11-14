@@ -289,6 +289,10 @@ public class ClaimManager {
     }
 
     public synchronized TrustResult setPublicTrustAt(UUID actorUuid, String dimension, int x, int z, Claim.TrustLevel level, boolean enabled) {
+        return this.setPublicTrustAt(actorUuid, dimension, x, z, level, enabled, false);
+    }
+
+    public synchronized TrustResult setPublicTrustAt(UUID actorUuid, String dimension, int x, int z, Claim.TrustLevel level, boolean enabled, boolean admin) {
         Optional<Claim> claimOpt = this.getClaimAt(dimension, x, z);
         if (claimOpt.isEmpty()) {
             return TrustResult.fail(TrustError.NOT_FOUND);
@@ -296,7 +300,7 @@ public class ClaimManager {
         Claim claim = claimOpt.get();
         boolean ownerRequired = level == Claim.TrustLevel.MANAGER
             || level == Claim.TrustLevel.FULL && !enabled && claim.managerAll;
-        if (claim.adminClaim || (ownerRequired ? !claim.isOwner(actorUuid) : !claim.hasFullControl(actorUuid))) {
+        if (claim.adminClaim ? !admin : (ownerRequired ? !claim.isOwner(actorUuid) : !claim.hasFullControl(actorUuid))) {
             return TrustResult.fail(TrustError.NOT_ALLOWED);
         }
         claim.setPublicTrust(level, enabled);

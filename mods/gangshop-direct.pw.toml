@@ -1,8 +1,8 @@
 name = "Gang Shop"
-filename = "gangshop-1.0.11.jar"
+filename = "gangshop-1.0.12.jar"
 side = "server"
 
 [download]
-url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/gangshop-1.0.11.jar"
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/gangshop-1.0.12.jar"
 hash-format = "sha256"
-hash = "39d2deee0019ba566233655205810835a927dad2f9aad8c9fef6b17173c1827f"
+hash = "0e47892e9abb773763be9e527ec222b2bbc18e7d7f17ba93aba22761ea93a5ce"

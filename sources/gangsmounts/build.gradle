@@ -1,0 +1,96 @@
+plugins {
+	id 'fabric-loom' version '1.10-SNAPSHOT'
+}
+version = '1.0.0'
+group = 'com.gangs'
+base { archivesName = 'gangsmounts' }
+def cosmeticsJar = file('../../artifacts/gangscosmetics-2.0.2.jar')
+if (java.security.MessageDigest.getInstance('SHA-256').digest(cosmeticsJar.bytes).encodeHex().toString()
+		!= 'ed6bc5ca0bbe88e85d62300600df8486bb8b92c5e8f1a6bc368faaaed5b3bfc1') {
+	throw new GradleException('The mount test requires the exact pinned live Gangs Cosmetics 2.0.2 jar.')
+}
+
+sourceSets {
+	testmod {
+		compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+		runtimeClasspath += output + compileClasspath + sourceSets.main.runtimeClasspath
+	}
+}
+loom {
+	splitEnvironmentSourceSets()
+	mods {
+		gangsmounts {
+			sourceSet sourceSets.main
+			sourceSet sourceSets.client
+		}
+		if (project.hasProperty('mountSmoke')) {
+			mountsmoke { sourceSet sourceSets.testmod }
+		}
+	}
+	if (project.hasProperty('mountTestRunDir')) {
+		runs {
+			client {
+				runDir project.relativePath(file(project.property('mountTestRunDir')))
+				programArg '--username'
+				programArg 'MountTester'
+			}
+			server {
+				runDir project.relativePath(file(project.property('mountTestRunDir')))
+				if (project.hasProperty('mountSmoke')) source sourceSets.testmod
+			}
+		}
+	}
+}
+repositories { mavenCentral() }
+dependencies {
+	minecraft 'com.mojang:minecraft:1.20.1'
+	mappings 'net.fabricmc:yarn:1.20.1+build.10:v2'
+	modImplementation 'net.fabricmc:fabric-loader:0.16.14'
+	modImplementation 'net.fabricmc.fabric-api:fabric-api:0.92.11+1.20.1'
+	modImplementation files(cosmeticsJar)
+	if (project.hasProperty('mountTestModsDir')) {
+		modRuntimeOnly fileTree(dir: project.property('mountTestModsDir'),
+				include: ['mythic-mounts-*.jar', 'geckolib-*.jar', 'Patchouli-*.jar', 'fiber-*.jar',
+						'mclib-*.jar', 'simplyswords-*.jar',
+						'architectury-*.jar', 'cloth-config-*.jar', 'trinkets-*.jar',
+						'cardinal-components-*.jar', 'spruceui-*.jar', 'basic-math-*.jar'])
+	}
+}
+if (project.hasProperty('mountSmoke')) {
+	tasks.named('runServer') {
+		dependsOn tasks.named('testmodClasses')
+		doFirst { delete file("${project.property('mountTestRunDir')}/mount-smoke-passed.txt") }
+		doLast {
+			if (!file("${project.property('mountTestRunDir')}/mount-smoke-passed.txt").exists()) {
+				throw new GradleException('Mount smoke test did not produce a fresh passing result.')
+			}
+		}
+	}
+}
+tasks.register('writeClientLibraries') {
+	doLast {
+		def libraries = configurations.minecraftLibraries.files + configurations.minecraftRuntimeLibraries.files + configurations.loaderLibraries.files
+		file(project.property('mountClientLibraries')).text = libraries.collect { it.absolutePath }.join(System.lineSeparator())
+	}
+}
+tasks.register('smokeJar', Jar) {
+	archiveBaseName = 'gangsmounts-smoke'
+	archiveVersion = '1.0.0'
+	from sourceSets.testmod.output
+}
+tasks.register('remapSmokeJar', net.fabricmc.loom.task.RemapJarTask) {
+	dependsOn tasks.named('smokeJar')
+	inputFile = tasks.named('smokeJar').flatMap { it.archiveFile }
+	archiveBaseName = 'gangsmounts-smoke'
+	archiveVersion = '1.0.0'
+	archiveClassifier = 'production'
+}
+processResources {
+	inputs.property 'version', project.version
+	filesMatching('fabric.mod.json') { expand 'version': project.version }
+}
+tasks.withType(JavaCompile).configureEach { options.release = 17 }
+java {
+	sourceCompatibility = JavaVersion.VERSION_17
+	targetCompatibility = JavaVersion.VERSION_17
+}

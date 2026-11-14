@@ -1,5 +1,26 @@
 # Published Artifacts
 
+## Mythic Mounts and admin claim trust (v1.1.30)
+
+The release is prepared for publication and the owner's restart; verify public
+availability and the selected server launcher separately before announcing it.
+The original Cosmetics 2.0.2 jar remains unchanged. Mythic Mounts 7.2 is
+downloaded unmodified from the pinned official Modrinth URL, not redistributed
+in the installer.
+
+- `artifacts/gangsmounts-1.0.0.jar`: SHA-256
+  `1fabab4553df4f9ef8c59faa62a81642eda9e8151b997b4d348f56cbe200c1d4`.
+- `artifacts/goldclaim-1.0.75.jar`: SHA-256
+  `038011d0d06f445dac25635e98c9c1dc97050096981a1e16ed3b62c3101e2782`.
+- `artifacts/gangshop-1.0.12.jar`: SHA-256
+  `0e47892e9abb773763be9e527ec222b2bbc18e7d7f17ba93aba22761ea93a5ce`.
+- `artifacts/gangs-mount-claim-restart-1.0.1.jar`: SHA-256
+  `7b69f096f8de8fadf2933fe82ed7b71779856affaef52b7ca116de9ed36b8e67`.
+
+The upstream jar and corrected launcher are staged outside the live mods
+directory; the corrected launcher is also in the server root. All were
+readback checksum-verified. See [restart details](docs/updates/next-restart.md).
+
 ## Furniture additions and hub projectile protection (v1.1.29)
 
 On 2026-11-12 the owner authorized publication and next-startup selection,

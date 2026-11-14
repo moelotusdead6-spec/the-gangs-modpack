@@ -1,3 +1,45 @@
+# Mythic Mounts and admin claim trust (v1.1.30)
+
+This release is prepared for the owner's restart. Do not use `/reload` or
+restart on the owner's behalf. Publication and launcher selection must be
+verified before telling players to update or restart.
+
+The existing Gangs Cosmetics 2.0.2 is unchanged. `/cosmetics` has a Mounts
+category with previews, unlocks from Cosmetic Keys, transferable duplicate
+vouchers, and summon/recall. The last selected mount can be summoned or
+recalled with keys configured in `/cosmetics` Settings. Managed mounts cannot
+take damage or breed. Mythic Mounts do not spawn naturally or through other
+unmanaged spawn routes. The Summoning Staff cannot be crafted or used and is
+hidden from creative listings; existing staff items are not deleted.
+
+Gang Shop 1.0.12 excludes both new mod namespaces, with no change to existing
+stock or prices. GoldClaim 1.0.75 allows Admin/Owner ranks and operators to
+manage unlimited admin claims. While standing in an admin claim, use
+`/claim admin trustlist`, `/claim admin trust interact <player|all>` and
+`/claim admin untrust interact <player|all>`. Full and manager trust variants
+are also available. A non-admin manager-trusted player can build but cannot
+manage or remove an admin claim. Player-claim permissions remain unchanged.
+
+The first-party launcher `gangs-mount-claim-restart-1.0.1.jar` requires the
+already-applied furniture update and the checksum-pinned live launcher,
+Cosmetics, GeckoLib and Patchouli. It reads the unmodified official Mythic
+Mounts jar from `staging/mount-claim-1.0.0`, verifies payloads and existing
+mods, acquires the world lock, and backs up the replaced GoldClaim and Gang
+Shop jars under `backups/mount-claim-1.0.0`. It installs the new jars only at
+startup and then starts the original Fabric launcher. Repeated and interrupted
+installs are supported; unexpected files or checksums stop startup explicitly.
+Keep the staged upstream jar available for subsequent startups. Rollback must
+be performed with the server stopped and a verified world backup, restoring the
+previous mods and launcher together; do not assume world-data changes are
+reversible.
+
+The separate production-mapped mount smoke passed with the live Cosmetics and
+GeckoLib jars, including rewards, all mount lifecycles, damage, spawning,
+staff recipe and shop exclusions. The user checked previews and controls in
+the isolated client. GoldClaim focused tests and a separate real-server claim
+smoke passed. Installer tests covered repeat, corruption, duplicate mods,
+changed targets, locked world and interrupted recovery.
+
 # Rotating server GC logs configured for next startup (2026-11-11)
 
 With owner approval, the hosted panel's persisted `JAVA_ARGS` now appends:

@@ -1,0 +1,8 @@
+name = "Gangs Mounts"
+filename = "gangsmounts-1.0.0.jar"
+side = "both"
+
+[download]
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/gangsmounts-1.0.0.jar"
+hash-format = "sha256"
+hash = "1fabab4553df4f9ef8c59faa62a81642eda9e8151b997b4d348f56cbe200c1d4"

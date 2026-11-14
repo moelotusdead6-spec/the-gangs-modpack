@@ -1,5 +1,14 @@
 # Updating The Gangs Modpack
 
+## Mythic Mounts and admin claim trust (v1.1.30)
+
+After publication and the owner's server restart, close Minecraft and press
+Play in the existing auto-updating Prism instance. Open `/cosmetics` to preview,
+unlock, summon and recall mounts; configure the optional shortcuts under
+Settings. Cosmetic Keys can unlock mounts and duplicate vouchers can be traded.
+See [restart details](next-restart.md) for admin claim commands and deployment
+prerequisites. Nothing from the new mounts is added to Gang Shop.
+
 ## FancyMenu Halloween decorations removed (2026-11-09)
 
 The title-screen orange string lights and falling leaves are disabled, and

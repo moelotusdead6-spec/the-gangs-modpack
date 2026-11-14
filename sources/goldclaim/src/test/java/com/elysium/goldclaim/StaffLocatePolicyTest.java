@@ -16,4 +16,13 @@ public class StaffLocatePolicyTest {
         assertFalse(StaffLocatePolicy.allowed(false, Set.of()));
         assertTrue(StaffLocatePolicy.allowed(true, Set.of()));
     }
+
+    @Test
+    public void onlyAdminOwnerAndOperatorsManageAdminClaims() {
+        assertTrue(StaffLocatePolicy.adminAllowed(false, Set.of("admin")));
+        assertTrue(StaffLocatePolicy.adminAllowed(false, Set.of("owner")));
+        assertTrue(StaffLocatePolicy.adminAllowed(true, Set.of()));
+        assertFalse(StaffLocatePolicy.adminAllowed(false, Set.of("mod", "moderator")));
+        assertFalse(StaffLocatePolicy.adminAllowed(false, Set.of("default")));
+    }
 }

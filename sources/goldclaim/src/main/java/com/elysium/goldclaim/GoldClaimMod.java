@@ -479,12 +479,12 @@ implements ModInitializer {
             if (this.isUniversalGraveOwner(serverPlayer, world, pos)) {
                 return ActionResult.PASS;
             }
-            boolean fullAccess = this.claimManager.canModify(serverPlayer.getUuid(), serverPlayer.getGameProfile().getName(), serverPlayer.hasPermissionLevel(2), dimension, pos.getX(), pos.getZ());
+            boolean fullAccess = this.canModifyClaim(serverPlayer, dimension, pos);
             if (!fullAccess && this.isSensitiveClaimBlock(world, pos, serverPlayer.getMainHandStack())) {
                 this.deny(serverPlayer, "You cannot access containers or machines in this claim.");
                 return ActionResult.FAIL;
             }
-            if (!this.claimManager.canInteract(serverPlayer.getUuid(), serverPlayer.getGameProfile().getName(), serverPlayer.hasPermissionLevel(2), dimension, pos.getX(), pos.getZ())) {
+            if (!fullAccess && !this.claimManager.canInteract(serverPlayer.getUuid(), serverPlayer.getGameProfile().getName(), serverPlayer.hasPermissionLevel(2), dimension, pos.getX(), pos.getZ())) {
                 this.deny(serverPlayer, "You cannot interact here. This area is claimed.");
                 return ActionResult.FAIL;
             }
@@ -529,7 +529,9 @@ implements ModInitializer {
             if (player instanceof ServerPlayerEntity serverPlayer && this.isUniversalGraveOwner(serverPlayer, world, pos)) {
                 return true;
             }
-            boolean allowed = this.claimManager.canModify(player.getUuid(), player.getGameProfile().getName(), player.hasPermissionLevel(2), dimensionId, pos.getX(), pos.getZ());
+            boolean allowed = player instanceof ServerPlayerEntity serverPlayer
+                ? this.canModifyClaim(serverPlayer, dimensionId, pos)
+                : this.claimManager.canModify(player.getUuid(), player.getGameProfile().getName(), player.hasPermissionLevel(2), dimensionId, pos.getX(), pos.getZ());
             if (!allowed && player instanceof ServerPlayerEntity) {
                 ServerPlayerEntity serverPlayer = (ServerPlayerEntity)player;
                 this.deny(serverPlayer, "You cannot break blocks in this claim.");
@@ -546,7 +548,7 @@ implements ModInitializer {
             if (PVP_DIMENSION.equals(dimension)) {
                 return ActionResult.PASS;
             }
-            if (!this.claimManager.canModify(serverPlayer.getUuid(), serverPlayer.getGameProfile().getName(), serverPlayer.hasPermissionLevel(2), dimension, pos.getX(), pos.getZ())) {
+            if (!this.canModifyClaim(serverPlayer, dimension, pos)) {
                 this.deny(serverPlayer, "You cannot use entities in this claim.");
                 return ActionResult.FAIL;
             }
@@ -574,7 +576,7 @@ implements ModInitializer {
                 return ActionResult.PASS;
             }
             BlockPos pos = entity.getBlockPos();
-            if (!this.claimManager.canModify(serverPlayer.getUuid(), serverPlayer.getGameProfile().getName(), serverPlayer.hasPermissionLevel(2), dimension, pos.getX(), pos.getZ())) {
+            if (!this.canModifyClaim(serverPlayer, dimension, pos)) {
                 this.deny(serverPlayer, "You cannot damage entities in this claim.");
                 return ActionResult.FAIL;
             }
@@ -622,8 +624,7 @@ implements ModInitializer {
         if (PVP_DIMENSION.equals(dimension)) {
             return true;
         }
-        boolean allowed = this.claimManager.canModify(player.getUuid(), player.getGameProfile().getName(),
-            player.hasPermissionLevel(2), dimension, pos.getX(), pos.getZ());
+        boolean allowed = this.canModifyClaim(player, dimension, pos);
         if (!allowed) {
             this.deny(player, "You cannot place blocks or use items in this claim.");
         }
@@ -683,6 +684,32 @@ implements ModInitializer {
             dispatcher.register((LiteralArgumentBuilder)((LiteralArgumentBuilder)((LiteralArgumentBuilder)((LiteralArgumentBuilder)((LiteralArgumentBuilder)((LiteralArgumentBuilder)CommandManager.literal((String)"adminclaim").executes(ctx -> this.sendAdminHelp((ServerCommandSource)ctx.getSource()))).then(CommandManager.literal((String)"help").executes(ctx -> this.sendAdminHelp((ServerCommandSource)ctx.getSource())))).then(((LiteralArgumentBuilder)CommandManager.literal((String)"create").executes(ctx -> this.sendAdminCreateUsage((ServerCommandSource)ctx.getSource()))).then(CommandManager.argument((String)"x1", (ArgumentType)IntegerArgumentType.integer()).then(CommandManager.argument((String)"z1", (ArgumentType)IntegerArgumentType.integer()).then(CommandManager.argument((String)"x2", (ArgumentType)IntegerArgumentType.integer()).then(CommandManager.argument((String)"z2", (ArgumentType)IntegerArgumentType.integer()).executes(ctx -> this.createAdminClaim((ServerCommandSource)ctx.getSource(), IntegerArgumentType.getInteger((CommandContext)ctx, (String)"x1"), IntegerArgumentType.getInteger((CommandContext)ctx, (String)"z1"), IntegerArgumentType.getInteger((CommandContext)ctx, (String)"x2"), IntegerArgumentType.getInteger((CommandContext)ctx, (String)"z2"))))))))).then(CommandManager.literal((String)"unclaim").executes(ctx -> this.unclaimAdminAtFeet((ServerCommandSource)ctx.getSource())))).then(CommandManager.literal((String)"trust").then(CommandManager.argument((String)"player", (ArgumentType)StringArgumentType.word()).executes(ctx -> this.adminTrustPlayer((ServerCommandSource)ctx.getSource(), StringArgumentType.getString((CommandContext)ctx, (String)"player")))))).then(CommandManager.literal((String)"untrust").then(CommandManager.argument((String)"player", (ArgumentType)StringArgumentType.word()).executes(ctx -> this.adminUntrustPlayer((ServerCommandSource)ctx.getSource(), StringArgumentType.getString((CommandContext)ctx, (String)"player"))))));
             dispatcher.register((LiteralArgumentBuilder)((LiteralArgumentBuilder)((LiteralArgumentBuilder)((LiteralArgumentBuilder)((LiteralArgumentBuilder)((LiteralArgumentBuilder)CommandManager.literal((String)"goldclaimadmin").executes(ctx -> this.sendAdminHelp((ServerCommandSource)ctx.getSource()))).then(CommandManager.literal((String)"help").executes(ctx -> this.sendAdminHelp((ServerCommandSource)ctx.getSource())))).then(((LiteralArgumentBuilder)CommandManager.literal((String)"create").executes(ctx -> this.sendAdminCreateUsage((ServerCommandSource)ctx.getSource()))).then(CommandManager.argument((String)"x1", (ArgumentType)IntegerArgumentType.integer()).then(CommandManager.argument((String)"z1", (ArgumentType)IntegerArgumentType.integer()).then(CommandManager.argument((String)"x2", (ArgumentType)IntegerArgumentType.integer()).then(CommandManager.argument((String)"z2", (ArgumentType)IntegerArgumentType.integer()).executes(ctx -> this.createAdminClaim((ServerCommandSource)ctx.getSource(), IntegerArgumentType.getInteger((CommandContext)ctx, (String)"x1"), IntegerArgumentType.getInteger((CommandContext)ctx, (String)"z1"), IntegerArgumentType.getInteger((CommandContext)ctx, (String)"x2"), IntegerArgumentType.getInteger((CommandContext)ctx, (String)"z2"))))))))).then(CommandManager.literal((String)"unclaim").executes(ctx -> this.unclaimAdminAtFeet((ServerCommandSource)ctx.getSource())))).then(CommandManager.literal((String)"trust").then(CommandManager.argument((String)"player", (ArgumentType)StringArgumentType.word()).executes(ctx -> this.adminTrustPlayer((ServerCommandSource)ctx.getSource(), StringArgumentType.getString((CommandContext)ctx, (String)"player")))))).then(CommandManager.literal((String)"untrust").then(CommandManager.argument((String)"player", (ArgumentType)StringArgumentType.word()).executes(ctx -> this.adminUntrustPlayer((ServerCommandSource)ctx.getSource(), StringArgumentType.getString((CommandContext)ctx, (String)"player"))))));
             dispatcher.register((LiteralArgumentBuilder)((LiteralArgumentBuilder)((LiteralArgumentBuilder)((LiteralArgumentBuilder)((LiteralArgumentBuilder)((LiteralArgumentBuilder)CommandManager.literal((String)"gcadmin").executes(ctx -> this.sendAdminHelp((ServerCommandSource)ctx.getSource()))).then(CommandManager.literal((String)"help").executes(ctx -> this.sendAdminHelp((ServerCommandSource)ctx.getSource())))).then(((LiteralArgumentBuilder)CommandManager.literal((String)"create").executes(ctx -> this.sendAdminCreateUsage((ServerCommandSource)ctx.getSource()))).then(CommandManager.argument((String)"x1", (ArgumentType)IntegerArgumentType.integer()).then(CommandManager.argument((String)"z1", (ArgumentType)IntegerArgumentType.integer()).then(CommandManager.argument((String)"x2", (ArgumentType)IntegerArgumentType.integer()).then(CommandManager.argument((String)"z2", (ArgumentType)IntegerArgumentType.integer()).executes(ctx -> this.createAdminClaim((ServerCommandSource)ctx.getSource(), IntegerArgumentType.getInteger((CommandContext)ctx, (String)"x1"), IntegerArgumentType.getInteger((CommandContext)ctx, (String)"z1"), IntegerArgumentType.getInteger((CommandContext)ctx, (String)"x2"), IntegerArgumentType.getInteger((CommandContext)ctx, (String)"z2"))))))))).then(CommandManager.literal((String)"unclaim").executes(ctx -> this.unclaimAdminAtFeet((ServerCommandSource)ctx.getSource())))).then(CommandManager.literal((String)"trust").then(CommandManager.argument((String)"player", (ArgumentType)StringArgumentType.word()).executes(ctx -> this.adminTrustPlayer((ServerCommandSource)ctx.getSource(), StringArgumentType.getString((CommandContext)ctx, (String)"player")))))).then(CommandManager.literal((String)"untrust").then(CommandManager.argument((String)"player", (ArgumentType)StringArgumentType.word()).executes(ctx -> this.adminUntrustPlayer((ServerCommandSource)ctx.getSource(), StringArgumentType.getString((CommandContext)ctx, (String)"player"))))));
+            for (String root : List.of("adminclaim", "goldclaimadmin", "gcadmin", "claim")) {
+                var admin = CommandManager.literal(root.equals("claim") ? "admin" : root)
+                    .then(CommandManager.literal("trustlist")
+                        .executes(ctx -> this.requireAdminClaim(ctx.getSource()) ? this.listClaimTrust(ctx.getSource()) : 0))
+                    .then(CommandManager.literal("trust")
+                        .then(CommandManager.literal("all").executes(ctx -> this.requireAdminClaim(ctx.getSource()) ? this.setPublicTrust(ctx.getSource(), Claim.TrustLevel.FULL, true) : 0))
+                        .then(CommandManager.literal("interact")
+                            .then(CommandManager.literal("all").executes(ctx -> this.requireAdminClaim(ctx.getSource()) ? this.setPublicTrust(ctx.getSource(), Claim.TrustLevel.INTERACT, true) : 0))
+                            .then(CommandManager.argument("player", StringArgumentType.word()).suggests(this::suggestOnlinePlayerNames)
+                                .executes(ctx -> this.requireAdminClaim(ctx.getSource()) ? this.trustPlayer(ctx.getSource(), StringArgumentType.getString(ctx, "player"), true) : 0)))
+                        .then(CommandManager.literal("manager")
+                            .then(CommandManager.literal("all").executes(ctx -> this.requireAdminClaim(ctx.getSource()) ? this.setPublicTrust(ctx.getSource(), Claim.TrustLevel.MANAGER, true) : 0))
+                            .then(CommandManager.argument("player", StringArgumentType.word()).suggests(this::suggestOnlinePlayerNames)
+                                .executes(ctx -> this.requireAdminClaim(ctx.getSource()) ? this.trustManager(ctx.getSource(), StringArgumentType.getString(ctx, "player")) : 0))))
+                    .then(CommandManager.literal("untrust")
+                        .then(CommandManager.literal("all").executes(ctx -> this.requireAdminClaim(ctx.getSource()) ? this.setPublicTrust(ctx.getSource(), Claim.TrustLevel.FULL, false) : 0))
+                        .then(CommandManager.literal("interact")
+                            .then(CommandManager.literal("all").executes(ctx -> this.requireAdminClaim(ctx.getSource()) ? this.setPublicTrust(ctx.getSource(), Claim.TrustLevel.INTERACT, false) : 0))
+                            .then(CommandManager.argument("player", StringArgumentType.word()).suggests(this::suggestOnlinePlayerNames)
+                                .executes(ctx -> this.requireAdminClaim(ctx.getSource()) ? this.untrustPlayer(ctx.getSource(), StringArgumentType.getString(ctx, "player"), true) : 0)))
+                        .then(CommandManager.literal("manager")
+                            .then(CommandManager.literal("all").executes(ctx -> this.requireAdminClaim(ctx.getSource()) ? this.setPublicTrust(ctx.getSource(), Claim.TrustLevel.MANAGER, false) : 0))
+                            .then(CommandManager.argument("player", StringArgumentType.word()).suggests(this::suggestOnlinePlayerNames)
+                                .executes(ctx -> this.requireAdminClaim(ctx.getSource()) ? this.untrustManager(ctx.getSource(), StringArgumentType.getString(ctx, "player")) : 0))));
+                dispatcher.register(root.equals("claim") ? CommandManager.literal("claim").then(admin) : admin);
+            }
             dispatcher.register((LiteralArgumentBuilder)((LiteralArgumentBuilder)((LiteralArgumentBuilder)((LiteralArgumentBuilder)((LiteralArgumentBuilder)((LiteralArgumentBuilder)CommandManager.literal((String)"gcportal").then(CommandManager.literal((String)"help").executes(ctx -> this.sendPortalHelp((ServerCommandSource)ctx.getSource())))).then(CommandManager.literal((String)"add").then(CommandManager.argument((String)"id", (ArgumentType)StringArgumentType.word()).executes(ctx -> this.addClaimPortal((ServerCommandSource)ctx.getSource(), StringArgumentType.getString((CommandContext)ctx, (String)"id")))))).then(CommandManager.literal((String)"addhub").then(CommandManager.argument((String)"id", (ArgumentType)StringArgumentType.word()).executes(ctx -> this.addHubPortal((ServerCommandSource)ctx.getSource(), StringArgumentType.getString((CommandContext)ctx, (String)"id")))))).then(CommandManager.literal((String)"remove").then(CommandManager.argument((String)"id", (ArgumentType)StringArgumentType.word()).executes(ctx -> this.removeClaimPortal((ServerCommandSource)ctx.getSource(), StringArgumentType.getString((CommandContext)ctx, (String)"id")))))).then(CommandManager.literal((String)"delete").then(CommandManager.argument((String)"id", (ArgumentType)StringArgumentType.word()).executes(ctx -> this.removeClaimPortal((ServerCommandSource)ctx.getSource(), StringArgumentType.getString((CommandContext)ctx, (String)"id")))))).then(CommandManager.literal((String)"list").executes(ctx -> this.listClaimPortals((ServerCommandSource)ctx.getSource()))));
             dispatcher.register((LiteralArgumentBuilder)this.publicCommand("hub").executes(ctx -> this.teleportToHub((ServerCommandSource)ctx.getSource())));
             dispatcher.register((LiteralArgumentBuilder)this.publicCommand("wild").executes(ctx -> this.teleportToWild((ServerCommandSource)ctx.getSource())));
@@ -2009,11 +2036,12 @@ implements ModInitializer {
     }
 
     private int sendAdminHelp(ServerCommandSource source) {
-        if (!this.hasAdminPermission(source)) {
+        if (!StaffLocatePolicy.canManageAdminClaim(source)) {
             source.sendError((Text)Text.literal((String)"You do not have permission to use admin claim commands."));
             return 0;
         }
         source.sendFeedback(() -> Text.literal((String)"Admin commands: /claim admin create <x1> <z1> <x2> <z2>, /claim admin unclaim, /claim admin trust <player|uuid>, /claim admin untrust <player|uuid>"), false);
+        source.sendFeedback(() -> Text.literal("While standing in an admin claim: /claim admin trustlist, /claim admin trust interact <player|all>, /claim admin untrust interact <player|all>."), false);
         source.sendFeedback(() -> Text.literal((String)"Portal commands: /claim portal add <id>, /claim portal addhub <id>, /claim portal remove <id>, /claim portal list"), false);
         source.sendFeedback(() -> Text.literal((String)"Fallback roots: /adminclaim, /goldclaimadmin, /gcadmin"), false);
         return 1;
@@ -2747,7 +2775,7 @@ implements ModInitializer {
             source.sendError((Text)Text.literal((String)"Only players can run this command."));
             return 0;
         }
-        ClaimManager.ExpandResult result = this.claimManager.expandClaimAt(player.getUuid(), player.getWorld().getRegistryKey().getValue().toString(), player.getBlockX(), player.getBlockZ(), amount, this.getHorizontalLookDirection(player), this.config.allowOpsBypass, player.hasPermissionLevel(2));
+        ClaimManager.ExpandResult result = this.claimManager.expandClaimAt(player.getUuid(), player.getWorld().getRegistryKey().getValue().toString(), player.getBlockX(), player.getBlockZ(), amount, this.getHorizontalLookDirection(player), this.config.allowOpsBypass, player.hasPermissionLevel(2) || this.isAdminClaimManager(source, player));
         if (!result.success()) {
             if (result.error() == ClaimManager.ExpandError.NOT_FOUND) {
                 source.sendError((Text)Text.literal((String)"No claim at your location."));
@@ -2802,7 +2830,7 @@ implements ModInitializer {
 
     private int createAdminClaim(ServerCommandSource source, int x1, int z1, int x2, int z2) {
         ServerPlayerEntity player;
-        if (!this.hasAdminPermission(source)) {
+        if (!StaffLocatePolicy.canManageAdminClaim(source)) {
             source.sendError((Text)Text.literal((String)"You do not have permission to create admin claims."));
             return 0;
         }
@@ -2834,7 +2862,7 @@ implements ModInitializer {
 
     private int unclaimAdminAtFeet(ServerCommandSource source) {
         ServerPlayerEntity player;
-        if (!this.hasAdminPermission(source)) {
+        if (!StaffLocatePolicy.canManageAdminClaim(source)) {
             source.sendError((Text)Text.literal((String)"You do not have permission to remove admin claims."));
             return 0;
         }
@@ -2856,8 +2884,7 @@ implements ModInitializer {
 
     private int adminTrustPlayer(ServerCommandSource source, String targetName) {
         ServerPlayerEntity player;
-        if (!this.hasAdminPermission(source)) {
-            source.sendError((Text)Text.literal((String)"You do not have permission to trust players in admin claims."));
+        if (!this.requireAdminClaim(source)) {
             return 0;
         }
         try {
@@ -2895,8 +2922,7 @@ implements ModInitializer {
 
     private int adminUntrustPlayer(ServerCommandSource source, String targetName) {
         ServerPlayerEntity player;
-        if (!this.hasAdminPermission(source)) {
-            source.sendError((Text)Text.literal((String)"You do not have permission to untrust players in admin claims."));
+        if (!this.requireAdminClaim(source)) {
             return 0;
         }
         try {
@@ -2940,14 +2966,15 @@ implements ModInitializer {
             source.sendError(Text.literal("Only players can run this command."));
             return 0;
         }
-        ClaimManager.TrustResult result = this.claimManager.setPublicTrustAt(player.getUuid(), player.getWorld().getRegistryKey().getValue().toString(), player.getBlockX(), player.getBlockZ(), level, enabled);
+        boolean adminClaim = this.isAdminClaimManager(source, player);
+        ClaimManager.TrustResult result = this.claimManager.setPublicTrustAt(player.getUuid(), player.getWorld().getRegistryKey().getValue().toString(), player.getBlockX(), player.getBlockZ(), level, enabled, adminClaim);
         if (!result.success()) {
             source.sendError(Text.literal(result.error() == ClaimManager.TrustError.NOT_FOUND ? "No claim at your location." : "You cannot change public trust here. Public manager access can only be changed by the claim owner."));
             return 0;
         }
         source.sendFeedback(() -> Text.literal("Public " + level.name().toLowerCase(java.util.Locale.ROOT) + " trust " + (enabled ? "enabled for all current and future players." : "disabled. Explicit player trust remains unchanged.")), false);
         if (enabled && level == Claim.TrustLevel.MANAGER) {
-            source.sendFeedback(() -> Text.literal("Everyone can now manage, expand, or remove this claim."), false);
+            source.sendFeedback(() -> Text.literal(adminClaim ? "Everyone has full building access; only admins can manage this admin claim." : "Everyone can now manage, expand, or remove this claim."), false);
         }
         return 1;
     }
@@ -2970,7 +2997,7 @@ implements ModInitializer {
             source.sendError((Text)Text.literal((String)("Unknown player: " + targetName + ". Use exact name or UUID.")));
             return 0;
         }
-        ClaimManager.TrustResult trusted = this.claimManager.trustPlayerAt(player.getUuid(), profileOpt.get().getId(), profileOpt.get().getName(), player.getWorld().getRegistryKey().getValue().toString(), player.getBlockX(), player.getBlockZ(), this.config.allowOpsBypass, player.hasPermissionLevel(2), interactOnly);
+        ClaimManager.TrustResult trusted = this.claimManager.trustPlayerAt(player.getUuid(), profileOpt.get().getId(), profileOpt.get().getName(), player.getWorld().getRegistryKey().getValue().toString(), player.getBlockX(), player.getBlockZ(), this.config.allowOpsBypass, player.hasPermissionLevel(2) || this.isAdminClaimManager(source, player), interactOnly);
         if (!trusted.success()) {
             if (trusted.error() == ClaimManager.TrustError.NOT_FOUND) {
                 source.sendError((Text)Text.literal((String)"No claim at your location."));
@@ -3005,7 +3032,7 @@ implements ModInitializer {
             source.sendError((Text)Text.literal((String)("Unknown player: " + targetName + ". Use exact name or UUID.")));
             return 0;
         }
-        ClaimManager.TrustResult managed = this.claimManager.managePlayerAt(player.getUuid(), profileOpt.get().getId(), profileOpt.get().getName(), player.getWorld().getRegistryKey().getValue().toString(), player.getBlockX(), player.getBlockZ(), this.config.allowOpsBypass, player.hasPermissionLevel(2));
+        ClaimManager.TrustResult managed = this.claimManager.managePlayerAt(player.getUuid(), profileOpt.get().getId(), profileOpt.get().getName(), player.getWorld().getRegistryKey().getValue().toString(), player.getBlockX(), player.getBlockZ(), this.config.allowOpsBypass, player.hasPermissionLevel(2) || this.isAdminClaimManager(source, player));
         if (!managed.success()) {
             if (managed.error() == ClaimManager.TrustError.NOT_FOUND) {
                 source.sendError((Text)Text.literal((String)"No claim at your location."));
@@ -3018,10 +3045,10 @@ implements ModInitializer {
             }
             return 0;
         }
-        source.sendFeedback(() -> Text.literal((String)(((GameProfile)profileOpt.get()).getName() + " is now a manager of this claim and has full control over it.")), false);
+        source.sendFeedback(() -> Text.literal(profileOpt.get().getName() + (this.isAdminClaimManager(source, player) ? " has full access; only admins can manage this admin claim." : " is now a manager of this claim and has full control over it.")), false);
         ServerPlayerEntity targetPlayer = source.getServer().getPlayerManager().getPlayer(profileOpt.get().getId());
         if (targetPlayer != null && !targetPlayer.getUuid().equals(player.getUuid())) {
-            targetPlayer.sendMessage((Text)Text.literal((String)("You were made a manager of a claim by " + player.getName().getString() + ". You now have full control over it.")));
+            targetPlayer.sendMessage(Text.literal("You were made a manager of a claim by " + player.getName().getString() + (this.isAdminClaimManager(source, player) ? ". Admin claim management remains restricted to admins." : ". You now have full control over it.")));
         }
         return 1;
     }
@@ -3040,7 +3067,7 @@ implements ModInitializer {
             source.sendError((Text)Text.literal((String)("Unknown player: " + targetName + ". Use exact name or UUID.")));
             return 0;
         }
-        ClaimManager.TrustResult unmanaged = this.claimManager.unmanagePlayerAt(player.getUuid(), profileOpt.get().getId(), profileOpt.get().getName(), player.getWorld().getRegistryKey().getValue().toString(), player.getBlockX(), player.getBlockZ(), this.config.allowOpsBypass, player.hasPermissionLevel(2));
+        ClaimManager.TrustResult unmanaged = this.claimManager.unmanagePlayerAt(player.getUuid(), profileOpt.get().getId(), profileOpt.get().getName(), player.getWorld().getRegistryKey().getValue().toString(), player.getBlockX(), player.getBlockZ(), this.config.allowOpsBypass, player.hasPermissionLevel(2) || this.isAdminClaimManager(source, player));
         if (!unmanaged.success()) {
             if (unmanaged.error() == ClaimManager.TrustError.NOT_FOUND) {
                 source.sendError((Text)Text.literal((String)"No claim at your location."));
@@ -3079,7 +3106,7 @@ implements ModInitializer {
             source.sendError((Text)Text.literal((String)("Unknown player: " + targetName + ". Use exact name or UUID.")));
             return 0;
         }
-        ClaimManager.TrustResult untrusted = this.claimManager.untrustPlayerAt(player.getUuid(), profileOpt.get().getId(), profileOpt.get().getName(), player.getWorld().getRegistryKey().getValue().toString(), player.getBlockX(), player.getBlockZ(), this.config.allowOpsBypass, player.hasPermissionLevel(2), interactOnly);
+        ClaimManager.TrustResult untrusted = this.claimManager.untrustPlayerAt(player.getUuid(), profileOpt.get().getId(), profileOpt.get().getName(), player.getWorld().getRegistryKey().getValue().toString(), player.getBlockX(), player.getBlockZ(), this.config.allowOpsBypass, player.hasPermissionLevel(2) || this.isAdminClaimManager(source, player), interactOnly);
         if (!untrusted.success()) {
             if (untrusted.error() == ClaimManager.TrustError.NOT_FOUND) {
                 source.sendError((Text)Text.literal((String)"No claim at your location."));
@@ -3165,6 +3192,35 @@ implements ModInitializer {
 
     private boolean hasAdminPermission(ServerCommandSource source) {
         return source.hasPermissionLevel(2);
+    }
+
+    private boolean isAdminClaimManager(ServerCommandSource source, ServerPlayerEntity player) {
+        return this.isAdminClaimAt(source, player.getWorld().getRegistryKey().getValue().toString(),
+            player.getBlockX(), player.getBlockZ());
+    }
+
+    private boolean isAdminClaimAt(ServerCommandSource source, String dimension, int x, int z) {
+        return this.claimManager.getClaimAt(dimension, x, z).map(claim -> claim.adminClaim).orElse(false)
+            && StaffLocatePolicy.canManageAdminClaim(source);
+    }
+
+    private boolean canModifyClaim(ServerPlayerEntity player, String dimension, BlockPos pos) {
+        return this.claimManager.canModify(player.getUuid(), player.getGameProfile().getName(),
+                player.hasPermissionLevel(2), dimension, pos.getX(), pos.getZ())
+            || this.isAdminClaimAt(player.getCommandSource(), dimension, pos.getX(), pos.getZ());
+    }
+
+    private boolean requireAdminClaim(ServerCommandSource source) {
+        if (!StaffLocatePolicy.canManageAdminClaim(source)) {
+            source.sendError(Text.literal("Only admins can manage admin claims."));
+            return false;
+        }
+        ServerPlayerEntity player = source.getPlayer();
+        if (player == null || !this.isAdminClaimManager(source, player)) {
+            source.sendError(Text.literal("Stand in an admin claim to use this command."));
+            return false;
+        }
+        return true;
     }
 
     static {

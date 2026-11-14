@@ -61,6 +61,28 @@ public class ClaimPermissionsTest {
         assertEquals(ClaimManager.CreateError.CLAIM_LIMIT_EXCEEDED, overLimit.error());
     }
 
+    @Test
+    public void adminClaimTrustIsManagedOnlyByAdminsAndPreservesInteractionLimits() {
+        ClaimManager claims = manager(1);
+        UUID admin = UUID.randomUUID();
+        UUID manager = UUID.randomUUID();
+        UUID visitor = UUID.randomUUID();
+        String dimension = "minecraft:overworld";
+        assertTrue(claims.createAdminClaim(dimension, 0, 9, 0, 9).success());
+        assertFalse(claims.trustPlayerAt(manager, visitor, "Visitor", dimension, 1, 1, true, false, true).success());
+        assertTrue(claims.trustPlayerAt(admin, visitor, "Visitor", dimension, 1, 1, true, true, true).success());
+        assertTrue(claims.canInteract(visitor, "Visitor", false, dimension, 1, 1));
+        assertFalse(claims.canModify(visitor, "Visitor", false, dimension, 1, 1));
+        assertTrue(claims.managePlayerAt(admin, manager, "Manager", dimension, 1, 1, true, true).success());
+        assertTrue(claims.canModify(manager, "Manager", false, dimension, 1, 1));
+        assertFalse(claims.trustPlayerAt(manager, visitor, "Visitor", dimension, 1, 1, true, false).success());
+        assertFalse(claims.setPublicTrustAt(manager, dimension, 1, 1, Claim.TrustLevel.INTERACT, true, false).success());
+        assertTrue(claims.setPublicTrustAt(admin, dimension, 1, 1, Claim.TrustLevel.INTERACT, true, true).success());
+        assertTrue(claims.canInteract(UUID.randomUUID(), "Guest", false, dimension, 1, 1));
+        assertTrue(claims.expandClaimAt(admin, dimension, 1, 1, 1,
+            net.minecraft.util.math.Direction.EAST, false, true).success());
+    }
+
     private ClaimManager manager(int maximum) {
         GoldClaimConfig config = new GoldClaimConfig();
         config.minimumClaimWidth = 1;

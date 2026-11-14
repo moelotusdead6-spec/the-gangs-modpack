@@ -12,7 +12,7 @@ public class CatalogServiceTest {
         var allowed = CatalogService.class.getDeclaredMethod("isAllowedItem", Item.class, Identifier.class);
         allowed.setAccessible(true);
         for (String namespace : new String[]{"bf_blockpack", "immersive_furniture", "urban_decor",
-                "justoutdoorstuffs", "runiclib", "botania", "gangshats"}) {
+                "justoutdoorstuffs", "runiclib", "botania", "gangshats", "gangsmounts", "mythicmounts"}) {
             for (String path : new String[]{"chair", "crafting_material", "food", "copper_ingot"}) {
                 assertEquals(namespace + ":" + path, Boolean.FALSE,
                     allowed.invoke(catalog, null, new Identifier(namespace, path)));

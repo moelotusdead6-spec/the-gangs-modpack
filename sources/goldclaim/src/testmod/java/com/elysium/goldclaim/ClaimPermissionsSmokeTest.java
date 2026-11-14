@@ -274,6 +274,34 @@ final class ClaimPermissionsSmokeTest {
                     Integer.parseInt(totals.group(2)) - 100),
             "claimblocks must show current-dimension usage and remaining allowance: " + blocks);
 
+        claims.removeAdminClaimAt(dimension, 400, 400);
+        require(claims.createAdminClaim(dimension, 400, 409, 400, 409).success(), "admin claim fixture");
+        owner.refreshPositionAndAngles(401.5, 65, 401.5, 0, 0);
+        guest.refreshPositionAndAngles(401.5, 65, 401.5, 0, 0);
+        server.getPlayerManager().getPlayerList().add(visitor);
+        try {
+        execute(server, guest, "adminclaim trust interact VisitorFix", 0);
+        executeAsAdmin(server, owner, "adminclaim trust interact VisitorFix", 1);
+        require(claims.canInteract(visitor.getUuid(), "VisitorFix", false, dimension, 401, 401),
+            "admin-claim interaction trust must grant interaction");
+        require(!claims.canModify(visitor.getUuid(), "VisitorFix", false, dimension, 401, 401),
+            "admin-claim interaction trust must not grant building");
+        owner.messages.clear();
+        executeAsAdmin(server, owner, "claim admin trustlist", 1);
+        require(owner.messages.stream().anyMatch(message -> message.contains("VisitorFix (") && message.endsWith(": INTERACT")),
+            "admin trust list must show the interaction grant");
+        executeAsAdmin(server, owner, "claim admin trust interact all", 1);
+        require(claims.canInteract(guest.getUuid(), "GuestFix", false, dimension, 401, 401),
+            "admin-claim public interaction must grant interaction");
+        executeAsAdmin(server, owner, "gcadmin untrust interact all", 1);
+        executeAsAdmin(server, owner, "goldclaimadmin untrust interact VisitorFix", 1);
+        require(!claims.canInteract(visitor.getUuid(), "VisitorFix", false, dimension, 401, 401),
+            "admin-claim interaction removal must take effect");
+        } finally {
+            server.getPlayerManager().getPlayerList().remove(visitor);
+        }
+        claims.removeAdminClaimAt(dimension, 400, 400);
+
         visitor.refreshPositionAndAngles(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 0, 0);
         world.onPlayerConnected(visitor);
         try {
@@ -312,9 +340,19 @@ final class ClaimPermissionsSmokeTest {
     }
 
     private static void execute(MinecraftServer server, RecordingPlayer player, String command, int expected) {
+        execute(server, player, command, expected, false);
+    }
+
+    private static void executeAsAdmin(MinecraftServer server, RecordingPlayer player, String command, int expected) {
+        execute(server, player, command, expected, true);
+    }
+
+    private static void execute(MinecraftServer server, RecordingPlayer player, String command, int expected, boolean admin) {
         try {
-            require(server.getCommandManager().getDispatcher().execute(command, player.getCommandSource()) == expected,
-                "Unexpected result for /" + command);
+            var source = player.getCommandSource();
+            if (admin) source = source.withLevel(2);
+            int actual = server.getCommandManager().getDispatcher().execute(command, source);
+            require(actual == expected, "Unexpected result " + actual + " for /" + command + "; messages=" + player.messages);
         } catch (com.mojang.brigadier.exceptions.CommandSyntaxException failure) {
             throw new IllegalStateException("Cannot execute /" + command, failure);
         }

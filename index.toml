@@ -6,7 +6,7 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "fdd0f30acb1f00729e4c1df93a6f793ba9584cfaa7ba293b0d4e7ddff43e8cf9"
+hash = "d855cf55b595fdf1acaa66f36a2480fafe5182df316d2012b3331b83c42684ba"
 
 [[files]]
 file = "README.md"
@@ -1606,7 +1606,12 @@ metafile = true
 
 [[files]]
 file = "mods/gangshop-direct.pw.toml"
-hash = "c668181759f421b41ce7c9b2da05bdec24afc09b6efaa662d54e0f5bb2969c14"
+hash = "58cf9b59a304bcf71542d46a3e56bf42734280c594c253ee7dbd5e1e9edb8217"
+metafile = true
+
+[[files]]
+file = "mods/gangsmounts-direct.pw.toml"
+hash = "f996497f7a49db7eb3072f7754873e83f6e2f3a3407f687aee9d6f85046c60ca"
 metafile = true
 
 [[files]]
@@ -1626,7 +1631,7 @@ metafile = true
 
 [[files]]
 file = "mods/goldclaim-direct.pw.toml"
-hash = "a0158ccaf3991ea36946a00b9ae73685cbdbb643ba90c3f4dc2880d616b38b69"
+hash = "a5e4ed24192718f250f4decd76147d2b7b6996541b21ea191d6c3732961b768e"
 metafile = true
 
 [[files]]
@@ -1867,6 +1872,11 @@ metafile = true
 [[files]]
 file = "mods/multiworld-direct.pw.toml"
 hash = "19f17401755452de68a5876078d2c05422a1f698ab0f165e78826141eb7a866c"
+metafile = true
+
+[[files]]
+file = "mods/mythic-mounts.pw.toml"
+hash = "e2857e7300160eeef88f8dffca85f32aac786813ca5410ec6dc587c35b2665e9"
 metafile = true
 
 [[files]]

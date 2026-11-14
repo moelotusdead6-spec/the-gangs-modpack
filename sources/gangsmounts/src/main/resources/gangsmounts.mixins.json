@@ -1,0 +1,8 @@
+{
+	"required": true,
+	"package": "com.gangs.mounts.mixin",
+	"compatibilityLevel": "JAVA_17",
+	"mixins": ["MountRewardsMixin", "MountSelectionMixin", "MountLifeMixin", "MountTravelMixin", "MountBreedingMixin", "MountSpawnMixin", "StaffRecipeMixin", "TokenLedgerAccess", "TokenRecordAccess", "MountVoucherMixin"],
+	"client": ["MountWardrobeMixin", "MountTextureMixin", "MountKeyScreenMixin"],
+	"injectors": {"defaultRequire": 1}
+}
