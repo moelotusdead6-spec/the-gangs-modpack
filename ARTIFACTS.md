@@ -1,5 +1,25 @@
 # Published Artifacts
 
+## Mount colors, neon rotation and Boots 1.0.8 (v1.1.31)
+
+- `artifacts/gangsmounts-1.0.2.jar`: SHA-256
+  `ed70a718cd94c4aac052c15ab7cd270b78fb724fb17c86cb8aaff5fcedab49ff`.
+- `artifacts/goldclaim-1.0.76.jar`: SHA-256
+  `1422fd21a4ae629bbeb1041acbe8c4c347cf7ce7ab518337a00bea043105862a`.
+- `artifacts/gangsboots-1.0.8.jar`: SHA-256
+  `e886f5067038279b40e6f00d00231062f42a462c8b8c5a62dc6e66b3a4e933a1`.
+- `artifacts/gangs-mount-variants-restart-1.0.2.jar`: SHA-256
+  `2593aaee423a4359a483f825d28bca0d05b7c6ffdfd1555d775a9e8775e9ac91`.
+- Unchanged active grave compatibility dependency:
+  `artifacts/gangsgravescompat-1.0.0.jar`, SHA-256
+  `1cec6d25be33e515ef524ca0e69996cd67856b111cff62681e542de3d6be4515`.
+- Unchanged predecessor `artifacts/gangs-safe-graves-restart-1.0.0.jar`, SHA-256
+  `111c618cfdb4104a7a214bc736e829c709cf7b67f31cddaabda81c46f763d9eb`.
+
+The first-party update preserves unmodified upstream cosmetics/models. Both
+production fixtures and the combined installer regression suite passed.
+The owner performs the restart; see [activation details](docs/updates/next-restart.md).
+
 ## Mythic Mounts and admin claim trust (v1.1.30)
 
 Pack v1.1.30 and these release artifacts are published and checksum-verified.

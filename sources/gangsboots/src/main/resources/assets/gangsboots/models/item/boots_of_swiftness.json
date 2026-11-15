@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/iron_boots",
+  "textures": {
+    "layer0": "gangsboots:item/boots_of_swiftness"
+  }
+}

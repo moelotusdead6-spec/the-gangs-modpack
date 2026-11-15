@@ -1,0 +1,8 @@
+{
+  "required": true,
+  "package": "com.gangs.gravescompat.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": ["DeathBackupMixin", "GravePlacementMixin"],
+  "injectors": { "defaultRequire": 1 },
+  "refmap": "gangsgravescompat-refmap.json"
+}

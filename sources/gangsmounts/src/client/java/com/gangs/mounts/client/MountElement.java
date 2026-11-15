@@ -18,13 +18,19 @@ import v1_20.morecosmetics.models.renderer.StackHolder;
 public final class MountElement extends BoxComponent {
 	private final String id;
 	private final LivingEntity preview;
+	private final boolean species;
 	private double lastRenderTick = Double.NaN;
 	private float rotation = 190;
 
 	public MountElement(String id) {
-		super(Registries.ENTITY_TYPE.get(Identifier.tryParse(id)).getName().getString(), true);
+		this(id, false);
+	}
+
+	public MountElement(String id, boolean species) {
+		super(title(id, species), true);
 		this.id = id;
-		var entity = Registries.ENTITY_TYPE.get(Identifier.tryParse(id)).create(MinecraftClient.getInstance().world);
+		this.species = species;
+		var entity = Registries.ENTITY_TYPE.get(Identifier.tryParse(MountService.entityId(id))).create(MinecraftClient.getInstance().world);
 		if (!(entity instanceof LivingEntity living)) throw new IllegalStateException("Cannot preview mount: " + id);
 		preview = living;
 		preview.readNbt(MountClient.preview(id).copy());
@@ -32,6 +38,12 @@ public final class MountElement extends BoxComponent {
 		preview.prevYaw = preview.bodyYaw = preview.prevBodyYaw = preview.headYaw = preview.prevHeadYaw = 0;
 		preview.prevPitch = 0;
 		preview.setVelocity(0, 0, 0);
+	}
+
+	private static String title(String id, boolean species) {
+		String type = MountService.entityId(id);
+		String name = Registries.ENTITY_TYPE.get(Identifier.tryParse(type)).getName().getString();
+		return species ? name : name + " - Variant " + (MountClient.variants(type).indexOf(id) + 1);
 	}
 
 	@Override
@@ -71,12 +83,17 @@ public final class MountElement extends BoxComponent {
 			DiffuseLighting.enableGuiDepthLighting();
 		}
 		DrawUtils.drawCenteredString(title, x + width / 2.0f, y + height - 8, 0.7f);
-		if (mouseOver) DrawUtils.drawToolTip(!owned ? "Preview only - locked" : active ? "Click to recall and store" : "Click to summon", mouseX, mouseY);
+		if (mouseOver) DrawUtils.drawToolTip(species ? "Click to choose a variant" : !owned ? "Preview only - locked" : active ? "Click to recall and store" : "Click to summon", mouseX, mouseY);
 	}
 
 	@Override
 	public void mouseClicked(int x, int y, int button) {
-		if (!mouseOver || !enabled || button != UIConstants.MOUSE_LEFT || !ClientWardrobeState.isUnlocked(id)) return;
+		if (!mouseOver || !enabled || button != UIConstants.MOUSE_LEFT) return;
+		if (species) {
+			MountClient.showVariants(MountService.entityId(id));
+			return;
+		}
+		if (!ClientWardrobeState.isUnlocked(id)) return;
 		if (id.equals(ClientWardrobeState.selected(MountService.SLOT))) ClientWardrobeState.requestClear(MountService.SLOT);
 		else ClientWardrobeState.requestSelect(MountService.SLOT, id);
 	}

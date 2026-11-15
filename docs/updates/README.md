@@ -1,5 +1,24 @@
 # Updating The Gangs Modpack
 
+## Mount colors, neon rotation and Boots 1.0.8 (v1.1.31)
+
+Close Minecraft and press Play in the existing auto-updating Prism instance.
+Update the client before joining the new server release. In `/cosmetics`,
+Mounts now uses a paw icon: choose a species, then an independently unlocked
+color. Cosmetic Keys and duplicate vouchers unlock each color separately.
+Existing owners retain their saved color, or the native default if never saved.
+Use the normal inventory key while riding for player inventory; Ctrl with that
+key opens mount equipment. Armor persists through recall and walking mounts
+animate while ridden.
+
+The rare chest bonuses now use Neon Sword and Neon Shield instead of Crescent
+Moon and Spirit Mask. Their two independent 0.25% chances and existing chest
+table scope are unchanged; weekly/monthly all-neon collections are untouched.
+Boots 1.0.8 sets the first personal Lootr chest/barrel generation chance to
+exactly 1 in 400 (0.25%), rather than 1 in 40. Reopening adds no roll.
+The active grave compatibility fix is retained. See
+[next-restart details](next-restart.md); the owner performs the restart.
+
 ## Mythic Mounts and admin claim trust (v1.1.30)
 
 After publication and the owner's server restart, close Minecraft and press

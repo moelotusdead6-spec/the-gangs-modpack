@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "id": "gangsgravescompat_smoke",
+  "version": "1.0.0",
+  "name": "Gangs Safe Graves Integration Test",
+  "environment": "server",
+  "entrypoints": { "server": ["com.gangs.gravescompat.GraveSmokeTest"] },
+  "depends": { "gangsgravescompat": "*" }
+}

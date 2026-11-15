@@ -12,6 +12,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = CosmeticRewards.class, remap = false)
 public abstract class MountRewardsMixin {
+	@Inject(method = "contains", at = @At("HEAD"), cancellable = true)
+	private static void acceptLegacyMount(String id, CallbackInfoReturnable<Boolean> ci) {
+		if (MountService.contains(id)) ci.setReturnValue(true);
+	}
+
 	@Inject(method = "allIds", at = @At("RETURN"), cancellable = true)
 	private static void addMounts(CallbackInfoReturnable<List<String>> ci) {
 		List<String> rewards = new ArrayList<>(ci.getReturnValue());

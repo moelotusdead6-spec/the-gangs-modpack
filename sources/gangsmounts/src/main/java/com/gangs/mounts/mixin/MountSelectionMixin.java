@@ -10,6 +10,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = GangsHats.class, remap = false)
 public abstract class MountSelectionMixin {
+	@Inject(method = {
+			"sendWardrobe(Lnet/minecraft/server/network/ServerPlayerEntity;)V",
+			"sendWardrobe(Lnet/minecraft/class_3222;)V"
+	}, at = @At("HEAD"))
+	private static void migrateMountOwnership(ServerPlayerEntity player, CallbackInfo ci) {
+		MountService.migrateLegacyUnlocks(player);
+	}
+
 	@Inject(method = "handleSelectRequest", at = @At("HEAD"), cancellable = true)
 	private static void handleMount(ServerPlayerEntity player, String slot, String id, CallbackInfo ci) {
 		if (!MountService.SLOT.equals(slot)) return;

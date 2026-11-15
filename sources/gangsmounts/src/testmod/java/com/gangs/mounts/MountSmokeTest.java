@@ -37,7 +37,8 @@ public final class MountSmokeTest implements DedicatedServerModInitializer {
 						+ "mount keys and authenticated duplicate vouchers; locking; one active; all real mounts "
 						+ "tamed/saddled/domesticated/rideable; all registered damage types blocked even with "
 						+ "vanilla invulnerability disabled; direct-health/void/kill immunity; no breeding; "
-						+ "NBT recall persistence; remembered summon/recall shortcuts; logout/dimension recall; "
+						+ "independent variant unlocks/equipment; saved/default legacy migration; mounted inventory; "
+						+ "named/damaged/enchanted chestplate recall persistence; remembered summon/recall shortcuts; logout/dimension recall; "
 						+ "no biome or unmanaged Mythic spawns; ordinary horses unaffected.\n");
 			} catch (java.io.IOException failure) { throw new IllegalStateException("Cannot write smoke result", failure); }
 			server.stop(false);
@@ -90,6 +91,19 @@ public final class MountSmokeTest implements DedicatedServerModInitializer {
 		owner.setStackInHand(Hand.MAIN_HAND, voucher);
 		require(UseItemCallback.EVENT.invoker().interact(owner, world, Hand.MAIN_HAND).getResult().isAccepted(), "Mount voucher rejected");
 		require(voucher.isEmpty() && CosmeticUnlockState.get(server).hasUnlock(owner.getUuid(), first), "Mount voucher did not unlock");
+		String sibling = MountService.ids().stream().filter(id -> !id.equals(first)
+				&& MountService.entityId(id).equals(MountService.entityId(first))).findFirst().orElseThrow();
+		require(!CosmeticUnlockState.get(server).hasUnlock(owner.getUuid(), sibling)
+				&& !MountService.summon(owner, sibling), "One variant unlocked its sibling");
+		var legacyOwner = new Fixture(server, "LegacyOwner");
+		legacyOwner.refreshPositionAndAngles(0.5, 100, 0.5, 0, 0);
+		String legacyType = MountService.entityId(first);
+		CosmeticUnlockState.get(server).unlock(legacyOwner.getUuid(), legacyType);
+		MountService.migrateLegacyUnlocks(legacyOwner);
+		String legacyReward = MountService.resolvedReward(legacyOwner, legacyType);
+		require(CosmeticUnlockState.get(server).hasUnlock(legacyOwner.getUuid(), legacyReward), "Legacy default variant lost");
+		require(MountService.ids().stream().filter(id -> MountService.entityId(id).equals(legacyType)
+				&& CosmeticUnlockState.get(server).hasUnlock(legacyOwner.getUuid(), id)).count() == 1, "Legacy ownership granted all skins");
 		ItemStack duplicate = CosmeticTokenState.get(server).issueVoucher(first);
 		ItemStack copied = duplicate.copy();
 		owner.setStackInHand(Hand.MAIN_HAND, duplicate);
@@ -138,7 +152,7 @@ public final class MountSmokeTest implements DedicatedServerModInitializer {
 		wild.kill();
 		require(!wild.isAlive(), "Ordinary horse death disabled");
 		for (String id : MountService.ids()) {
-			var unmanaged = net.minecraft.registry.Registries.ENTITY_TYPE.get(net.minecraft.util.Identifier.tryParse(id)).create(world);
+			var unmanaged = net.minecraft.registry.Registries.ENTITY_TYPE.get(net.minecraft.util.Identifier.tryParse(MountService.entityId(id))).create(world);
 			require(!world.spawnEntity(unmanaged), "Unmanaged Mythic mount spawned: " + id);
 			net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents.ENTITY_LOAD.invoker().onLoad(unmanaged, world);
 			require(unmanaged.isRemoved(), "Loaded unmanaged Mythic mount was retained: " + id);
@@ -168,6 +182,17 @@ public final class MountSmokeTest implements DedicatedServerModInitializer {
 			horse.setLoveTicks(600);
 			require(!horse.isInLove(), "Mount can breed");
 			horse.setCustomName(Text.literal("Stored Mount"));
+			var equipment = (net.minecraft.inventory.Inventory) horse;
+			ItemStack armor = new ItemStack(net.minecraft.item.Items.DIAMOND_CHESTPLATE);
+			armor.setCustomName(Text.literal("Retained Armor"));
+			armor.setDamage(13);
+			armor.addEnchantment(net.minecraft.enchantment.Enchantments.PROTECTION, 3);
+			equipment.setStack(1, armor);
+			require(!equipment.getStack(1).isEmpty(), "Armor fixture not equipped");
+			var menu = ((net.minecraft.screen.NamedScreenHandlerFactory) horse).createMenu(7, owner.getInventory(), owner);
+			require(menu.canUse(owner), "Mounted inventory cannot be used by rider");
+			require(menu.slots.stream().filter(slot -> slot.inventory == owner.getInventory()).count() == 36,
+					"Mount inventory omits player inventory");
 			NbtCompound before = new NbtCompound();
 			horse.writeNbt(before);
 			require(before.getBoolean("IsDomesticated"), "Mount not domesticated");
@@ -185,19 +210,66 @@ public final class MountSmokeTest implements DedicatedServerModInitializer {
 			require(attributes(before).equals(attributes(after)), "Stored stats changed");
 			require(before.getCompound("SaddleItem").equals(after.getCompound("SaddleItem")) && restored.isSaddled(),
 					"Stored saddle equipment changed");
+			require(ItemStack.areEqual(armor, ((net.minecraft.inventory.Inventory) restored).getStack(1)),
+					"Recall lost chestplate armor, durability, name or enchantments: " + id);
 			MountService.recall(owner);
 		}
 		String last = MountService.Storage.get(server).lastSelected(owner.getUuid());
 		require(last.equals(MountService.ids().get(MountService.ids().size() - 1)), "Last mount selection not retained after recall");
 		MountService.quickAction(owner, true);
 		require(MountService.active(owner.getUuid()) != null
-				&& net.minecraft.registry.Registries.ENTITY_TYPE.getId(MountService.active(owner.getUuid()).getType()).toString().equals(last),
+				&& net.minecraft.registry.Registries.ENTITY_TYPE.getId(MountService.active(owner.getUuid()).getType()).toString().equals(MountService.entityId(last)),
 				"Shortcut did not summon last selected mount");
 		MountService.quickAction(owner, false);
 		require(MountService.active(owner.getUuid()) == null, "Recall shortcut failed");
 		net.minecraft.world.PersistentState shortcutStorage = MountService.Storage.get(server);
 		require(last.equals(MountService.Storage.fromNbt(shortcutStorage.writeNbt(new NbtCompound())).lastSelected(owner.getUuid())),
 				"Last selected mount was not persisted");
+		ItemStack distinctArmor = new ItemStack(net.minecraft.item.Items.GOLDEN_CHESTPLATE);
+		distinctArmor.setCustomName(Text.literal("First Variant Only"));
+		require(MountService.summon(owner, first), "Variant equipment setup failed");
+		((net.minecraft.inventory.Inventory) MountService.active(owner.getUuid())).setStack(1, distinctArmor);
+		MountService.recall(owner);
+		require(MountService.summon(owner, sibling), "Sibling equipment setup failed");
+		require(!ItemStack.areEqual(distinctArmor, ((net.minecraft.inventory.Inventory) MountService.active(owner.getUuid())).getStack(1)),
+				"Variant equipment leaked into sibling");
+		MountService.recall(owner);
+		require(MountService.summon(owner, first), "First variant equipment restore failed");
+		require(ItemStack.areEqual(distinctArmor, ((net.minecraft.inventory.Inventory) MountService.active(owner.getUuid())).getStack(1)),
+				"Sibling selection replaced first variant equipment");
+		MountService.recall(owner);
+		var savedLegacyOwner = new Fixture(server, "SavedLegacyOwner");
+		savedLegacyOwner.refreshPositionAndAngles(0.5, 100, 0.5, 0, 0);
+		String savedColor = MountService.ids().stream().filter(id -> MountService.entityId(id).equals(legacyType)
+				&& !id.equals(legacyReward)).findFirst().orElseThrow();
+		var storage = MountService.Storage.get(server);
+		NbtCompound savedMount = storage.saved(owner.getUuid(), savedColor).copy();
+		savedMount.putUuid("Owner", savedLegacyOwner.getUuid());
+		NbtCompound legacyPlayer = new NbtCompound();
+		legacyPlayer.putUuid("Owner", savedLegacyOwner.getUuid());
+		legacyPlayer.putString("LastSelected", legacyType);
+		NbtCompound legacyMounts = new NbtCompound();
+		legacyMounts.put(legacyType, savedMount);
+		legacyPlayer.put("Mounts", legacyMounts);
+		net.minecraft.world.PersistentState currentStorage = storage;
+		NbtCompound storedPlayers = currentStorage.writeNbt(new NbtCompound());
+		storedPlayers.getList("Players", 10).add(legacyPlayer);
+		world.getPersistentStateManager().set("gangsmounts_storage", MountService.Storage.fromNbt(storedPlayers));
+		CosmeticUnlockState.get(server).unlock(savedLegacyOwner.getUuid(), legacyType);
+		MountService.migrateLegacyUnlocks(savedLegacyOwner);
+		require(savedColor.equals(MountService.resolvedReward(savedLegacyOwner, legacyType))
+				&& savedColor.equals(MountService.Storage.get(server).lastSelected(savedLegacyOwner.getUuid())),
+				"Saved legacy color or shortcut was not migrated");
+		require(MountService.ids().stream().filter(id -> MountService.entityId(id).equals(legacyType)
+				&& CosmeticUnlockState.get(server).hasUnlock(savedLegacyOwner.getUuid(), id)).count() == 1,
+				"Saved legacy migration granted other colors");
+		require(MountService.summon(savedLegacyOwner, legacyType), "Legacy alias could not restore saved color");
+		require(ItemStack.areEqual(ItemStack.fromNbt(savedMount.getCompound("ArmorItem")),
+				((net.minecraft.inventory.Inventory) MountService.active(savedLegacyOwner.getUuid())).getStack(1)),
+				"Legacy migration lost saved chestplate");
+		MountService.recall(savedLegacyOwner);
+		require(savedMount.equals(MountService.Storage.get(server).saved(savedLegacyOwner.getUuid(), legacyType)),
+				"Legacy migration modified original saved NBT");
 		require(MountService.summon(owner, first), "Logout setup failed");
 		ServerPlayConnectionEvents.DISCONNECT.invoker().onPlayDisconnect(owner.networkHandler, server);
 		require(MountService.active(owner.getUuid()) == null, "Logout did not recall");

@@ -20,8 +20,10 @@ import org.lwjgl.glfw.GLFW;
 
 public final class MountClient implements ClientModInitializer {
 	private static final Map<String, NbtCompound> PREVIEWS = new LinkedHashMap<>();
+	private static Map<String, NbtCompound> pendingCatalog = Map.of();
 	private static KeyBinding summon;
 	private static KeyBinding recall;
+	private static String variantType;
 
 	@Override
 	public void onInitializeClient() {
@@ -30,12 +32,13 @@ public final class MountClient implements ClientModInitializer {
 		recall = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.gangsmounts.recall",
 				InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, "category.gangsmounts"));
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
+			applyPendingCatalog(client);
 			while (summon.wasPressed()) sendQuickAction(client, true);
 			while (recall.wasPressed()) sendQuickAction(client, false);
 		});
 		ClientPlayNetworking.registerGlobalReceiver(MountService.CATALOG, (client, handler, buffer, sender) -> {
 			int count = buffer.readVarInt();
-			if (count < 1 || count > 128) throw new IllegalArgumentException("Invalid mount catalog size");
+			if (count < 1 || count > 512) throw new IllegalArgumentException("Invalid mount catalog size");
 			Map<String, NbtCompound> entries = new LinkedHashMap<>();
 			for (int i = 0; i < count; i++) {
 				String id = buffer.readString(256);
@@ -43,25 +46,34 @@ public final class MountClient implements ClientModInitializer {
 				if (nbt == null) throw new IllegalArgumentException("Missing mount preview NBT: " + id);
 				entries.put(id, nbt);
 			}
-			client.execute(() -> {
-				for (var entry : entries.entrySet()) {
-					var entity = net.minecraft.registry.Registries.ENTITY_TYPE.get(net.minecraft.util.Identifier.tryParse(entry.getKey())).create(client.world);
-					if (!(entity instanceof net.minecraft.entity.LivingEntity living)) {
-						throw new IllegalStateException("Mount preview type is not living: " + entry.getKey());
-					}
-					living.readNbt(entry.getValue().copy());
-					var texture = client.getEntityRenderDispatcher().getRenderer(living).getTexture(living);
-					if (client.getResourceManager().getResource(texture).isEmpty()) {
-						throw new IllegalStateException("Missing mount texture: " + entry.getKey() + " -> " + texture);
-					}
-				}
-				PREVIEWS.clear();
-				PREVIEWS.putAll(entries);
-				com.thegangs.gangshats.GangsHats.LOGGER.info("Verified {} mount preview texture resources against the unchanged live wardrobe.", entries.size());
-				WardrobeGui.refreshGui();
-			});
+			client.execute(() -> pendingCatalog = entries);
 		});
-		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> PREVIEWS.clear());
+		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
+			PREVIEWS.clear();
+			pendingCatalog = Map.of();
+			variantType = null;
+		});
+	}
+	private static void applyPendingCatalog(MinecraftClient client) {
+		if (pendingCatalog.isEmpty() || client.world == null || client.getOverlay() != null) return;
+		for (var entry : pendingCatalog.entrySet()) {
+			var entity = net.minecraft.registry.Registries.ENTITY_TYPE.get(net.minecraft.util.Identifier.tryParse(MountService.entityId(entry.getKey()))).create(client.world);
+			if (!(entity instanceof net.minecraft.entity.LivingEntity living)) {
+				throw new IllegalStateException("Mount preview type is not living: " + entry.getKey());
+			}
+			living.readNbt(entry.getValue().copy());
+			var renderer = client.getEntityRenderDispatcher().getRenderer(living);
+			if (renderer == null) throw new IllegalStateException("Missing mount renderer: " + entry.getKey());
+			var texture = renderer.getTexture(living);
+			if (client.getResourceManager().getResource(texture).isEmpty()) {
+				throw new IllegalStateException("Missing mount texture: " + entry.getKey() + " -> " + texture);
+			}
+		}
+		PREVIEWS.clear();
+		PREVIEWS.putAll(pendingCatalog);
+		pendingCatalog = Map.of();
+		com.thegangs.gangshats.GangsHats.LOGGER.info("Verified {} mount preview texture resources against the unchanged live wardrobe.", PREVIEWS.size());
+		WardrobeGui.refreshGui();
 	}
 	private static void sendQuickAction(MinecraftClient client, boolean summon) {
 		if (client.player == null || client.currentScreen != null) return;
@@ -75,6 +87,13 @@ public final class MountClient implements ClientModInitializer {
 	}
 	public static List<String> ids() { return List.copyOf(PREVIEWS.keySet()); }
 	public static NbtCompound preview(String id) { return PREVIEWS.get(id); }
+	public static List<String> types() { return ids().stream().map(MountService::entityId).distinct().toList(); }
+	public static List<String> variants(String type) { return ids().stream().filter(id -> MountService.entityId(id).equals(type)).toList(); }
+	public static String variantType() { return variantType; }
+	public static void showVariants(String type) {
+		variantType = type;
+		WardrobeGui.refreshGui();
+	}
 	public static KeyBinding summonKey() { return summon; }
 	public static KeyBinding recallKey() { return recall; }
 }

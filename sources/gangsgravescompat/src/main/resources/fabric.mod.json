@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "gangsgravescompat",
+  "version": "${version}",
+  "name": "Gangs Safe Graves",
+  "description": "Saves pre-drop player NBT and referenced backpack contents; moves out-of-height graves to safe floating air at the same X/Z.",
+  "authors": ["The Gangs"],
+  "license": "MIT",
+  "environment": "server",
+  "mixins": ["gangsgravescompat.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.15.6",
+    "minecraft": "1.20.1",
+    "java": ">=17",
+    "fabric-api": "*",
+    "universal-graves": "=3.0.3+1.20.1"
+  }
+}

@@ -26,7 +26,7 @@ public abstract class MountVoucherMixin {
 		Object record = access.mountTokens().get(nbt.getUuid("gangscosmetics_token_id"));
 		if (record instanceof TokenRecordAccess token && token.mountKind().equals("voucher")
 				&& MountService.contains(token.mountReward())
-				&& CosmeticUnlockState.get(player.getServer()).hasUnlock(player.getUuid(), token.mountReward())) {
+				&& CosmeticUnlockState.get(player.getServer()).hasUnlock(player.getUuid(), MountService.resolvedReward(player, token.mountReward()))) {
 			player.sendMessage(Text.literal("You already own this mount. Trade the voucher to someone else."), false);
 			ci.setReturnValue(TypedActionResult.fail(voucher));
 		}

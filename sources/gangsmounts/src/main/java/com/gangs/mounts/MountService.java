@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import com.gangs.mounts.mixin.MountDataAccess;
 
 import com.thegangs.gangshats.CosmeticAccess;
 import com.thegangs.gangshats.CosmeticUnlockState;
@@ -44,6 +45,8 @@ public final class MountService implements ModInitializer {
 	private static final String TAG = "gangsmounts_cosmetic";
 	private static final Map<UUID, AbstractHorseEntity> ACTIVE = new HashMap<>();
 	private static Map<String, NbtCompound> catalog = Map.of();
+	private static final Map<String, List<String>> variants = new java.util.TreeMap<>();
+	private static final Map<String, String> defaults = new HashMap<>();
 
 	@Override
 	public void onInitialize() {
@@ -67,6 +70,8 @@ public final class MountService implements ModInitializer {
 		});
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			ACTIVE.clear();
+			variants.clear();
+			defaults.clear();
 			Map<String, NbtCompound> entries = new java.util.TreeMap<>();
 			for (Identifier id : Registries.ENTITY_TYPE.getIds()) {
 				if (!id.getNamespace().equals("mythicmounts")) continue;
@@ -75,13 +80,38 @@ public final class MountService implements ModInitializer {
 							SpawnReason.COMMAND, null, null);
 					NbtCompound nbt = new NbtCompound();
 					horse.writeNbt(nbt);
-					entries.put(id.toString(), nbt);
+					if (!(horse instanceof MountDataAccess access) || access.mountTextures().isEmpty()) {
+						throw new IllegalStateException("No variants for mount: " + id);
+					}
+					defaults.put(id.toString(), variantId(id.toString(), access.mountTextures().get(0)));
+					var textures = new java.util.TreeSet<>(access.mountTextures());
+					if (id.toString().equals("mythicmounts:colelytra")) {
+						for (var color : net.minecraft.util.DyeColor.values()) {
+							String texture = "colelytra_mount_" + color.getName() + ".png";
+							if (MountService.class.getClassLoader().getResource("assets/mythicmounts/textures/model/entity/" + texture) != null) {
+								textures.add(texture);
+							}
+						}
+					}
+					List<String> rewards = new java.util.ArrayList<>();
+					for (String texture : textures) {
+						String reward = variantId(id.toString(), texture);
+						NbtCompound initial = nbt.copy();
+						initial.putString("Variant", texture);
+						entries.put(reward, initial);
+						rewards.add(reward);
+					}
+					variants.put(id.toString(), List.copyOf(rewards));
 				}
 			}
 			if (entries.isEmpty()) throw new IllegalStateException("No rideable Mythic Mounts registered");
 			catalog = entries;
 		});
-		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> sendCatalog(handler.player));
+		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+			migrateLegacyUnlocks(handler.player);
+			sendCatalog(handler.player);
+			GangsHats.sendWardrobe(handler.player);
+		});
 		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> recall(handler.player));
 		ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
 			for (AbstractHorseEntity horse : List.copyOf(ACTIVE.values())) storeAndRemove(server, horse);
@@ -93,7 +123,7 @@ public final class MountService implements ModInitializer {
 				return;
 			}
 			if (managed(entity) && entity instanceof AbstractHorseEntity horse && ACTIVE.get(horse.getOwnerUuid()) != horse) {
-				NbtCompound saved = Storage.get(world.getServer()).saved(horse.getOwnerUuid(), id(horse));
+				NbtCompound saved = Storage.get(world.getServer()).saved(horse.getOwnerUuid(), reward(horse));
 				if (saved == null || saved.getUuid("UUID").equals(horse.getUuid())) storeAndRemove(world.getServer(), horse);
 				else horse.discard();
 			}
@@ -136,8 +166,39 @@ public final class MountService implements ModInitializer {
 		return entity instanceof AbstractHorseEntity && Registries.ENTITY_TYPE.getId(entity.getType()).getNamespace().equals("mythicmounts");
 	}
 	public static List<String> ids() { return List.copyOf(catalog.keySet()); }
-	public static boolean contains(String id) { return catalog.containsKey(id); }
-	public static Text name(String id) { return Registries.ENTITY_TYPE.get(Identifier.tryParse(id)).getName(); }
+	public static boolean contains(String id) { return catalog.containsKey(id) || variants.containsKey(id); }
+	public static String entityId(String reward) { return reward.split("__", 2)[0]; }
+	public static String variantId(String type, String texture) {
+		return type + "__" + texture.replace(".png", "").replace('/', '_');
+	}
+	public static Text name(String reward) {
+		String type = entityId(reward);
+		Text name = Registries.ENTITY_TYPE.get(Identifier.tryParse(type)).getName();
+		List<String> skins = variants.get(type);
+		return skins == null || !skins.contains(reward) ? name
+				: name.copy().append(" - Variant " + (skins.indexOf(reward) + 1));
+	}
+	private static String reward(AbstractHorseEntity horse) {
+		NbtCompound nbt = new NbtCompound();
+		horse.writeNbt(nbt);
+		return variantId(id(horse), nbt.getString("Variant"));
+	}
+	private static String legacyReward(ServerPlayerEntity player, String type) {
+		NbtCompound saved = Storage.get(player.getServer()).saved(player.getUuid(), type);
+		String reward = saved == null ? defaults.get(type) : variantId(type, saved.getString("Variant"));
+		if (!catalog.containsKey(reward)) throw new IllegalStateException("Unknown stored mount variant: " + reward);
+		return reward;
+	}
+	public static void migrateLegacyUnlocks(ServerPlayerEntity player) {
+		var state = CosmeticUnlockState.get(player.getServer());
+		var storage = Storage.get(player.getServer());
+		for (String type : variants.keySet()) {
+			if (!state.hasUnlock(player.getUuid(), type)) continue;
+			String reward = legacyReward(player, type);
+			state.unlock(player.getUuid(), reward);
+			if (type.equals(storage.lastSelected(player.getUuid()))) storage.remember(player.getUuid(), reward);
+		}
+	}
 	public static AbstractHorseEntity active(UUID owner) { return ACTIVE.get(owner); }
 	private static String id(Entity entity) { return Registries.ENTITY_TYPE.getId(entity.getType()).toString(); }
 
@@ -147,7 +208,7 @@ public final class MountService implements ModInitializer {
 		buffer.writeVarInt(catalog.size());
 		catalog.forEach((id, initial) -> {
 			buffer.writeString(id);
-			NbtCompound saved = Storage.get(player.getServer()).saved(player.getUuid(), id);
+			NbtCompound saved = savedVariant(player, id);
 			buffer.writeNbt(saved == null ? initial : saved);
 		});
 		ServerPlayNetworking.send(player, CATALOG, buffer);
@@ -156,6 +217,8 @@ public final class MountService implements ModInitializer {
 	public static boolean summon(ServerPlayerEntity player, String reward) {
 		var server = player.getServer();
 		var state = CosmeticUnlockState.get(server);
+		migrateLegacyUnlocks(player);
+		if (variants.containsKey(reward)) reward = legacyReward(player, reward);
 		if (!contains(reward) || !CosmeticAccess.canUse(player)
 				|| !(state.hasUnlock(player.getUuid(), reward) || CosmeticAccess.isUnlockAll())) {
 			player.sendMessage(Text.literal("That mount is locked or unavailable."), false);
@@ -166,9 +229,9 @@ public final class MountService implements ModInitializer {
 			return false;
 		}
 		var world = player.getServerWorld();
-		Entity entity = Registries.ENTITY_TYPE.get(Identifier.tryParse(reward)).create(world);
+		Entity entity = Registries.ENTITY_TYPE.get(Identifier.tryParse(entityId(reward))).create(world);
 		if (!(entity instanceof AbstractHorseEntity horse)) throw new IllegalStateException("Not a rideable mount: " + reward);
-		NbtCompound saved = Storage.get(server).saved(player.getUuid(), reward);
+		NbtCompound saved = savedVariant(player, reward);
 		NbtCompound nbt = (saved == null ? catalog.get(reward) : saved).copy();
 		nbt.putBoolean("IsDomesticated", true);
 		horse.readNbt(nbt);
@@ -193,6 +256,7 @@ public final class MountService implements ModInitializer {
 				horse.refreshPositionAndAngles(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, player.getYaw(), 0);
 				safe = world.isSpaceEmpty(horse) && !world.containsFluid(horse.getBoundingBox());
 			}
+
 		}
 		if (!safe) {
 			player.sendMessage(Text.literal("Move to open, solid ground; no safe space nearby for this mount."), false);
@@ -210,6 +274,18 @@ public final class MountService implements ModInitializer {
 		sendCatalog(player);
 		player.sendMessage(Text.literal("Summoned: ").append(name(reward)), false);
 		return true;
+	}
+
+	private static NbtCompound savedVariant(ServerPlayerEntity player, String reward) {
+		var storage = Storage.get(player.getServer());
+		NbtCompound saved = storage.saved(player.getUuid(), reward);
+		if (saved != null) return saved;
+		NbtCompound legacy = storage.saved(player.getUuid(), entityId(reward));
+		return legacy != null && variantId(entityId(reward), legacy.getString("Variant")).equals(reward) ? legacy : null;
+	}
+
+	public static String resolvedReward(ServerPlayerEntity player, String reward) {
+		return variants.containsKey(reward) ? legacyReward(player, reward) : reward;
 	}
 
 	public static void quickAction(ServerPlayerEntity player, boolean summon) {
@@ -259,7 +335,7 @@ public final class MountService implements ModInitializer {
 			NbtCompound nbt = new NbtCompound();
 			horse.writeNbt(nbt);
 			nbt.remove("Passengers");
-			stored.computeIfAbsent(horse.getOwnerUuid(), ignored -> new HashMap<>()).put(id(horse), nbt);
+			stored.computeIfAbsent(horse.getOwnerUuid(), ignored -> new HashMap<>()).put(reward(horse), nbt);
 			markDirty();
 		}
 		public NbtCompound saved(UUID owner, String id) { return stored.getOrDefault(owner, Map.of()).get(id); }

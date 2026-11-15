@@ -7,6 +7,7 @@ import com.cosmeticsmod.morecosmetics.gui.core.box.utils.BoxCategory;
 import com.gangs.mounts.client.MountClient;
 import com.gangs.mounts.client.MountElement;
 import com.gangs.mounts.client.MountKeyElement;
+import com.gangs.mounts.client.MountBackElement;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -25,8 +26,15 @@ public abstract class MountWardrobeMixin {
 			}
 		}
 		if (MountClient.ids().isEmpty()) return;
-		BoxCategory mounts = new BoxCategory("Mounts", "wings").setTitle("Mounts");
-		MountClient.ids().forEach(id -> mounts.getEntries().add(new MountElement(id)));
+		BoxCategory mounts = new BoxCategory("Mounts", "pets").setTitle("Mounts");
+		String type = MountClient.variantType();
+		if (type == null) {
+			MountClient.types().forEach(id -> mounts.getEntries().add(new MountElement(MountClient.variants(id).get(0), true)));
+		} else {
+			mounts.setTitle("Mount variants");
+			mounts.getEntries().add(new MountBackElement());
+			MountClient.variants(type).forEach(id -> mounts.getEntries().add(new MountElement(id)));
+		}
 		int index = categories.indexOf(BoxManager.SEPARATION_LINE);
 		categories.add(index < 0 ? categories.size() : index, mounts);
 	}

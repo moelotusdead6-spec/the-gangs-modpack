@@ -6,7 +6,7 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "f72ba0c51b3bf92e6952e5fc35d98ecb6b7e595a190ad62318511fa7b05223df"
+hash = "8f948cbb39a215febed17141e4aa7f13a76e93c2e5f1def895601fa9b222324b"
 
 [[files]]
 file = "README.md"
@@ -1586,7 +1586,7 @@ metafile = true
 
 [[files]]
 file = "mods/gangsboots-direct.pw.toml"
-hash = "8ef6fe3054aafa2f6fca92a82dd67c9371930ace16ee3b3bcce7d12abf0d98ec"
+hash = "43180f7a413e3029c0759ca25e69e1889735d9311c4495793b3d53f7dafc7cf9"
 metafile = true
 
 [[files]]
@@ -1611,7 +1611,7 @@ metafile = true
 
 [[files]]
 file = "mods/gangsmounts-direct.pw.toml"
-hash = "f996497f7a49db7eb3072f7754873e83f6e2f3a3407f687aee9d6f85046c60ca"
+hash = "e61665acf42d421425bd8437641a9e67ab21ac1d512df5404418bcc9d2a7c01e"
 metafile = true
 
 [[files]]
@@ -1631,7 +1631,7 @@ metafile = true
 
 [[files]]
 file = "mods/goldclaim-direct.pw.toml"
-hash = "a5e4ed24192718f250f4decd76147d2b7b6996541b21ea191d6c3732961b768e"
+hash = "96eba3aae853bca594fc0c2f415fe551534ee937a4d8328fc3db9844b898176a"
 metafile = true
 
 [[files]]

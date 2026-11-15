@@ -5,7 +5,23 @@ Mount integration for the existing Gangs Cosmetics wardrobe.
 This addon requires the **unmodified live Gangs Cosmetics 2.0.2 jar**. The build
 checks its SHA-256 against the production manifest. It does not replace or bundle
 that jar, its wardrobe, its existing halos/weapons/head/body/wings categories, or
-its models. A single Mounts category is inserted before Settings.
+its models. A single Mounts category, using the native animal paw icon rather
+than the Wings icon, is inserted before Settings.
+
+## Variant release (1.0.2)
+
+Each native base color is a separate Cosmetic Key reward and transferable
+duplicate voucher. Existing species ownership migrates only to its saved color,
+or the native default if no mount was saved; it never grants every color.
+Decorative stripes/spots remain native saved NBT, not additional unlocks.
+Equipment and saved mount state are isolated per color.
+
+The normal inventory key opens the player's inventory while riding. Hold Ctrl
+with that key to open the native mount equipment inventory instead. Managed
+mount chestplates, including their names, damage and enchantments, survive
+recall and resummoning. Ridden walking animation uses actual horizontal
+displacement, preserving stationary, unmounted, flight, climb and swim behavior.
+Update this addon on the client before using the new server variant catalog.
 
 ## Test instance
 
@@ -43,10 +59,12 @@ wardrobe's existing test switch: all original cosmetics and mounts are available
 immediately. Never copy test config/world data to production.
 
 Open `/cosmetics` and choose Mounts. Every tile contains a real 3D mount preview.
-Click an unlocked mount to summon it; click its active tile to recall and store
-it. Only one can be active at a time. Locked tiles remain visible for previews.
-The client validates every preview's actual renderer texture resource when the
-catalog arrives and reports missing resources explicitly.
+Click a species to open its color picker, then an unlocked color to summon it;
+click its active tile to recall and store it. The Back tile returns to species.
+Only one can be active at a time. Locked colors remain visible for previews.
+Catalog application waits for the world and resource overlay to be ready,
+including during a resource reload. The client validates every preview's actual
+renderer texture resource and reports missing resources explicitly.
 Preview animation uses advancing entity age and fractional-frame interpolation,
 not an unticked entity whose animation clock loops backward. Hover rotation is
 continuous and honors the original wardrobe's animated-preview setting.
@@ -85,9 +103,9 @@ unmodified assets; no replacement skins or copied third-party assets are shipped
 ## Keys and vouchers
 
 Cosmetic Keys retain the live server's authenticated token ledger and reward
-behavior, with mounts appended to the pool. First rolls unlock ownership;
-duplicates produce authenticated, mount-specific vouchers. Anyone without that
-mount can redeem its voucher once. An existing owner retains the mount voucher
+behavior, with individual mount colors appended to the pool. First rolls unlock
+that color; duplicates produce authenticated, color-specific vouchers. Anyone
+without that color can redeem its voucher once. An existing owner retains the voucher
 for trading. Copied or `/give`-created tokens remain invalid.
 
 To test redemption rather than ownership override, disable
@@ -118,3 +136,15 @@ removes loaded unmanaged mounts, and confirms ordinary horse spawning still work
 server as well. Install the `gangsmounts-smoke-1.0.0-production.jar` only in a
 disposable, loopback-bound validation server with `unlockAllForTesting: false`.
 It runs the same assertions and shuts down automatically.
+
+`.\gradlew.bat remapClientSmokeJar` builds the separate production-mapped client
+fixture. Install it only in the disposable offline client, never production.
+It validates all 79 native color resources (including Nightmare's animated
+frames), a real resource reload with a catalog arriving during the overlay,
+mounted player inventory, and stationary/ridden/unmounted animation behavior.
+It opens the actual wardrobe, checks the distinct native icon and all species
+and color pickers, waiting for real render-frame refreshes rather than reading
+stale categories in the same tick. It records a fresh success marker, leaves
+the wardrobe visible for about one minute, then closes automatically. No manual
+input is required. Server tests also cover saved/default migration and
+named/damaged/enchanted armor isolation between colors.

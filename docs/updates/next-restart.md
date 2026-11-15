@@ -1,4 +1,54 @@
-# Mythic Mounts and admin claim trust (v1.1.30)
+# Mount colors, neon rotation and Boots 1.0.8 (v1.1.31)
+
+This release is for the owner's next restart, not a live reload or direct
+replacement of running mods. The pre-staging read-only check confirmed Boots
+1.0.7 and Gangs Graves Compat 1.0.0 were active: Boots 1.0.8 had been prepared
+but not installed. This combined update installs Boots 1.0.8 and preserves the
+already-active grave fix. Unrelated prepared Trials 1.0.9 changes are excluded.
+
+- Gangs Mounts 1.0.2: species/color picker with the original animal paw icon.
+  All 79 base colors are independent rewards through existing authenticated
+  Cosmetic Keys and transferable duplicate vouchers. Existing species ownership
+  migrates only to the saved color, or native default if never saved. Decorative
+  patterns remain native NBT. Saved equipment is isolated by color.
+- Normal inventory key opens player inventory while riding; Ctrl with that key
+  retains the native mount equipment screen. Named/damaged/enchanted chestplates
+  persist across recall/resummon. Ridden horizontal displacement animates walking
+  without changing stationary, unmounted or native flight/climb/swim behavior.
+- Catalog application waits for world/resource readiness, including reloads,
+  so early renderer access cannot leave the Mounts category missing. Existing
+  wardrobe categories/settings and unmodified Cosmetics assets are preserved.
+  Clients must update before using the new server color catalog.
+- GoldClaim 1.0.76 replaces Crescent Moon/Spirit Mask with Neon Sword/Neon Shield
+  in the existing chest bonus hook. Both independent single-roll 0.25% pools and
+  the existing all-`chests/` table scope are unchanged, not newly limited to RSW.
+  Weekly/monthly all-neon collections are untouched.
+- Boots 1.0.8 uses exactly `nextInt(400) == 0` for first personal Lootr
+  chest/barrel generation. Reopening/shared/automated fills are unchanged.
+
+Use `gangs-mount-variants-restart-1.0.2.jar` as `SERVER_JARFILE` only after its
+host readback SHA-256 matches
+`2593aaee423a4359a483f825d28bca0d05b7c6ffdfd1555d775a9e8775e9ac91`.
+It requires the unchanged safe-graves and mount-claim predecessor jars,
+verifies their hashes before predecessor writes, prepares their dependencies,
+then installs Mounts 1.0.2, GoldClaim 1.0.76 and Boots 1.0.8 under the world
+lock. It backs up replaced jars in `backups/mount-variants-1.0.2` and directly
+starts original Fabric rather than replaying obsolete predecessor mod checks.
+Repeated/interrupted startups preserve the active grave fix and Boots update.
+Payload resources use their own `/mount-variants-1.0.2-payload/` directory.
+No server restart or `/reload` is performed by the rollout.
+
+The production-mapped server smoke passed with exact pinned upstream jars,
+including migration, independent rewards/equipment, armor NBT and actual loaded
+Neon Sword/Shield loot pools. Combined installer regressions passed bootstrap,
+repeat, interruption, embedded payloads, corruption, renamed duplicates, changed
+files and world-lock refusal. The separate production client passed actual
+resource-reload deferral, all 79 textures (including animated Nightmare frames),
+mounted inventory, movement states, native paw icon, and all real GUI pickers
+after render-frame refreshes. It closes automatically after showing the wardrobe
+for about one minute; no manual input is required.
+
+# Historical: Mythic Mounts and admin claim trust (v1.1.30)
 
 Pack v1.1.30 is published and its manifests and release jars have been
 verified on GitHub Pages. The corrected restart launcher is selected and its
