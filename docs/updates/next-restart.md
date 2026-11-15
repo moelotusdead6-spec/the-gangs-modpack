@@ -1,5 +1,15 @@
 # Mount colors, neon rotation and Boots 1.0.8 (v1.1.31)
 
+Pack v1.1.31 is published: release `9ad71d0` completed Pages deployment, and
+the served pack, index, three mod manifests and six release/dependency jars
+match their local SHA-256 values. All 15 live prerequisite jars were verified.
+The combined launcher was uploaded to the server root, downloaded back and
+checksum-verified, then selected as `SERVER_JARFILE`. Readback verified both
+the saved variable and effective startup command. Running mods still contain
+Boots 1.0.7, Mounts 1.0.0, GoldClaim 1.0.75 and Graves Compat 1.0.0; no new
+mod jars were placed in the live mods directory. The owner restart is pending.
+No restart or `/reload` was issued.
+
 This release is for the owner's next restart, not a live reload or direct
 replacement of running mods. The pre-staging read-only check confirmed Boots
 1.0.7 and Gangs Graves Compat 1.0.0 were active: Boots 1.0.8 had been prepared
