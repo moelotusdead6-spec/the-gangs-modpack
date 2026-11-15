@@ -8,8 +8,12 @@
   `1422fd21a4ae629bbeb1041acbe8c4c347cf7ce7ab518337a00bea043105862a`.
 - `artifacts/gangsboots-1.0.8.jar`: SHA-256
   `e886f5067038279b40e6f00d00231062f42a462c8b8c5a62dc6e66b3a4e933a1`.
-- `artifacts/gangs-mount-variants-restart-1.0.2.jar`: SHA-256
-  `2593aaee423a4359a483f825d28bca0d05b7c6ffdfd1555d775a9e8775e9ac91`.
+- `artifacts/gangs-mount-variants-restart-1.0.3.jar`: SHA-256
+  `3ec3710536cafcf695afefc722c4039e2ac7413503fd125b343b7162b50d3bdc`.
+  Replaces the withdrawn 1.0.2 launcher (`2593aaee…`), whose manifest
+  `Class-Path` lost the separator before its mount-claim predecessor and exited
+  with `NoClassDefFoundError` before any check or write. Installer logic,
+  payloads, backups and markers are unchanged.
 - Unchanged active grave compatibility dependency:
   `artifacts/gangsgravescompat-1.0.0.jar`, SHA-256
   `1cec6d25be33e515ef524ca0e69996cd67856b111cff62681e542de3d6be4515`.
