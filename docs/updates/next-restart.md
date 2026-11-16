@@ -4,6 +4,13 @@ Server-only patch for the owner's next restart. No client update, live mod
 replacement, `/reload`, server stop or server restart is part of staging.
 The existing Mounts/GoldClaim/Boots/graves restart chain is preserved.
 
+Release `2f3243e` is published; Pages deployment and both served jar checksums
+passed. The restart jar was downloaded into the host root and read back with
+the exact checksum below. Saved `SERVER_JARFILE` and the effective startup
+command both select it; `JAVA_ARGS` is unchanged. The server remains running
+with its original configs and without the new mod installed:
+**these fixes activate only at the owner's next restart**.
+
 - **Dragon uniques:** first-party `gangsdragonloot-1.0.0.jar` replaces only the
   dragon's Simply Swords/Simply More unique-tagged loot-table weapon results
   with exactly two different Simply Swords uniques. All registered Simply Swords
