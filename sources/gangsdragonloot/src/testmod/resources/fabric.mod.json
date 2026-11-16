@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "gangsdragonloot_smoke",
+  "version": "1.0.0",
+  "name": "Gangs Dragon Loot Smoke Test",
+  "environment": "server",
+  "entrypoints": {
+    "server": ["com.gangs.dragonloot.DragonLootSmokeTest"]
+  },
+  "depends": {
+    "gangsdragonloot": "*",
+    "fabric-api": "*",
+    "simplymore": "*",
+    "alexsmobs": "*"
+  }
+}

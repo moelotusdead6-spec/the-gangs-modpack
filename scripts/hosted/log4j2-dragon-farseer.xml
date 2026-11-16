@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <Filters>
+        <RegexFilter regex="^\[STDOUT\]:.*tick.*$" onMatch="DENY" onMismatch="NEUTRAL"/>
+        <RegexFilter regex="^.*Saved config config to file \\.\\config\\simplytooltips\\config\\.toml.*$" onMatch="DENY" onMismatch="NEUTRAL"/>
+        <RegexFilter regex="^.*Completed updates for configs: \[\[simplytooltips\.config\]\].*$" onMatch="DENY" onMismatch="NEUTRAL"/>
+        <RegexFilter regex="^.*Updates made by: .*$" onMatch="DENY" onMismatch="NEUTRAL"/>
+        <RegexFilter regex="^.*\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$.*$" onMatch="DENY" onMismatch="NEUTRAL"/>
+        <RegexFilter regex="^.*-------------------------.*$" onMatch="DENY" onMismatch="NEUTRAL"/>
+        <RegexFilter regex="^Unknown structure start: trek:monster_room/(upper|lower)/default$" onMatch="DENY" onMismatch="NEUTRAL"/>
+        <RegexFilter regex="^No data fixer registered for .*$" onMatch="DENY" onMismatch="NEUTRAL"/>
+        <RegexFilter regex="^Could not decode GlobalLootModifier with json id perfectplushieapi:.*$" onMatch="DENY" onMismatch="NEUTRAL"/>
+        <LevelRangeFilter minLevel="ERROR" maxLevel="WARN" onMatch="NEUTRAL" onMismatch="ACCEPT"/>
+        <RegexFilter regex="(?is).*\bgalosphere\b.*" onMatch="DENY" onMismatch="NEUTRAL"/>
+      </Filters>
+      <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%level]: %msg%n"/>
+    </Console>
+
+    <RollingRandomAccessFile name="File"
+                             fileName="logs/latest.log"
+                             filePattern="logs/%d{yyyy-MM-dd}-%i.log.gz">
+      <Filters>
+        <RegexFilter regex="^\[STDOUT\]:.*tick.*$" onMatch="DENY" onMismatch="NEUTRAL"/>
+        <RegexFilter regex="^.*Saved config config to file \\.\\config\\simplytooltips\\config\\.toml.*$" onMatch="DENY" onMismatch="NEUTRAL"/>
+        <RegexFilter regex="^.*Completed updates for configs: \[\[simplytooltips\.config\]\].*$" onMatch="DENY" onMismatch="NEUTRAL"/>
+        <RegexFilter regex="^.*Updates made by: .*$" onMatch="DENY" onMismatch="NEUTRAL"/>
+        <RegexFilter regex="^.*\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$.*$" onMatch="DENY" onMismatch="NEUTRAL"/>
+        <RegexFilter regex="^.*-------------------------.*$" onMatch="DENY" onMismatch="NEUTRAL"/>
+        <RegexFilter regex="^Unknown structure start: trek:monster_room/(upper|lower)/default$" onMatch="DENY" onMismatch="NEUTRAL"/>
+        <RegexFilter regex="^No data fixer registered for .*$" onMatch="DENY" onMismatch="NEUTRAL"/>
+        <RegexFilter regex="^Could not decode GlobalLootModifier with json id perfectplushieapi:.*$" onMatch="DENY" onMismatch="NEUTRAL"/>
+      </Filters>
+      <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%level]: %msg%n"/>
+      <Policies>
+        <OnStartupTriggeringPolicy/>
+        <SizeBasedTriggeringPolicy size="200 MB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="10"/>
+    </RollingRandomAccessFile>
+  </Appenders>
+
+  <Loggers>
+    <!-- Keep direct STDOUT forwarding disabled; appender filters above are a fallback catch-all. -->
+    <Logger name="STDOUT" level="off" additivity="false"/>
+    <Root level="info">
+      <AppenderRef ref="Console"/>
+      <AppenderRef ref="File"/>
+    </Root>
+  </Loggers>
+</Configuration>

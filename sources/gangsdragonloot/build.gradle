@@ -1,0 +1,49 @@
+plugins {
+    id 'fabric-loom' version '1.10-SNAPSHOT'
+}
+
+version = '1.0.0'
+group = 'com.gangs'
+base { archivesName = 'gangsdragonloot' }
+
+repositories { mavenCentral() }
+
+dependencies {
+    minecraft 'com.mojang:minecraft:1.20.1'
+    mappings 'net.fabricmc:yarn:1.20.1+build.10:v2'
+    modImplementation 'net.fabricmc:fabric-loader:0.19.3'
+    modImplementation 'net.fabricmc.fabric-api:fabric-api:0.92.11+1.20.1'
+}
+
+sourceSets {
+    testmod {
+        compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        runtimeClasspath += sourceSets.main.runtimeClasspath
+    }
+}
+
+tasks.register('smokeJar', Jar) {
+    archiveBaseName = 'gangsdragonloot-smoke'
+    from sourceSets.testmod.output
+}
+
+tasks.register('remapSmokeJar', net.fabricmc.loom.task.RemapJarTask) {
+    dependsOn tasks.named('smokeJar')
+    inputFile = tasks.named('smokeJar').flatMap { it.archiveFile }
+    archiveBaseName = 'gangsdragonloot-smoke'
+    archiveClassifier = 'production'
+}
+
+processResources {
+    inputs.property 'version', project.version
+    filesMatching('fabric.mod.json') { expand 'version': project.version }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = 'UTF-8'
+    it.options.release = 17
+}
+
+loom {
+    mixin { add sourceSets.main, 'gangsdragonloot-refmap.json' }
+}

@@ -1,3 +1,76 @@
+# Dragon uniques, Farseer exclusion and Galosphere console noise (2026-11-16)
+
+Server-only patch for the owner's next restart. No client update, live mod
+replacement, `/reload`, server stop or server restart is part of staging.
+The existing Mounts/GoldClaim/Boots/graves restart chain is preserved.
+
+- **Dragon uniques:** first-party `gangsdragonloot-1.0.0.jar` replaces only the
+  dragon's Simply Swords/Simply More unique-tagged loot-table weapon results
+  with exactly two different Simply Swords uniques. All registered Simply Swords
+  unique-tagged variants are eligible. World RNG advances on every kill;
+  a saved `DeathLootTableSeed` cannot freeze the pair. Pairs can recur across
+  kills. Non-weapon results, other mobs/chests, direct upstream drops, XP and
+  `doMobLoot` are unchanged. The inspected live upstream settings were two
+  independent 50% pools, not a guaranteed pair; a fixed seed was not proven
+  to be the original live cause.
+- **Farseer:** the supported Alex's Mobs biome config becomes `{"biomes":[]}`.
+  No biome in any dimension permits natural Farseer spawning. Existing
+  Farseers are not killed; commands/spawn eggs are not banned.
+- **Galosphere:** console filters suppress WARN/ERROR messages mentioning
+  Galosphere, including stale removed-biome/structure references. File logs,
+  stack traces, unrelated console warnings/errors, INFO and FATAL are retained.
+  This hides noise; it does not repair old chunk biome references.
+
+The checksum-pinned launcher is
+`artifacts/gangs-dragon-farseer-restart-1.0.0.jar`, SHA-256
+`71e53ee96516b2370707d2d3f9e37db9d6f38f1ab2181fb50cfea17e680606a7`.
+Its embedded server mod has SHA-256
+`5dcd2cdec782d39ce87b37572a933c86c8195327262a7c9b71589bb255be91a1`.
+Use it as `SERVER_JARFILE` only after host upload/readback checksum verification.
+It pins the original Fabric launcher, selected Mount Variants 1.0.3 launcher,
+both ancestor launchers and all three tested upstream mod jars. Under the
+world lock, it backs up both configs in `backups/dragon-farseer-1.0.0`, installs
+the payloads atomically per file, sets `log4j.configurationFile` before Fabric
+initializes logging, then delegates to the unchanged selected launcher.
+`JAVA_ARGS` is not changed. Payloads use `/dragon-farseer-1.0.0-payload/`.
+Unexpected changes, duplicate patch mods and a running world stop installation.
+
+Production-mapped isolated Fabric validation passed with the real pinned mods:
+2,000 identical-seed rolls reached every eligible unique with distinct pairs;
+12 actual dragon deaths produced varied pairs; other loot and `doMobLoot=false`
+were preserved. Native Alex's Mobs config matching rejected every registered
+biome. Real Log4j testing verified console-only filtering and retained file
+exceptions. Installer tests cover repeat/interrupted installs, original backups,
+changed configs/dependencies, corrupt payloads, renamed duplicates, world
+locking, packaged hashes and transitive predecessor class loading.
+See [source and validation](../../sources/gangsdragonloot/README.md).
+
+**Performance evidence, not a claimed lag fix:** the live server snapshot
+was 20 TPS with 16.3 ms median, 22.1 ms 95th percentile and 1,087 ms maximum
+tick duration over one minute. Current player pings ranged 11-142 ms; the
+15-minute median was 69 ms. A separate bounded local vanilla profile completed
+201 ticks in 10.03 seconds (20.04 TPS), with 64.53% waiting for the next tick.
+Overworld entities were 47.18% of overworld tick work in that short sample;
+approximately 35 sand dollars and 26 horseshoe crabs ticking per sampled tick
+were notable contributors.
+This quiet sample does not identify the cause of the reported lag spikes.
+GC logs showed no full-GC/OOM evidence in the inspected current log; the largest
+listed pause was about 350 ms during startup. Console memory includes native memory,
+not just Java heap. No profiler upload or ongoing capture was started.
+
+Low FPS needs an affected client's log/hardware/settings or frame profile.
+The bundled defaults use render/simulation distance 12 and all particles;
+testing shaders off, render distance 6-8 and reduced particles is a useful
+client-side comparison, not a forced settings change or network-latency fix.
+Existing server distance 6/6, spawn-chunk protection, Spawn Animations pause,
+gameplay populations and JVM flags remain unchanged. No speculative mod removal
+or AI/farm-breaking activation-range changes were made.
+
+After restart, verify the patch mod loads and a normal dragon fight drops two
+different uniques. To roll back, stop the server, select the previous Mount
+Variants 1.0.3 launcher, remove only `gangsdragonloot-1.0.0.jar`, and restore
+the two saved configs. Keep original upstream mods and world data unchanged.
+
 # Mount colors, neon rotation and Boots 1.0.8 (v1.1.31)
 
 Pack v1.1.31 is published: release `9ad71d0` completed Pages deployment, and

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "gangsdragonloot",
+  "version": "${version}",
+  "name": "Gangs Dragon Loot",
+  "description": "Two distinct, freshly randomized Simply Swords uniques per dragon kill.",
+  "authors": ["The Gangs"],
+  "license": "MIT",
+  "environment": "server",
+  "mixins": ["gangsdragonloot.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.15.11",
+    "minecraft": "1.20.1",
+    "java": ">=17",
+    "simplyswords": "1.56.0-1.20.1"
+  }
+}
