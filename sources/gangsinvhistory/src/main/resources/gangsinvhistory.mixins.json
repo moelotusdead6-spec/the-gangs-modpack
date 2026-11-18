@@ -1,0 +1,8 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.gangs.invhistory.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": ["PlayerDeathMixin", "ShutdownSaveMixin"],
+  "injectors": { "defaultRequire": 1 }
+}

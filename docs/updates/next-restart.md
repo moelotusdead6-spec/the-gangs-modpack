@@ -1,3 +1,89 @@
+# Inventory history, inventory viewing and mailbox stacks (2026-11-18)
+
+Server-only update for the next owner-controlled restart. No client pack update,
+live mod replacement, restart or `/reload` is needed for staging.
+
+## Mailbox commands (GoldClaim 1.0.77)
+
+- `/mailbox send <MinecraftUsername|all|@a> <item> [amount]` accepts **1?100,000
+  items per recipient**, defaulting to one. Large quantities become separate
+  legal-sized stacks, preserving item NBT. Nonstackable items get one entry
+  each. The complete delivery for each recipient is saved atomically.
+- Example: `/mailbox send TinyPickles4 minecraft:deepslate_diamond_ore 1700`
+  creates 26 stacks of 64 and one stack of 36, not an oversized item stack.
+- Existing staff permissions, offline recipients, `all`/`@a` targeting and
+  bulk partial-failure reporting are unchanged. A bulk retry can duplicate
+  deliveries to recipients who already succeeded; retry only failed names.
+- `/mailbox` opens the first page. There are **45 reward stacks per page**,
+  previous/next arrows, and a visible **Page X/Y** indicator.
+- `/mailbox page <number>` opens a numbered page; a page above the current
+  total opens the last page. Claiming the final reward on the last page returns
+  to the remaining last page. There is no separate mailbox capacity limit.
+- Click or shift-click to claim a whole stack. If the inventory cannot hold
+  the whole stack, nothing is removed from mail. Existing UUID-based storage,
+  player-save receipts and stale-click protection remain in use.
+
+The focused Fabric mailbox integration test passed with real LuckPerms,
+including amount limits, NBT preservation, 64/16/1-item stack limits, merged
+inventory claims and persisted player data, full inventories, crash receipts,
+three-page navigation, last-page shrinking, stale clicks and bulk targeting.
+
+## Inventory history and shutdown saving
+
+The release also includes first-party `gangsinvhistory` and unmodified
+InvView 1.4.12 by Potatoboy9999 (MIT). Inventory history records join, leave,
+pre-drop death and dimension changes with seven-day retention. Its archives
+include referenced Sophisticated Backpacks contents rather than only bag UUIDs.
+See [history commands, permissions and recovery](../../sources/gangsinvhistory/README.md).
+
+`/view inv <MinecraftUsername>` and `/view echest <MinecraftUsername>` inspect
+current online/offline inventories and ender chests; `/view trinket` is
+available when Trinkets is loaded. At the owner's request, live InvView screens
+are **editable** for Mod/Admin/Owner. History screens remain read-only.
+LuckPerms grants use `invview.command.root`, `invview.command.inv`,
+`invview.command.echest`, `invview.command.trinket`, `invview.can_modify`
+and `gangsinvhistory.view`. The previously absent `admin` group was created
+without changing any memberships; ordinary groups receive no viewer grant.
+
+The shutdown fix catches a failing disconnect listener so shutdown can continue
+to world/storage saving. It does **not** fix the recurring chunk-ticking
+`ConcurrentModificationException` that caused the resets, and cannot protect
+against forced process termination or power loss.
+
+Development and production-mapped fixtures passed. A real cross-world
+`ServerPlayerEntity.teleport` produced exactly one dimension snapshot.
+Seven-day pruning and read-only history screens, including level-4 operators,
+passed. The production fixture verified that fresh chunk and exact backpack
+contents persisted after the injected disconnect exception. These are isolated
+Fabric checks; Multiworld's command implementation and a real LuckPerms
+shutdown failure were not directly reproduced.
+
+## Restart deployment
+
+The combined launcher is `gangs-inventory-mailbox-restart-1.0.0.jar`.
+SHA-256: `d443adb443b9433f3922c275b6fd76610c2e1c3b24f93840ee60be9a5289ab8b`.
+All four release artifact hashes are recorded in [ARTIFACTS](../../ARTIFACTS.md).
+It verifies checksums, already-applied Mount/Claim/Boots/graves markers and jars,
+and preserves the Dragon/Farseer/logging installer. It cannot call the old
+Mount Variants main again because that would reapply GoldClaim 1.0.76.
+After verification it installs the three new jars under the world lock, saves
+the original GoldClaim in `backups/inventory-mailbox-1.0.0/mods/`, removes only
+the old GoldClaim jar, and starts the original checksum-pinned Fabric launcher.
+Repeated or interrupted installations are recoverable; unexpected mod hashes,
+duplicate IDs, corrupt payloads/backups and a running world stop installation.
+Each launcher uses a distinct payload resource directory.
+
+Only the combined launcher is uploaded to the inactive server root during
+staging. The running mods, JVM flags, world and existing mail are untouched.
+Never install smoke-test jars on the hosted server.
+
+After restart, verify all three mods load, exercise `/mailbox page 1`, send
+and claim a small stack, and check that player events create history.
+History begins after activation; it cannot reconstruct pre-installation losses.
+For rollback, stop the server first, remove the new GoldClaim, history and
+InvView jars, restore the saved GoldClaim 1.0.76, and select the previous
+Dragon/Farseer launcher. Preserve mailbox and inventory-history data.
+
 # Dragon uniques, Farseer exclusion and Galosphere console noise (2026-11-16)
 
 Server-only patch for the owner's next restart. No client update, live mod

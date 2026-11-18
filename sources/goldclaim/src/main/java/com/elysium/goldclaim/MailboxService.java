@@ -6,6 +6,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
 import com.elysium.goldclaim.mixin.PlayerManagerInvoker;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -22,6 +25,7 @@ import net.luckperms.api.util.Tristate;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.ItemStackArgumentType;
+import net.minecraft.command.argument.ItemStackArgument;
 import net.minecraft.command.argument.GameProfileArgumentType;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
@@ -46,24 +50,19 @@ final class MailboxService {
     private static final Logger LOGGER = LoggerFactory.getLogger("GoldClaim/Mailbox");
     private static final Set<String> STAFF = Set.of("owner", "admin", "mod", "moderator");
     private static final int PAGE_SIZE = 45;
+    private static final int MAX_SEND_AMOUNT = 100_000;
     record Mail(UUID id, ItemStack stack) {}
 
     static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registries) {
         dispatcher.register(CommandManager.literal("mailbox")
             .executes(ctx -> open(ctx.getSource().getPlayerOrThrow(), 0))
+            .then(CommandManager.literal("page")
+                .then(CommandManager.argument("number", IntegerArgumentType.integer(1))
+                    .executes(ctx -> open(ctx.getSource().getPlayerOrThrow(),
+                        IntegerArgumentType.getInteger(ctx, "number") - 1))))
             .then(CommandManager.literal("send").requires(MailboxService::canSend)
                 .then(CommandManager.literal("all")
-                    .then(CommandManager.argument("item", ItemStackArgumentType.itemStack(registries))
-                        .executes(ctx -> {
-                            try {
-                                return sendTargets(ctx.getSource(), knownPlayers(ctx.getSource()),
-                                    ItemStackArgumentType.getItemStackArgument(ctx, "item").createStack(1, true));
-                            } catch (IOException failure) {
-                                LOGGER.error("Could not load known mailbox recipients", failure);
-                                ctx.getSource().sendError(Text.literal("[Mailbox] Known-player list could not be read; no rewards sent."));
-                                return 0;
-                            }
-                        })))
+                    .then(itemArgument(registries, true)))
                 .then(CommandManager.argument("player", GameProfileArgumentType.gameProfile())
                     .suggests((ctx, builder) -> {
                         try {
@@ -78,10 +77,28 @@ final class MailboxService {
                                 Text.literal("[Mailbox] Offline name suggestions are unavailable; contact staff.")).create();
                         }
                     })
-                    .then(CommandManager.argument("item", ItemStackArgumentType.itemStack(registries))
-                        .executes(ctx -> sendTargets(ctx.getSource(),
-                            GameProfileArgumentType.getProfileArgument(ctx, "player"),
-                            ItemStackArgumentType.getItemStackArgument(ctx, "item").createStack(1, true)))))));
+                    .then(itemArgument(registries, false)))));
+    }
+
+    private static RequiredArgumentBuilder<ServerCommandSource, ItemStackArgument> itemArgument(
+            CommandRegistryAccess registries, boolean all) {
+        return CommandManager.argument("item", ItemStackArgumentType.itemStack(registries))
+            .executes(ctx -> sendCommand(ctx, all, 1))
+            .then(CommandManager.argument("amount", IntegerArgumentType.integer(1, MAX_SEND_AMOUNT))
+                .executes(ctx -> sendCommand(ctx, all, IntegerArgumentType.getInteger(ctx, "amount"))));
+    }
+
+    private static int sendCommand(CommandContext<ServerCommandSource> ctx, boolean all, int amount)
+            throws com.mojang.brigadier.exceptions.CommandSyntaxException {
+        ItemStack stack = ItemStackArgumentType.getItemStackArgument(ctx, "item").createStack(1, true);
+        try {
+            return sendTargets(ctx.getSource(), all ? knownPlayers(ctx.getSource())
+                : GameProfileArgumentType.getProfileArgument(ctx, "player"), stack, amount);
+        } catch (IOException failure) {
+            LOGGER.error("Could not load known mailbox recipients", failure);
+            ctx.getSource().sendError(Text.literal("[Mailbox] Known-player list could not be read; no rewards sent."));
+            return 0;
+        }
     }
 
     private static Collection<GameProfile> knownPlayers(ServerCommandSource source) throws IOException {
@@ -104,17 +121,18 @@ final class MailboxService {
         return profiles.values();
     }
 
-    private static int sendTargets(ServerCommandSource source, Collection<GameProfile> targets, ItemStack stack) {
+    private static int sendTargets(ServerCommandSource source, Collection<GameProfile> targets, ItemStack stack, int amount) {
         if (targets.isEmpty()) {
             source.sendError(Text.literal("[Mailbox] No matching known players; no rewards sent."));
             return 0;
         }
         int sent = 0;
-        for (GameProfile target : targets) sent += send(source, target, stack, targets.size() == 1);
+        for (GameProfile target : targets) sent += send(source, target, stack, amount, targets.size() == 1);
         if (targets.size() > 1) {
             int successful = sent;
-            source.sendFeedback(() -> Text.literal("[Mailbox] Sent one reward each to " + successful
-                + " player(s); failed: " + (targets.size() - successful) + "."), true);
+            source.sendFeedback(() -> Text.literal("[Mailbox] Sent " + amount + " x ").append(stack.toHoverableText())
+                .append(Text.literal(" each to " + successful
+                + " player(s); failed: " + (targets.size() - successful) + ".")), true);
         }
         return sent;
     }
@@ -184,7 +202,7 @@ final class MailboxService {
         }
     }
 
-    private static int send(ServerCommandSource source, GameProfile recipient, ItemStack stack, boolean feedback) {
+    private static int send(ServerCommandSource source, GameProfile recipient, ItemStack stack, int amount, boolean feedback) {
         if (!canSend(source)) {
             source.sendError(Text.literal("[Mailbox] Only Mod, Admin and Owner can send rewards."));
             return 0;
@@ -196,9 +214,14 @@ final class MailboxService {
         try {
             Path path = file(source, recipient.getId());
             List<Mail> mail = read(path);
-            mail.add(new Mail(UUID.randomUUID(), stack.copy()));
+            for (int remaining = amount; remaining > 0;) {
+                ItemStack portion = stack.copy();
+                portion.setCount(Math.min(remaining, stack.getMaxCount()));
+                mail.add(new Mail(UUID.randomUUID(), portion));
+                remaining -= portion.getCount();
+            }
             write(path, mail);
-            if (feedback) source.sendFeedback(() -> Text.literal("[Mailbox] Sent ").append(stack.toHoverableText())
+            if (feedback) source.sendFeedback(() -> Text.literal("[Mailbox] Sent " + amount + " x ").append(stack.toHoverableText())
                 .append(Text.literal(" to " + recipient.getName() + ".")), true);
             ServerPlayerEntity online = source.getServer().getPlayerManager().getPlayer(recipient.getId());
             if (online != null) notify(online, mail.size());
@@ -228,9 +251,10 @@ final class MailboxService {
         try {
             List<Mail> mail = read(file(player));
             int page = Math.max(0, Math.min(requestedPage, Math.max(0, (mail.size() - 1) / PAGE_SIZE)));
+            int pages = Math.max(1, (mail.size() + PAGE_SIZE - 1) / PAGE_SIZE);
             player.openHandledScreen(new SimpleNamedScreenHandlerFactory(
                 (syncId, inventory, owner) -> new MailboxScreen(syncId, player, mail, page),
-                Text.literal("Mailbox - click to claim (" + (page + 1) + ")")));
+                Text.literal("Mailbox - Page " + (page + 1) + "/" + pages)));
             if (mail.isEmpty()) player.sendMessage(Text.literal("[Mailbox] Your mailbox is empty."), false);
             return 1;
         } catch (IOException failure) {
@@ -269,9 +293,14 @@ final class MailboxService {
             for (int slot = 0; slot < PAGE_SIZE && page * PAGE_SIZE + slot < mail.size(); slot++) {
                 getInventory().setStack(slot, mail.get(page * PAGE_SIZE + slot).stack().copy());
             }
-            if (page > 0) getInventory().setStack(45, new ItemStack(Items.ARROW).setCustomName(Text.literal("Previous page")));
+            int pages = Math.max(1, (mail.size() + PAGE_SIZE - 1) / PAGE_SIZE);
+            getInventory().setStack(49, new ItemStack(Items.PAPER).setCustomName(
+                Text.literal("Page " + (page + 1) + "/" + pages + " - click rewards to claim")));
+            if (page > 0) getInventory().setStack(45, new ItemStack(Items.ARROW).setCustomName(
+                Text.literal("Previous page (" + page + "/" + pages + ")")));
             if ((page + 1) * PAGE_SIZE < mail.size()) {
-                getInventory().setStack(53, new ItemStack(Items.ARROW).setCustomName(Text.literal("Next page")));
+                getInventory().setStack(53, new ItemStack(Items.ARROW).setCustomName(
+                    Text.literal("Next page (" + (page + 2) + "/" + pages + ")")));
             }
         }
 

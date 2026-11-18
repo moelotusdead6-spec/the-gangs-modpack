@@ -1,0 +1,9 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.gangs.invhistory.smoke",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "gangsinvhistory_smoke-refmap.json",
+  "mixins": ["FailingDisconnectMixin"],
+  "injectors": { "defaultRequire": 1 }
+}

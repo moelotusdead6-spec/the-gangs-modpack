@@ -1,5 +1,36 @@
 # Published Artifacts
 
+## Inventory history, InvView and mailbox stacks (2026-11-18)
+
+Server-only release; no client Packwiz update is required.
+
+- `artifacts/gangs-inventory-mailbox-restart-1.0.0.jar`: SHA-256
+  `d443adb443b9433f3922c275b6fd76610c2e1c3b24f93840ee60be9a5289ab8b`.
+- `artifacts/goldclaim-1.0.77.jar`: SHA-256
+  `40cfb2cd2cfc17be8adc7205f2d51b2480e10df0957b0992132ba0d7bfca08ab`.
+- `artifacts/gangsinvhistory-1.0.0.jar`: SHA-256
+  `1e9d799997d44c0e33d883e03c846f42f1858f4743afc47bb22c991f02cd5a70`.
+- `artifacts/InvView-1.4.12-1.20+.jar`: SHA-256
+  `082454675a38c0a0696874a834aa13e6551c1d155e4d2b9409848faafc5fe9ab`.
+  Unmodified InvView by Potatoboy9999, MIT; the upstream LICENSE is preserved
+  in the jar. [Upstream source](https://github.com/PotatoPresident/InvView).
+
+GoldClaim supports 1?100,000 items per recipient, split into legal stacks, with
+45 stacks per mailbox page and direct numbered-page selection.
+Gangs Inventory History keeps seven days of join/leave/death/dimension-change
+snapshots, including referenced external backpack contents. Historical screens
+are read-only; the live InvView is editable for the authorized staff groups.
+The history mod also allows shutdown world saves to continue after a disconnect
+listener throws; it does not fix the initial crash or forced termination.
+
+Development and production history fixtures verified real dimension teleport,
+read-only screens, retention, and persisted fresh chunk/backpack contents after
+the injected shutdown failure. Mailbox integration and packaged restart-installer
+regressions passed. The launcher verifies already-applied predecessors without
+re-running the old GoldClaim installer.
+See [commands and activation](docs/updates/next-restart.md) and
+[history documentation](sources/gangsinvhistory/README.md).
+
 ## Mount colors, neon rotation and Boots 1.0.8 (v1.1.31)
 
 - `artifacts/gangsmounts-1.0.2.jar`: SHA-256

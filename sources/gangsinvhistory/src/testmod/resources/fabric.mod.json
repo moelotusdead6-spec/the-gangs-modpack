@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "gangsinvhistory_smoke",
+  "version": "1.0.0",
+  "name": "Gangs Inventory History Smoke Test",
+  "environment": "server",
+  "entrypoints": {
+    "server": ["com.gangs.invhistory.HistorySmokeTest"]
+  },
+  "mixins": ["gangsinvhistory_smoke.mixins.json"],
+  "depends": {
+    "gangsinvhistory": "*"
+  }
+}
