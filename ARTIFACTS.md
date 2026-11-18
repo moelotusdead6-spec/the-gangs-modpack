@@ -2,7 +2,9 @@
 
 ## Inventory history, InvView and mailbox stacks (2026-11-18)
 
-Server-only release; no client Packwiz update is required.
+Published server-only release; no client Packwiz update is required. Pages
+checksums and hosted launcher readback passed. The launcher is selected for the
+next restart; the running server has not been restarted or reloaded.
 
 - `artifacts/gangs-inventory-mailbox-restart-1.0.0.jar`: SHA-256
   `d443adb443b9433f3922c275b6fd76610c2e1c3b24f93840ee60be9a5289ab8b`.

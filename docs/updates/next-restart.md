@@ -3,6 +3,15 @@
 Server-only update for the next owner-controlled restart. No client pack update,
 live mod replacement, restart or `/reload` is needed for staging.
 
+Release `35db581` is published. GitHub Pages deployment succeeded, and all four
+served jar hashes matched the release artifacts. The combined launcher was
+downloaded into the host root and read back with its exact SHA-256 below.
+Saved `SERVER_JARFILE` and the effective startup command both select
+`gangs-inventory-mailbox-restart-1.0.0.jar`; `JAVA_ARGS` is unchanged.
+The host remains running GoldClaim 1.0.76 with none of the new jars in `mods`:
+**activation is pending the owner's next restart**. No stop, restart or
+`/reload` was issued. All 18 staff permission grants were confirmed by LuckPerms.
+
 ## Mailbox commands (GoldClaim 1.0.77)
 
 - `/mailbox send <MinecraftUsername|all|@a> <item> [amount]` accepts **1?100,000
