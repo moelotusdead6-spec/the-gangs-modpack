@@ -1,5 +1,8 @@
 # Gang Shop GUI (1.0.13)
 
+Deployed and started in maintenance mode on 2026-11-21. The shop is restricted
+to operators and TinyPickles4 for testing; only operators can edit it.
+
 The CreativeMode.net
 [Gang Shop GUI](https://creativemode.net/mod/gang-shop-ozsoihjx) is distributed
 unmodified under the [CreativeMode Mods License](https://creativemode.net/mod-license);
@@ -21,7 +24,8 @@ before selecting it as `SERVER_JARFILE`. Do not use `/reload`.
 
 # Kit countdowns, cosmetic keys and /wild bosses (GoldClaim 1.0.78)
 
-Staged, not yet published or applied. Server-only; no client update required.
+Deployed with the Gang Shop GUI update on 2026-11-21. These GoldClaim and
+SkiesKits changes are server-only.
 
 - **Kit countdowns:** GoldClaim registers the Placeholder API placeholder
   `%goldclaim:kit_ready <w1|w2|w3|m>%`, which shows "Ready" or the remaining
@@ -38,12 +42,10 @@ Staged, not yet published or applied. Server-only; no client update required.
   Vallumraptor spawns are blocked in /wild. RSW is unaffected. Bosses already
   saved in /wild chunks still load; op `/summon` gets vanilla's generic failure.
 
-Deploy: stage `artifacts/gangs-wild-boss-restart-1.0.0.jar` (SHA-256
-`dce8ce5f6a691a3ccea89ed9f1c777de75adfc1aaff0824245b2b7e22af06a93`) beside the
-Trials launcher and select it as `SERVER_JARFILE` for the next restart. It
-verifies the Trials update, replaces `goldclaim-1.0.77.jar` with 1.0.78 under the
-world lock with backups in `backups/wild-boss-goldclaim-1.0.78`, and replaces
-`menu.json` only if it matches the previously shipped file. A customised menu is
+Deployment used `artifacts/gangs-wild-boss-restart-1.0.0.jar` (SHA-256
+`dce8ce5f6a691a3ccea89ed9f1c777de75adfc1aaff0824245b2b7e22af06a93`) through
+the combined shop launcher above. It verifies the Trials update and backs up
+GoldClaim in `backups/wild-boss-goldclaim-1.0.78`. A customised kit menu is
 left alone with a warning. No `/reload`.
 
 Validation: GoldClaim build and 98 unit tests passed; the /wild boss runtime

@@ -18,7 +18,7 @@
 
 ## Kit countdowns, cosmetic keys and /wild bosses (GoldClaim 1.0.78)
 
-Server-only release staged for the next restart; no client update is required.
+Server-only update deployed with the Gang Shop GUI on 2026-11-21.
 
 - `artifacts/goldclaim-1.0.78.jar`: SHA-256
   `a7b98f263084ce4af89a682e612dc6ee53d4c02a0763a7a93c16c6dac1c4d103`.
