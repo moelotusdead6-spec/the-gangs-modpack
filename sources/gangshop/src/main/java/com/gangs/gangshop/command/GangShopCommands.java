@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.gangs.gangshop.GangShopMod;
-import com.gangs.gangshop.shop.ShopCategory;
+import com.gangs.gangshop.gui.GuiIntegration;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -40,6 +40,7 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
@@ -60,10 +61,6 @@ public final class GangShopCommands {
     private static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register((LiteralArgumentBuilder)((LiteralArgumentBuilder)CommandManager.literal((String)"shop").executes(ctx -> GangShopCommands.openShop((ServerCommandSource)ctx.getSource()))).then(CommandManager.argument((String)"query", (ArgumentType)StringArgumentType.greedyString()).executes(ctx -> GangShopCommands.searchShop((ServerCommandSource)ctx.getSource(), StringArgumentType.getString((CommandContext)ctx, (String)"query")))));
         dispatcher.register((LiteralArgumentBuilder)CommandManager.literal((String)"shopsell").executes(ctx -> GangShopCommands.openShopSell((ServerCommandSource)ctx.getSource())));
-        dispatcher.register((LiteralArgumentBuilder)CommandManager.literal((String)"shopfoods").executes(ctx -> GangShopCommands.openCategory((ServerCommandSource)ctx.getSource(), ShopCategory.FOODS)));
-        dispatcher.register((LiteralArgumentBuilder)CommandManager.literal((String)"shopmetals").executes(ctx -> GangShopCommands.openCategory((ServerCommandSource)ctx.getSource(), ShopCategory.METALS)));
-        dispatcher.register(GangShopCommands.categoryBuyCommand("shopfoodsbuy", ShopCategory.FOODS));
-        dispatcher.register(GangShopCommands.categoryBuyCommand("shopmetalsbuy", ShopCategory.METALS));
         dispatcher.register((LiteralArgumentBuilder)((LiteralArgumentBuilder)CommandManager.literal((String)"bal").executes(ctx -> GangShopCommands.balanceSelf((ServerCommandSource)ctx.getSource()))).then(CommandManager.argument((String)"player", (ArgumentType)EntityArgumentType.player()).executes(ctx -> GangShopCommands.balanceTarget((ServerCommandSource)ctx.getSource(), EntityArgumentType.getPlayer((CommandContext)ctx, (String)"player")))));
         dispatcher.register((LiteralArgumentBuilder)((LiteralArgumentBuilder)CommandManager.literal((String)"balance").executes(ctx -> GangShopCommands.balanceSelf((ServerCommandSource)ctx.getSource()))).then(CommandManager.argument((String)"player", (ArgumentType)EntityArgumentType.player()).executes(ctx -> GangShopCommands.balanceTarget((ServerCommandSource)ctx.getSource(), EntityArgumentType.getPlayer((CommandContext)ctx, (String)"player")))));
         dispatcher.register((LiteralArgumentBuilder)CommandManager.literal((String)"pay").then(CommandManager.argument((String)"player", (ArgumentType)EntityArgumentType.player()).then(CommandManager.argument((String)"amount", (ArgumentType)LongArgumentType.longArg((long)1L)).executes(ctx -> GangShopCommands.pay((ServerCommandSource)ctx.getSource(), EntityArgumentType.getPlayer((CommandContext)ctx, (String)"player"), LongArgumentType.getLong((CommandContext)ctx, (String)"amount"))))));
@@ -80,14 +77,6 @@ public final class GangShopCommands {
         RequiredArgumentBuilder sellArgument = (RequiredArgumentBuilder)CommandManager.argument((String)"sell", (ArgumentType)LongArgumentType.longArg((long)0L)).then((ArgumentBuilder)buyArgument);
         RequiredArgumentBuilder itemArgument = (RequiredArgumentBuilder)CommandManager.argument((String)"item", (ArgumentType)StringArgumentType.string()).then((ArgumentBuilder)sellArgument);
         return (LiteralArgumentBuilder)CommandManager.literal((String)"set").then((ArgumentBuilder)itemArgument);
-    }
-
-    private static LiteralArgumentBuilder<ServerCommandSource> categoryBuyCommand(String command, ShopCategory category) {
-        return (LiteralArgumentBuilder<ServerCommandSource>)CommandManager.literal(command)
-            .requires(source -> source.hasPermissionLevel(2))
-            .executes(ctx -> GangShopCommands.showCategoryBuyState(ctx.getSource(), category))
-            .then(CommandManager.literal("on").executes(ctx -> GangShopCommands.setCategoryBuyState(ctx.getSource(), category, true)))
-            .then(CommandManager.literal("off").executes(ctx -> GangShopCommands.setCategoryBuyState(ctx.getSource(), category, false)));
     }
 
     private static LiteralArgumentBuilder<ServerCommandSource> priceShowCommand() {
@@ -124,6 +113,9 @@ public final class GangShopCommands {
             source.sendError((Text)Text.literal((String)"Only players can use the admin shop editor."));
             return 0;
         }
+        if (FabricLoader.getInstance().isModLoaded("gang-shop-ozsoihjx")) {
+            return GuiIntegration.openAdmin(player) ? 1 : 0;
+        }
         GangShopMod.GUI.openAdminEditor(player);
         source.sendFeedback(() -> Text.literal((String)"Opening Gang Shop admin editor."), false);
         return 1;
@@ -135,6 +127,13 @@ public final class GangShopCommands {
             source.sendError((Text)Text.literal((String)"Only players can use /shop."));
             return 0;
         }
+        if (!GangShopMod.ACCESS.allows(player)) {
+            source.sendError(Text.literal("The shop is temporarily restricted to staff and approved testers."));
+            return 0;
+        }
+        if (FabricLoader.getInstance().isModLoaded("gang-shop-ozsoihjx")) {
+            return GuiIntegration.openShop(player) ? 1 : 0;
+        }
         GangShopMod.GUI.openMainMenu(player);
         return 1;
     }
@@ -145,6 +144,13 @@ public final class GangShopCommands {
             source.sendError((Text)Text.literal((String)"Only players can use /shopsell."));
             return 0;
         }
+        if (!GangShopMod.ACCESS.allows(player)) {
+            source.sendError(Text.literal("The shop is temporarily restricted to staff and approved testers."));
+            return 0;
+        }
+        if (FabricLoader.getInstance().isModLoaded("gang-shop-ozsoihjx")) {
+            return GuiIntegration.openSell(player) ? 1 : 0;
+        }
         if (!GangShopMod.GUI.openHeldItemForSale(player)) {
             source.sendError((Text)Text.literal((String)"Hold an item currently listed in the Gang Shop to sell it."));
             return 0;
@@ -152,38 +158,20 @@ public final class GangShopCommands {
         return 1;
     }
 
-    private static int openCategory(ServerCommandSource source, ShopCategory category) {
-        ServerPlayerEntity player = source.getPlayer();
-        if (player == null) {
-            source.sendError(Text.literal("Only players can open shop categories."));
-            return 0;
-        }
-        GangShopMod.GUI.openCategory(player, category);
-        return 1;
-    }
-
-    private static int showCategoryBuyState(ServerCommandSource source, ShopCategory category) {
-        boolean enabled = GangShopMod.PRICES.isCategoryBuyEnabled(category);
-        source.sendFeedback(() -> Text.literal(shopCategoryLabel(category) + " buying is " + (enabled ? "enabled" : "disabled") + "."), false);
-        return 1;
-    }
-
-    private static int setCategoryBuyState(ServerCommandSource source, ShopCategory category, boolean enabled) {
-        GangShopMod.PRICES.setCategoryBuyEnabled(category, enabled);
-        source.sendFeedback(() -> Text.literal(shopCategoryLabel(category) + " buying is now " + (enabled ? "enabled" : "disabled") + "."), true);
-        return 1;
-    }
-
-    private static String shopCategoryLabel(ShopCategory category) {
-        String name = category.getDisplayName();
-        return Character.toUpperCase(name.charAt(0)) + name.substring(1);
-    }
-
     private static int searchShop(ServerCommandSource source, String query) {
         ServerPlayerEntity player = source.getPlayer();
         if (player == null) {
             source.sendError((Text)Text.literal((String)"Only players can use /shop <item>."));
             return 0;
+        }
+        if (!GangShopMod.ACCESS.allows(player)) {
+            source.sendError(Text.literal("The shop is temporarily restricted to staff and approved testers."));
+            return 0;
+        }
+        if (FabricLoader.getInstance().isModLoaded("gang-shop-ozsoihjx")) {
+            if (!GuiIntegration.openShop(player)) return 0;
+            source.sendFeedback(() -> Text.literal("Use the shop's search to find: " + query), false);
+            return 1;
         }
         GangShopMod.GUI.openSearch(player, query);
         return 1;
@@ -214,6 +202,12 @@ public final class GangShopCommands {
         }
         if (sender.getUuid().equals(target.getUuid())) {
             source.sendError((Text)Text.literal((String)"You cannot pay yourself."));
+            return 0;
+        }
+        try {
+            Math.addExact(GangShopMod.ECONOMY.getBalance(target), amount);
+        } catch (ArithmeticException exception) {
+            source.sendError(Text.literal("The recipient's balance would be too large."));
             return 0;
         }
         boolean removed = GangShopMod.ECONOMY.subtract(sender.getUuid(), amount);
@@ -274,8 +268,9 @@ public final class GangShopCommands {
             source.sendError((Text)Text.literal((String)("Invalid item id: " + itemName + ". Use format like minecraft:emerald_block.")));
             return 0;
         }
-        long sell = GangShopMod.PRICES.getSellPrice(id);
-        long buy = GangShopMod.PRICES.getBuyPrice(id);
+        var entry = GangShopMod.CATALOG.getEntry(id);
+        long sell = entry == null ? GangShopMod.PRICES.getSellPrice(id) : entry.sellPrice();
+        long buy = entry == null ? GangShopMod.PRICES.getBuyPrice(id) : entry.buyPrice();
         source.sendFeedback(() -> Text.literal((String)(String.valueOf(id) + " -> sell: " + String.format("%,d", sell) + ", buy: " + String.format("%,d", buy) + " Gang Bucks")), false);
         return 1;
     }
@@ -286,14 +281,22 @@ public final class GangShopCommands {
             source.sendError((Text)Text.literal((String)("Invalid item id: " + itemName + ". Use format like minecraft:emerald_block.")));
             return 0;
         }
-        GangShopMod.PRICES.setItemPrice(id, sell, buy);
-        GangShopMod.reloadAll();
-        source.sendFeedback(() -> Text.literal((String)("Updated " + String.valueOf(id) + " sell=" + String.format("%,d", sell) + ", buy=" + String.format("%,d", buy) + " Gang Bucks.")), true);
+        if (GangShopMod.CATALOG.getEntry(id) == null) {
+            source.sendError(Text.literal("That item is not in the shop."));
+            return 0;
+        }
+        GangShopMod.CATALOG.setItemPrice(id, sell, buy);
+        source.sendFeedback(() -> Text.literal((String)("Updated " + String.valueOf(id) + " sell=" + String.format("%,d", sell) + ", buy=" + String.format("%,d", buy == 0 ? 10000 : buy) + " Gang Bucks.")), true);
         return 1;
     }
 
     private static int adminAddMoney(ServerCommandSource source, ServerPlayerEntity target, long amount) {
-        GangShopMod.ECONOMY.add(target.getUuid(), amount);
+        try {
+            GangShopMod.ECONOMY.add(target.getUuid(), amount);
+        } catch (ArithmeticException exception) {
+            source.sendError(Text.literal("The resulting balance would be too large."));
+            return 0;
+        }
         long balance = GangShopMod.ECONOMY.getBalance(target);
         source.sendFeedback(() -> Text.literal((String)("Added " + String.format("%,d", amount) + " Gang Bucks to " + target.getName().getString() + ". New balance: " + String.format("%,d", balance))), true);
         target.sendMessage((Text)Text.literal((String)("Admin added " + String.format("%,d", amount) + " Gang Bucks. New balance: " + String.format("%,d", balance))), false);

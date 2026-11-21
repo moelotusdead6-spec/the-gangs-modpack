@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "gangshop_smoketest",
+  "version": "1.0.0",
+  "name": "Gang Shop Smoke Test",
+  "environment": "server",
+  "entrypoints": {
+    "server": ["com.gangs.gangshop.ShopSmokeTest"]
+  },
+  "depends": {
+    "gangshop": "*",
+    "gang-shop-ozsoihjx": "*",
+    "fabric-api": "*"
+  }
+}

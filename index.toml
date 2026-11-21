@@ -6,7 +6,7 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "4e357af1a569a5f78d5e353784802083f6664a504666efd28511f6b36a073478"
+hash = "445a42631290ad574d9eeb940ba1c3c68317744bf229d2eb83430f0a28066b6d"
 
 [[files]]
 file = "README.md"
@@ -111,6 +111,10 @@ hash = "9c8860a371b2d720ed67582ca9ce0b6eaeeda154e563ae3448594ded61863485"
 [[files]]
 file = "config/gangscosmetics.json"
 hash = "c613e5d46cb558a9f240b189bc341ed8a4f71c60c57b0e2013035a593b4b43df"
+
+[[files]]
+file = "config/gangshop/access.json"
+hash = "6914dcd207b6c70376e46d32b64bce5e5c6bc0116a16b1a46f2d588e36ba0aff"
 
 [[files]]
 file = "config/gangshop/overrides.json"
@@ -842,7 +846,7 @@ hash = "d022c03cd1366878024d932aca7e3eda35a9f19e87bac7fc11bf8e1521d36ac7"
 
 [[files]]
 file = "index.html"
-hash = "0778a4e0c06958763581ba4d2ae66b1a421520fa370c8639e48b71a2a67b0971"
+hash = "54facbd9cebbe37af8fae9582363b840728ce8509f53a623695ed96cd625ffbd"
 
 [[files]]
 file = "mods/.gitkeep"
@@ -1609,6 +1613,11 @@ hash = "4c7e75a9d3cf924ae45ab74ee505f1beb9022739945d608b272b72cad03929a4"
 metafile = true
 
 [[files]]
+file = "mods/gang-shop-gui-direct.pw.toml"
+hash = "90056822c1dae499169bcd8d543b91a5c06752107864903034243c12afb5c127"
+metafile = true
+
+[[files]]
 file = "mods/gangs-oux-badges-compat-direct.pw.toml"
 hash = "4f236dd593f5c7510c8818a926c04e90469177fe7320cc14b0b7a03ec60bb9ed"
 metafile = true
@@ -1640,7 +1649,7 @@ metafile = true
 
 [[files]]
 file = "mods/gangshop-direct.pw.toml"
-hash = "58cf9b59a304bcf71542d46a3e56bf42734280c594c253ee7dbd5e1e9edb8217"
+hash = "b09a9fb312e889a53a95e38a1ce0edd9656caf2301e14f21b7bfeac6a1ef9f6c"
 metafile = true
 
 [[files]]

@@ -10,6 +10,30 @@ base {
 	archivesName = project.archives_base_name
 }
 
+sourceSets {
+	testmod {
+		compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+		runtimeClasspath += output + compileClasspath + sourceSets.main.runtimeClasspath
+	}
+}
+
+loom {
+	mods {
+		gangshop { sourceSet sourceSets.main }
+		if (project.hasProperty('shopSmoke')) {
+			shoptest { sourceSet sourceSets.testmod }
+		}
+	}
+	if (project.hasProperty('shopTestRunDir')) {
+		runs {
+			server {
+				runDir project.relativePath(file(project.property('shopTestRunDir')))
+				if (project.hasProperty('shopSmoke')) source sourceSets.testmod
+			}
+		}
+	}
+}
+
 repositories {
 	mavenCentral()
 	flatDir {
@@ -22,6 +46,8 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+	modCompileOnly files('../../artifacts/gang-shop-ozsoihjx.jar')
+	if (project.hasProperty('shopSmoke')) modRuntimeOnly files('../../artifacts/gang-shop-ozsoihjx.jar')
 	testImplementation 'junit:junit:4.13.2'
 }
 

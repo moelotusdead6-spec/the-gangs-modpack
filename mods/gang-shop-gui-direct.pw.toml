@@ -1,0 +1,8 @@
+name = "Gang Shop GUI"
+filename = "gang-shop-ozsoihjx.jar"
+side = "both"
+
+[download]
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/gang-shop-ozsoihjx.jar"
+hash-format = "sha256"
+hash = "4a172b39340c3b6a7db61f91bda866f4d4ba0424d77e7305cf1d37f08c96c897"

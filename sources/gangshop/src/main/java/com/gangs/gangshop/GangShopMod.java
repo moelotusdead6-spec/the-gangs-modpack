@@ -17,9 +17,12 @@ import com.gangs.gangshop.command.GangShopCommands;
 import com.gangs.gangshop.economy.GangBucksService;
 import com.gangs.gangshop.economy.WalletStore;
 import com.gangs.gangshop.gui.ShopGuiService;
+import com.gangs.gangshop.gui.GuiIntegration;
 import com.gangs.gangshop.shop.CatalogService;
 import com.gangs.gangshop.shop.PriceConfigService;
+import com.gangs.gangshop.shop.ShopAccess;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -38,12 +41,17 @@ implements ModInitializer {
     public static final GangBucksService ECONOMY = new GangBucksService(WALLETS);
     public static final PriceConfigService PRICES = new PriceConfigService();
     public static final CatalogService CATALOG = new CatalogService(PRICES);
+    public static final ShopAccess ACCESS = new ShopAccess();
     public static final ShopGuiService GUI = new ShopGuiService(CATALOG, ECONOMY);
     private static long saveTickCounter = 0L;
 
     public void onInitialize() {
         GangShopCommands.register();
+        if (FabricLoader.getInstance().isModLoaded("gang-shop-ozsoihjx")) {
+            ServerLifecycleEvents.SERVER_STARTING.register(server -> GuiIntegration.register());
+        }
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+            ACCESS.load(FabricLoader.getInstance().getConfigDir().resolve("gangshop").resolve("access.json"));
             WALLETS.load(server);
             PRICES.load();
             CATALOG.reload();

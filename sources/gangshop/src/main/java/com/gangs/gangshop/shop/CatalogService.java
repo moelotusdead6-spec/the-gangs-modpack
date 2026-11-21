@@ -40,6 +40,8 @@ import com.google.gson.JsonObject;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.Reader;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
@@ -56,6 +58,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.UUID;
+import java.util.Locale;
+import java.util.function.Consumer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -92,6 +97,9 @@ public class CatalogService {
     private static final Map<String, Long> MINERAL_PRICE_BY_ID = new HashMap<String, Long>();
     private final Map<ShopCategory, List<ShopEntry>> byCategory = new LinkedHashMap<ShopCategory, List<ShopEntry>>();
     private final Map<Identifier, ShopEntry> byId = new HashMap<Identifier, ShopEntry>();
+    private final Map<Identifier, ShopEntry> eligibleById = new HashMap<>();
+    private final Map<String, ShopCategory> editorCategories = new LinkedHashMap<>();
+    private CatalogEdits edits;
     private final Map<ShopCategory, Set<String>> explicitCategoryAllowlists = new HashMap<ShopCategory, Set<String>>();
 
     public CatalogService(PriceConfigService priceConfig) {
@@ -107,10 +115,16 @@ public class CatalogService {
     }
 
     public void reload() {
+        try {
+            this.edits = new CatalogEdits(FabricLoader.getInstance().getConfigDir().resolve("gangshop").resolve("catalog-editor.json"));
+        } catch (IOException exception) {
+            throw new UncheckedIOException("Cannot load Gang Shop catalog edits", exception);
+        }
         this.loadCategoryAllowlists();
         boolean initializeFoodPrices = this.priceConfig.needsZeroPriceInitialization(ShopCategory.FOODS);
         boolean initializeMetalPrices = this.priceConfig.needsZeroPriceInitialization(ShopCategory.METALS);
         this.byId.clear();
+        this.eligibleById.clear();
         this.byCategory.clear();
         for (ShopCategory category : ShopCategory.vanillaCategories()) {
             this.byCategory.put(category, new ArrayList());
@@ -128,7 +142,9 @@ public class CatalogService {
             ShopEntry entry = new ShopEntry(id, item, category, sell, buy);
             this.byCategory.computeIfAbsent(category, ignored -> new ArrayList<>()).add(entry);
             this.byId.put(id, entry);
+            this.eligibleById.put(id, entry);
         }
+        applyEdits();
         for (Map.Entry<ShopCategory, List<ShopEntry>> categoryEntries : this.byCategory.entrySet()) {
             ShopCategory category = categoryEntries.getKey();
             List<ShopEntry> entries = categoryEntries.getValue();
@@ -152,13 +168,13 @@ public class CatalogService {
 
     private int sortTier(ShopEntry entry, ShopCategory category) {
         String path = entry.id().getPath().toLowerCase();
-        if (category == ShopCategory.END) {
+        if (category.equals(ShopCategory.END)) {
             return CatalogService.isVanillaShulkerBox(entry.id()) ? 1 : 0;
         }
-        if (category == ShopCategory.SAND_GLASS) {
+        if (category.equals(ShopCategory.SAND_GLASS)) {
             return CatalogService.isSandPath(path) ? 0 : CatalogService.isGlassPath(path) ? 1 : 2;
         }
-        if (category == ShopCategory.COLOR_MATERIALS) {
+        if (category.equals(ShopCategory.COLOR_MATERIALS)) {
             if (path.contains("concrete")) return 0;
             if (path.contains("terracotta") || path.contains("clay")) return 1;
             if (path.contains("wool")) return 2;
@@ -573,7 +589,7 @@ public class CatalogService {
                 return ShopCategory.CRAFTED_ITEMS;
             }
             if (namespace.startsWith("letsdo-") || LETS_DO_NAMESPACES.contains(namespace)) {
-                return ShopCategory.forMod("letsdo", "[lets do]");
+                return ShopCategory.forMod("letsdo", "[Let's Do]");
             }
             return ShopCategory.forMod(namespace, this.modDisplayName(namespace));
         }
@@ -728,17 +744,167 @@ public class CatalogService {
         return path.equals("cartography_table") || path.equals("fletching_table") || path.equals("smithing_table") || path.equals("loom") || path.equals("lectern") || path.equals("grindstone") || path.equals("stonecutter") || path.equals("cauldron") || path.equals("brewing_stand") || path.equals("barrel") || path.equals("composter");
     }
 
+    private static String categoryKey(ShopCategory category) {
+        if (category.getId().startsWith("custom:")) return category.getId();
+        return (category.isModded() ? "mod:" : "vanilla:") + category.getId();
+    }
+
+    private void applyEdits() {
+        CatalogEdits.State data = this.edits.snapshot();
+        Map<String, ShopCategory> base = new LinkedHashMap<>();
+        for (ShopCategory category : this.byCategory.keySet()) {
+            base.put(categoryKey(category), category);
+        }
+        this.editorCategories.clear();
+        for (Map.Entry<String, ShopCategory> entry : base.entrySet()) {
+            CatalogEdits.CategoryEdit edit = data.categories.get(entry.getKey());
+            if (edit == null || !edit.deleted) {
+                ShopCategory category = edit == null ? entry.getValue() : ShopCategory.withDisplayName(entry.getValue(), edit.name);
+                this.editorCategories.put(entry.getKey(), category);
+            }
+        }
+        for (Map.Entry<String, CatalogEdits.CategoryEdit> entry : data.categories.entrySet()) {
+            if (entry.getKey().startsWith("custom:") && !entry.getValue().deleted) {
+                this.editorCategories.put(entry.getKey(), ShopCategory.custom(entry.getKey().substring(7), entry.getValue().name));
+            }
+        }
+        Set<String> names = new HashSet<>();
+        for (ShopCategory category : this.editorCategories.values()) {
+            String name = category.getDisplayName();
+            if (name.isBlank() || name.length() > 64 || !names.add(name.toLowerCase(Locale.ROOT))) {
+                throw new IllegalStateException("Duplicate or invalid Gang Shop category name: " + name);
+            }
+        }
+        this.byCategory.clear();
+        this.byId.clear();
+        for (ShopCategory category : this.editorCategories.values()) {
+            this.byCategory.put(category, new ArrayList<>());
+        }
+        for (ShopEntry original : this.eligibleById.values()) {
+            String itemId = original.id().toString();
+            if (data.hidden.contains(itemId)) continue;
+            String key = data.assignments.getOrDefault(itemId, categoryKey(original.category()));
+            ShopCategory category = this.editorCategories.get(key);
+            if (category == null) {
+                category = this.editorCategories.get(categoryKey(ShopCategory.MISC));
+                if (category == null) {
+                    if (this.editorCategories.isEmpty()) {
+                        category = ShopCategory.custom("automatic", "Uncategorized");
+                        this.editorCategories.put(categoryKey(category), category);
+                        this.byCategory.put(category, new ArrayList<>());
+                    } else {
+                        category = this.editorCategories.values().iterator().next();
+                    }
+                }
+            }
+            CatalogEdits.Price price = data.prices.get(itemId);
+            long sell = price == null ? original.sellPrice() : price.sell;
+            long buy = price == null ? original.buyPrice() : price.buy;
+            if (buy == 0) buy = 10000L;
+            ShopEntry visible = new ShopEntry(original.id(), original.item(), category, sell, buy);
+            this.byCategory.get(category).add(visible);
+            this.byId.put(visible.id(), visible);
+        }
+    }
+
+    private void updateEdits(Consumer<CatalogEdits.State> change) {
+        try {
+            this.edits.update(change);
+        } catch (IOException exception) {
+            throw new UncheckedIOException("Cannot save Gang Shop catalog edits", exception);
+        }
+        this.reload();
+    }
+
+    private ShopCategory categoryByName(String name) {
+        return this.editorCategories.values().stream()
+                .filter(category -> category.getDisplayName().equals(name))
+                .findFirst().orElseThrow(() -> new IllegalArgumentException("Unknown category: " + name));
+    }
+
+    private void validateCategoryName(String name, ShopCategory current) {
+        if (name == null || name.isBlank() || !name.equals(name.trim()) || name.length() > 64) {
+            throw new IllegalArgumentException("Category names must be 1-64 characters without surrounding spaces.");
+        }
+        for (ShopCategory category : this.editorCategories.values()) {
+            if (!category.equals(current) && category.getDisplayName().equalsIgnoreCase(name)) {
+                throw new IllegalArgumentException("That category name already exists.");
+            }
+        }
+    }
+
+    private static void validateIcon(Identifier icon) {
+        if (icon == null || !Registries.ITEM.containsId(icon) || Registries.ITEM.get(icon) == net.minecraft.item.Items.AIR) {
+            throw new IllegalArgumentException("Invalid category icon item.");
+        }
+    }
+
+    public Identifier editorIcon(ShopCategory category) {
+        CatalogEdits.CategoryEdit edit = this.edits.snapshot().categories.get(categoryKey(category));
+        if (edit == null) return null;
+        Identifier icon = Identifier.tryParse(edit.icon);
+        return icon != null && Registries.ITEM.containsId(icon) ? icon : null;
+    }
+
+    public void createCategory(String name, Identifier icon) {
+        validateCategoryName(name, null);
+        validateIcon(icon);
+        String key = "custom:" + UUID.randomUUID();
+        updateEdits(data -> data.categories.put(key, new CatalogEdits.CategoryEdit(name, icon.toString(), false)));
+    }
+
+    public void updateCategory(String oldName, String name, Identifier icon) {
+        ShopCategory category = categoryByName(oldName);
+        validateCategoryName(name, category);
+        validateIcon(icon);
+        String key = categoryKey(category);
+        updateEdits(data -> data.categories.put(key, new CatalogEdits.CategoryEdit(name, icon.toString(), false)));
+    }
+
+    public void deleteCategory(String name) {
+        ShopCategory category = categoryByName(name);
+        if (!this.getEntries(category).isEmpty()) {
+            throw new IllegalArgumentException("Move or remove every item before deleting this category.");
+        }
+        String key = categoryKey(category);
+        Identifier icon = editorIcon(category);
+        updateEdits(data -> data.categories.put(key, new CatalogEdits.CategoryEdit(name, icon == null ? "minecraft:chest" : icon.toString(), true)));
+    }
+
+    public void editItem(Identifier id, String categoryName, long buy, long sell, boolean add) {
+        if (id == null || !this.eligibleById.containsKey(id)) {
+            throw new IllegalArgumentException("That item is excluded or is not eligible for the shop.");
+        }
+        if (add == this.byId.containsKey(id)) {
+            throw new IllegalArgumentException(add ? "That item is already in the shop." : "That item is not in the shop.");
+        }
+        if (buy < 0 || sell < 0) throw new IllegalArgumentException("Prices must not be negative.");
+        ShopCategory category = categoryByName(categoryName);
+        String key = categoryKey(category);
+        long effectiveBuy = buy == 0 ? 10000L : buy;
+        updateEdits(data -> {
+            data.hidden.remove(id.toString());
+            data.assignments.put(id.toString(), key);
+            data.prices.put(id.toString(), new CatalogEdits.Price(effectiveBuy, sell));
+        });
+    }
+
+    public void removeItem(Identifier id) {
+        if (id == null || !this.byId.containsKey(id)) throw new IllegalArgumentException("That item is not in the shop.");
+        updateEdits(data -> {
+            data.hidden.add(id.toString());
+            data.assignments.remove(id.toString());
+        });
+    }
+
+    public void setItemPrice(Identifier id, long sell, long buy) {
+        ShopEntry entry = this.byId.get(id);
+        if (entry == null) throw new IllegalArgumentException("That item is not in the shop.");
+        editItem(id, entry.category().getDisplayName(), buy, sell, false);
+    }
+
     public Collection<ShopCategory> categories() {
-        List<ShopCategory> categories = new ArrayList<>();
-        ShopCategory.vanillaCategories().stream()
-            .filter(category -> !this.getEntries(category).isEmpty())
-            .forEach(categories::add);
-        this.byCategory.keySet().stream()
-            .filter(ShopCategory::isModded)
-            .filter(category -> !this.getEntries(category).isEmpty())
-            .sorted((left, right) -> left.getDisplayName().compareToIgnoreCase(right.getDisplayName()))
-            .forEach(categories::add);
-        return categories;
+        return new ArrayList<>(this.editorCategories.values());
     }
 
     public List<ShopEntry> getEntries(ShopCategory category) {
@@ -750,7 +916,7 @@ public class CatalogService {
     }
 
     public boolean isBuyingEnabled(ShopCategory category) {
-        return this.priceConfig.isCategoryBuyEnabled(category);
+        return true;
     }
 
     public int getEntryCount() {

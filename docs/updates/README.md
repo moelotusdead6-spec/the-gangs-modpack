@@ -1,5 +1,12 @@
 # Updating The Gangs Modpack
 
+## Gang Shop GUI (v1.1.33)
+
+Close Minecraft and press Play in the auto-updating Prism instance before
+joining. The new GUI uses the existing Gang Bucks and shop catalog. The shop
+is temporarily limited to operators and approved testers; editing remains
+operator-only. See [restart details](next-restart.md).
+
 ## Mount colors, neon rotation and Boots 1.0.8 (v1.1.31)
 
 Close Minecraft and press Play in the existing auto-updating Prism instance.

@@ -34,6 +34,7 @@ import com.gangs.gangshop.gui.GangShopScreenHandler;
 import com.gangs.gangshop.shop.CatalogService;
 import com.gangs.gangshop.shop.ShopCategory;
 import com.gangs.gangshop.shop.ShopEntry;
+import com.gangs.gangshop.shop.TradeMath;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -323,14 +324,13 @@ public class ShopGuiService {
             inv.setStack(24, ShopGuiService.named(new ItemStack((ItemConvertible)Items.LIME_STAINED_GLASS_PANE), (Text)Text.literal((String)"+1").formatted(Formatting.GREEN)));
             inv.setStack(25, ShopGuiService.named(new ItemStack((ItemConvertible)Items.LIME_STAINED_GLASS_PANE), (Text)Text.literal((String)"+64").formatted(Formatting.GREEN)));
             inv.setStack(26, ShopGuiService.named(new ItemStack((ItemConvertible)Items.LIME_STAINED_GLASS_PANE), (Text)Text.literal((String)"+999").formatted(Formatting.GREEN)));
-            inv.setStack(42, ShopGuiService.withLore(ShopGuiService.named(new ItemStack((ItemConvertible)Items.GREEN_STAINED_GLASS_PANE), (Text)Text.literal((String)"Buy").formatted(Formatting.GREEN)), new Text[]{Text.literal((String)("Total: " + ShopGuiService.money(entry.buyPrice() * (long)session.quantity) + " Gang Bucks")).formatted(Formatting.GRAY)}));
+            inv.setStack(42, ShopGuiService.withLore(ShopGuiService.named(new ItemStack((ItemConvertible)Items.GREEN_STAINED_GLASS_PANE), (Text)Text.literal((String)"Buy").formatted(Formatting.GREEN)), new Text[]{Text.literal("Total: " + totalLabel(entry.buyPrice(), session.quantity)).formatted(Formatting.GRAY)}));
         } else {
             inv.setStack(42, ShopGuiService.named(new ItemStack((ItemConvertible)Items.BARRIER), Text.literal("Buying Disabled").formatted(Formatting.RED)));
         }
-        inv.setStack(31, ShopGuiService.withLore(ShopGuiService.named(new ItemStack((ItemConvertible)Items.PAPER), (Text)Text.literal((String)("Quantity: " + session.quantity)).formatted(Formatting.GOLD)), new Text[]{Text.literal((String)"Sell removes every matching item in your inventory").formatted(Formatting.GRAY)}));
+        inv.setStack(31, ShopGuiService.withLore(ShopGuiService.named(new ItemStack((ItemConvertible)Items.PAPER), (Text)Text.literal((String)("Quantity: " + session.quantity)).formatted(Formatting.GOLD)), new Text[]{Text.literal("Sell removes matching items without custom data").formatted(Formatting.GRAY)}));
         int sellQuantity = ShopGuiService.countItem(player, entry.item());
-        long sellTotal = entry.sellPrice() * (long)sellQuantity;
-        inv.setStack(38, ShopGuiService.withLore(ShopGuiService.named(new ItemStack((ItemConvertible)Items.RED_STAINED_GLASS_PANE), (Text)Text.literal((String)"ALL").formatted(Formatting.RED)), new Text[]{Text.literal((String)("Sell all: " + sellQuantity)).formatted(Formatting.GRAY), Text.literal((String)("Total: " + ShopGuiService.money(sellTotal) + " Gang Bucks")).formatted(Formatting.GRAY)}));
+        inv.setStack(38, ShopGuiService.withLore(ShopGuiService.named(new ItemStack((ItemConvertible)Items.RED_STAINED_GLASS_PANE), (Text)Text.literal((String)"ALL").formatted(Formatting.RED)), new Text[]{Text.literal((String)("Sell all: " + sellQuantity)).formatted(Formatting.GRAY), Text.literal("Total: " + totalLabel(entry.sellPrice(), sellQuantity)).formatted(Formatting.GRAY)}));
         inv.setStack(49, ShopGuiService.named(new ItemStack((ItemConvertible)Items.BEACON), (Text)Text.literal((String)"Back To Category").formatted(Formatting.AQUA)));
         inv.setStack(4, this.balanceToken(player));
         this.open(player, (Text)Text.literal((String)"Gang Shop - Item"), inv, this::handleDetailClick);
@@ -345,10 +345,9 @@ public class ShopGuiService {
         }
         session.view = View.CONFIRM;
         session.pendingBuy = buyAction;
-        long total = (buyAction ? entry.buyPrice() : entry.sellPrice()) * (long)session.quantity;
         SimpleInventory inv = ShopGuiService.emptyMenu();
         ItemStack preview = ShopGuiService.named(new ItemStack((ItemConvertible)entry.item()), (Text)Text.literal((String)(buyAction ? "Confirm Buy" : "Confirm Sell")).formatted(Formatting.GOLD));
-        inv.setStack(22, ShopGuiService.withLore(preview, new Text[]{Text.literal((String)("Item: " + ShopGuiService.itemName(entry.id()))).formatted(Formatting.GRAY), Text.literal((String)("Amount: " + session.quantity)).formatted(Formatting.GRAY), Text.literal((String)("Total: " + ShopGuiService.money(total) + " Gang Bucks")).formatted(Formatting.GRAY)}));
+        inv.setStack(22, ShopGuiService.withLore(preview, new Text[]{Text.literal((String)("Item: " + ShopGuiService.itemName(entry.id()))).formatted(Formatting.GRAY), Text.literal((String)("Amount: " + session.quantity)).formatted(Formatting.GRAY), Text.literal("Total: " + totalLabel(buyAction ? entry.buyPrice() : entry.sellPrice(), session.quantity)).formatted(Formatting.GRAY)}));
         inv.setStack(30, ShopGuiService.named(new ItemStack((ItemConvertible)Items.LIME_STAINED_GLASS_PANE), (Text)Text.literal((String)"Accept").formatted(Formatting.GREEN)));
         inv.setStack(32, ShopGuiService.named(new ItemStack((ItemConvertible)Items.RED_STAINED_GLASS_PANE), (Text)Text.literal((String)"Cancel").formatted(Formatting.RED)));
         inv.setStack(4, this.balanceToken(player));
@@ -522,7 +521,7 @@ public class ShopGuiService {
         if (slot == 38) {
             session.quantity = ShopGuiService.countItem(player, this.catalog.getEntry(session.itemId).item());
             if (session.quantity <= 0) {
-                player.sendMessage((Text)Text.literal((String)"You do not have any of this item to sell.").formatted(Formatting.RED), false);
+                player.sendMessage((Text)Text.literal((String)"You do not have any unmodified items of this type to sell.").formatted(Formatting.RED), false);
                 ShopGuiService.sound(player, false);
                 return;
             }
@@ -623,9 +622,8 @@ public class ShopGuiService {
             return;
         }
         if (slot == 30) {
-            GangShopMod.PRICES.setItemPrice(session.itemId, session.adminSell, session.adminBuy);
-            GangShopMod.reloadAll();
-            player.sendMessage((Text)Text.literal((String)("Updated " + String.valueOf(session.itemId) + " sell=" + ShopGuiService.money(session.adminSell) + ", buy=" + ShopGuiService.money(session.adminBuy) + " Gang Bucks.")).formatted(Formatting.GREEN), false);
+            GangShopMod.CATALOG.setItemPrice(session.itemId, session.adminSell, session.adminBuy);
+            player.sendMessage((Text)Text.literal((String)("Updated " + String.valueOf(session.itemId) + " sell=" + ShopGuiService.money(session.adminSell) + ", buy=" + ShopGuiService.money(session.adminBuy == 0 ? 10000 : session.adminBuy) + " Gang Bucks.")).formatted(Formatting.GREEN), false);
             this.openAdminItemDetail(player, session.itemId, true);
             ShopGuiService.sound(player, true);
             return;
@@ -676,7 +674,14 @@ public class ShopGuiService {
             ShopGuiService.sound(player, false);
             return;
         }
-        long total = entry.buyPrice() * (long)quantity;
+        long total;
+        try {
+            total = TradeMath.total(entry.buyPrice(), quantity);
+        } catch (ArithmeticException | IllegalArgumentException exception) {
+            player.sendMessage(Text.literal("Transaction total is too large or invalid.").formatted(Formatting.RED), false);
+            ShopGuiService.sound(player, false);
+            return;
+        }
         if (!this.economy.subtract(player, total)) {
             player.sendMessage((Text)Text.literal((String)"Not enough Gang Bucks.").formatted(Formatting.RED), false);
             ShopGuiService.sound(player, false);
@@ -699,12 +704,20 @@ public class ShopGuiService {
             ShopGuiService.sound(player, false);
             return;
         }
+        long total;
+        try {
+            total = TradeMath.total(entry.sellPrice(), quantity);
+            TradeMath.balanceAfterSale(this.economy.getBalance(player), total);
+        } catch (ArithmeticException | IllegalArgumentException exception) {
+            player.sendMessage(Text.literal("Sale total or resulting balance is too large or invalid.").formatted(Formatting.RED), false);
+            ShopGuiService.sound(player, false);
+            return;
+        }
         if (!ShopGuiService.removeItem(player, entry.item(), quantity)) {
             player.sendMessage((Text)Text.literal((String)"Failed to remove items from inventory.").formatted(Formatting.RED), false);
             ShopGuiService.sound(player, false);
             return;
         }
-        long total = entry.sellPrice() * (long)quantity;
         this.economy.add(player, total);
         player.sendMessage((Text)Text.literal((String)("Sold " + quantity + "x " + ShopGuiService.itemName(entry.id()) + " for " + ShopGuiService.money(total) + " Gang Bucks.")).formatted(Formatting.GREEN), false);
         ShopGuiService.sound(player, true);
@@ -714,7 +727,7 @@ public class ShopGuiService {
         int count = 0;
         for (int i = 0; i < player.getInventory().size(); ++i) {
             ItemStack stack = player.getInventory().getStack(i);
-            if (!stack.isOf(item)) continue;
+            if (!stack.isOf(item) || stack.hasNbt()) continue;
             count += stack.getCount();
         }
         return count;
@@ -727,7 +740,7 @@ public class ShopGuiService {
                 return true;
             }
             ItemStack stack = player.getInventory().getStack(i);
-            if (!stack.isOf(item)) continue;
+            if (!stack.isOf(item) || stack.hasNbt()) continue;
             int take = Math.min(remaining, stack.getCount());
             stack.decrement(take);
             remaining -= take;
@@ -757,6 +770,17 @@ public class ShopGuiService {
 
     private static String money(long value) {
         return String.format("%,d", value);
+    }
+
+    private static String totalLabel(long price, int quantity) {
+        if (quantity == 0) {
+            return "0 Gang Bucks";
+        }
+        try {
+            return money(TradeMath.total(price, quantity)) + " Gang Bucks";
+        } catch (ArithmeticException | IllegalArgumentException exception) {
+            return "Unavailable (invalid or too large)";
+        }
     }
 
     private boolean canBuy(ShopEntry entry) {
@@ -808,7 +832,9 @@ public class ShopGuiService {
         return copy;
     }
 
-    private Item iconForCategory(ShopCategory category) {
+    public Item iconForCategory(ShopCategory category) {
+        Identifier editedIcon = this.catalog.editorIcon(category);
+        if (editedIcon != null) return Registries.ITEM.get(editedIcon);
         if (category.isModded()) {
             if ("farmersdelight".equals(category.getId())) return ShopGuiService.itemById("farmersdelight:beetroot_crate", Items.BEETROOT);
             if ("hybrid_aquatic".equals(category.getId())) return ShopGuiService.itemById("hybrid_aquatic:anemone", Items.SEA_PICKLE);

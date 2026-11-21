@@ -1,5 +1,21 @@
 # Published Artifacts
 
+## Gang Shop GUI (1.0.13)
+
+- `artifacts/gang-shop-ozsoihjx.jar`: SHA-256
+  `4a172b39340c3b6a7db61f91bda866f4d4ba0424d77e7305cf1d37f08c96c897`.
+  Made by oux_y using [CreativeMode.net](https://creativemode.net);
+  [mod page](https://creativemode.net/mod/gang-shop-ozsoihjx) and
+  [CreativeMode Mods License](https://creativemode.net/mod-license). The
+  original unmodified file and its embedded notices are distributed free.
+- `artifacts/gangshop-1.0.13.jar`: SHA-256
+  `cd726e0bf00e0126254421801e4f7e24513a1d62b3278cc98d3d6635c4f317d2`.
+  First-party server backend; it does not contain CreativeMode code or assets.
+- `artifacts/gangs-shop-gui-restart-1.0.13.jar`: SHA-256
+  `cf3fdd1e23b519c9c081bad4e4a0ebe0918448d28de7750a3b89c9812bda0e47`.
+  Installs the backend and restricted access configuration, copies the
+  separately staged original GUI, and preserves the pending WildBoss update.
+
 ## Kit countdowns, cosmetic keys and /wild bosses (GoldClaim 1.0.78)
 
 Server-only release staged for the next restart; no client update is required.

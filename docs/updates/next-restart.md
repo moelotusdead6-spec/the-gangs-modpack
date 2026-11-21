@@ -1,3 +1,24 @@
+# Gang Shop GUI (1.0.13)
+
+The CreativeMode.net
+[Gang Shop GUI](https://creativemode.net/mod/gang-shop-ozsoihjx) is distributed
+unmodified under the [CreativeMode Mods License](https://creativemode.net/mod-license);
+its original filename and embedded notices must be retained.
+
+The shop is temporarily restricted to operators and the UUIDs in
+`config/gangshop/access.json`. The listed tester can browse and trade but cannot
+edit; operators can also use `/shopedit`. Set `restricted` to `false` for public
+access on a later restart. Missing configuration fails closed to operators only.
+`/shopfoods`, `/shopmetals`, `/shopfoodsbuy` and `/shopmetalsbuy` are removed.
+The GUI's public API cannot open a search directly: `/shop <query>` opens the
+shop and asks the player to use its search.
+
+The combined launcher `gangs-shop-gui-restart-1.0.13.jar` applies the WildBoss
+update below first, backs up the live shop configuration and wallet, then
+installs the shop backend and the original GUI jar. Stage the GUI jar under
+its original filename and the WildBoss launcher alongside the combined launcher
+before selecting it as `SERVER_JARFILE`. Do not use `/reload`.
+
 # Kit countdowns, cosmetic keys and /wild bosses (GoldClaim 1.0.78)
 
 Staged, not yet published or applied. Server-only; no client update required.

@@ -53,7 +53,7 @@ public class WalletStore {
         if (delta == 0L) {
             return;
         }
-        long next = Math.max(0L, this.getBalance(playerId) + delta);
+        long next = Math.max(0L, Math.addExact(this.getBalance(playerId), delta));
         this.balances.put(playerId, next);
     }
 
