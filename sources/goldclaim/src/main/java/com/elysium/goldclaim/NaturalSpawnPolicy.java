@@ -15,11 +15,11 @@ public final class NaturalSpawnPolicy {
     }
 
     public static boolean allow(MobEntity mob, World world, Random random) {
-        return allow(world.getRegistryKey().getValue().toString(),
-            Registries.ENTITY_TYPE.getId(mob.getType()).toString(),
-            mob instanceof Monster || mob.getType().getSpawnGroup() == SpawnGroup.MONSTER,
-            isReduced(Registries.ENTITY_TYPE.getId(mob.getType()).toString())
-                ? random.nextInt(100) : 99);
+        String entity = Registries.ENTITY_TYPE.getId(mob.getType()).toString();
+        return allow(world.getRegistryKey().getValue().toString(), entity,
+            mob instanceof Monster || mob.getType().getSpawnGroup() == SpawnGroup.MONSTER
+                || AlexCavesProtection.isWildBlockedHostile(entity),
+            isReduced(entity) ? random.nextInt(100) : 99);
     }
 
     static boolean allow(String dimension, String entity, boolean hostile, int roll) {

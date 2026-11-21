@@ -49,6 +49,7 @@ dependencies {
 	modCompileOnly 'maven.modrinth:enhanced-celestials:bGoMMYXA'
 	modCompileOnly 'maven.modrinth:data-anchor:PnfBedfn'
 	modCompileOnly files('../../artifacts/alexscaves-2.1.8.jar')
+	modCompileOnly files('../../artifacts/placeholder-api-2.1.4+1.20.1.jar')
 	modCompileOnly files(project.findProperty('smokeBiolithJar')
 		?: '../../artifacts/biolith-fabric-1.0.1-beta.1-endfix.jar')
 	if (project.hasProperty('smokePlushieJar')) {
@@ -345,7 +346,9 @@ generator-settings={"layers":[{"block":"minecraft:bedrock","height":1},{"block":
 
 tasks.named('runPolicySmoke') {
 	if (System.getenv('GOLDCLAIM_CLAIM_SMOKE') == 'true'
-			|| System.getenv('GOLDCLAIM_MAILBOX_SMOKE') == 'true') {
+			|| System.getenv('GOLDCLAIM_MAILBOX_SMOKE') == 'true'
+			|| System.getenv('GOLDCLAIM_WILD_BOSS_SMOKE') == 'true'
+			|| System.getenv('GOLDCLAIM_ALEXCAVES_SMOKE') != null) {
 		// Fiw's production jar needs a newer Loom to remap; this fixture does not use it.
 		classpath = classpath.filter { !it.name.startsWith('fiw-anticheat-') }
 	}
@@ -368,6 +371,11 @@ simulation-distance=2
 max-tick-time=60000
 generator-settings={"layers":[{"block":"minecraft:bedrock","height":1},{"block":"minecraft:dirt","height":2},{"block":"minecraft:grass_block","height":1}],"biome":"minecraft:plains"}
 '''
+		if (System.getenv('GOLDCLAIM_ALEXCAVES_SMOKE') != null) {
+			// The boss arenas force-generate chunks on the server thread, which can exceed the watchdog.
+			def properties = new File(directory, 'server.properties')
+			properties.text = properties.text.replace('max-tick-time=60000', 'max-tick-time=-1')
+		}
 		def result = new File(directory, 'policy-smoke-passed.txt')
 		if (result.exists() && !result.delete()) {
 			throw new GradleException('Cannot clear the previous policy smoke-test result.')

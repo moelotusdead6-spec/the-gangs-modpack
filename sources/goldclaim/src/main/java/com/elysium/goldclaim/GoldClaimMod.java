@@ -396,6 +396,9 @@ implements ModInitializer {
             CelestialPolicy.register();
         }
         this.registerJoinHandler();
+        if (net.fabricmc.loader.api.FabricLoader.getInstance().isModLoaded("placeholder-api")) {
+            KitPlaceholders.register(this.kitService);
+        }
         new RswMapSync(this.rswResetService::generation).register();
     }
 

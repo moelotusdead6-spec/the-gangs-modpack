@@ -17,6 +17,22 @@ public class NaturalSpawnPolicyTest {
     }
 
     @Test
+    public void wildBlocksAlexCavesBossesAndNonMonsterGroupHostilesOnly() {
+        for (String boss : new String[]{"alexscaves:luxtructosaurus", "alexscaves:forsaken",
+                "alexscaves:hullbreaker", "alexscaves:magnetron"}) {
+            assertTrue(AlexCavesProtection.isWildBlockedBoss(boss));
+            assertTrue(AlexCavesProtection.isWildBlockedHostile(boss));
+        }
+        assertTrue(AlexCavesProtection.isWildBlockedHostile("alexscaves:tremorsaurus"));
+        assertTrue(AlexCavesProtection.isWildBlockedHostile("alexscaves:vallumraptor"));
+        for (String allowed : new String[]{"alexscaves:tremorzilla", "alexscaves:atlatitan",
+                "alexscaves:grottoceratops", "alexscaves:subterranodon", "minecraft:cow"}) {
+            assertFalse(AlexCavesProtection.isWildBlockedHostile(allowed));
+        }
+        assertFalse(AlexCavesProtection.isWildBlockedBoss("alexscaves:tremorsaurus"));
+    }
+
+    @Test
     public void targetedAnimalsLoseAtLeastSeventyPercentEvenWithFourChunkGenerationRetries() {
         for (String dimension : new String[]{"minecraft:overworld", "multiworld:rsw",
                 "multiworld:rsw_nether", "multiworld:rsw_the_end", "other:world"}) {

@@ -60,6 +60,56 @@ public final class KitService {
         return !claimed && elapsed >= kit * 7L * 86400L;
     }
 
+    /** Seconds until the kit can be claimed; claimed kits unlock again at the same offset of the next cycle. */
+    static long secondsUntilReady(int kit, long elapsed, boolean claimed) {
+        long unlock = kit * 7L * 86400L;
+        return claimed ? CYCLE_SECONDS - elapsed + unlock : Math.max(0L, unlock - elapsed);
+    }
+
+    static String readyStatus(int kit, long elapsed, boolean claimed) {
+        long remaining = secondsUntilReady(kit, elapsed, claimed);
+        if (claimed) {
+            return "Claimed - next in " + formatDuration(remaining);
+        }
+        return remaining == 0 ? "Ready to claim!" : "Ready in " + formatDuration(remaining);
+    }
+
+    static String formatDuration(long seconds) {
+        long minutes = Math.max(1L, (seconds + 59L) / 60L);
+        long days = minutes / 1440L;
+        long hours = minutes % 1440L / 60L;
+        long mins = minutes % 60L;
+        if (days > 0) {
+            return days + "d " + hours + "h";
+        }
+        return hours > 0 ? hours + "h " + mins + "m" : mins + "m";
+    }
+
+    static int kitIndex(String key) {
+        for (int kit = 0; kit < KEYS.length; kit++) {
+            if (KEYS[kit].equals(key)) {
+                return kit;
+            }
+        }
+        return -1;
+    }
+
+    /** Read-only view of {@link #reconcile}; never writes scores so menu rendering cannot reset a cycle. */
+    String readyStatus(MinecraftServer server, String name, int kit) {
+        ServerScoreboard scoreboard = server.getScoreboard();
+        long now = System.currentTimeMillis() / 1000L;
+        long previous = score(scoreboard, name, "gangs_cycle_start");
+        long start = cycleStart(previous, now);
+        boolean claimed = start == previous && score(scoreboard, name, "gangs_claimed_" + KEYS[kit]) != 0;
+        return readyStatus(kit, now - start, claimed);
+    }
+
+    private static int score(ServerScoreboard scoreboard, String name, String objectiveName) {
+        ScoreboardObjective objective = scoreboard.getNullableObjective(objectiveName);
+        return objective != null && scoreboard.playerHasObjective(name, objective)
+            ? scoreboard.getPlayerScore(name, objective).getScore() : 0;
+    }
+
     public void initialize(MinecraftServer server) {
         this.permissionStates.clear();
         this.reloadCollections();

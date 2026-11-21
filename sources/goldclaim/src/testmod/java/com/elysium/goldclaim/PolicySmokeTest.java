@@ -59,6 +59,10 @@ public final class PolicySmokeTest implements ModInitializer {
             RswDragonRecoverySmokeTest.register();
             return;
         }
+        if ("true".equals(System.getenv("GOLDCLAIM_WILD_BOSS_SMOKE"))) {
+            WildBossSmokeTest.register();
+            return;
+        }
         if (System.getenv("GOLDCLAIM_ALEXCAVES_SMOKE") != null) {
             AlexCavesBossSmokeTest.register();
             return;

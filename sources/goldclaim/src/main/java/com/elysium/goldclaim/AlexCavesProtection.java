@@ -7,13 +7,19 @@ import java.util.function.Supplier;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.Registries;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.world.World;
 
 public final class AlexCavesProtection {
     private static final Identifier LUXTRUCTOSAURUS = new Identifier("alexscaves", "luxtructosaurus");
@@ -40,6 +46,14 @@ public final class AlexCavesProtection {
         HULLBREAKER, UUID.fromString("07951f02-4721-41c5-97bb-1014d7b4d662"),
         FORSAKEN, UUID.fromString("75f72922-254b-4717-91d2-48bb0eeb99da"));
     private static final ThreadLocal<Entity> PROTECTED_ACTOR = new ThreadLocal<>();
+    /** Bosses that may only exist through new spawns outside /wild; RSW is the boss world. */
+    private static final Set<String> WILD_BLOCKED_BOSSES = Set.of(
+        LUXTRUCTOSAURUS.toString(), FORSAKEN.toString(), HULLBREAKER.toString(), MAGNETRON.toString());
+    /** Hostile Alex's Caves mobs that do not use the MONSTER spawn group. */
+    private static final Set<String> WILD_BLOCKED_HOSTILES = Set.of(
+        "alexscaves:tremorsaurus", "alexscaves:vallumraptor");
+    public static final String WILD_BOSS_MESSAGE =
+        "Alex's Caves bosses can't be fought in /wild (build-safe world). Take it to RSW (/rsw) to fight it.";
 
     private AlexCavesProtection() {}
 
@@ -54,6 +68,43 @@ public final class AlexCavesProtection {
 
     public static boolean isLuxtructosaurus(Entity entity) {
         return LUXTRUCTOSAURUS.equals(Registries.ENTITY_TYPE.getId(entity.getType()));
+    }
+
+    static boolean isWildBlockedBoss(String entity) {
+        return WILD_BLOCKED_BOSSES.contains(entity);
+    }
+
+    /** Alex's Caves mobs that must never spawn in /wild beyond the generic MONSTER-group rule. */
+    static boolean isWildBlockedHostile(String entity) {
+        return WILD_BLOCKED_BOSSES.contains(entity) || WILD_BLOCKED_HOSTILES.contains(entity);
+    }
+
+    public static boolean isWild(World world) {
+        return world.getRegistryKey() == World.OVERWORLD;
+    }
+
+    /** Set only by the in-package block-protection smoke fixture, which needs bosses in an Overworld arena. */
+    static boolean allowWildBossSpawnsForFixture;
+
+    /** New boss entities are refused in /wild whatever created them (eggs, /summon, rituals, conversions). */
+    public static boolean blocksWildBossSpawn(Entity entity, World world) {
+        return !allowWildBossSpawnsForFixture && isWild(world)
+            && isWildBlockedBoss(Registries.ENTITY_TYPE.getId(entity.getType()).toString());
+    }
+
+    public static boolean blocksWildBossType(EntityType<?> type, World world) {
+        return type != null && isWild(world) && isWildBlockedBoss(Registries.ENTITY_TYPE.getId(type).toString());
+    }
+
+    /** Covers Alex's Caves world-generation spawns, which bypass the vanilla natural-spawn hooks. */
+    public static boolean blocksWildGenerationSpawn(Entity entity, World world) {
+        if (!isWild(world) || !(entity instanceof MobEntity mob)) return false;
+        Identifier id = Registries.ENTITY_TYPE.getId(entity.getType());
+        return "alexscaves".equals(id.getNamespace()) && !NaturalSpawnPolicy.allow(mob, world);
+    }
+
+    public static void sendWildBossMessage(PlayerEntity player) {
+        player.sendMessage(Text.literal(WILD_BOSS_MESSAGE).formatted(Formatting.RED), false);
     }
 
     public static boolean isMagnetron(Entity entity) {

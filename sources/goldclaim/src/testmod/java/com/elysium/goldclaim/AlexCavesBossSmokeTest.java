@@ -65,6 +65,8 @@ final class AlexCavesBossSmokeTest {
 
     static void register() {
         protectedMode = "protected".equals(System.getenv("GOLDCLAIM_ALEXCAVES_SMOKE"));
+        // This fixture measures block protection, not the /wild boss refusal covered by WildBossSmokeTest.
+        AlexCavesProtection.allowWildBossSpawnsForFixture = true;
         ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
             if (entity.getCommandTags().contains("goldclaim_victim")) {
                 victimPlaced = entity.getWorld().setBlockState(victimMarker, Blocks.GOLD_BLOCK.getDefaultState());

@@ -1,3 +1,38 @@
+# Kit countdowns, cosmetic keys and /wild bosses (GoldClaim 1.0.78)
+
+Staged, not yet published or applied. Server-only; no client update required.
+
+- **Kit countdowns:** GoldClaim registers the Placeholder API placeholder
+  `%goldclaim:kit_ready <w1|w2|w3|m>%`, which shows "Ready" or the remaining
+  time. `config/skieskits/menu.json` uses it in each kit's `no_permission` lore,
+  so the claim GUI shows how long until each of the four kits is ready.
+- **Cosmetic keys:** keys from plain `/give` or mailbox/backpack sends (no
+  redemption token) are now accepted instead of reporting "already redeemed".
+  `/cosmetickey` still mints tokenised keys; redeemed tokens are still rejected.
+- **Alex's Caves in /wild (`minecraft:overworld`):** Luxtructosaurus, Forsaken,
+  Hullbreaker and Magnetron cannot spawn there (natural, structure, spawn egg,
+  Volcanic Core and sacrifice summons). Manual summons are cancelled, the
+  catalyst/items are kept or handed back, and the player is told to fight it in
+  RSW. Tremorzilla and Atlatitan remain allowed. Natural Tremorsaurus and
+  Vallumraptor spawns are blocked in /wild. RSW is unaffected. Bosses already
+  saved in /wild chunks still load; op `/summon` gets vanilla's generic failure.
+
+Deploy: stage `artifacts/gangs-wild-boss-restart-1.0.0.jar` (SHA-256
+`dce8ce5f6a691a3ccea89ed9f1c777de75adfc1aaff0824245b2b7e22af06a93`) beside the
+Trials launcher and select it as `SERVER_JARFILE` for the next restart. It
+verifies the Trials update, replaces `goldclaim-1.0.77.jar` with 1.0.78 under the
+world lock with backups in `backups/wild-boss-goldclaim-1.0.78`, and replaces
+`menu.json` only if it matches the previously shipped file. A customised menu is
+left alone with a warning. No `/reload`.
+
+Validation: GoldClaim build and 98 unit tests passed; the /wild boss runtime
+smoke passed (egg and Volcanic Core blocked with items kept, RSW allowed,
+plain cosmetic key redeemable). The Alex's Caves block-protection smoke passed
+all block scenarios; its Tremorzilla spawn-health assertion (3413.33) fails in
+unchanged health-retune code and is pre-existing. Launcher regression tests
+passed (chaining, lock, corruption, duplicates, repeat/interrupted installs,
+backups, customised menu, packaged manifest). The live client GUI is not tested.
+
 # Trials, Boots of Lightness and mod updates (2026-11-20)
 
 Pack v1.1.32 prepares Gangs Trials 1.0.9 and the six Paxi spawner-pool

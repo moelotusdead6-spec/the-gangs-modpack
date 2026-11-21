@@ -90,6 +90,22 @@ public class GameplayPolicyTest {
     }
 
     @Test
+    public void kitCountdownMatchesUnlockDaysAndNextCycleAfterClaiming() {
+        long day = 86400L;
+        assertEquals("Ready to claim!", KitService.readyStatus(0, 0, false));
+        assertEquals("Ready in 7d 0h", KitService.readyStatus(1, 0, false));
+        assertEquals("Ready in 1d 2h", KitService.readyStatus(2, 13 * day - 2 * 3600, false));
+        assertEquals("Ready in 1h 1m", KitService.readyStatus(3, 21 * day - 3601, false));
+        assertEquals("Ready in 1m", KitService.readyStatus(3, 21 * day - 1, false));
+        assertEquals("Claimed - next in 30d 0h", KitService.readyStatus(0, 0, true));
+        assertEquals("Claimed - next in 30d 0h", KitService.readyStatus(3, 21 * day, true));
+        assertEquals(KitService.CYCLE_SECONDS - 10 * day + 14 * day, KitService.secondsUntilReady(2, 10 * day, true));
+        assertEquals(1, KitService.kitIndex("w2"));
+        assertEquals(3, KitService.kitIndex("m"));
+        assertEquals(-1, KitService.kitIndex("monthly"));
+    }
+
+    @Test
     public void publicTrustCoversFuturePlayersWithoutGivingManagement() {
         Claim claim = new Claim(UUID.randomUUID(), "minecraft:overworld", 0, 10, 0, 10);
         claim.setPublicTrust(Claim.TrustLevel.INTERACT, true);

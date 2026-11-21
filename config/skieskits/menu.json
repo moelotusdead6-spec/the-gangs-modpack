@@ -12,7 +12,7 @@
       "no_permission": {
         "item": "minecraft:gray_dye",
         "name": "Week 1",
-        "lore": ["Not available yet"]
+        "lore": ["%goldclaim:kit_ready w1%"]
       },
       "max_uses": {
         "item": "minecraft:barrier",
@@ -30,7 +30,7 @@
       "no_permission": {
         "item": "minecraft:gray_dye",
         "name": "Week 2",
-        "lore": ["Not available yet"]
+        "lore": ["%goldclaim:kit_ready w2%"]
       },
       "max_uses": {
         "item": "minecraft:barrier",
@@ -48,7 +48,7 @@
       "no_permission": {
         "item": "minecraft:gray_dye",
         "name": "Week 3",
-        "lore": ["Not available yet"]
+        "lore": ["%goldclaim:kit_ready w3%"]
       },
       "max_uses": {
         "item": "minecraft:barrier",
@@ -66,7 +66,7 @@
       "no_permission": {
         "item": "minecraft:gray_dye",
         "name": "Monthly",
-        "lore": ["Not available yet"]
+        "lore": ["%goldclaim:kit_ready m%"]
       },
       "max_uses": {
         "item": "minecraft:barrier",

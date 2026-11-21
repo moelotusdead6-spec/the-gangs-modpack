@@ -1,5 +1,16 @@
 # Published Artifacts
 
+## Kit countdowns, cosmetic keys and /wild bosses (GoldClaim 1.0.78)
+
+Server-only release staged for the next restart; no client update is required.
+
+- `artifacts/goldclaim-1.0.78.jar`: SHA-256
+  `a7b98f263084ce4af89a682e612dc6ee53d4c02a0763a7a93c16c6dac1c4d103`.
+- `artifacts/gangs-wild-boss-restart-1.0.0.jar`: SHA-256
+  `dce8ce5f6a691a3ccea89ed9f1c777de75adfc1aaff0824245b2b7e22af06a93`.
+  Chains `gangs-trials-lightness-restart-1.1.32.jar` and embeds GoldClaim
+  1.0.78 and `config/skieskits/menu.json`.
+
 ## Trials, Boots of Lightness and mod updates (v1.1.32)
 
 - `artifacts/gangstrials-1.0.9.jar`: SHA-256

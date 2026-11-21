@@ -6,7 +6,7 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "2eb79f6d089b998db957325968c15c8a7b47d29058b996d731178dc0d1a962b6"
+hash = "4e357af1a569a5f78d5e353784802083f6664a504666efd28511f6b36a073478"
 
 [[files]]
 file = "README.md"
@@ -830,7 +830,7 @@ hash = "8859956a522034ed564a94b9a8340d3baedb24aaa33928b1627c44aab9a1fce6"
 
 [[files]]
 file = "config/skieskits/menu.json"
-hash = "237226b9d61dba1ccbcc312b6d7f5df44d021da0e2638370c6fc59de741ee794"
+hash = "5f431b9d23586df694bf7d30b8344e9c0e9673a87041b89e80d416ee3f461aac"
 
 [[files]]
 file = "config/sophisticatedcore-common.toml"
@@ -1665,7 +1665,7 @@ metafile = true
 
 [[files]]
 file = "mods/goldclaim-direct.pw.toml"
-hash = "96eba3aae853bca594fc0c2f415fe551534ee937a4d8328fc3db9844b898176a"
+hash = "8d0a7227dd6dc1fe0b2a10bbbaa05f19d97abc440808b2e8ee5c0d67028873f6"
 metafile = true
 
 [[files]]

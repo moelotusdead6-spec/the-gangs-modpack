@@ -13,6 +13,7 @@
  */
 package com.elysium.goldclaim.mixin;
 
+import com.elysium.goldclaim.AlexCavesProtection;
 import com.elysium.goldclaim.GoldClaimMod;
 import com.elysium.goldclaim.HubProjectilePolicy;
 import com.elysium.goldclaim.RswDragonFightService;
@@ -37,7 +38,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class ServerWorldMixin {
     @Inject(method = "addEntity", at = @At("HEAD"), cancellable = true)
     private void goldclaim$denyHubProjectileSpawn(Entity entity, CallbackInfoReturnable<Boolean> ci) {
-        if (HubProjectilePolicy.remove(entity, (ServerWorld)(Object)this)) {
+        if (HubProjectilePolicy.remove(entity, (ServerWorld)(Object)this)
+                || AlexCavesProtection.blocksWildBossSpawn(entity, (ServerWorld)(Object)this)) {
             ci.setReturnValue(false);
         }
     }
