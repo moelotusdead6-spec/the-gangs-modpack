@@ -1,0 +1,38 @@
+{
+  "fallback": "gangstrials:spawner/fallback/slow_ranged",
+  "elements": [
+    {
+      "element": {
+        "location": "gangstrials:spawner/slow_ranged/poison_skeleton",
+        "element_type": "minecraft:single_pool_element",
+        "processors": {
+          "processors": []
+        },
+        "projection": "rigid"
+      },
+      "weight": 1
+    },
+    {
+      "element": {
+        "location": "gangstrials:spawner/slow_ranged/skeleton",
+        "element_type": "minecraft:single_pool_element",
+        "processors": {
+          "processors": []
+        },
+        "projection": "rigid"
+      },
+      "weight": 1
+    },
+    {
+      "element": {
+        "location": "gangstrials:spawner/slow_ranged/stray",
+        "element_type": "minecraft:single_pool_element",
+        "processors": {
+          "processors": []
+        },
+        "projection": "rigid"
+      },
+      "weight": 1
+    }
+  ]
+}

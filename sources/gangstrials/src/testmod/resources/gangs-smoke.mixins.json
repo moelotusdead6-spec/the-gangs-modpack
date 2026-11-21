@@ -1,0 +1,7 @@
+{
+  "required": true,
+  "package": "com.gangs.gangstrials.smoke.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": ["WorldRandomAccessor", "SinglePoolElementMixin"],
+  "injectors": {"defaultRequire": 1}
+}

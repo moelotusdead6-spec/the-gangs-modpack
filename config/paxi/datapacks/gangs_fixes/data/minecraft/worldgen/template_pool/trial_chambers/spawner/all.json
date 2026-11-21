@@ -1,0 +1,115 @@
+{
+  "fallback": "gangstrials:spawner/fallback/all",
+  "elements": [
+    {
+      "element": {
+        "location": "gangstrials:spawner/melee/husk",
+        "element_type": "minecraft:single_pool_element",
+        "processors": {
+          "processors": []
+        },
+        "projection": "rigid"
+      },
+      "weight": 4
+    },
+    {
+      "element": {
+        "location": "gangstrials:spawner/melee/spider",
+        "element_type": "minecraft:single_pool_element",
+        "processors": {
+          "processors": []
+        },
+        "projection": "rigid"
+      },
+      "weight": 4
+    },
+    {
+      "element": {
+        "location": "gangstrials:spawner/melee/zombie",
+        "element_type": "minecraft:single_pool_element",
+        "processors": {
+          "processors": []
+        },
+        "projection": "rigid"
+      },
+      "weight": 4
+    },
+    {
+      "element": {
+        "location": "gangstrials:spawner/ranged/poison_skeleton",
+        "element_type": "minecraft:single_pool_element",
+        "processors": {
+          "processors": []
+        },
+        "projection": "rigid"
+      },
+      "weight": 4
+    },
+    {
+      "element": {
+        "location": "gangstrials:spawner/ranged/skeleton",
+        "element_type": "minecraft:single_pool_element",
+        "processors": {
+          "processors": []
+        },
+        "projection": "rigid"
+      },
+      "weight": 4
+    },
+    {
+      "element": {
+        "location": "gangstrials:spawner/ranged/stray",
+        "element_type": "minecraft:single_pool_element",
+        "processors": {
+          "processors": []
+        },
+        "projection": "rigid"
+      },
+      "weight": 4
+    },
+    {
+      "element": {
+        "location": "gangstrials:spawner/small_melee/baby_zombie",
+        "element_type": "minecraft:single_pool_element",
+        "processors": {
+          "processors": []
+        },
+        "projection": "rigid"
+      },
+      "weight": 3
+    },
+    {
+      "element": {
+        "location": "gangstrials:spawner/small_melee/cave_spider",
+        "element_type": "minecraft:single_pool_element",
+        "processors": {
+          "processors": []
+        },
+        "projection": "rigid"
+      },
+      "weight": 3
+    },
+    {
+      "element": {
+        "location": "gangstrials:spawner/small_melee/silverfish",
+        "element_type": "minecraft:single_pool_element",
+        "processors": {
+          "processors": []
+        },
+        "projection": "rigid"
+      },
+      "weight": 3
+    },
+    {
+      "element": {
+        "location": "gangstrials:spawner/small_melee/slime",
+        "element_type": "minecraft:single_pool_element",
+        "processors": {
+          "processors": []
+        },
+        "projection": "rigid"
+      },
+      "weight": 3
+    }
+  ]
+}

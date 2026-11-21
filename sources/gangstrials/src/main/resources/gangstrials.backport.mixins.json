@@ -8,6 +8,7 @@
     "BreezeTargetMixin",
     "HostileEntityMixin",
     "OminousItemSpawnerMixin",
+    "SlimeEntityMixin",
     "TrialSpawnerConfigMixin",
     "TrialSpawnerHardnessMixin",
     "TrialSpawnerResistanceMixin",

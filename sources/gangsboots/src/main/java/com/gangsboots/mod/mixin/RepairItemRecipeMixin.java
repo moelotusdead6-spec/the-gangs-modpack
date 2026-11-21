@@ -14,10 +14,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(RepairItemRecipe.class)
 public abstract class RepairItemRecipeMixin {
     @Inject(method = "matches", at = @At("HEAD"), cancellable = true)
-    private void gangsboots$rejectSwiftnessBootRepair(@Coerce Inventory inventory, World world, CallbackInfoReturnable<Boolean> cir) {
+    private void gangsboots$rejectLightnessBootRepair(@Coerce Inventory inventory, World world, CallbackInfoReturnable<Boolean> cir) {
         for (int slot = 0; slot < inventory.size(); slot++) {
             ItemStack stack = inventory.getStack(slot);
-            if (stack.isOf(ModItems.BOOTS_OF_SWIFTNESS)) {
+            if (stack.isOf(ModItems.BOOTS_OF_LIGHTNESS)) {
                 cir.setReturnValue(false);
                 return;
             }

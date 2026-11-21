@@ -1,3 +1,30 @@
+# Trials, Boots of Lightness and mod updates (2026-11-20)
+
+Pack v1.1.32 prepares Gangs Trials 1.0.9 and the six Paxi spawner-pool
+overrides together. These address slime spawning and missing spawners in newly
+generated Trial Chambers; they do not repair previously generated chambers.
+Gangs Boots 1.0.9 displays "Boots of Lightness", keeps the existing item ID and
+old command alias, blocks ordinary durability damage and retains flight fuel.
+
+BCLib 3.0.18 and BetterEnd 4.0.14 are pinned together; Packet Fixer is also
+installed on clients. Entity Culling, Fast IP Ping, Mouse Tweaks, Inventory
+Essentials and Memory Leak Fix are included; ServerCore was already installed.
+The restart launcher preserves the existing inventory/mailbox and Dragon/Farseer
+updates, verifies hashes and backups and installs under the world lock. The
+four third-party server jars are staged separately from their upstream URLs.
+
+The launcher installer regression tests passed, including repeated and
+interrupted installs, predecessor verification, duplicates and a world lock.
+Isolated production tests covered the boots and actual trial spawners; a
+full-server RSW generation sample found 42 structures within borders across
+the three dimensions, including a Trial Chamber and structures in the custom
+RSW End. This does not certify every structure, live seed, or client GUI.
+The isolated full-pack server also logged kit-function, recipe and
+display-entity errors which require separate investigation.
+
+Publication and server startup must be verified separately; this entry alone
+does not assert that activation succeeded.
+
 # Inventory history, inventory viewing and mailbox stacks (2026-11-18)
 
 Server-only update for the next owner-controlled restart. No client pack update,

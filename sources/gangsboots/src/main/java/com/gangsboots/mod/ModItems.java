@@ -8,13 +8,13 @@ import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
 public final class ModItems {
-    public static final Item BOOTS_OF_SWIFTNESS = new BootsOfSwiftnessItem();
+    public static final Item BOOTS_OF_LIGHTNESS = new BootsOfLightnessItem();
 
     private ModItems() {
     }
 
     public static void register() {
-        Registry.register(Registries.ITEM, new Identifier(GangsBootsMod.MOD_ID, "boots_of_swiftness"), BOOTS_OF_SWIFTNESS);
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.COMBAT).register(entries -> entries.add(BOOTS_OF_SWIFTNESS));
+        Registry.register(Registries.ITEM, new Identifier(GangsBootsMod.MOD_ID, "boots_of_swiftness"), BOOTS_OF_LIGHTNESS);
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.COMBAT).register(entries -> entries.add(BOOTS_OF_LIGHTNESS));
     }
 }

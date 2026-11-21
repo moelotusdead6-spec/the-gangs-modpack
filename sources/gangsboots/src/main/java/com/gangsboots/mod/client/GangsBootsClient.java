@@ -33,7 +33,7 @@ public class GangsBootsClient implements ClientModInitializer {
             BOOTS_MODEL.leftLeg.visible = true;
             BOOTS_MODEL.rightLeg.visible = true;
             ArmorRenderer.renderPart(matrices, vertexConsumers, light, stack, BOOTS_MODEL, BOOTS_TEXTURE);
-        }, ModItems.BOOTS_OF_SWIFTNESS);
+        }, ModItems.BOOTS_OF_LIGHTNESS);
 
         ClientTickEvents.END_CLIENT_TICK.register(GangsBootsClient::spawnFaintFlightParticles);
     }
@@ -44,7 +44,7 @@ public class GangsBootsClient implements ClientModInitializer {
             return;
         }
 
-        if (!player.getEquippedStack(EquipmentSlot.FEET).isOf(ModItems.BOOTS_OF_SWIFTNESS)) {
+        if (!player.getEquippedStack(EquipmentSlot.FEET).isOf(ModItems.BOOTS_OF_LIGHTNESS)) {
             return;
         }
 

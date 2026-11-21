@@ -6,6 +6,7 @@
     "ArmorItemMixin",
     "AnvilScreenHandlerMixin",
     "ElytraItemMixin",
+    "ItemStackMixin",
     "LootTableMixin",
     "RepairItemRecipeMixin",
     "SkullItemMixin",

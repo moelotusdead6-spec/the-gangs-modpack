@@ -120,7 +120,7 @@ public class GangsBootsMod implements ModInitializer {
 
         UUID uuid = player.getUuid();
         ItemStack feet = player.getEquippedStack(EquipmentSlot.FEET);
-        boolean wearing = feet.isOf(ModItems.BOOTS_OF_SWIFTNESS);
+        boolean wearing = feet.isOf(ModItems.BOOTS_OF_LIGHTNESS);
 
         if (!wearing) {
             FLY_TICKS.remove(uuid);
@@ -193,7 +193,7 @@ public class GangsBootsMod implements ModInitializer {
                 emptySlots.add(slot);
             }
         }
-        ItemStack reward = new ItemStack(ModItems.BOOTS_OF_SWIFTNESS);
+        ItemStack reward = new ItemStack(ModItems.BOOTS_OF_LIGHTNESS);
         if (emptySlots.isEmpty()) {
             if (!player.giveItemStack(reward) && !reward.isEmpty()) {
                 player.dropItem(reward, false);
@@ -205,34 +205,36 @@ public class GangsBootsMod implements ModInitializer {
 
     private static void registerAdminCommand() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
-            dispatcher.register(literal("give_swiftness_boots")
-                .requires(source -> source.hasPermissionLevel(2))
-                .executes(context -> {
-                    ServerPlayerEntity player = context.getSource().getPlayerOrThrow();
-                    player.giveItemStack(new ItemStack(ModItems.BOOTS_OF_SWIFTNESS));
-                    context.getSource().sendFeedback(() -> Text.literal("Gave Boots of Swiftness."), false);
-                    return 1;
-                })
-                .then(argument("targets", EntityArgumentType.players())
+            for (String command : List.of("give_lightness_boots", "give_swiftness_boots")) {
+                dispatcher.register(literal(command)
+                    .requires(source -> source.hasPermissionLevel(2))
                     .executes(context -> {
-                        int count = 1;
-                        for (ServerPlayerEntity target : EntityArgumentType.getPlayers(context, "targets")) {
-                            ItemStack stack = new ItemStack(ModItems.BOOTS_OF_SWIFTNESS, count);
-                            target.giveItemStack(stack);
-                        }
-                        context.getSource().sendFeedback(() -> Text.literal("Gave Boots of Swiftness."), false);
+                        ServerPlayerEntity player = context.getSource().getPlayerOrThrow();
+                        player.giveItemStack(new ItemStack(ModItems.BOOTS_OF_LIGHTNESS));
+                        context.getSource().sendFeedback(() -> Text.literal("Gave Boots of Lightness."), false);
                         return 1;
                     })
-                    .then(argument("count", IntegerArgumentType.integer(1, 64))
+                    .then(argument("targets", EntityArgumentType.players())
                         .executes(context -> {
-                            int count = IntegerArgumentType.getInteger(context, "count");
+                            int count = 1;
                             for (ServerPlayerEntity target : EntityArgumentType.getPlayers(context, "targets")) {
-                                ItemStack stack = new ItemStack(ModItems.BOOTS_OF_SWIFTNESS, count);
+                                ItemStack stack = new ItemStack(ModItems.BOOTS_OF_LIGHTNESS, count);
                                 target.giveItemStack(stack);
                             }
-                            context.getSource().sendFeedback(() -> Text.literal("Gave Boots of Swiftness."), false);
+                            context.getSource().sendFeedback(() -> Text.literal("Gave Boots of Lightness."), false);
                             return 1;
-                        }))));
+                        })
+                        .then(argument("count", IntegerArgumentType.integer(1, 64))
+                            .executes(context -> {
+                                int count = IntegerArgumentType.getInteger(context, "count");
+                                for (ServerPlayerEntity target : EntityArgumentType.getPlayers(context, "targets")) {
+                                    ItemStack stack = new ItemStack(ModItems.BOOTS_OF_LIGHTNESS, count);
+                                    target.giveItemStack(stack);
+                                }
+                                context.getSource().sendFeedback(() -> Text.literal("Gave Boots of Lightness."), false);
+                                return 1;
+                            }))));
+            }
         });
     }
 
@@ -323,7 +325,7 @@ public class GangsBootsMod implements ModInitializer {
                 continue;
             }
 
-            ItemStack replacement = new ItemStack(ModItems.BOOTS_OF_SWIFTNESS);
+            ItemStack replacement = new ItemStack(ModItems.BOOTS_OF_LIGHTNESS);
             int mappedDamage = Math.round((stack.getDamage() / 429.0f) * replacement.getMaxDamage());
             replacement.setDamage(Math.min(Math.max(mappedDamage, 0), replacement.getMaxDamage()));
             player.getInventory().setStack(slot, replacement);

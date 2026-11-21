@@ -1,5 +1,18 @@
 # Published Artifacts
 
+## Trials, Boots of Lightness and mod updates (v1.1.32)
+
+- `artifacts/gangstrials-1.0.9.jar`: SHA-256
+  `c47a53ae7625d97fb9d96c43fb929b4abd64c3a7100585cede0160e04e40aaa5`.
+- `artifacts/gangsboots-1.0.9.jar`: SHA-256
+  `368b01c4ad706193a0f75362659497b5b1d2dba081c1b225994c23c9129abb44`.
+- `artifacts/gangs-trials-lightness-restart-1.1.32.jar`: SHA-256
+  `9454847701fbbe2146245e51ed6838d2e865552a5725d5a1b413d8ad68e46735`.
+
+The trial-spawner fixes require both Gangs Trials 1.0.9 and the six Paxi
+spawner-pool overrides. They apply to newly generated chambers. Boots keep their
+existing item ID, and the original art attribution is preserved.
+
 ## Inventory history, InvView and mailbox stacks (2026-11-18)
 
 Published server-only release; no client Packwiz update is required. Pages

@@ -21,6 +21,28 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 }
 
+sourceSets {
+    testmod {
+        compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        runtimeClasspath += output + compileClasspath + sourceSets.main.runtimeClasspath
+    }
+}
+
+loom {
+    mods {
+        gangsboots { sourceSet sourceSets.main }
+        bootsSmoke { sourceSet sourceSets.testmod }
+    }
+    runs {
+        bootsSmokeServer {
+            server()
+            name = 'Boots Smoke Server'
+            source sourceSets.testmod
+            runDir 'build/boots-smoke'
+        }
+    }
+}
+
 java {
     toolchain.languageVersion = JavaLanguageVersion.of(17)
     withSourcesJar()
@@ -28,6 +50,20 @@ java {
 
 tasks.withType(JavaCompile).configureEach {
     it.options.release = 17
+}
+
+tasks.register('smokeJar', Jar) {
+    archiveBaseName = 'gangsboots-smoke'
+    archiveVersion = '1.0.0'
+    from sourceSets.testmod.output
+}
+
+tasks.register('remapSmokeJar', net.fabricmc.loom.task.RemapJarTask) {
+    dependsOn tasks.named('smokeJar')
+    inputFile = tasks.named('smokeJar').flatMap { it.archiveFile }
+    archiveBaseName = 'gangsboots-smoke'
+    archiveVersion = '1.0.0'
+    archiveClassifier = 'production'
 }
 
 processResources {

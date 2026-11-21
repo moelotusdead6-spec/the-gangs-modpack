@@ -6,7 +6,7 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "e26233fa8ec5367791cfdefd483a99ee6e5551f3835fa5bb2b94c59bb55c1ecb"
+hash = "2eb79f6d089b998db957325968c15c8a7b47d29058b996d731178dc0d1a962b6"
 
 [[files]]
 file = "README.md"
@@ -381,6 +381,14 @@ file = "config/paxi/datapacks/gangs_fixes/data/minecraft/worldgen/structure/tria
 hash = "a9ea4d98ccf2b6395059cbdfa32ad1ba6c8b2e95c745dfa94b815b5ff4d373b1"
 
 [[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/minecraft/worldgen/template_pool/trial_chambers/spawner/all.json"
+hash = "2eafe68303d8e79f3bd2624fa25185d9b39c5d9b14afe93ad211b10bbf8938fe"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/minecraft/worldgen/template_pool/trial_chambers/spawner/breeze.json"
+hash = "77b51ae0f779acc45ebd895ab9748b7d846dc57600898c151b7d67ab94058a13"
+
+[[files]]
 file = "config/paxi/datapacks/gangs_fixes/data/minecraft/worldgen/template_pool/trial_chambers/spawner/contents/melee.json"
 hash = "a2b90f18800ea94209baf86f4cb66e1e47d9ee0028f5ecfd629d958c53cc396d"
 
@@ -395,6 +403,22 @@ hash = "4760ac72fe6f9e3c877920822955817f1c736c9f752d3b8d44ab2846e3cc026b"
 [[files]]
 file = "config/paxi/datapacks/gangs_fixes/data/minecraft/worldgen/template_pool/trial_chambers/spawner/contents/small_melee.json"
 hash = "022abd45eecb0d4bc9603e7e25ef8ad6cf9a714bf2c43fed5658b54130cc1e79"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/minecraft/worldgen/template_pool/trial_chambers/spawner/melee.json"
+hash = "76b9e94a83fb90c8ab776599ded4990bfc1e39b4863133e127ca87726beeb79f"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/minecraft/worldgen/template_pool/trial_chambers/spawner/ranged.json"
+hash = "461329c0ed903b30fb25c9cbc5392983a302bd113dc55e6cc8daedbcd18ac6e1"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/minecraft/worldgen/template_pool/trial_chambers/spawner/slow_ranged.json"
+hash = "2d15f7b95d422c46e5f8b09c265e4eab0e3a48a6b69cb5652575ec6f496729ba"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/minecraft/worldgen/template_pool/trial_chambers/spawner/small_melee.json"
+hash = "75b54d31046220e96bf92e80f727b98c2c2c2a4db24118f761de96535a64b6d4"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_fixes/data/multiworld/enhancedcelestials/lunar/dimension_settings/rsw.json"
@@ -1246,7 +1270,7 @@ metafile = true
 
 [[files]]
 file = "mods/bclib.pw.toml"
-hash = "8ce4a9ecf365da6b1aea30c90128c9bb63c582daefc814f0336c8ddd0bdda52a"
+hash = "d4ce9716372379ffb868b7e52c72045acc0b94a74141c861a15306f322ee012f"
 metafile = true
 
 [[files]]
@@ -1276,7 +1300,7 @@ metafile = true
 
 [[files]]
 file = "mods/betterend.pw.toml"
-hash = "259977bd2cc6fe10c58f0c24b848c3c94075f1e3d1853df5f7d590dfff083891"
+hash = "7818dbb1302a4706c793b8008975f749b7aa6466c29b9883c5a36e088356dc7f"
 metafile = true
 
 [[files]]
@@ -1440,6 +1464,11 @@ hash = "c2dcfe8098afa56273b82974922ad69d8bdcfec56c546deb7b949c8215aea592"
 metafile = true
 
 [[files]]
+file = "mods/entity-culling.pw.toml"
+hash = "6a2dc9c767f233decdf08f49c2838df2788429632e1b3814363c23dae9fe1648"
+metafile = true
+
+[[files]]
 file = "mods/essential-commands.pw.toml"
 hash = "21c3264543db261d2b7fca1b0debbae16d11a1945999ff1dfa51551fec381bbf"
 metafile = true
@@ -1515,6 +1544,11 @@ hash = "8953126b2c5973ce8383443aeb50300e657f4b289ee42782b303e4cb19e26597"
 metafile = true
 
 [[files]]
+file = "mods/fast-ip-ping.pw.toml"
+hash = "4d1964bc6102d600b87450947d8969ad36515267c52fc75833fbfd44391c3502"
+metafile = true
+
+[[files]]
 file = "mods/ferritecore-6.0.1-fabric.pw.toml"
 hash = "17dc892d73d6da07daf46b995642ca6f1e7df8568a146efb0c049097bbbc9e9e"
 metafile = true
@@ -1586,7 +1620,7 @@ metafile = true
 
 [[files]]
 file = "mods/gangsboots-direct.pw.toml"
-hash = "43180f7a413e3029c0759ca25e69e1889735d9311c4495793b3d53f7dafc7cf9"
+hash = "2b6c651a1810d6e6c5afae3233fbff7ab489471a35cb4f11242a3e0deaefd673"
 metafile = true
 
 [[files]]
@@ -1616,7 +1650,7 @@ metafile = true
 
 [[files]]
 file = "mods/gangstrials-direct.pw.toml"
-hash = "deda8a716f8051cdf1ea7a5e4882d32e48e02720bd1a54b8aaf7c24905ae694b"
+hash = "90191b270a8dc65510e0a0977b100d01b0dd4d4a35ac2114af1607c3c3b89547"
 metafile = true
 
 [[files]]
@@ -1667,6 +1701,11 @@ metafile = true
 [[files]]
 file = "mods/indium-1.0.36_mc1.20.1.pw.toml"
 hash = "87ff9e892ac602ae10cc678bfb8f4c618d8eac23308380850f6f762b06f7dd9a"
+metafile = true
+
+[[files]]
+file = "mods/inventory-essentials.pw.toml"
+hash = "5b6a818ec8e55d479fdf9a8454d8b78d49a1172137691e3e03be9317fa524b24"
 metafile = true
 
 [[files]]
@@ -1835,6 +1874,11 @@ hash = "013be10104d10e5880ca36d6404a52502edf933da980107041cbd38203eb8d13"
 metafile = true
 
 [[files]]
+file = "mods/memory-leak-fix.pw.toml"
+hash = "f22547d1524c6b82a20a1f172b23f2745a0f94755ccc2239ac8667fe1feca3fc"
+metafile = true
+
+[[files]]
 file = "mods/midnightlib-fabric-1.9.3_1.20.1.pw.toml"
 hash = "333a538b63dd23c9d0c524710f4f343349f3ac0ad2ee54c61a58cc7fcec36ad1"
 metafile = true
@@ -1867,6 +1911,11 @@ metafile = true
 [[files]]
 file = "mods/moonlight.pw.toml"
 hash = "f2f55cdf91f9eeb4e0f0a6e7510d26ca6601a21071d4ea605f4f506964b3c6b2"
+metafile = true
+
+[[files]]
+file = "mods/mouse-tweaks.pw.toml"
+hash = "b6685e98fce8f1f45868b9df3dbaa410ec23bb64896c826be596d98b01326116"
 metafile = true
 
 [[files]]
@@ -1926,7 +1975,7 @@ metafile = true
 
 [[files]]
 file = "mods/packet-fixer.pw.toml"
-hash = "9b831ebbf7075dc09a490877f9cd0a8fc62fbe7775179145c1f19c64c938ea52"
+hash = "ef0c8813eef47e8ffdce023dfee08152a5099817960dce86623b9a21e8b14be2"
 metafile = true
 
 [[files]]
@@ -2030,8 +2079,18 @@ hash = "b23b69df9fc517aa8c814bd0b9b507dcf95d2b6295470aadd818259b2cf1682f"
 metafile = true
 
 [[files]]
+file = "mods/retired-bclib-3-0-17.pw.toml"
+hash = "157375bf5f6c5f101d1fed6eb3442d173c030c33289a01278e9d1c56be852590"
+metafile = true
+
+[[files]]
 file = "mods/retired-better-end-4-0-11.pw.toml"
 hash = "a640d73de3d15c05c3bc4923cc6401a498e628820e56cd358c5c0733af98d86e"
+metafile = true
+
+[[files]]
+file = "mods/retired-better-end-4-0-13.pw.toml"
+hash = "a4fd1289ba40b99ef78588cb8c14cce7d847704afb0bde6c1391db4356be12e1"
 metafile = true
 
 [[files]]
@@ -2145,6 +2204,11 @@ hash = "575d1532581f1ba2e8fb4b2403c492a161c77ac43341f40649af250ea07958b4"
 metafile = true
 
 [[files]]
+file = "mods/retired-gangsboots-1-0-8.pw.toml"
+hash = "d31c82db2cf2d11962476d9bef299b71f0e67884399bd507c97ab79c42d00df6"
+metafile = true
+
+[[files]]
 file = "mods/retired-gangscosmetics-2-0-0.pw.toml"
 hash = "e87a3b9d15ecfac4cc239e6ec86feec2532a1195814437ab1d442d3c6347f713"
 metafile = true
@@ -2172,6 +2236,11 @@ metafile = true
 [[files]]
 file = "mods/retired-gangshop-1-0-7.pw.toml"
 hash = "1cbc824fab3296591a2c08465aacfdaaf6778355baa51d7cb0c917f68a91c236"
+metafile = true
+
+[[files]]
+file = "mods/retired-gangstrials-1-0-8.pw.toml"
+hash = "c10f2cd79f4e9a2a6d353955d51fd51fae0d99fd27672481c0fdd417038d72bd"
 metafile = true
 
 [[files]]

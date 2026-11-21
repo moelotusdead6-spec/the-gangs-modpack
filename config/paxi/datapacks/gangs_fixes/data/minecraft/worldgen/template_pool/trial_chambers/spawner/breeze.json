@@ -1,0 +1,16 @@
+{
+  "fallback": "gangstrials:spawner/fallback/breeze",
+  "elements": [
+    {
+      "element": {
+        "location": "gangstrials:spawner/breeze/breeze",
+        "element_type": "minecraft:single_pool_element",
+        "processors": {
+          "processors": []
+        },
+        "projection": "rigid"
+      },
+      "weight": 1
+    }
+  ]
+}

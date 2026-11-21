@@ -6,10 +6,10 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 
-public class SwiftnessArmorMaterial implements ArmorMaterial {
-    public static final SwiftnessArmorMaterial INSTANCE = new SwiftnessArmorMaterial();
+public class LightnessArmorMaterial implements ArmorMaterial {
+    public static final LightnessArmorMaterial INSTANCE = new LightnessArmorMaterial();
 
-    private SwiftnessArmorMaterial() {
+    private LightnessArmorMaterial() {
     }
 
     @Override

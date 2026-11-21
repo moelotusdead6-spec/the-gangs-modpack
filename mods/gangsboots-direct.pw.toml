@@ -1,8 +1,8 @@
 name = "Gangs Boots"
-filename = "gangsboots-1.0.8.jar"
+filename = "gangsboots-1.0.9.jar"
 side = "both"
 
 [download]
-url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/gangsboots-1.0.8.jar"
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/gangsboots-1.0.9.jar"
 hash-format = "sha256"
-hash = "e886f5067038279b40e6f00d00231062f42a462c8b8c5a62dc6e66b3a4e933a1"
+hash = "368b01c4ad706193a0f75362659497b5b1d2dba081c1b225994c23c9129abb44"

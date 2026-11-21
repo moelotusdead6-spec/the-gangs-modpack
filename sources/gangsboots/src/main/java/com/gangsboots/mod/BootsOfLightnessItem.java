@@ -9,9 +9,9 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.world.World;
 
-public class BootsOfSwiftnessItem extends ArmorItem {
-    public BootsOfSwiftnessItem() {
-        super(SwiftnessArmorMaterial.INSTANCE, Type.BOOTS, new Settings().maxCount(1).maxDamage(1000));
+public class BootsOfLightnessItem extends ArmorItem {
+    public BootsOfLightnessItem() {
+        super(LightnessArmorMaterial.INSTANCE, Type.BOOTS, new Settings().maxCount(1).maxDamage(1000));
     }
 
     @Override

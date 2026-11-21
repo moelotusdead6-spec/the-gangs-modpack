@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "gangs_boots_trials_smoke",
+  "version": "1.0.0",
+  "name": "Local boots and trial spawner regression tests",
+  "environment": "server",
+  "entrypoints": {
+    "server": ["com.gangs.gangstrials.smoke.BootsTrialsSmoke"]
+  },
+  "mixins": ["gangs-smoke.mixins.json"],
+  "depends": {
+    "gangsboots": ">=1.0.8",
+    "gangstrials": ">=1.0.9",
+    "lootr": "*",
+    "fabric-api": "*",
+    "trickytrialsbackport": "*"
+  }
+}

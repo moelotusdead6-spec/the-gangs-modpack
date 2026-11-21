@@ -3,7 +3,7 @@
   "id": "gangstrials",
   "version": "${version}",
   "name": "Gangs Trials",
-  "description": "First-party worldgen gate for The Gangs Modpack: restricts configured structures (by default minecraft:trial_chambers) to an allowlist of dimensions (by default multiworld:rsw). Also fixes Tricky Trials Backport trial spawner configs, spawner light rules, wind charge self-launch, breeze infighting, trial spawner hardness and the missing ominous item spawner renderer. Hides Enhanced Celestials' Enhanced Celestials 2 join notice (EC2 is for Minecraft 26.x only).",
+  "description": "First-party worldgen gate for The Gangs Modpack: restricts configured structures (by default minecraft:trial_chambers) to an allowlist of dimensions (by default multiworld:rsw). Also fixes Tricky Trials Backport trial spawner configs, terminal spawner structures, trial slime spawning, spawner light rules, wind charge self-launch, breeze infighting, trial spawner hardness and the missing ominous item spawner renderer. Hides Enhanced Celestials' Enhanced Celestials 2 join notice (EC2 is for Minecraft 26.x only).",
   "authors": [
     "Prof_it",
     "GitHub Copilot"

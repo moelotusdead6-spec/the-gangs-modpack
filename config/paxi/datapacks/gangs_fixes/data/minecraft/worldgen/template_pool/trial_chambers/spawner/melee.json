@@ -1,0 +1,38 @@
+{
+  "fallback": "gangstrials:spawner/fallback/melee",
+  "elements": [
+    {
+      "element": {
+        "location": "gangstrials:spawner/melee/husk",
+        "element_type": "minecraft:single_pool_element",
+        "processors": {
+          "processors": []
+        },
+        "projection": "rigid"
+      },
+      "weight": 1
+    },
+    {
+      "element": {
+        "location": "gangstrials:spawner/melee/spider",
+        "element_type": "minecraft:single_pool_element",
+        "processors": {
+          "processors": []
+        },
+        "projection": "rigid"
+      },
+      "weight": 1
+    },
+    {
+      "element": {
+        "location": "gangstrials:spawner/melee/zombie",
+        "element_type": "minecraft:single_pool_element",
+        "processors": {
+          "processors": []
+        },
+        "projection": "rigid"
+      },
+      "weight": 1
+    }
+  ]
+}

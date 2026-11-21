@@ -3,7 +3,7 @@
   "id": "gangsboots",
   "version": "${version}",
   "name": "Gangs Boots",
-  "description": "Boots of Swiftness item with flight fuel mechanics.",
+  "description": "Boots of Lightness item with flight fuel mechanics.",
   "authors": [
     "Prof_it",
     "GitHub Copilot"

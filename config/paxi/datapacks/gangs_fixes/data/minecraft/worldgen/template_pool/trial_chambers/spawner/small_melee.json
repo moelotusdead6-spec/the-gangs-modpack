@@ -1,0 +1,49 @@
+{
+  "fallback": "gangstrials:spawner/fallback/small_melee",
+  "elements": [
+    {
+      "element": {
+        "location": "gangstrials:spawner/small_melee/baby_zombie",
+        "element_type": "minecraft:single_pool_element",
+        "processors": {
+          "processors": []
+        },
+        "projection": "rigid"
+      },
+      "weight": 1
+    },
+    {
+      "element": {
+        "location": "gangstrials:spawner/small_melee/cave_spider",
+        "element_type": "minecraft:single_pool_element",
+        "processors": {
+          "processors": []
+        },
+        "projection": "rigid"
+      },
+      "weight": 1
+    },
+    {
+      "element": {
+        "location": "gangstrials:spawner/small_melee/silverfish",
+        "element_type": "minecraft:single_pool_element",
+        "processors": {
+          "processors": []
+        },
+        "projection": "rigid"
+      },
+      "weight": 1
+    },
+    {
+      "element": {
+        "location": "gangstrials:spawner/small_melee/slime",
+        "element_type": "minecraft:single_pool_element",
+        "processors": {
+          "processors": []
+        },
+        "projection": "rigid"
+      },
+      "weight": 1
+    }
+  ]
+}

@@ -11,6 +11,7 @@ base {
 
 repositories {
 	mavenCentral()
+	maven { url 'https://api.modrinth.com/maven' }
 }
 
 dependencies {
@@ -18,10 +19,59 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modCompileOnly files("${rootDir}/../../artifacts/${project.trickytrials_jar}")
+	modCompileOnly files("${rootDir}/../../artifacts/Multiworld-Fabric-1.20.1.jar")
+	modCompileOnly 'maven.modrinth:lootr:nj1zDLc6'
+	modCompileOnly 'maven.modrinth:cloth-config:2xQdCMyG'
+	modCompileOnly "net.fabricmc.fabric-api:fabric-api:0.92.12+1.20.1"
 	testImplementation 'junit:junit:4.13.2'
 }
 
+sourceSets {
+	tools {
+		compileClasspath += sourceSets.main.compileClasspath
+		runtimeClasspath += output + compileClasspath
+	}
+	testmod {
+		compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+		runtimeClasspath += output + compileClasspath
+	}
+	main.resources.srcDir layout.buildDirectory.dir('generated/spawnerLeaves')
+}
+
+loom {
+	mixin {
+		add sourceSets.main, 'gangstrials-refmap.json'
+		add sourceSets.testmod, 'gangs-smoke-refmap.json'
+	}
+}
+
+tasks.register('generateSpawnerLeaves', JavaExec) {
+	dependsOn tasks.named('toolsClasses')
+	classpath = sourceSets.tools.runtimeClasspath
+	mainClass = 'com.gangs.gangstrials.GenerateSpawnerLeaves'
+	def backport = file("../../artifacts/${project.trickytrials_jar}")
+	def output = layout.buildDirectory.dir('generated/spawnerLeaves')
+	inputs.file backport
+	outputs.dir output
+	args backport.absolutePath, output.get().asFile.absolutePath
+}
+
+tasks.register('smokeJar', Jar) {
+	archiveBaseName = 'gangs-boots-trials-smoke'
+	archiveVersion = '1.0.0'
+	from sourceSets.testmod.output
+}
+
+tasks.register('remapSmokeJar', net.fabricmc.loom.task.RemapJarTask) {
+	dependsOn tasks.named('smokeJar')
+	inputFile = tasks.named('smokeJar').flatMap { it.archiveFile }
+	archiveBaseName = 'gangs-boots-trials-smoke'
+	archiveVersion = '1.0.0'
+	archiveClassifier = 'production'
+}
+
 processResources {
+	dependsOn tasks.named('generateSpawnerLeaves')
 	inputs.property 'version', project.version
 
 	filesMatching('fabric.mod.json') {
