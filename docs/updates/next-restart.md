@@ -22,10 +22,21 @@ RSW End. This does not certify every structure, live seed, or client GUI.
 The isolated full-pack server also logged kit-function, recipe and
 display-entity errors which require separate investigation.
 
-Publication and server startup must be verified separately; this entry alone
-does not assert that activation succeeded.
+Published as `c4463e8`; Pages served the expected pack-index and artifact hashes.
+The host launcher and all four separately staged third-party jars were read back
+with matching hashes. After the owner stopped the server and authorized startup,
+the combined launcher was selected and the server started successfully. The
+applied marker, six updated server jars and six Paxi pool hashes were verified.
+The server reported `Done`, loaded the RSW End biome source and appeared online.
+No `/reload` was issued.
+
+The full client GUI and every structure type are not certified. A client with
+the previous BCLib version was observed after startup; players should relaunch
+their existing auto-updating Prism instance to receive the new pack.
 
 # Inventory history, inventory viewing and mailbox stacks (2026-11-18)
+
+Historical staging snapshot: the mailbox/history update is now installed.
 
 Server-only update for the next owner-controlled restart. No client pack update,
 live mod replacement, restart or `/reload` is needed for staging.
