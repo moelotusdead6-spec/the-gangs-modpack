@@ -1,5 +1,16 @@
 # Published Artifacts
 
+## Gobber, neon and Gang Shop update
+
+- `artifacts/goldclaim-1.0.79.jar`: SHA-256
+  `1a4f6a10515c078452032632ba2ef8bf7f0ee3286b384b7006899c04cbe3e2e9`.
+- `artifacts/gangshop-1.0.14.jar`: SHA-256
+  `77670b782078e88873b8159a92934a7d51ae2d8374a9fb119c409591742ef46c`.
+- `artifacts/gangs-gobber-shop-restart-1.0.79-r2.jar`: SHA-256
+  `d9b8f677df014bf34fbb96e7ec0afdf5d47dd54852644dd33da5eb8d46f80130`.
+  The installer verifies the prior applied state, backs up the old jars,
+  live Gobber and shop settings and wallet, and merges only the End-tool flag.
+
 ## Gang Shop GUI (1.0.13)
 
 - `artifacts/gang-shop-ozsoihjx.jar`: SHA-256

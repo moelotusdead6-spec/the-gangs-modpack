@@ -57,7 +57,7 @@ public final class BannedContent {
             result = output.has("item") ? output.get("item") : output.get("id");
         }
         return result != null && result.isJsonPrimitive() && result.getAsJsonPrimitive().isString()
-            && BANNED_ITEMS.contains(result.getAsString());
+            && (BANNED_ITEMS.contains(result.getAsString()) || GobberPolicy.isRemoved(result.getAsString()));
     }
 
     public static int sanitize(NbtElement element) {

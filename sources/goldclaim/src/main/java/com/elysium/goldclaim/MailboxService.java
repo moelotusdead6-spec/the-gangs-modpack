@@ -333,6 +333,10 @@ final class MailboxService {
                 List<Mail> current = read(file(owner));
                 Mail reward = current.stream().filter(entry -> entry.id().equals(mail.get(index).id())).findFirst().orElse(null);
                 if (reward == null) { open(owner, page); return; }
+                if (GobberPolicy.isPendingBook(owner, reward.id())) {
+                    owner.sendMessage(Text.literal("[Mailbox] Gobber recovery is still finishing. Please try again shortly."), false);
+                    return;
+                }
                 String receipt = "gangs_mailbox:" + reward.id();
                 if (!owner.getCommandTags().contains(receipt)) {
                     if (!fits(owner, reward.stack())) {

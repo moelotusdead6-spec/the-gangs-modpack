@@ -10,16 +10,16 @@ import net.minecraft.util.Identifier;
 
 final class NeonChestLoot {
     private static final float NEON_SIGN_CHANCE = 0.0025F;
-    private static final Identifier NEON_SWORD = new Identifier("neon-wall-wonders-gwbzt3mk", "neon_sword");
-    private static final Identifier NEON_SHIELD = new Identifier("neon-wall-wonders-gwbzt3mk", "neon_shield");
+    private static final Identifier NEON_ENERGY_SABERS = new Identifier("neon-wall-wonders-gwbzt3mk", "neon_energy_sabers");
+    private static final Identifier NEON_TEDDY_BEAR = new Identifier("neon-wall-wonders-gwbzt3mk", "neon_teddy_bear");
 
     private NeonChestLoot() {}
 
     static void register() {
         LootTableEvents.MODIFY.register((resourceManager, lootManager, tableId, tableBuilder, source) -> {
             if (!tableId.getPath().startsWith("chests/")) return;
-            addRareItem(tableBuilder, NEON_SWORD);
-            addRareItem(tableBuilder, NEON_SHIELD);
+            addRareItem(tableBuilder, NEON_ENERGY_SABERS);
+            addRareItem(tableBuilder, NEON_TEDDY_BEAR);
         });
     }
 

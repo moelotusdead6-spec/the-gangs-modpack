@@ -8,6 +8,23 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class BannedContentTest {
+    @Test
+    public void gobberCombatRecipesAreRemovedWithoutRemovingToolsOrMedallions() {
+        for (String id : new String[] {
+                "gobber2:gobber2_sword_sniper", "gobber2:gobber2_bow_nether",
+                "gobber2:gobber2_arrow_end", "gobber2:gobber2_staff_sniper",
+                "gobber2:gobber2_chestplate_dragon", "gobber2:gobber2_boots"}) {
+            assertTrue(id, BannedContent.isBannedRecipe(JsonParser.parseString(
+                "{\"result\":{\"item\":\"" + id + "\"}}")));
+        }
+        for (String id : new String[] {
+                "gobber2:gobber2_axe_end", "gobber2:gobber2_paxel_stars",
+                "gobber2:gobber2_medallion_suffering", "gobber2:gobber2_staff_stars"}) {
+            assertFalse(id, BannedContent.isBannedRecipe(JsonParser.parseString(
+                "{\"result\":{\"item\":\"" + id + "\"}}")));
+        }
+    }
+
     private static NbtCompound stack(String item) {
         NbtCompound stack = new NbtCompound();
         stack.putString("id", item);

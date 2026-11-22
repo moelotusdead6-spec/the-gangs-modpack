@@ -31,7 +31,55 @@ public class CatalogServiceTest {
 
             @Test
             @SuppressWarnings("unchecked")
-            public void editorAppliesMovesPricesAndHiddenItemsWithoutAddingExcludedEntries() throws Exception {
+            public void emptyChippedCategoryHidesItsCurrentItemsOnlyOnce() throws Exception {
+                var edits = new CatalogEdits(folder.getRoot().toPath().resolve("editor.json"));
+                edits.update(data -> {
+                    data.assignments.put("minecraft:stone", "mod:chipped");
+                    data.assignments.put("chipped:moved", "vanilla:STONE");
+                });
+                var catalog = new CatalogService(new PriceConfigService());
+                Field editsField = CatalogService.class.getDeclaredField("edits");
+                editsField.setAccessible(true);
+                editsField.set(catalog, edits);
+                Field categoriesField = CatalogService.class.getDeclaredField("byCategory");
+                categoriesField.setAccessible(true);
+                Map<ShopCategory, List<ShopEntry>> categories =
+                    (Map<ShopCategory, List<ShopEntry>>) categoriesField.get(catalog);
+                ShopCategory chipped = ShopCategory.forMod("chipped", "Chipped");
+                categories.put(chipped, new ArrayList<>());
+                Field eligibleField = CatalogService.class.getDeclaredField("eligibleById");
+                eligibleField.setAccessible(true);
+                Map<Identifier, ShopEntry> eligible = (Map<Identifier, ShopEntry>) eligibleField.get(catalog);
+                Identifier natural = new Identifier("chipped", "natural");
+                Identifier moved = new Identifier("chipped", "moved");
+                Identifier stone = new Identifier("minecraft", "stone");
+                eligible.put(natural, new ShopEntry(natural, null, chipped, 1, 1));
+                eligible.put(moved, new ShopEntry(moved, null, chipped, 1, 1));
+                eligible.put(stone, new ShopEntry(stone, null, ShopCategory.STONE, 1, 1));
+                Method apply = CatalogService.class.getDeclaredMethod("applyEdits");
+                apply.setAccessible(true);
+                Method empty = CatalogService.class.getDeclaredMethod("emptyChippedCategoryOnce");
+                empty.setAccessible(true);
+                apply.invoke(catalog);
+                empty.invoke(catalog);
+                assertNull(catalog.getEntry(natural));
+                assertNull(catalog.getEntry(stone));
+                assertEquals(ShopCategory.STONE, catalog.getEntry(moved).category());
+                assertTrue(catalog.getEntries(chipped).isEmpty());
+                assertTrue(new CatalogEdits(folder.getRoot().toPath().resolve("editor.json")).snapshot().emptiedChippedCategory);
+
+                edits.update(data -> {
+                    data.hidden.remove(natural.toString());
+                    data.assignments.put(natural.toString(), "mod:chipped");
+                });
+                apply.invoke(catalog);
+                empty.invoke(catalog);
+                assertNotNull(catalog.getEntry(natural));
+            }
+
+            @Test
+            @SuppressWarnings("unchecked")
+            public void editorAppliesMovesPricesAndHiddenItems() throws Exception {
                 var edits = new CatalogEdits(folder.getRoot().toPath().resolve("editor.json"));
                 edits.update(data -> {
                     data.categories.put("custom:test", new CatalogEdits.CategoryEdit("My Category", "minecraft:chest", false));
@@ -64,8 +112,6 @@ public class CatalogServiceTest {
                 assertEquals(7, catalog.getEntry(stone).sellPrice());
                 assertNull(catalog.getEntry(dirt));
                 assertNull(catalog.getEntry(new Identifier("minecraft:bedrock")));
-                assertThrows(IllegalArgumentException.class, () ->
-                        catalog.editItem(new Identifier("minecraft:bedrock"), "My Category", 1, 1, true));
                 assertThrows(IllegalArgumentException.class, () -> catalog.deleteCategory("My Category"));
             }
 

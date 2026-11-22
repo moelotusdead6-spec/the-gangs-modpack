@@ -1,4 +1,5 @@
 {
   "enableDragonFlying": false,
-  "enableGlidingEndArmor": true
+  "enableGlidingEndArmor": true,
+  "unbreakableEndTools": false
 }

@@ -43,6 +43,11 @@ import net.minecraft.util.hit.BlockHitResult;
 public final class PolicySmokeTest implements ModInitializer {
     @Override
     public void onInitialize() {
+        if ("true".equals(System.getenv("GOLDCLAIM_GOBBER_SMOKE"))) {
+            GobberPolicySmokeTest.register();
+            if (Boolean.getBoolean("goldclaim.neonChestSmoke")) NeonChestLootSmokeTest.register();
+            return;
+        }
         if (Boolean.getBoolean("goldclaim.neonChestSmoke")) {
             NeonChestLootSmokeTest.register();
             return;

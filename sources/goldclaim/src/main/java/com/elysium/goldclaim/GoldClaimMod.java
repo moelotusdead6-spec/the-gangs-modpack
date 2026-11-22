@@ -336,6 +336,7 @@ implements ModInitializer {
             RswEndBiomeSource.registerCodec();
         }
         BannedContent.register();
+        GobberPolicy.register();
         AlexCavesProtection.register();
         RankService.register();
         WaystonePolicy.register();

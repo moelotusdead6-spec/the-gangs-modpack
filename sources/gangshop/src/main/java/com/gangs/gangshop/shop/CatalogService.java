@@ -144,7 +144,14 @@ public class CatalogService {
             this.byId.put(id, entry);
             this.eligibleById.put(id, entry);
         }
+        for (String itemId : this.edits.snapshot().assignments.keySet()) {
+            Identifier id = Identifier.tryParse(itemId);
+            if (id == null || this.eligibleById.containsKey(id) || !isManuallyAddable(id)) continue;
+            Item item = Registries.ITEM.get(id);
+            this.eligibleById.put(id, new ShopEntry(id, item, ShopCategory.MISC, 0, 0));
+        }
         applyEdits();
+        emptyChippedCategoryOnce();
         for (Map.Entry<ShopCategory, List<ShopEntry>> categoryEntries : this.byCategory.entrySet()) {
             ShopCategory category = categoryEntries.getKey();
             List<ShopEntry> entries = categoryEntries.getValue();
@@ -816,6 +823,23 @@ public class CatalogService {
         this.reload();
     }
 
+    private void emptyChippedCategoryOnce() {
+        if (this.edits.snapshot().emptiedChippedCategory) return;
+        ShopCategory category = this.editorCategories.get("mod:chipped");
+        if (category == null) return;
+        List<String> items = this.getEntries(category).stream().map(entry -> entry.id().toString()).toList();
+        try {
+            this.edits.update(data -> {
+                data.hidden.addAll(items);
+                items.forEach(data.assignments::remove);
+                data.emptiedChippedCategory = true;
+            });
+        } catch (IOException exception) {
+            throw new UncheckedIOException("Cannot empty the Gang Shop Chipped category", exception);
+        }
+        applyEdits();
+    }
+
     private ShopCategory categoryByName(String name) {
         return this.editorCategories.values().stream()
                 .filter(category -> category.getDisplayName().equals(name))
@@ -872,8 +896,8 @@ public class CatalogService {
     }
 
     public void editItem(Identifier id, String categoryName, long buy, long sell, boolean add) {
-        if (id == null || !this.eligibleById.containsKey(id)) {
-            throw new IllegalArgumentException("That item is excluded or is not eligible for the shop.");
+        if (id == null || (!this.eligibleById.containsKey(id) && !isManuallyAddable(id))) {
+            throw new IllegalArgumentException("That item is not registered or cannot be added to the shop.");
         }
         if (add == this.byId.containsKey(id)) {
             throw new IllegalArgumentException(add ? "That item is already in the shop." : "That item is not in the shop.");
@@ -887,6 +911,10 @@ public class CatalogService {
             data.assignments.put(id.toString(), key);
             data.prices.put(id.toString(), new CatalogEdits.Price(effectiveBuy, sell));
         });
+    }
+
+    private static boolean isManuallyAddable(Identifier id) {
+        return Registries.ITEM.containsId(id) && Registries.ITEM.get(id) != net.minecraft.item.Items.AIR;
     }
 
     public void removeItem(Identifier id) {

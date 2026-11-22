@@ -6,7 +6,7 @@ hash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 [[files]]
 file = "ARTIFACTS.md"
-hash = "34c7b23a386b53ebad5055afe037eddfb35a98f2165dcf0adc446d34ff706cfc"
+hash = "d1999bb8305891afe9e89b1896e2e0908af5b1eba609b61c0cfe8e5ccb1d35c9"
 
 [[files]]
 file = "README.md"
@@ -134,7 +134,7 @@ hash = "f3ba34986b212042d95e3a05a0baa37fa4dd7895cce65d7dbc92eb29b0840647"
 
 [[files]]
 file = "config/gobber2/general.json5"
-hash = "9794ababce25204ea58d2095d2fd616f3e664c4d4e803814c670939da1a831d0"
+hash = "4d41c81690ad212740d7abee67666c6c8b1299738558c4152d8085ffeb58c67a"
 
 [[files]]
 file = "config/immersive_furniture.json"
@@ -179,6 +179,10 @@ hash = "d95278d2dca24c4fbe5249b1c7aac5e382935a6279b975f1874487b5787f644d"
 [[files]]
 file = "config/paxi/datapacks/gangs_fixes/data/c/tags/items/glass_blocks.json"
 hash = "8858d73a2914dfd2fd5fe92f2b39a0cd8e00471c4afc68a51058f4d6a7a1d933"
+
+[[files]]
+file = "config/paxi/datapacks/gangs_fixes/data/c/tags/items/hidden_from_recipe_viewers.json"
+hash = "c5dde9e431314929abd23eacd7c72087b9aa9d5a6723502321c75408ff4cf927"
 
 [[files]]
 file = "config/paxi/datapacks/gangs_fixes/data/c/tags/items/ingots/netherite.json"
@@ -1649,7 +1653,7 @@ metafile = true
 
 [[files]]
 file = "mods/gangshop-direct.pw.toml"
-hash = "b09a9fb312e889a53a95e38a1ce0edd9656caf2301e14f21b7bfeac6a1ef9f6c"
+hash = "981bf7eb718281eb6a58fcc2960a50d8709fd37c6c2b82a619c9598c9b016138"
 metafile = true
 
 [[files]]
@@ -1674,7 +1678,7 @@ metafile = true
 
 [[files]]
 file = "mods/goldclaim-direct.pw.toml"
-hash = "8d0a7227dd6dc1fe0b2a10bbbaa05f19d97abc440808b2e8ee5c0d67028873f6"
+hash = "f3718e2232bc02f58ea2dbdad9eaac08104e0cf1a94f5f66c3eef9f256446d52"
 metafile = true
 
 [[files]]

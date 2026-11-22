@@ -89,6 +89,7 @@ public final class CatalogEdits {
         public Map<String, String> assignments = new LinkedHashMap<>();
         public Set<String> hidden = new LinkedHashSet<>();
         public Map<String, Price> prices = new LinkedHashMap<>();
+        public boolean emptiedChippedCategory;
     }
 
     public static final class CategoryEdit {

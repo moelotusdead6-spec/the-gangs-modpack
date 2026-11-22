@@ -123,6 +123,16 @@ loom {
 		goldclaim_policy_smoke { sourceSet sourceSets.testmod }
 	}
 	runs {
+		gobberSmoke {
+			server()
+			name 'Isolated Gobber policy integration test'
+			source sourceSets.testmod
+			runDir '../../tmp/goldclaim-gobber-smoke'
+			vmArg '-Xmx2G'
+			vmArg '-XX:ActiveProcessorCount=4'
+			environmentVariable 'GOLDCLAIM_GOBBER_SMOKE', 'true'
+			programArg 'nogui'
+		}
 		hubFurnitureSmoke {
 			server()
 			name 'Isolated hub projectile and furniture integration test'
@@ -340,6 +350,15 @@ generator-settings={"layers":[{"block":"minecraft:bedrock","height":1},{"block":
 	doLast {
 		if (!file('../../tmp/goldclaim-hub-furniture-smoke/policy-smoke-passed.txt').exists()) {
 			throw new GradleException('Hub/furniture verification did not produce a passing result.')
+		}
+	}
+}
+
+tasks.named('runGobberSmoke') {
+	classpath = classpath.filter { !it.name.startsWith('fiw-anticheat-') }
+	doLast {
+		if (!file('../../tmp/goldclaim-gobber-smoke/gobber-policy-smoke-passed.txt').exists()) {
+			throw new GradleException('Gobber smoke test did not pass.')
 		}
 	}
 }

@@ -106,6 +106,8 @@ public final class GuiIntegration implements ShopBackend {
         }
         ShopEntry entry = GangShopMod.CATALOG.getEntry(itemId);
         if (entry == null) return failure("That item is not in the shop.");
+        if (isRemovedGobberItem(itemId)) return failure("That item is disabled on this server.");
+        if (new ItemStack(entry.item()).isEmpty()) return failure("That item is disabled on this server.");
         PlayerInventory inventory = player.getInventory();
         int room = availableSpace(inventory, entry.item());
         int quantity = amount == TradeAmount.ONE ? Math.min(1, room)
@@ -153,6 +155,7 @@ public final class GuiIntegration implements ShopBackend {
         }
         ShopEntry entry = GangShopMod.CATALOG.getEntry(itemId);
         if (entry == null) return failure("That item is not in the shop.");
+        if (isRemovedGobberItem(itemId)) return failure("That item is disabled on this server.");
         PlayerInventory inventory = player.getInventory();
         int owned = countSellable(inventory, entry.item());
         int quantity = amount == TradeAmount.ONE ? Math.min(1, owned)
@@ -203,6 +206,12 @@ public final class GuiIntegration implements ShopBackend {
 
     private static boolean sellable(ItemStack stack, Item item) {
         return stack.isOf(item) && !stack.hasNbt();
+    }
+
+    private static boolean isRemovedGobberItem(Identifier id) {
+        return id.getNamespace().equals("gobber2") && id.getPath().matches(
+            "gobber2_(sword(_(nether|end|sniper))?|bow(_(nether|end))?|arrow(_(nether|end))?"
+                + "|staff_sniper|(helmet|chestplate|leggings|boots)(_(nether|end|dragon))?)");
     }
 
     @Override

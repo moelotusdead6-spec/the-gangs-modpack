@@ -1,3 +1,25 @@
+# Gobber, neon and Gang Shop update
+
+GoldClaim source now replaces the chest bonus signs with Neon Energy Sabers and
+Neon Teddy Bear. The existing all-world chest-table scope and independent
+0.25% rolls are unchanged. Gobber weapons and armor are removed from player
+inventories and cursors, including items withdrawn from storage later. Each
+enchantment, including curses, is returned separately through `/mailbox`;
+normal anvil compatibility applies. The recovery journal preserves pending
+deliveries across interrupted saves. Gobber tools retain their matching ingot
+repair and Mending eligibility, and End tools lose their unbreakable flag.
+The isolated Gobber integration test covered these policies, mailbox recovery,
+actual matching-ingot anvil repairs and XP-driven Mending repairs for each
+tier. REI client visibility has not been verified. The changes take effect on
+the server only after the combined restart installer runs.
+
+Gang Shop source also includes a one-time emptying of its Chipped category.
+Items in that category are hidden rather than moved; items already assigned
+elsewhere are preserved, and staff can add items back later. Staff can manually add
+registered items previously excluded from automatic listings. An isolated server
+smoke test covered manually adding and removing an excluded block and non-block
+item across catalog reloads; existing gameplay restrictions still apply.
+
 # Gang Shop GUI (1.0.13)
 
 Deployed and started in maintenance mode on 2026-11-21. The shop is restricted
