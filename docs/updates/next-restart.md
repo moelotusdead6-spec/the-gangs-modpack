@@ -1,5 +1,10 @@
 # Gobber, neon and Gang Shop update
 
+Published and armed for the next owner-controlled restart. GitHub Pages
+checksums and the uploaded installer readback match the release artifacts.
+`SERVER_JARFILE` is `gangs-gobber-shop-restart-1.0.79-r2.jar`; the hosted
+server remained running and was not restarted or reloaded.
+
 GoldClaim source now replaces the chest bonus signs with Neon Energy Sabers and
 Neon Teddy Bear. The existing all-world chest-table scope and independent
 0.25% rolls are unchanged. Gobber weapons and armor are removed from player
