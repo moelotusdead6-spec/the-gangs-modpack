@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "gangsgemsdisplay",
+  "version": "${version}",
+  "name": "Gang Gems Display",
+  "description": "Displays Gang Gems in the Immersive Furniture library.",
+  "authors": ["The Gangs"],
+  "license": "GPL-3.0-only",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["com.gangs.gangsgems.GemDisplayServer"],
+    "client": ["com.gangs.gangsgems.display.GemDisplayClient"]
+  },
+  "mixins": [
+    { "config": "gangsgemsdisplay.client.mixins.json", "environment": "client" }
+  ],
+  "depends": {
+    "fabricloader": ">=0.15.6",
+    "minecraft": "1.20.1",
+    "java": ">=17",
+    "fabric-api": "*",
+    "immersive_furniture": "=0.4.1+1.20.1"
+  }
+}

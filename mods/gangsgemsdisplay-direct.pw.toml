@@ -1,0 +1,8 @@
+name = "Gang Gems Display"
+filename = "gangsgemsdisplay-0.1.0.jar"
+side = "both"
+
+[download]
+url = "https://moelotusdead6-spec.github.io/the-gangs-modpack/artifacts/gangsgemsdisplay-0.1.0.jar"
+hash-format = "sha256"
+hash = "93c64c3a5eb52aea0a684cc2618b79cbe4920f4175b65435e687c0263785bb13"

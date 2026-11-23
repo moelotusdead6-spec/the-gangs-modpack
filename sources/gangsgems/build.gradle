@@ -1,0 +1,106 @@
+plugins {
+    id 'fabric-loom' version '1.10-SNAPSHOT'
+}
+
+version = project.mod_version
+group = 'com.gangs'
+
+base {
+    archivesName = 'gangsgems'
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'https://api.modrinth.com/maven' }
+    maven { url 'https://repo.erdbeerbaerlp.de/repository/maven-public/' }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+    modImplementation 'maven.modrinth:immersive-furniture:lyFuGwuO'
+    compileOnly 'de.erdbeerbaerlp:dcintegration.common:3.0.7'
+    compileOnly 'net.luckperms:api:5.4'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'de.erdbeerbaerlp:dcintegration.common:3.0.7'
+    testImplementation 'org.mockito:mockito-core:5.14.2'
+    testImplementation 'net.luckperms:api:5.4'
+    if (project.hasProperty('smokeLuckPermsJar')) {
+        modRuntimeOnly files(project.property('smokeLuckPermsJar'))
+    }
+    if (project.hasProperty('smokePermissionsJar')) {
+        modRuntimeOnly files(project.property('smokePermissionsJar'))
+    }
+}
+
+sourceSets {
+    testmod {
+        compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        runtimeClasspath += output + sourceSets.main.output + sourceSets.main.runtimeClasspath
+    }
+}
+
+tasks.register('smokeJar', Jar) {
+    archiveBaseName = 'gangsgems-smoke'
+    archiveVersion = '1.0.0'
+    from sourceSets.testmod.output
+}
+
+tasks.register('remapSmokeJar', net.fabricmc.loom.task.RemapJarTask) {
+    dependsOn tasks.named('smokeJar')
+    inputFile = tasks.named('smokeJar').flatMap { it.archiveFile }
+    archiveBaseName = 'gangsgems-smoke'
+    archiveVersion = '1.0.0'
+    archiveClassifier = 'production'
+}
+
+loom {
+    mods {
+        gangsgems { sourceSet sourceSets.main }
+        gangsgems_smoke { sourceSet sourceSets.testmod }
+    }
+    runs {
+        gemsSmoke {
+            server()
+            name 'Isolated Gang Gems smoke test'
+            source sourceSets.testmod
+            runDir '../../tmp/gangsgems-smoke-20261122'
+            vmArg '-Xmx1G'
+            vmArg '-XX:ActiveProcessorCount=2'
+            programArg 'nogui'
+        }
+    }
+}
+
+processResources {
+    inputs.property 'version', project.version
+    filesMatching('fabric.mod.json') {
+        expand 'version': project.version
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 17
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+tasks.named('runGemsSmoke') {
+    def marker = project.file('../../tmp/gangsgems-smoke-20261122/gangsgems-smoke-pass')
+    doFirst {
+        if (marker.exists() && !marker.delete()) {
+            throw new GradleException('Could not remove previous Gang Gems smoke-test marker')
+        }
+    }
+    doLast {
+        if (!marker.isFile()) {
+            throw new GradleException('Gang Gems smoke test did not complete successfully; check the server log')
+        }
+    }
+}

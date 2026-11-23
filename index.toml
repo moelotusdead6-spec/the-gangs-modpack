@@ -1652,6 +1652,11 @@ hash = "1159eeb7d3c9a50c072012c6ded16d1cf69a4efcacf1194398dd1a5eef6740cc"
 metafile = true
 
 [[files]]
+file = "mods/gangsgemsdisplay-direct.pw.toml"
+hash = "99849a677db351f7dec15ee5fef7dc36b9109337082a794a91b576fad55b6794"
+metafile = true
+
+[[files]]
 file = "mods/gangshop-direct.pw.toml"
 hash = "981bf7eb718281eb6a58fcc2960a50d8709fd37c6c2b82a619c9598c9b016138"
 metafile = true

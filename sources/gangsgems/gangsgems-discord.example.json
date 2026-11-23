@@ -1,0 +1,11 @@
+{
+  "enabled": false,
+  "channelId": "",
+  "webhookId": "",
+  "offers": [
+    {"code": "78370a8b97", "variation": "Gang Gems x 100", "cents": 200, "gems": 100},
+    {"code": "78370a8b97", "variation": "Gang Gems x 200", "cents": 400, "gems": 200},
+    {"code": "78370a8b97", "variation": "Gang Gems x 500", "cents": 1000, "gems": 500},
+    {"code": "78370a8b97", "variation": "Gang Gem x 1500", "cents": 2500, "gems": 1500}
+  ]
+}

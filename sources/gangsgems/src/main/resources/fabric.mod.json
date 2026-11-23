@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "gangsgems",
+  "version": "${version}",
+  "name": "Gang Gems",
+  "description": "Server-side Gang Gems balances and Ko-fi order processing.",
+  "authors": ["The Gangs"],
+  "license": "GPL-3.0-only",
+  "environment": "server",
+  "entrypoints": {
+    "main": ["com.gangs.gangsgems.GangGems"]
+  },
+  "mixins": ["gangsgems.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.15.6",
+    "minecraft": "1.20.1",
+    "java": ">=17",
+    "fabric-api": "*",
+    "immersive_furniture": "=0.4.1+1.20.1"
+  }
+}

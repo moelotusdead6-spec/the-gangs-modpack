@@ -1,0 +1,6 @@
+{
+  "enabled": false,
+  "port": 25595,
+  "keyStore": "gangsgems-keystore.p12",
+  "offers": []
+}

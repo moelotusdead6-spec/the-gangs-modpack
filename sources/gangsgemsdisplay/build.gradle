@@ -1,0 +1,55 @@
+plugins {
+    id 'fabric-loom' version '1.10-SNAPSHOT'
+}
+
+version = '0.1.0'
+group = 'com.gangs'
+base { archivesName = 'gangsgemsdisplay' }
+
+repositories {
+    mavenCentral()
+    maven { url 'https://api.modrinth.com/maven' }
+}
+
+loom {
+    splitEnvironmentSourceSets()
+    mods {
+        gangsgemsdisplay {
+            sourceSet sourceSets.main
+            sourceSet sourceSets.client
+        }
+    }
+    if (project.hasProperty('displayTestRunDir')) {
+        runs {
+            client {
+                runDir project.relativePath(file(project.property('displayTestRunDir')))
+                programArg '--username'
+                programArg 'GemsFixture'
+            }
+        }
+    }
+}
+
+dependencies {
+    minecraft 'com.mojang:minecraft:1.20.1'
+    mappings 'net.fabricmc:yarn:1.20.1+build.10:v2'
+    modImplementation 'net.fabricmc:fabric-loader:0.19.3'
+    modImplementation 'net.fabricmc.fabric-api:fabric-api:0.92.11+1.20.1'
+    modImplementation 'maven.modrinth:immersive-furniture:lyFuGwuO'
+    modCompileOnly files('../gangsgems/build/libs/gangsgems-0.1.1.jar')
+}
+
+processResources {
+    inputs.property 'version', project.version
+    filesMatching('fabric.mod.json') { expand 'version': project.version }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 17
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
