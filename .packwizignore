@@ -23,7 +23,10 @@ sources/*/build/
 sources/*/bin/
 sources/*/logs/
 tmp/
+/hs_err_pid*.log
+/replay_pid*.log
 /config/Discord-Integration.toml
+/config/gangsgems-kofi-token.txt
 /DiscordIntegration-Data/
 scripts/
 docs/

@@ -1663,7 +1663,7 @@ metafile = true
 
 [[files]]
 file = "mods/gangsmounts-direct.pw.toml"
-hash = "e61665acf42d421425bd8437641a9e67ab21ac1d512df5404418bcc9d2a7c01e"
+hash = "ee5252bc13f91f47536b021e097d8711571ee3a623cd87f9b2e0b073e81d4acc"
 metafile = true
 
 [[files]]
@@ -1683,7 +1683,7 @@ metafile = true
 
 [[files]]
 file = "mods/goldclaim-direct.pw.toml"
-hash = "f3718e2232bc02f58ea2dbdad9eaac08104e0cf1a94f5f66c3eef9f256446d52"
+hash = "caf00881d399d6cb30d8cad8f4561126d9354d4ed29e20c2d4f430ccbec903d4"
 metafile = true
 
 [[files]]

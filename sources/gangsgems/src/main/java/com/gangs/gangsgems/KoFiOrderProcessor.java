@@ -85,6 +85,10 @@ public final class KoFiOrderProcessor {
         String message = optionalString(event, "message");
         if (recipientResolver != null) {
             String username = message == null ? "" : message.trim();
+            if (username.isEmpty()) {
+                String fromName = optionalString(event, "from_name");
+                username = fromName == null ? "" : fromName.trim();
+            }
             UUID recipient = username.matches("[A-Za-z0-9_]{3,16}") ? recipientResolver.apply(username) : null;
             return result(wallet.recordPaymentFor(transaction, recipient, gems));
         }

@@ -39,6 +39,17 @@ public final class GemsSmoke implements ModInitializer {
     }
 
     private static void run(MinecraftServer server) throws IOException {
+        var balancePlayer = new FixturePlayer(server, server.getOverworld());
+        var commands = server.getCommandManager();
+        require(commands.executeWithPrefix(balancePlayer.getCommandSource(), "ganggems balance") == 1,
+            "Original balance command failed");
+        String balanceMessage = balancePlayer.lastMessage;
+        require(commands.executeWithPrefix(balancePlayer.getCommandSource(), "gb") == 1
+            && balanceMessage.equals(balancePlayer.lastMessage), "Balance alias differs from the original");
+        require(commands.executeWithPrefix(server.getCommandSource(), "gb") == 0,
+            "Console unexpectedly used the player balance alias");
+        require(commands.executeWithPrefix(balancePlayer.getCommandSource(), "gb GemsFixture") == 0,
+            "Non-staff could use the balance alias to inspect another player");
         if (!GangGems.furnitureCraftingEnabled()) {
             runOriginalCrafting(server);
             return;
@@ -134,6 +145,7 @@ public final class GemsSmoke implements ModInitializer {
 
     static final class FixturePlayer extends ServerPlayerEntity {
         private final boolean operator;
+        private String lastMessage;
 
         FixturePlayer(MinecraftServer server, ServerWorld world) {
             this(server, world, false);
@@ -145,7 +157,7 @@ public final class GemsSmoke implements ModInitializer {
         }
         @Override public boolean hasPermissionLevel(int level) { return operator || level <= 0; }
         @Override public void sendMessage(Text message) {}
-        @Override public void sendMessage(Text message, boolean overlay) {}
+        @Override public void sendMessage(Text message, boolean overlay) { lastMessage = message.getString(); }
     }
 
     private static void require(boolean value, String message) {

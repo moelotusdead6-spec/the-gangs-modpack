@@ -76,6 +76,45 @@ public class KoFiOrderProcessorTest {
     }
 
     @Test
+    public void shopOrderUsesAccountNameWhenMessageIsAbsentOrBlank() throws Exception {
+        WalletStore wallet = new WalletStore(folder.getRoot().toPath().resolve("wallet.json"));
+        KoFiOrderProcessor processor = processor(wallet);
+        UUID player = UUID.randomUUID();
+        JsonObject event = event(null);
+        event.addProperty("from_name", " PlayerOne ");
+        assertEquals(KoFiOrderProcessor.Result.APPLIED, processor.process(form(event), 1, name -> {
+            assertEquals("PlayerOne", name);
+            return player;
+        }));
+        event.addProperty("kofi_transaction_id", "order-2");
+        event.addProperty("message", "  ");
+        assertEquals(KoFiOrderProcessor.Result.APPLIED, processor.process(form(event), 2, name -> player));
+        assertEquals(400, wallet.balance(player));
+    }
+
+    @Test
+    public void explicitInvalidMessageDoesNotFallBackToAccountName() throws Exception {
+        WalletStore wallet = new WalletStore(folder.getRoot().toPath().resolve("wallet.json"));
+        JsonObject event = event("not a username");
+        event.addProperty("from_name", "ValidPlayer");
+        assertEquals(KoFiOrderProcessor.Result.PENDING, processor(wallet).process(form(event), 1, name -> {
+            fail("Invalid explicit recipient must not fall back");
+            return null;
+        }));
+    }
+
+    @Test
+    public void invalidAccountNameStaysPending() throws Exception {
+        WalletStore wallet = new WalletStore(folder.getRoot().toPath().resolve("wallet.json"));
+        JsonObject event = event(null);
+        event.addProperty("from_name", "Not a Minecraft name");
+        assertEquals(KoFiOrderProcessor.Result.PENDING, processor(wallet).process(form(event), 1, name -> {
+            fail("Invalid account name must not be resolved");
+            return null;
+        }));
+    }
+
+    @Test
     public void invalidOrUnknownUsernameIsPendingAndBadTokenDoesNotResolve() throws Exception {
         WalletStore wallet = new WalletStore(folder.getRoot().toPath().resolve("wallet.json"));
         KoFiOrderProcessor processor = processor(wallet);

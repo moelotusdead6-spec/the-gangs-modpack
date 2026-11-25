@@ -1,7 +1,7 @@
 plugins {
 	id 'fabric-loom' version '1.10-SNAPSHOT'
 }
-version = '1.0.2'
+version = '1.0.3'
 group = 'com.gangs'
 base { archivesName = 'gangsmounts' }
 def cosmeticsJar = file('../../artifacts/gangscosmetics-2.0.2.jar')
@@ -18,6 +18,14 @@ sourceSets {
 }
 loom {
 	splitEnvironmentSourceSets()
+}
+sourceSets {
+	clienttest {
+		compileClasspath += sourceSets.main.output + sourceSets.client.output + sourceSets.client.compileClasspath
+		runtimeClasspath += output + compileClasspath + sourceSets.client.runtimeClasspath
+	}
+}
+loom {
 	mixin {
 		useLegacyMixinAp = false
 	}
@@ -36,6 +44,7 @@ loom {
 				runDir project.relativePath(file(project.property('mountTestRunDir')))
 				programArg '--username'
 				programArg 'MountTester'
+				if (project.hasProperty('mountClientSmoke')) source sourceSets.clienttest
 			}
 			server {
 				runDir project.relativePath(file(project.property('mountTestRunDir')))
@@ -44,11 +53,13 @@ loom {
 		}
 	}
 }
-sourceSets {
-	clienttest {
-		compileClasspath += sourceSets.main.output + sourceSets.client.output + sourceSets.client.compileClasspath
-		runtimeClasspath += output + compileClasspath
+if (project.hasProperty('mountClientSmoke')) {
+	loom {
+		mods {
+			mountclientsmoke { sourceSet sourceSets.clienttest }
+		}
 	}
+	tasks.named('runClient') { dependsOn tasks.named('clienttestClasses') }
 }
 repositories {
 	mavenCentral()

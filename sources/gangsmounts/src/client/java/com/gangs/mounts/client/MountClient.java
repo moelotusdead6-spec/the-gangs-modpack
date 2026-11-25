@@ -4,8 +4,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import com.cosmeticsmod.morecosmetics.gui.WardrobeGui;
+import com.cosmeticsmod.morecosmetics.gui.core.box.utils.BoxCategory;
 import com.gangs.mounts.MountService;
+import com.gangs.mounts.mixin.BoxManagerAccess;
+import com.gangs.mounts.mixin.WardrobeManagerAccess;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -24,15 +29,26 @@ public final class MountClient implements ClientModInitializer {
 	private static KeyBinding summon;
 	private static KeyBinding recall;
 	private static String variantType;
+	private static boolean openMounts;
+	private static boolean selectMounts;
 
 	@Override
 	public void onInitializeClient() {
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
+				dispatcher.register(ClientCommandManager.literal("mounts").executes(context -> {
+					openMounts = true;
+					return 1;
+				})));
 		summon = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.gangsmounts.summon",
 				InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, "category.gangsmounts"));
 		recall = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.gangsmounts.recall",
 				InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, "category.gangsmounts"));
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			applyPendingCatalog(client);
+			if (openMounts) {
+				openMounts = false;
+				openMounts(client);
+			}
 			while (summon.wasPressed()) sendQuickAction(client, true);
 			while (recall.wasPressed()) sendQuickAction(client, false);
 		});
@@ -52,7 +68,35 @@ public final class MountClient implements ClientModInitializer {
 			PREVIEWS.clear();
 			pendingCatalog = Map.of();
 			variantType = null;
+			openMounts = false;
+			selectMounts = false;
 		});
+	}
+	private static void openMounts(MinecraftClient client) {
+		if (client.player == null) return;
+		if (PREVIEWS.isEmpty()) {
+			client.player.sendMessage(Text.literal("Mounts are unavailable on this server or still loading."), false);
+			return;
+		}
+		showVariants(null);
+		selectMounts = true;
+		v1_20.morecosmetics.gui.screen.WardrobeUI.displayUI();
+	}
+	public static void selectRequestedMounts(List<BoxCategory> categories) {
+		if (!selectMounts) return;
+		selectMounts = false;
+		var manager = ((WardrobeManagerAccess) v1_20.morecosmetics.gui.screen.WardrobeUI.getScreen().getUI())
+				.gangsmounts$boxManager();
+		for (int i = 0; i < categories.size(); i++) {
+			if (!categories.get(i).getName().equals("Mounts")) continue;
+			var access = (BoxManagerAccess) manager;
+			access.gangsmounts$selectedCategory(i);
+			access.gangsmounts$selectedEntry(null);
+			manager.setExtensionVisible(false);
+			manager.fetchCategories();
+			return;
+		}
+		throw new IllegalStateException("The mounts category is unavailable in the cosmetics menu.");
 	}
 	private static void applyPendingCatalog(MinecraftClient client) {
 		if (pendingCatalog.isEmpty() || client.world == null || client.getOverlay() != null) return;

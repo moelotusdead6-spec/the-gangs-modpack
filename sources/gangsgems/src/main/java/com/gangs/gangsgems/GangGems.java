@@ -66,13 +66,9 @@ public final class GangGems implements ModInitializer {
             notifyPlayer(handler.player);
             CraftDelivery.deliverPending(handler.player);
         });
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             dispatcher.register(CommandManager.literal("ganggems")
-                .then(CommandManager.literal("balance").executes(context -> balance(context.getSource()))
-                    .then(CommandManager.argument("player", GameProfileArgumentType.gameProfile())
-                        .requires(StaffAccess::canMonitor)
-                        .executes(context -> staffBalance(context.getSource(),
-                            GameProfileArgumentType.getProfileArgument(context, "player")))))
+                .then(balanceCommand("balance"))
                 .then(CommandManager.literal("link").executes(context -> link(context.getSource())))
                 .then(CommandManager.literal("claim").executes(context -> {
                     CraftDelivery.deliverPending(context.getSource().getPlayerOrThrow());
@@ -115,7 +111,17 @@ public final class GangGems implements ModInitializer {
                         .then(CommandManager.argument("player", GameProfileArgumentType.gameProfile())
                             .executes(context -> assign(context.getSource(),
                                 StringArgumentType.getString(context, "transaction"),
-                                GameProfileArgumentType.getProfileArgument(context, "player"))))))));
+                                GameProfileArgumentType.getProfileArgument(context, "player")))))));
+            dispatcher.register(balanceCommand("gb"));
+        });
+    }
+
+    private static com.mojang.brigadier.builder.LiteralArgumentBuilder<ServerCommandSource> balanceCommand(String name) {
+        return CommandManager.literal(name).executes(context -> balance(context.getSource()))
+            .then(CommandManager.argument("player", GameProfileArgumentType.gameProfile())
+                .requires(StaffAccess::canMonitor)
+                .executes(context -> staffBalance(context.getSource(),
+                    GameProfileArgumentType.getProfileArgument(context, "player"))));
     }
 
     static void start(MinecraftServer server) {

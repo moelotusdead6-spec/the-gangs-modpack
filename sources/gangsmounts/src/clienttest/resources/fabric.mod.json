@@ -4,5 +4,5 @@
 	"version": "1.0.2",
 	"environment": "client",
 	"entrypoints": {"client": ["com.gangs.mounts.MountClientSmokeTest"]},
-	"depends": {"gangsmounts": "1.0.2"}
+	"depends": {"gangsmounts": "1.0.3"}
 }

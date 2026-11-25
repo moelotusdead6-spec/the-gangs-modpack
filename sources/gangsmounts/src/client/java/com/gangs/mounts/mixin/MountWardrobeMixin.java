@@ -37,5 +37,6 @@ public abstract class MountWardrobeMixin {
 		}
 		int index = categories.indexOf(BoxManager.SEPARATION_LINE);
 		categories.add(index < 0 ? categories.size() : index, mounts);
+		MountClient.selectRequestedMounts(categories);
 	}
 }

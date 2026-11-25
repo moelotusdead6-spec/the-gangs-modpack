@@ -34,6 +34,8 @@ final class StaffPermissionsSmoke {
             "ganggems remove GemsFixture 5 unauthorized") == 0, "Non-admin could remove Gems");
         require(commands.executeWithPrefix(moderator.getCommandSource(), "ganggems balance GemsFixture") == 1,
             "Moderator could not check a balance");
+        require(commands.executeWithPrefix(moderator.getCommandSource(), "gb GemsFixture") == 1,
+            "Moderator could not check a balance using the alias");
         require(commands.executeWithPrefix(moderator.getCommandSource(), "ganggems status") == 1,
             "Moderator could not inspect bridge status");
         require(commands.executeWithPrefix(moderator.getCommandSource(), "ganggems audit") == 1,

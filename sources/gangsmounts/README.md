@@ -58,7 +58,8 @@ In the **isolated client's** `config\gangscosmetics.json`, set
 wardrobe's existing test switch: all original cosmetics and mounts are available
 immediately. Never copy test config/world data to production.
 
-Open `/cosmetics` and choose Mounts. Every tile contains a real 3D mount preview.
+Open `/cosmetics` and choose Mounts, or use `/mounts` to open that category
+directly. The shortcut requires the updated client addon. Every tile contains a real 3D mount preview.
 Click a species to open its color picker, then an unlocked color to summon it;
 click its active tile to recall and store it. The Back tile returns to species.
 Only one can be active at a time. Locked colors remain visible for previews.

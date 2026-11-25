@@ -716,6 +716,7 @@ implements ModInitializer {
             }
             dispatcher.register((LiteralArgumentBuilder)((LiteralArgumentBuilder)((LiteralArgumentBuilder)((LiteralArgumentBuilder)((LiteralArgumentBuilder)((LiteralArgumentBuilder)CommandManager.literal((String)"gcportal").then(CommandManager.literal((String)"help").executes(ctx -> this.sendPortalHelp((ServerCommandSource)ctx.getSource())))).then(CommandManager.literal((String)"add").then(CommandManager.argument((String)"id", (ArgumentType)StringArgumentType.word()).executes(ctx -> this.addClaimPortal((ServerCommandSource)ctx.getSource(), StringArgumentType.getString((CommandContext)ctx, (String)"id")))))).then(CommandManager.literal((String)"addhub").then(CommandManager.argument((String)"id", (ArgumentType)StringArgumentType.word()).executes(ctx -> this.addHubPortal((ServerCommandSource)ctx.getSource(), StringArgumentType.getString((CommandContext)ctx, (String)"id")))))).then(CommandManager.literal((String)"remove").then(CommandManager.argument((String)"id", (ArgumentType)StringArgumentType.word()).executes(ctx -> this.removeClaimPortal((ServerCommandSource)ctx.getSource(), StringArgumentType.getString((CommandContext)ctx, (String)"id")))))).then(CommandManager.literal((String)"delete").then(CommandManager.argument((String)"id", (ArgumentType)StringArgumentType.word()).executes(ctx -> this.removeClaimPortal((ServerCommandSource)ctx.getSource(), StringArgumentType.getString((CommandContext)ctx, (String)"id")))))).then(CommandManager.literal((String)"list").executes(ctx -> this.listClaimPortals((ServerCommandSource)ctx.getSource()))));
             dispatcher.register((LiteralArgumentBuilder)this.publicCommand("hub").executes(ctx -> this.teleportToHub((ServerCommandSource)ctx.getSource())));
+            dispatcher.register(this.publicCommand("workshop").executes(ctx -> this.teleportToWorkshop(ctx.getSource())));
             dispatcher.register((LiteralArgumentBuilder)this.publicCommand("wild").executes(ctx -> this.teleportToWild((ServerCommandSource)ctx.getSource())));
             dispatcher.register((LiteralArgumentBuilder)this.publicCommand("pvp").executes(ctx -> this.teleportToTestingWorld((ServerCommandSource)ctx.getSource(), PVP_DIMENSION, "PVP", true)));
             dispatcher.register(this.publicCommand("rsw")
@@ -750,7 +751,7 @@ implements ModInitializer {
 
     private void forcePublicCommandPermissions(MinecraftServer server) {
         HashMap<String, String> commandStatus = new HashMap<String, String>();
-        for (String commandName : List.of("hub", "wild", "pvp", "rtp", "randomteleport", "sethome", "delhome", "home", "phome", "tpa", "tpahere", "tpaccept", "tpdecline", "servertps", "feed")) {
+        for (String commandName : List.of("hub", "workshop", "wild", "pvp", "rtp", "randomteleport", "sethome", "delhome", "home", "phome", "tpa", "tpahere", "tpaccept", "tpdecline", "servertps", "feed")) {
             CommandNode node = server.getCommandManager().getDispatcher().getRoot().getChild(commandName);
             if (node != null) {
                 this.forcePublicCommandTree(node);
@@ -762,7 +763,7 @@ implements ModInitializer {
         for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
             server.getCommandManager().sendCommandTree(player);
         }
-        LOGGER.info("Command permissions: /hub={}, /wild={}, /pvp={}, /rtp={}, /randomteleport={}, /sethome={}, /delhome={}, /home={}, /phome={}, /tpa={}, /tpahere={}, /tpaccept={}, /tpdecline={}, /servertps={}, /feed={} (server-side override active)", new Object[]{commandStatus.get("hub"), commandStatus.get("wild"), commandStatus.get("pvp"), commandStatus.get("rtp"), commandStatus.get("randomteleport"), commandStatus.get("sethome"), commandStatus.get("delhome"), commandStatus.get("home"), commandStatus.get("phome"), commandStatus.get("tpa"), commandStatus.get("tpahere"), commandStatus.get("tpaccept"), commandStatus.get("tpdecline"), commandStatus.get("servertps"), commandStatus.get("feed")});
+        LOGGER.info("Command permissions: /hub={}, /workshop={}, /wild={}, /pvp={}, /rtp={}, /randomteleport={}, /sethome={}, /delhome={}, /home={}, /phome={}, /tpa={}, /tpahere={}, /tpaccept={}, /tpdecline={}, /servertps={}, /feed={} (server-side override active)", new Object[]{commandStatus.get("hub"), commandStatus.get("workshop"), commandStatus.get("wild"), commandStatus.get("pvp"), commandStatus.get("rtp"), commandStatus.get("randomteleport"), commandStatus.get("sethome"), commandStatus.get("delhome"), commandStatus.get("home"), commandStatus.get("phome"), commandStatus.get("tpa"), commandStatus.get("tpahere"), commandStatus.get("tpaccept"), commandStatus.get("tpdecline"), commandStatus.get("servertps"), commandStatus.get("feed")});
     }
 
     private void forcePublicCommandTree(CommandNode node) {
@@ -2204,6 +2205,19 @@ implements ModInitializer {
         return this.teleportToHub(player, true, true);
     }
 
+    private int teleportToWorkshop(ServerCommandSource source) {
+        ServerPlayerEntity player = source.getPlayer();
+        if (player == null) {
+            source.sendError(Text.literal("Only players can run this command."));
+            return 0;
+        }
+        if (!this.teleportToHub(player, true, false, 13.5, 58, 281.5, 0.0f, 0.0f)) {
+            return 0;
+        }
+        source.sendFeedback(() -> Text.literal("Teleported to the workshop."), false);
+        return 1;
+    }
+
     void evacuateLegacyPlayer(ServerPlayerEntity player) {
         if (!LegacyDimensionPolicy.isClosed(player.getServerWorld())) return;
         if (!this.teleportToHub(player, false)
@@ -2221,6 +2235,13 @@ implements ModInitializer {
     }
 
     private boolean teleportToHub(ServerPlayerEntity player, boolean rememberLocation, boolean showTitle) {
+        return this.teleportToHub(player, rememberLocation, showTitle,
+            (double)this.config.hubTeleportX + 0.5, this.config.hubTeleportY,
+            (double)this.config.hubTeleportZ + 0.5, this.config.hubTeleportYaw, this.config.hubTeleportPitch);
+    }
+
+    private boolean teleportToHub(ServerPlayerEntity player, boolean rememberLocation, boolean showTitle,
+            double x, double y, double z, float yaw, float pitch) {
         Identifier targetId;
         if (LegacyDimensionPolicy.isClosed(this.config.portalHubDimension)) {
             player.sendMessage(Text.literal("Hub configuration points to a closed dimension. Contact an administrator."), false);
@@ -2241,8 +2262,8 @@ implements ModInitializer {
             player.sendMessage((Text)Text.literal((String)("Hub world is not loaded: " + this.config.portalHubDimension)));
             return false;
         }
-        this.loadDestinationArea(targetWorld, (double)this.config.hubTeleportX + 0.5, (double)this.config.hubTeleportZ + 0.5);
-        player.teleport(targetWorld, (double)this.config.hubTeleportX + 0.5, (double)this.config.hubTeleportY, (double)this.config.hubTeleportZ + 0.5, this.config.hubTeleportYaw, this.config.hubTeleportPitch);
+        this.loadDestinationArea(targetWorld, x, z);
+        player.teleport(targetWorld, x, y, z, yaw, pitch);
         if (showTitle) {
             this.sendHubWildTitle(player, "Welcome to the Hub");
         }

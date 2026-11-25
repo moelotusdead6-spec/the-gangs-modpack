@@ -6,7 +6,7 @@ real Ko-fi order arrived as pending because checkout did not collect a username;
 the owner assigned it and confirmed delivery and the thank-you. The listing is
 unpublished while recipient collection is fixed. The owner also confirmed
 that a Gem craft left the physical material stack unchanged. Client
-terminology and automatic recipient collection remain unverified.
+display has been confirmed live; automatic recipient collection remains unverified.
 
 An isolated Minecraft smoke test loaded the checksum-verified
 pinned Discord Integration Fabric 3.0.7 mod and its bundled dependencies. A
@@ -33,9 +33,15 @@ furniture-duplication, and recycling recipes. This gameplay change is off by
 default; enabling it requires `config\gangsgems-furniture.json` containing
 `{"enabled":true}` before a restart. Do not enable it until payment delivery,
 full-pack behavior and client presentation have been verified.
-The experimental Discord listener accepts the recipient's Minecraft username
-as the entire Ko-fi order message, so purchases can be gifted. It credits the
-wallet directly rather than running a server command. Orders with a
+The Discord listener accepts the recipient's Minecraft username as the entire
+Ko-fi order message, so purchases can be gifted. If the message is blank, it
+uses the name Ko-fi sends as `from_name` instead; buyers should sign in and set
+their display name to their exact Minecraft login username before paying.
+The listener cannot verify that a buyer signed in, and guest checkout may be
+available. A nonblank message takes precedence, so it must contain only the
+gift recipient's Minecraft username; an invalid message never falls back to
+the account name. It credits the wallet directly rather than running a
+server command. Orders with a
 missing, invalid, expired, ambiguous, or unresolved username are saved for an
 operator to assign. Offline players are resolved from the server's unexpired
 local player cache; the listener does not look up unknown names online.
@@ -49,6 +55,9 @@ require staff assistance. Review the Minecraft commercial usage guidelines
 before publication.
 
 ## Staff commands
+
+Players can use `/gb` as a shortcut for `/ganggems balance`.
+Staff can also use `/gb <player>` with the same permissions as the original.
 
 LuckPerms groups
 `mod`, `moderator`, `admin`, and `owner` may monitor, grant, credit and assign;
@@ -84,7 +93,8 @@ known player. Keep staff audit and purchase channels private.
 
 ## Discord listener configuration
 
-The listener is experimental and must remain disabled until tested end to end.
+The listener is enabled on the hosted server, but automatic name-based
+delivery is not yet deployed or verified with a real purchase.
 It reuses the Discord Integration bot and accepts only messages sent by the
 configured webhook ID to the configured channel ID. It also checks the Ko-fi
 verification token, shop product, currency, quantity, and configured minimum

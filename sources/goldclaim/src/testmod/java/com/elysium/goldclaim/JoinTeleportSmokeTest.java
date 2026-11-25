@@ -106,12 +106,32 @@ final class JoinTeleportSmokeTest {
                 require(!pending.containsKey(player.getUuid()), "Completed hub transfer remains queued");
                 player.getServerWorld().getChunkManager().updatePosition(player);
                 if (ticks < releaseTick + 50) return;
+                var commands = server.getCommandManager();
+                require(commands.executeWithPrefix(server.getCommandSource(), "workshop") == 0,
+                    "Console could use the player-only workshop command");
+                player.teleport(server.getOverworld(), 40.5, 90, 50.5, 35, 10);
+                var source = player.getCommandSource().withLevel(0);
+                require(commands.executeWithPrefix(source, "workshop") == 1, "Workshop command failed");
+                require(GoldClaimMod.isHubWorld(player.getServerWorld())
+                        && player.getPos().equals(new Vec3d(13.5, 58, 281.5))
+                        && player.getYaw() == 0.0f && player.getPitch() == 0.0f,
+                    "Workshop command used the wrong dimension, position or facing");
+                require(commands.executeWithPrefix(player.getCommandSource().withLevel(0), "workshop") == 1,
+                    "Workshop command failed from within the hub");
+                require(commands.executeWithPrefix(player.getCommandSource().withLevel(0), "wild") == 1
+                        && player.getServerWorld() == server.getOverworld()
+                        && player.getPos().equals(new Vec3d(40.5, 90, 50.5)),
+                    "Workshop command did not preserve the /wild return location");
+                require(commands.executeWithPrefix(player.getCommandSource().withLevel(0), "hub") == 1
+                        && player.getPos().equals(destination),
+                    "Workshop command changed the existing /hub destination");
                 players.remove(player.getUuid());
                 server.getPlayerManager().getPlayerList().remove(player);
                 player.getServerWorld().removePlayer(player, net.minecraft.entity.Entity.RemovalReason.DISCARDED);
                 Files.writeString(Path.of("policy-smoke-passed.txt"),
                     "PASS: " + (withFiw ? "real Fiw freeze and release; " : "Fiw absent; ")
-                    + "one cross-dimension hub transfer after settling delay; exact spawn; stable final position; chunk tracking.\n");
+                    + "one cross-dimension hub transfer after settling delay; exact spawn; stable final position; chunk tracking; "
+                    + "public workshop teleport, south-facing destination, /wild return and unchanged /hub.\n");
                 server.stop(false);
             } catch (ReflectiveOperationException | java.io.IOException failure) {
                 throw new IllegalStateException("Join teleport integration test failed", failure);

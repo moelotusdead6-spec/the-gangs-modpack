@@ -22,6 +22,7 @@ public final class MountClientSmokeTest implements ClientModInitializer {
 	private boolean verified;
 	private boolean reloadStarted;
 	private boolean wardrobeOpened;
+	private boolean shortcutRequested;
 	private BoxCategory previousPicker;
 	private int pickerIndex;
 	private int pickerTicks;
@@ -70,6 +71,23 @@ public final class MountClientSmokeTest implements ClientModInitializer {
 				return;
 			}
 			if (!probe) return;
+			if (shortcutRequested && !wardrobeOpened) {
+				if (client.currentScreen != v1_20.morecosmetics.gui.screen.WardrobeUI.getScreen()) return;
+				var manager = nativeManager();
+				require(manager.getSelectedCategory().getName().equals("Mounts"),
+						"/mounts did not select the Mounts category");
+				var mounts = manager.getSelectedCategory();
+				require(mounts.getTitle().equals("Mounts"), "/mounts did not open the species view");
+				var wings = manager.getCategories().stream().filter(c -> c.getName().equals("Wings")).findFirst().orElseThrow();
+				require(!mounts.getIconPath().equals(wings.getIconPath()), "Mounts duplicates the Wings icon");
+				var icon = new Identifier("minecraft", "morecosmetics/gui/icons/" + mounts.getIconPath() + ".png");
+				require(client.getResourceManager().getResource(icon).isPresent(), "Mounts category icon is missing");
+				require(mounts.getEntries().size() == MountClient.types().size(), "Species view contains individual skins");
+				wardrobeOpened = true;
+				previousPicker = mounts;
+				MountClient.showVariants(MountClient.types().get(0));
+				return;
+			}
 			if (wardrobeOpened) {
 				var categories = nativeManager().getCategories();
 				require(categories.stream().filter(c -> c.getName().equals("Mounts")).count() == 1, "Duplicate Mounts category after refresh");
@@ -139,19 +157,8 @@ public final class MountClientSmokeTest implements ClientModInitializer {
 				require(!event.isMoving(), "Stopped rider kept walking");
 				client.player.stopRiding();
 			}
-			v1_20.morecosmetics.gui.screen.WardrobeUI.displayUI();
-			var manager = nativeManager();
-			var categories = manager.getCategories();
-			require(categories.stream().filter(c -> c.getName().equals("Mounts")).count() == 1, "Duplicate Mounts category");
-			var mounts = categories.stream().filter(c -> c.getName().equals("Mounts")).findFirst().orElseThrow();
-			var wings = categories.stream().filter(c -> c.getName().equals("Wings")).findFirst().orElseThrow();
-			require(!mounts.getIconPath().equals(wings.getIconPath()), "Mounts duplicates the Wings icon");
-			var icon = new Identifier("minecraft", "morecosmetics/gui/icons/" + mounts.getIconPath() + ".png");
-			require(client.getResourceManager().getResource(icon).isPresent(), "Mounts category icon is missing");
-			require(mounts.getEntries().size() == MountClient.types().size(), "Species view contains individual skins");
-			wardrobeOpened = true;
-			previousPicker = mounts;
-			MountClient.showVariants(MountClient.types().get(0));
+			shortcutRequested = true;
+			client.getNetworkHandler().sendChatCommand("mounts");
 		});
 	}
 
